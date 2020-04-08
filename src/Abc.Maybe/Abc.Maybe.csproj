@@ -1,7 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- See explanations in Abc.csproj -->
+    <!-- NB: the first listed framework is the one used by the VS editor.
+      Full NRT-analysis requires .NET Core 3.0 or above, .NET Standard does
+      not include the nullable annotations (version 2.1 defines the nullable
+      attributes but don't use them if I understand things correctly).
+      We use the version 3.1 instead of 3.0 because the former is LTS and the
+      latter is already EOL. -->
     <TargetFrameworks>netcoreapp3.1;netstandard2.0</TargetFrameworks>
 
     <PackageTags>Option;Maybe;LINQ;ROP;Railway;Monad</PackageTags>

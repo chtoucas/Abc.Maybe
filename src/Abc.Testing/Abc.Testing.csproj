@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- See explanations in Abc.csproj -->
+    <!-- See explanations in Abc.Maybe.csproj -->
     <TargetFrameworks>netcoreapp3.1;netstandard2.0</TargetFrameworks>
 
     <!--

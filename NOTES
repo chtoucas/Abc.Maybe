@@ -40,7 +40,7 @@ Version 2
 - "monadic" LINQ. Output Maybe<IEnumerable<T>> and LINQ ops.
 
 Version ???
-- ROP.
+- Utilities to write code in the ROP style (Railway Oriented Programming).
 - Extensions.
 - Async (configurable, enumerable).
 
