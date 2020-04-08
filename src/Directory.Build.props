@@ -23,7 +23,7 @@
     <!-- Analyzers by Microsoft -->
     <Features>$(Features);flow-analysis</Features>
 
-    <!-- CONTRACTS_FULL necessary to enable the attribute Pure -->
+    <!-- CONTRACTS_FULL is necessary to enable the attribute Pure -->
     <DefineConstants>$(DefineConstants);TRACE;CONTRACTS_FULL</DefineConstants>
 
     <!-- Optional symbols -->
