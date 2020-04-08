@@ -3,14 +3,18 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-# Relative path.
-$ROOT_DIR = "."
-$SRC_DIR = join-path $ROOT_DIR "src"
+# Relative path
+$PSScriptRoot | New-Variable -Name ROOT_DIR -Scope Script -Option Constant
+
+(join-path $ROOT_DIR "src") `
+  | New-Variable -Name SRC_DIR -Scope Script -Option Constant
+
 # Note to myself: do not use a separate directory for build.
 # Build warnings MSB3277, the problem is that we then build all platforms
 # within the same dir. This is something that can happen for instance if we
 # define a variable $OutDir and call dotnet or MSBuild w/ "." and not "&".
-$ARTIFACTS_DIR = join-path $ROOT_DIR "__"
+(join-path $ROOT_DIR "__") `
+  | New-Variable -Name ARTIFACTS_DIR -Scope Script -Option Constant
 
 ################################################################################
 
@@ -33,7 +37,7 @@ function carp {
     [string] $Message
   )
 
-  write-host $Message -BackgroundColor Yellow -ForegroundColor Red
+  write-host $Message -ForegroundColor Yellow
 }
 
 function croak {

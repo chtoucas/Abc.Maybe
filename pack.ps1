@@ -21,8 +21,10 @@ $ErrorActionPreference = "Stop"
 
 . (join-path $PSScriptRoot "shared.ps1")
 
-$PKG_DIR = join-path $ARTIFACTS_DIR "packages"
-$CONFIGURATION = "Release"
+(join-path $ARTIFACTS_DIR "packages") `
+  | New-Variable -Name PKG_DIR -Scope Script -Option Constant
+
+"Release" | New-Variable -Name CONFIGURATION -Scope Script -Option Constant
 
 ################################################################################
 
@@ -59,7 +61,8 @@ function run-pack([string] $projName, [string] $version) {
       }
   }
 
-  # Do NOT use --no-restore; netstandard2.1 is not declared within the proj file.
+  # Do NOT use --no-restore; netstandard2.1 is not currently declared within the
+  # proj file.
   & dotnet pack $proj -c $CONFIGURATION --nologo `
     --output $PKG_DIR `
     -p:TargetFrameworks='\"netstandard2.0;netstandard2.1;netcoreapp3.1\"' `

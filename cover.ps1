@@ -50,7 +50,7 @@ $ErrorActionPreference = "Stop"
 
 . (join-path $PSScriptRoot "shared.ps1")
 
-$CONFIGURATION = "Debug"
+"Debug" | New-Variable -Name CONFIGURATION -Scope Script -Option Constant
 
 ################################################################################
 
@@ -150,8 +150,9 @@ try {
     get-opencover (join-path $SRC_DIR "Abc.Tests\Abc.Tests.csproj") `
       | run-opencover -outxml $outxml
   } else {
-    # coverlet.msbuild uses the path relative to the test project.
-    run-coverlet (join-path $PSScriptRoot $outxml)
+    # For coverlet.msbuild the path must be absolute if we want the result to be
+    # put within the directory for artifacts and not below the test project.
+    run-coverlet $outxml
   }
 
   if ($NoReport) {
