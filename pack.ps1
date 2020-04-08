@@ -19,10 +19,10 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-$PKGDIR = "__\packages"     # Relative path
-$CONFIGURATION = "Release"
+. (join-path $PSScriptRoot "shared.ps1")
 
-. (join-path $PSScriptRoot "say.ps1")
+$PKG_DIR = join-path $ARTIFACTS_DIR "packages"
+$CONFIGURATION = "Release"
 
 ################################################################################
 
@@ -42,10 +42,11 @@ function run-test {
   if ($LastExitCode -ne 0) { croak "Test task failed." }
 }
 
-function run-pack([string] $proj, [string] $version) {
+function run-pack([string] $projName, [string] $version) {
   say-loud "Packing."
 
-  $pkg = join-path $PKGDIR "$proj.$version.nupkg"
+  $proj = join-path $SRC_DIR $projName
+  $pkg = join-path $PKG_DIR "$projName.$version.nupkg"
 
   if (test-path $pkg) {
     carp "A package with the same version ($version) already exists."
@@ -58,8 +59,9 @@ function run-pack([string] $proj, [string] $version) {
       }
   }
 
+  # Do NOT use --no-restore; netstandard2.1 is not declared within the proj file.
   & dotnet pack $proj -c $CONFIGURATION --nologo `
-    --output $PKGDIR `
+    --output $PKG_DIR `
     -p:TargetFrameworks='\"netstandard2.0;netstandard2.1;netcoreapp3.1\"' `
     -p:Deterministic=true `
     -p:PackageVersion=$version `
@@ -67,18 +69,18 @@ function run-pack([string] $proj, [string] $version) {
   if ($LastExitCode -ne 0) { croak "Pack task failed." }
 
   confess "To publish the package:"
-  confess "> dotnet nuget push .\$pkg -s https://www.nuget.org/ -k MYKEY"
+  confess "> dotnet nuget push $pkg -s https://www.nuget.org/ -k MYKEY"
 }
 
 ################################################################################
 
 try {
-  pushd $PSScriptRoot
+  pushd $ROOT_DIR
 
   if ($Clean) { run-clean }
   if (-not $NoTest) { run-test }
 
-  run-pack "src\Abc.Maybe\" "1.0.0-alpha-2"
+  run-pack "Abc.Maybe" "1.0.0-alpha-2"
 } catch {
   carp ("An unexpected error occured: {0}." -f $_.Exception.Message)
   exit 1

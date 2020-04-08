@@ -8,7 +8,8 @@ Run the Code Coverage script and build human-readable reports.
 Run the Code Coverage script w/ either Coverlet (default) or OpenCover,
 then optionally build human-readable reports and badges.
 
-Prerequesites: NuGet packages and tools must have been restored before.
+Prerequesites: NuGet packages and tools must have been restored before. If not
+the script may fail with not even a single warning... (eg w/ Coverlet).
 
 OpenCover is slow when compared to Coverlet, but we get risk hotspots
 (NPath complexity, crap score) and the list of unvisited methods.
@@ -47,31 +48,33 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-# Note to myself: do not use a separate directory for build.
-# Build warnings MSB3277, the problem is that we then build all platforms
-# within the same dir.
-$ARTIFACTS_DIR = "__"
-$CONFIGURATION = "Debug"
+. (join-path $PSScriptRoot "shared.ps1")
 
-. (join-path $PSScriptRoot "say.ps1")
+$CONFIGURATION = "Debug"
 
 ################################################################################
 
-function run-opencover([string] $outxml) {
-  say-loud "Running OpenCover."
-
-  $proj = "src\Abc.Tests\Abc.Tests.csproj"
-
+function get-opencover([string] $proj) {
   # Find the OpenCover version.
   $xml = [Xml] (get-content $proj)
-  $version = `
-    select-xml -Xml $xml `
-      -XPath "//Project/ItemGroup/PackageReference[@Include='OpenCover']" `
+  $xpath = "//Project/ItemGroup/PackageReference[@Include='OpenCover']"
+  $version = select-xml -Xml $xml -XPath $xpath `
     | select -ExpandProperty Node `
     | select -First 1 -ExpandProperty Version
 
-  $exe = join-path $env:USERPROFILE `
+  join-path $env:USERPROFILE `
     ".nuget\packages\opencover\$version\tools\OpenCover.Console.exe"
+}
+
+function run-opencover {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+    [string] $exe,
+
+    [string] $outxml)
+
+  say-loud "Running OpenCover."
 
   $filters = `
     "+[Abc.Maybe]*",
@@ -88,7 +91,7 @@ function run-opencover([string] $outxml) {
     -showunvisited `
     -output:$outxml `
     -target:dotnet.exe `
-    -targetargs:"test $proj -v quiet -c $CONFIGURATION --no-restore /p:DebugType=Full" `
+    -targetargs:"test -v quiet -c $CONFIGURATION --no-restore /p:DebugType=Full" `
     -filter:$filter `
     -excludebyattribute:*.ExcludeFromCodeCoverageAttribute
 
@@ -129,7 +132,7 @@ function run-rg([string] $reports, [string] $targetdir) {
 ################################################################################
 
 try {
-  pushd $PSScriptRoot
+  pushd $ROOT_DIR
 
   $tool = if ($OpenCover) { "opencover" } else { "coverlet" }
   $outdir = join-path $ARTIFACTS_DIR $tool
@@ -144,7 +147,8 @@ try {
   if ($ReportOnly) {
     carp "On your request, we do not run any Code Coverage tool."
   } elseif ($OpenCover) {
-    run-opencover $outxml
+    get-opencover (join-path $SRC_DIR "Abc.Tests\Abc.Tests.csproj") `
+      | run-opencover -outxml $outxml
   } else {
     # coverlet.msbuild uses the path relative to the test project.
     run-coverlet (join-path $PSScriptRoot $outxml)
