@@ -31,6 +31,7 @@ namespace Abc
         {
             var cmp = new DefaultMaybeComparer<T>();
             Interlocked.CompareExchange(ref s_Default, cmp, null);
+            // BONSANG!
             return s_Default!;
         }
 
@@ -42,6 +43,7 @@ namespace Abc
         {
             var cmp = new StructuralMaybeComparer<T>();
             Interlocked.CompareExchange(ref s_Structural, cmp, null);
+            // BONSANG!
             return s_Structural!;
         }
 
