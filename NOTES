@@ -16,9 +16,6 @@ Version 1.0.0-beta1
 Towards version 1.0.0
 - README: some pub, compare to other option types.
 - Infra
-  * Use Directory.Build.props and Directory.Build.targets
-    Move lib projects to src w/ custom props?
-  * Move to coverlet-console? runsettings.
   * Versioning (MSBuild tool), NetStandardImplicitPackageVersion
     https://docs.microsoft.com/en-us/dotnet/core/packages
   * Strong name? How to avoid binding redirects? Prerequesite: assembly version.
@@ -59,6 +56,17 @@ See FIXME, TODO and REVIEW within the code.
   * How to handle PublicAPI.XXX.txt?
     https://github.com/dotnet/roslyn-analyzers/blob/master/src/PublicApiAnalyzers/PublicApiAnalyzers.Help.md
 
+Operations:
+- XML comments with complete examples.
+  https://github.com/dotnet/dotnet-api-docs/wiki
+- Perf tool (LINQ, nulls, iterable).
+- Move to coverlet-console? runsettings.
+- Coverity
+- Cleanup scripts, eg: dotnet nuget locals --clear all.
+- dotnet-outdated
+- Local tools: find updates
+  https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools
+
 Async:
 - Microsoft.Bcl.AsyncInterfaces
 - Async enumerables.
@@ -72,29 +80,6 @@ Async:
   https://devblogs.microsoft.com/dotnet/configureawait-faq/
   https://ericlippert.com/2020/03/10/passing-awaited-tasks/
   https://docs.microsoft.com/en-us/archive/msdn-magazine/2014/november/async-programming-unit-testing-asynchronous-code
-
-Operations:
-- XML comments with complete examples.
-  https://github.com/dotnet/dotnet-api-docs/wiki
-- Perf tool (LINQ, nulls, iterable).
-- Coverity
-- Cleanup scripts, eg: dotnet nuget locals --clear all.
-- dotnet-outdated
-
-Local tools
-  Initialize
-    dotnet new tool-manifest
-  Install
-    dotnet tool install dotnet-reportgenerator-globaltool
-  List
-    dotnet tool list
-  Find updates
-    ???
-  Update
-    dotnet tool update
-  Restore
-    dotnet tool restore
-https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools
 
 Release Process
 ---------------
