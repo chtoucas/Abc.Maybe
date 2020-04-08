@@ -1,0 +1,61 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>PerfTool</RootNamespace>
+
+    <!-- BenchmarkDotNet requires that we specify the lang version -->
+    <LangVersion>8.0</LangVersion>
+
+    <!--<BenchmarkHarness Condition=" '$(BenchmarkHarness)' != 'true' ">false</BenchmarkHarness>-->
+    <DefineConstants Condition=" '$(BenchmarkHarness)' == 'true' ">$(DefineConstants);BENCHMARK_HARNESS</DefineConstants>
+
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+
+    <!-- BenchmarkDotNet fails hard with multiple frameworks???
+         Only works with the one specified by TargetFramework.
+         The configuration section for the GC seems to be completely ignored.
+    -->
+    <!--<TargetFrameworks>netcoreapp3.0;net472</TargetFrameworks>-->
+    <!--<ServerGarbageCollection>true</ServerGarbageCollection>-->
+    <!--<ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>-->
+
+    <!-- Optimal settings for ETW events.
+      https://benchmarkdotnet.org/articles/features/etwprofiler.html
+    -->
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+
+    <!--
+      CA1034      Nested types should not be visible
+      CA1051      Do not declare visible instance fields
+      CA1052      Static holder types should be Static or NotInheritable
+      CA1062      Validate arguments of public methods
+      CA1303      Do not pass literals as localized parameters
+      CA1707      Identifiers should not contain underscores
+      CA1822      Mark members as static
+    -->
+    <NoWarn>$(NoWarn);CA1034;CA1051;CA1052;CA1062;CA1303;CA1707;CA1822</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Abc.Future\Abc.Future.csproj" />
+    <ProjectReference Include="..\Abc.Maybe\Abc.Maybe.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="perf.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
