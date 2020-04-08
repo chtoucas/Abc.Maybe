@@ -1,8 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- See explanations in Abc.Maybe.csproj -->
     <TargetFrameworks>netcoreapp3.1;netstandard2.0</TargetFrameworks>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,7 +17,5 @@
   <ItemGroup>
     <ProjectReference Include="..\Abc.Maybe\Abc.Maybe.csproj" />
   </ItemGroup>
-
-  <Import Project="$(MSBuildThisFileDirectory)..\Library.After.props" />
 
 </Project>

@@ -9,17 +9,6 @@
     <Company>Narvalo.Org</Company>
     <Product>Abc</Product>
     <Copyright>Copyright © 2020 Narvalo.Org</Copyright>
-
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/chtoucas/Abc.Maybe/</RepositoryUrl>
-
-    <PackageProjectUrl>https://github.com/chtoucas/Abc.Maybe/</PackageProjectUrl>
-    <!-- PackageLicenseUrl is deprecated
-         PackageLicenseExpression & PackageLicenseFile are mutually exclusive.
-    -->
-    <PackageLicenseFile></PackageLicenseFile>
-    <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
-    <PackageReleaseNotes>See CHANGELOG in project root.</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -28,25 +17,11 @@
     <LangVersion>latest</LangVersion>
     <!--<LangVersion>8.0</LangVersion>-->
 
-    <!-- Checked arithmetic -->
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-
     <Nullable>enable</Nullable>
-
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <!-- Analyzers by Microsoft -->
     <Features>$(Features);flow-analysis</Features>
-
-    <!-- Disable warnings when using a preview version of .NET Core -->
-    <SuppressNETCoreSdkPreviewMessage Condition="'$(_NETCoreSdkIsPreview)'=='true'">true</SuppressNETCoreSdkPreviewMessage>
-  </PropertyGroup>
-
-  <!-- All configurations ################################################## -->
-  <PropertyGroup>
-    <!--
-      I don't think this is necessary anymore.
-      NU1605 https://docs.microsoft.com/en-us/nuget/reference/errors-and-warnings/nu1605
-    -->
-    <!--<WarningsAsErrors>$(WarningsAsErrors)</WarningsAsErrors>-->
 
     <!-- CONTRACTS_FULL necessary to enable the attribute Pure -->
     <DefineConstants>$(DefineConstants);TRACE;CONTRACTS_FULL</DefineConstants>
@@ -54,23 +29,14 @@
     <!-- Optional symbols -->
     <!--<DefineConstants>$(DefineConstants);PURE_MAYBE</DefineConstants>-->
     <!--<DefineConstants>$(DefineConstants);PLAIN_LINQ</DefineConstants>-->
+
+    <!-- Disable warnings when using a preview version of .NET Core -->
+    <SuppressNETCoreSdkPreviewMessage Condition="'$(_NETCoreSdkIsPreview)'=='true'">true</SuppressNETCoreSdkPreviewMessage>
   </PropertyGroup>
 
-  <!-- DEBUG configuration ################################################# -->
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-    <!--
-      RS0016      Symbol XXX is not part of the declared API
-      RS0017      Symbol XXX is part of the declared API, but is either not public
-                  or could not be found
-    -->
-    <NoWarn>$(NoWarn);RS0016;RS0017</NoWarn>
-  </PropertyGroup>
-
-  <!-- RELEASE configuration ############################################### -->
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
 </Project>

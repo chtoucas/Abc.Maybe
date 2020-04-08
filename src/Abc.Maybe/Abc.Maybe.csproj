@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- NB: the first listed framework is the one used by the VS editor.
+    <!-- The first listed framework is the one used by the VS editor.
       Full NRT-analysis requires .NET Core 3.0 or above, .NET Standard does
       not include the nullable annotations (version 2.1 defines the nullable
       attributes but don't use them if I understand things correctly).
@@ -13,6 +13,33 @@
     <Description>
       A rich Option type for C#.
     </Description>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <!--<WarningsNotAsErrors>$(WarningsNotAsErrors);CS1591</WarningsNotAsErrors>-->
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/chtoucas/Abc.Maybe/</RepositoryUrl>
+
+    <PackageProjectUrl>https://github.com/chtoucas/Abc.Maybe/</PackageProjectUrl>
+    <!-- PackageLicenseFile & PackageLicenseExpression are mutually exclusive -->
+    <PackageLicenseFile></PackageLicenseFile>
+    <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
+    <PackageReleaseNotes>See CHANGELOG in project root.</PackageReleaseNotes>
+
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <!--
+      RS0016      Symbol XXX is not part of the declared API
+      RS0017      Symbol XXX is part of the declared API, but is either not public
+                  or could not be found
+    -->
+    <NoWarn>$(NoWarn);RS0016;RS0017</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,7 +57,5 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
-  <Import Project="$(MSBuildThisFileDirectory)..\Library.After.props" />
 
 </Project>

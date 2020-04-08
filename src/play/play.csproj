@@ -9,7 +9,6 @@
     -->
     <NoWarn>$(NoWarn);CA1303</NoWarn>
 
-    <!-- Optional symbols -->
     <DefineConstants>$(DefineConstants);STRICT_HASKELL</DefineConstants>
     <!--<DefineConstants>$(DefineConstants);MONADS_VIA_MAP_MULTIPLY</DefineConstants>-->
     <!--<DefineConstants>$(DefineConstants);COMONADS_VIA_MAP_COMULTIPLY</DefineConstants>-->

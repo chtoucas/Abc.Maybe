@@ -7,8 +7,8 @@ Create a NuGet package.
 .PARAMETER Clean
 Clean the solution before anything else.
 
-.PARAMETER Test
-Run the test suite.
+.PARAMETER NoTest
+Do NOT run the test suite.
 #>
 [CmdletBinding()]
 param(
@@ -63,11 +63,11 @@ function run-pack([string] $proj, [string] $version) {
     -p:TargetFrameworks='\"netstandard2.0;netstandard2.1;netcoreapp3.1\"' `
     -p:Deterministic=true `
     -p:PackageVersion=$version `
-    | out-host
 
   if ($LastExitCode -ne 0) { croak "Pack task failed." }
 
-  $pkg
+  confess "To publish the package:"
+  confess "> dotnet nuget push .\$pkg -s https://www.nuget.org/ -k MYKEY"
 }
 
 ################################################################################
@@ -78,10 +78,7 @@ try {
   if ($Clean) { run-clean }
   if (-not $NoTest) { run-test }
 
-  $pkg = run-pack "src\Abc.Maybe" "1.0.0-alpha-2"
-
-  confess "To publish the package:"
-  confess "> dotnet nuget push .\$pkg -s https://www.nuget.org/ -k MYKEY"
+  run-pack "src\Abc.Maybe\" "1.0.0-alpha-2"
 } catch {
   carp ("An unexpected error occured: {0}." -f $_.Exception.Message)
   exit 1
