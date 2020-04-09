@@ -4,7 +4,8 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 # Relative path
-$PSScriptRoot | New-Variable -Name ROOT_DIR -Scope Script -Option Constant
+(get-item $PSScriptRoot).Parent.FullName `
+  | New-Variable -Name ROOT_DIR -Scope Script -Option Constant
 
 (join-path $ROOT_DIR "src") `
   | New-Variable -Name SRC_DIR -Scope Script -Option Constant

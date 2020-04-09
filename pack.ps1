@@ -20,7 +20,7 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-. (join-path $PSScriptRoot "shared.ps1")
+. (join-path $PSScriptRoot "eng\shared.ps1")
 
 "Release" | New-Variable -Name CONFIGURATION -Scope Script -Option Constant
 
