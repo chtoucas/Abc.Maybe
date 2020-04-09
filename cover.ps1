@@ -21,10 +21,10 @@ that's just a detail.
 Use OpenCover instead of Coverlet.
 
 .PARAMETER NoReport
-Dot not build HTML/text reports and badges w/ ReportGenerator.
+Do NOT build HTML/text reports and badges w/ ReportGenerator.
 
 .PARAMETER ReportOnly
-Dot not run any Code Coverage tool.
+Do NOT run any Code Coverage tool.
 
 .EXAMPLE
 PS>cover.ps1
@@ -42,7 +42,8 @@ Run OpenCover, do NOT build human-readable reports and badges.
 param(
   [Alias("x")] [switch] $OpenCover,
   [switch] $NoReport,
-  [switch] $ReportOnly
+  [switch] $ReportOnly,
+  [Alias("h")] [switch] $Help
 )
 
 Set-StrictMode -Version Latest
@@ -53,6 +54,15 @@ $ErrorActionPreference = "Stop"
 "Debug" | New-Variable -Name CONFIGURATION -Scope Script -Option Constant
 
 ################################################################################
+
+function print-usage {
+  say "`nRun the Code Coverage script and build human-readable reports.`n"
+  say "Usage: cover.ps1 [switches]"
+  say "  -x|-OpenCover    use OpenCover instead of Coverlet."
+  say "     -NoReport     do NOT run ReportGenerator."
+  say "     -ReportOnly   do NOT run any Code Coverage tool."
+  say "  -h|-Help         print this help and exit.`n"
+}
 
 function get-opencover([string] $proj) {
   # Find the OpenCover version.
@@ -72,7 +82,7 @@ function run-opencover {
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
     [string] $exe,
 
-    [string] $outxml)
+    [string] $output)
 
   say-loud "Running OpenCover."
 
@@ -89,16 +99,16 @@ function run-opencover {
   & $exe -oldStyle -register:user `
     -hideskipped:All `
     -showunvisited `
-    -output:$outxml `
+    -output:$output `
     -target:dotnet.exe `
     -targetargs:"test -v quiet -c $CONFIGURATION --no-restore /p:DebugType=Full" `
     -filter:$filter `
     -excludebyattribute:*.ExcludeFromCodeCoverageAttribute
 
-  if ($LastExitCode -ne 0) { croak "OpenCover failed." }
+  on-lastcmderr "OpenCover failed."
 }
 
-function run-coverlet([string] $outxml) {
+function run-coverlet([string] $output) {
   say-loud "Running Coverlet."
 
   $excludes = `
@@ -110,11 +120,11 @@ function run-coverlet([string] $outxml) {
   & dotnet test -c $CONFIGURATION --no-restore `
     /p:CollectCoverage=true `
     /p:CoverletOutputFormat=opencover `
-    /p:CoverletOutput=$outxml `
+    /p:CoverletOutput=$output `
     /p:Include="[Abc.Maybe]*" `
     /p:Exclude=$exclude
 
-  if ($LastExitCode -ne 0) { croak "Coverlet failed." }
+  on-lastcmderr "Coverlet failed."
 }
 
 function run-rg([string] $reports, [string] $targetdir) {
@@ -124,12 +134,17 @@ function run-rg([string] $reports, [string] $targetdir) {
     -verbosity:Warning `
     -reporttypes:"HtmlInline;Badges;TextSummary" `
     -reports:$reports `
-    -targetdir:$outdir
+    -targetdir:$targetdir
 
-  if ($LastExitCode -ne 0) { croak "ReportGenerator failed." }
+  on-lastcmderr "ReportGenerator failed."
 }
 
 ################################################################################
+
+if ($Help) {
+  print-usage
+  exit 0
+}
 
 try {
   pushd $ROOT_DIR
@@ -146,10 +161,12 @@ try {
 
   if ($ReportOnly) {
     carp "On your request, we do not run any Code Coverage tool."
-  } elseif ($OpenCover) {
+  }
+  elseif ($OpenCover) {
     get-opencover (join-path $SRC_DIR "Abc.Tests\Abc.Tests.csproj") `
-      | run-opencover -outxml $outxml
-  } else {
+      | run-opencover -output $outxml
+  }
+  else {
     # For coverlet.msbuild the path must be absolute if we want the result to be
     # put within the directory for artifacts and not below the test project.
     run-coverlet $outxml
@@ -157,7 +174,8 @@ try {
 
   if ($NoReport) {
     carp "On your request, we do not run ReportGenerator."
-  } else {
+  }
+  else {
     run-rg $outxml $outdir
 
     try {
@@ -165,14 +183,16 @@ try {
 
       cp -Force -Path "badge_combined.svg" -Destination (join-path ".." "$tool.svg")
       cp -Force -Path "Summary.txt" -Destination (join-path ".." "$tool.txt")
-    } finally {
+    }
+    finally {
       popd
     }
   }
-} catch {
-  carp ("An unexpected error occured: {0}." -f $_.Exception.Message)
-  exit 1
-} finally {
+}
+catch {
+  croak ("An unexpected error occured: {0}." -f $_.Exception.Message)
+}
+finally {
   popd
 }
 

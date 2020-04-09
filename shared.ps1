@@ -16,8 +16,30 @@ $PSScriptRoot | New-Variable -Name ROOT_DIR -Scope Script -Option Constant
 (join-path $ROOT_DIR "__") `
   | New-Variable -Name ARTIFACTS_DIR -Scope Script -Option Constant
 
+(join-path $ARTIFACTS_DIR "packages") `
+  | New-Variable -Name PKG_DIR -Scope Script -Option Constant
+
 ################################################################################
 
+<#
+.SYNOPSIS
+Print a message.
+#>
+function say {
+  [CmdletBinding()]
+  Param(
+    [Parameter(Mandatory=$True, ValueFromPipeline=$False, ValueFromPipelineByPropertyName=$False)]
+    [ValidateNotNullOrEmpty()]
+    [string] $Message
+  )
+
+  write-host $Message
+}
+
+<#
+.SYNOPSIS
+Say out loud a message; print it with emphasis.
+#>
 function say-loud {
   [CmdletBinding()]
   Param(
@@ -29,30 +51,11 @@ function say-loud {
   write-host $Message -BackgroundColor DarkCyan -ForegroundColor Green
 }
 
-function carp {
-  [CmdletBinding()]
-  Param(
-    [Parameter(Mandatory=$True, ValueFromPipeline=$False, ValueFromPipelineByPropertyName=$False)]
-    [ValidateNotNullOrEmpty()]
-    [string] $Message
-  )
-
-  write-host $Message -ForegroundColor Yellow
-}
-
-function croak {
-  [CmdletBinding()]
-  Param(
-    [Parameter(Mandatory=$True, ValueFromPipeline=$False, ValueFromPipelineByPropertyName=$False)]
-    [ValidateNotNullOrEmpty()]
-    [string] $Message
-  )
-
-  write-host $Message -BackgroundColor Red -ForegroundColor Yellow
-  Exit 1
-}
-
-function confess {
+<#
+.SYNOPSIS
+Print a recap.
+#>
+function recap {
   [CmdletBinding()]
   Param(
     [Parameter(Mandatory=$True, ValueFromPipeline=$False, ValueFromPipelineByPropertyName=$False)]
@@ -61,6 +64,54 @@ function confess {
   )
 
   write-host $Message -ForegroundColor Green
+}
+
+<#
+.SYNOPSIS
+Warn user.
+#>
+function carp {
+  [CmdletBinding()]
+  Param(
+    [Parameter(Mandatory=$True, ValueFromPipeline=$False, ValueFromPipelineByPropertyName=$False)]
+    [ValidateNotNullOrEmpty()]
+    [string] $Message
+  )
+
+  write-warning $Message
+}
+
+<#
+.SYNOPSIS
+Die of errors.
+#>
+function croak {
+  [CmdletBinding()]
+  Param(
+    [Parameter(Mandatory=$True, ValueFromPipeline=$False, ValueFromPipelineByPropertyName=$False)]
+    [ValidateNotNullOrEmpty()]
+    [string] $Message
+  )
+
+  # We don't write the message to the error stream (we use write-host not
+  # write-error).
+  write-host $Message -BackgroundColor Red -ForegroundColor Yellow
+  exit 1
+}
+
+<#
+.SYNOPSIS
+Die if the exit code of the last external command that was run is not equal to zero.
+#>
+function on-lastcmderr {
+  [CmdletBinding()]
+  Param(
+    [Parameter(Mandatory=$True, ValueFromPipeline=$False, ValueFromPipelineByPropertyName=$False)]
+    [ValidateNotNullOrEmpty()]
+    [string] $Message
+  )
+
+  if ($LastExitCode -ne 0) { croak $Message }
 }
 
 ################################################################################
