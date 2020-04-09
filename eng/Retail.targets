@@ -20,8 +20,9 @@
     <DelaySign>false</DelaySign>
   </PropertyGroup>
 
-  <Target Name="SetAssemblyVersions" BeforeTargets="Build">
-    <Message Text="Creating the assembly version file..." Importance="high" />
+  <!-- We this target must run very early (before Build is not enough) -->
+  <Target Name="SetVersions" BeforeTargets="GetAssemblyAttributes">
+    <Message Text="Creating the assembly version file..." Importance="normal" />
 
     <GenerateBuildAndRevisionNumbers>
       <Output TaskParameter="BuildNumber" PropertyName="_BuildNumber"/>
@@ -30,7 +31,8 @@
 
     <PropertyGroup>
       <_SemVer>$(MajorVersion).$(MinorVersion).$(PatchVersion)</_SemVer>
-      <_SemVer Condition=" '$(PreReleaseLabel)' != '' ">$(_SemVer)-$(PreReleaseLabel)</_SemVer>
+      <!-- SemVer 1.0 to SemVer 2.0 -->
+      <_SemVer Condition=" '$(PreReleaseLabel)' != '' ">$(_SemVer)-$(PreReleaseLabel.Replace('-', '.').ToLowerInvariant())</_SemVer>
 
       <_BuildMetadata>$(Configuration)</_BuildMetadata>
       <_BuildMetadata>$(_BuildMetadata)+$(Platform)</_BuildMetadata>
