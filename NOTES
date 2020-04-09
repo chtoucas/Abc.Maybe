@@ -18,7 +18,7 @@ Towards version 1.0.0
 - Infra
   * Versioning (MSBuild tool), NetStandardImplicitPackageVersion
     https://docs.microsoft.com/en-us/dotnet/core/packages
-  * Strong name? How to avoid binding redirects? Prerequesite: assembly version.
+  * Strong name -> how to avoid binding redirects? Assembly version.
     MUST be done before the final release.
     https://github.com/dotnet/runtime/blob/master/docs/project/strong-name-signing.md
     https://docs.microsoft.com/en-gb/dotnet/standard/library-guidance/strong-naming

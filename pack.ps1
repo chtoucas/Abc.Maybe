@@ -67,13 +67,14 @@ function run-pack([string] $projName, [string] $version) {
     }
   }
 
-  # Do NOT use --no-restore; netstandard2.1 is not currently declared within the
+  # Do NOT use --no-restore; netstandard2.1 is not currently enabled within the
   # proj file.
   & dotnet pack $proj -c $CONFIGURATION --nologo `
     --output $PKG_DIR `
     -p:TargetFrameworks='\"netstandard2.0;netstandard2.1;netcoreapp3.1\"' `
-    -p:Deterministic=true `
     -p:PackageVersion=$version `
+    -p:Deterministic=true `
+    -p:SignAssembly=true
 
   on-lastcmderr "Pack task failed."
 
