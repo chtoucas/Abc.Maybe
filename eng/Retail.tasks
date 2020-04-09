@@ -1,0 +1,28 @@
+<Project>
+  <PropertyGroup>
+    <CodeTaskFactoryAssemblyFile>$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll</CodeTaskFactoryAssemblyFile>
+  </PropertyGroup>
+
+  <UsingTask TaskName="GenerateBuildAndRevisionNumbers"
+             TaskFactory="RoslynCodeTaskFactory"
+             AssemblyFile="$(CodeTaskFactoryAssemblyFile)">
+    <ParameterGroup>
+      <BuildNumber ParameterType="System.UInt16" Output="true" />
+      <RevisionNumber ParameterType="System.UInt16" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System"/>
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+var now = DateTime.UtcNow;
+bool isMorning = now.Hour < 12;
+var numberOfHalfDays = 2 * (now - new DateTime(2014, 11, 30)).Days - (isMorning ? 1 : 0);
+var numberOfSeconds = (now - new DateTime(now.Year, now.Month, now.Day, isMorning ? 0 : 12, 0, 0)).TotalSeconds;
+
+BuildNumber = (ushort)(numberOfHalfDays - 1);
+RevisionNumber = (ushort)numberOfSeconds;
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+</Project>

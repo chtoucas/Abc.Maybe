@@ -31,10 +31,10 @@
     <!--<DefineConstants>$(DefineConstants);PLAIN_LINQ</DefineConstants>-->
 
     <!-- Disable warnings when using a preview version of .NET Core -->
-    <SuppressNETCoreSdkPreviewMessage Condition="'$(_NETCoreSdkIsPreview)'=='true'">true</SuppressNETCoreSdkPreviewMessage>
+    <SuppressNETCoreSdkPreviewMessage Condition=" '$(_NETCoreSdkIsPreview)' == 'true' ">true</SuppressNETCoreSdkPreviewMessage>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
   </PropertyGroup>

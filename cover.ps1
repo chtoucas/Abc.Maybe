@@ -190,7 +190,8 @@ try {
   }
 }
 catch {
-  croak ("An unexpected error occured: {0}." -f $_.Exception.Message)
+  croak ("An unexpected error occured: {0}." -f $_.Exception.Message) `
+    -StackTrace $_.ScriptStackTrace
 }
 finally {
   popd

@@ -91,12 +91,16 @@ function croak {
   Param(
     [Parameter(Mandatory=$True, ValueFromPipeline=$False, ValueFromPipelineByPropertyName=$False)]
     [ValidateNotNullOrEmpty()]
-    [string] $Message
+    [string] $Message,
+
+    [string] $StackTrace
   )
 
   # We don't write the message to the error stream (we use write-host not
   # write-error).
   write-host $Message -BackgroundColor Red -ForegroundColor Yellow
+
+  if ($StackTrace -ne '') { write-host $StackTrace -ForegroundColor Yellow }
   exit 1
 }
 

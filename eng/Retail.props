@@ -1,0 +1,25 @@
+<Project>
+  <PropertyGroup>
+    <MajorVersion>1</MajorVersion>
+    <MinorVersion>0</MinorVersion>
+    <PatchVersion>0</PatchVersion>
+    <PreReleaseLabel>alpha-2</PreReleaseLabel>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Description>
+      A rich Option type for C#.
+    </Description>
+
+    <PackageProjectUrl>https://github.com/chtoucas/Abc.Maybe/</PackageProjectUrl>
+    <!-- PackageLicenseFile & PackageLicenseExpression are mutually exclusive -->
+    <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
+    <PackageReleaseNotes>See CHANGELOG in project root.</PackageReleaseNotes>
+    <PackageTags>Option;Maybe;LINQ;ROP;Railway;Monad</PackageTags>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/chtoucas/Abc.Maybe/</RepositoryUrl>
+  </PropertyGroup>
+</Project>

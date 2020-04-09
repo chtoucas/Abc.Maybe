@@ -34,6 +34,18 @@ function print-usage {
   say "  -h|-Help     print this help and exit.`n"
 }
 
+function get-version([string] $proj) {
+  $xml = [Xml] (get-content $proj)
+  $node = (select-xml -Xml $xml -XPath "//Project/PropertyGroup/MajorVersion/..").Node
+
+  $major = $node | select -First 1 -ExpandProperty MajorVersion
+  $minor = $node | select -First 1 -ExpandProperty MinorVersion
+  $patch = $node | select -First 1 -ExpandProperty PatchVersion
+  $label = $node | select -First 1 -ExpandProperty PreReleaseLabel
+
+  "$major.$minor.$patch-$label"
+}
+
 function run-clean {
   say-loud "Cleaning."
 
@@ -73,8 +85,7 @@ function run-pack([string] $projName, [string] $version) {
     --output $PKG_DIR `
     -p:TargetFrameworks='\"netstandard2.0;netstandard2.1;netcoreapp3.1\"' `
     -p:PackageVersion=$version `
-    -p:Deterministic=true `
-    -p:SignAssembly=true
+    -p:Retail=true
 
   on-lastcmderr "Pack task failed."
 
@@ -95,10 +106,13 @@ try {
   if ($Clean) { run-clean }
   if (-not $NoTest) { run-test }
 
-  run-pack "Abc.Maybe" "1.0.0-alpha-2"
+  $version = get-version (join-path $ROOT_DIR "eng\Retail.props")
+
+  run-pack "Abc.Maybe" $version
 }
 catch {
-  croak ("An unexpected error occured: {0}." -f $_.Exception.Message)
+  croak ("An unexpected error occured: {0}." -f $_.Exception.Message) `
+    -StackTrace $_.ScriptStackTrace
 }
 finally {
   popd

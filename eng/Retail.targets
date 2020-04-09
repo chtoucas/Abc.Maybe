@@ -1,0 +1,49 @@
+<Project>
+  <Import Project="$(MSBuildThisFileDirectory)Retail.tasks" />
+  <Import Project="$(MSBuildThisFileDirectory)Retail.props" />
+
+  <PropertyGroup>
+    <Deterministic>true</Deterministic>
+
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <VersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</VersionPrefix>
+    <VersionSuffix>$(PreReleaseLabel)</VersionSuffix>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+    <DefineConstants>$(DefineConstants);SIGNED_ASSEMBLY</DefineConstants>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Maybe.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
+  </PropertyGroup>
+
+  <Target Name="SetAssemblyVersions" BeforeTargets="Build">
+    <Message Text="Creating the assembly version file..." Importance="high" />
+
+    <GenerateBuildAndRevisionNumbers>
+      <Output TaskParameter="BuildNumber" PropertyName="_BuildNumber"/>
+      <Output TaskParameter="RevisionNumber" PropertyName="_RevisionNumber"/>
+    </GenerateBuildAndRevisionNumbers>
+
+    <PropertyGroup>
+      <_SemVer>$(MajorVersion).$(MinorVersion).$(PatchVersion)</_SemVer>
+      <_SemVer Condition=" '$(PreReleaseLabel)' != '' ">$(_SemVer)-$(PreReleaseLabel)</_SemVer>
+
+      <_BuildMetadata>$(Configuration)</_BuildMetadata>
+      <_BuildMetadata>$(_BuildMetadata)+$(Platform)</_BuildMetadata>
+      <_BuildMetadata Condition=" '$(SignAssembly)' == 'true' ">$(_BuildMetadata)+Signed</_BuildMetadata>
+      <_BuildMetadata Condition=" '$(SignAssembly)' != 'true' ">$(_BuildMetadata)+Unsigned</_BuildMetadata>
+      <_BuildMetadata>$(_BuildMetadata.Replace('+', '.').ToLowerInvariant())</_BuildMetadata>
+    </PropertyGroup>
+
+    <PropertyGroup>
+      <!-- To reduce binding redirects we only include the major/minor parts -->
+      <AssemblyVersion>$(MajorVersion).$(MinorVersion).0.0</AssemblyVersion>
+      <FileVersion>$(MajorVersion).$(MinorVersion).$(_BuildNumber).$(_RevisionNumber)</FileVersion>
+      <InformationalVersion>$(_SemVer)+$(_BuildMetadata)</InformationalVersion>
+    </PropertyGroup>
+  </Target>
+</Project>

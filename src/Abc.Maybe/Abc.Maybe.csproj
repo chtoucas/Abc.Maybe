@@ -9,38 +9,16 @@
       latter is already EOL. -->
     <TargetFrameworks>netcoreapp3.1;netstandard2.0</TargetFrameworks>
 
-    <SignAssembly Condition="'$(SignAssembly)'!='true'">false</SignAssembly>
-
-    <PackageTags>Option;Maybe;LINQ;ROP;Railway;Monad</PackageTags>
-    <Description>
-      A rich Option type for C#.
-    </Description>
+    <Retail Condition=" '$(Retail)' != 'true' ">false</Retail>
 
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <!--<WarningsNotAsErrors>$(WarningsNotAsErrors);CS1591</WarningsNotAsErrors>-->
   </PropertyGroup>
 
-  <PropertyGroup>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/chtoucas/Abc.Maybe/</RepositoryUrl>
+  <Import Project="$(MSBuildThisFileDirectory)..\..\eng\Retail.targets" Condition=" '$(Retail)' == 'true' " />
 
-    <PackageProjectUrl>https://github.com/chtoucas/Abc.Maybe/</PackageProjectUrl>
-    <!-- PackageLicenseFile & PackageLicenseExpression are mutually exclusive -->
-    <PackageLicenseFile></PackageLicenseFile>
-    <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
-    <PackageReleaseNotes>See CHANGELOG in project root.</PackageReleaseNotes>
-
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(SignAssembly)'=='true'">
-    <DefineConstants>$(DefineConstants);SIGNED_ASSEMBLY</DefineConstants>
-    <AssemblyOriginatorKeyFile>../../eng/Maybe.snk</AssemblyOriginatorKeyFile>
-    <DelaySign>false</DelaySign>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <!--
       RS0016      Symbol XXX is not part of the declared API
