@@ -62,8 +62,10 @@ function run-test {
   on-lastcmderr "Test task failed."
 }
 
-function run-pack([string] $projName, [string] $version) {
+function run-pack([string] $projName) {
   say-loud "Packing."
+
+  $version = get-version (join-path $ROOT_DIR "eng\Retail.props")
 
   $proj = join-path $SRC_DIR $projName
   $pkg = join-path $PKG_DIR "$projName.$version.nupkg"
@@ -84,7 +86,6 @@ function run-pack([string] $projName, [string] $version) {
   & dotnet pack $proj -c $CONFIGURATION --nologo `
     --output $PKG_DIR `
     -p:TargetFrameworks='\"netstandard2.0;netstandard2.1;netcoreapp3.1\"' `
-    -p:PackageVersion=$version `
     -p:Retail=true
 
   on-lastcmderr "Pack task failed."
@@ -106,9 +107,7 @@ try {
   if ($Clean) { run-clean }
   if (-not $NoTest) { run-test }
 
-  $version = get-version (join-path $ROOT_DIR "eng\Retail.props")
-
-  run-pack "Abc.Maybe" $version
+  run-pack "Abc.Maybe"
 }
 catch {
   croak ("An unexpected error occured: {0}." -f $_.Exception.Message) `
