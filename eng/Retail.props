@@ -3,8 +3,11 @@
     <MajorVersion>1</MajorVersion>
     <MinorVersion>0</MinorVersion>
     <PatchVersion>0</PatchVersion>
+    <!-- SemVer 1.0 for NuGet package (use - not . to separate alpha from a digit) -->
     <PreReleaseLabel>alpha-2</PreReleaseLabel>
   </PropertyGroup>
+
+  <!-- https://docs.microsoft.com/en-us/dotnet/core/tools/csproj#nuget-metadata-properties -->
 
   <PropertyGroup>
     <Description>
@@ -12,7 +15,6 @@
     </Description>
 
     <PackageProjectUrl>https://github.com/chtoucas/Abc.Maybe/</PackageProjectUrl>
-    <!-- PackageLicenseFile & PackageLicenseExpression are mutually exclusive -->
     <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
     <PackageReleaseNotes>See CHANGELOG in project root.</PackageReleaseNotes>
     <PackageTags>Option;Maybe;LINQ;ROP;Railway;Monad</PackageTags>
