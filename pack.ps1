@@ -33,7 +33,7 @@ function print-usage {
   say "Usage: pack.ps1 [switches]"
   say "  -c|-Clean    clean the solution before anything else."
   say "  -n|-NoTest   do NOT run the test suite."
-  say "  -f|-Force    force packaging even without a git commit hash -or- there are uncommited changes."
+  say "  -f|-Force    force packaging even without a git commit hash -or- when there are uncommited changes."
   say "  -h|-Help     print this help and exit.`n"
 }
 
