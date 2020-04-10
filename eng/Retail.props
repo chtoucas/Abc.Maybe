@@ -14,8 +14,8 @@
     <PatchVersion>0</PatchVersion>
     <!-- SemVer 2.0: use "." to separate alphas from digits.
          Lexicographic ASCII sort order (digit < alpha). -->
-    <!-- TODO: when we reach 1.0.0-beta, update VersionSuffix: no longer
-         replace "." by "-" in Retail.targets & in pack.ps1 (get-version). -->
+    <!-- TODO: when we reach 1.0.0-beta, no longer replace "." by "-" in
+      Retail.targets & in pack.ps1 (get-version). -->
     <PreReleaseLabel>alpha.2</PreReleaseLabel>
   </PropertyGroup>
 
@@ -30,12 +30,8 @@
     <Product>Abc</Product>
     <Copyright>Copyright © 2020 Narvalo.Org</Copyright>
 
-    <!-- Assembly description, for the package see below.
-      For the assembly title see SetAssemblyInfo in Retail.targets. -->
-    <Description>A rich Option type for C#.</Description>
-
-    <!-- Package infos -->
     <Title>An Option type for C#.</Title>
+
     <PackageDescription>
       A rich Option type for C#.
     </PackageDescription>

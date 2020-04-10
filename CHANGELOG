@@ -5,7 +5,7 @@ vNEXT
 
 Changed
 - MaybeComparer<T>, complete rewrite, optionally structural.
-- Strong-named assembly.
+- Strong-name the public assembly.
 
 Internals
 - New perf project.

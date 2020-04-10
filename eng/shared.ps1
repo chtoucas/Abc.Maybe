@@ -28,7 +28,7 @@ Print a message.
 #>
 function say {
   [CmdletBinding()]
-  Param(
+  param(
     [Parameter(Mandatory=$True, ValueFromPipeline=$False, ValueFromPipelineByPropertyName=$False)]
     [ValidateNotNullOrEmpty()]
     [string] $Message
@@ -43,7 +43,7 @@ Say out loud a message; print it with emphasis.
 #>
 function say-loud {
   [CmdletBinding()]
-  Param(
+  param(
     [Parameter(Mandatory=$True, ValueFromPipeline=$False, ValueFromPipelineByPropertyName=$False)]
     [ValidateNotNullOrEmpty()]
     [string] $Message
@@ -58,7 +58,7 @@ Print a recap.
 #>
 function recap {
   [CmdletBinding()]
-  Param(
+  param(
     [Parameter(Mandatory=$True, ValueFromPipeline=$False, ValueFromPipelineByPropertyName=$False)]
     [ValidateNotNullOrEmpty()]
     [string] $Message
@@ -73,7 +73,7 @@ Warn user.
 #>
 function carp {
   [CmdletBinding()]
-  Param(
+  param(
     [Parameter(Mandatory=$True, ValueFromPipeline=$False, ValueFromPipelineByPropertyName=$False)]
     [ValidateNotNullOrEmpty()]
     [string] $Message
@@ -88,7 +88,7 @@ Die of errors.
 #>
 function croak {
   [CmdletBinding()]
-  Param(
+  param(
     [Parameter(Mandatory=$True, ValueFromPipeline=$False, ValueFromPipelineByPropertyName=$False)]
     [ValidateNotNullOrEmpty()]
     [string] $Message,
@@ -110,7 +110,7 @@ Die if the exit code of the last external command that was run is not equal to z
 #>
 function on-lastcmderr {
   [CmdletBinding()]
-  Param(
+  param(
     [Parameter(Mandatory=$True, ValueFromPipeline=$False, ValueFromPipelineByPropertyName=$False)]
     [ValidateNotNullOrEmpty()]
     [string] $Message

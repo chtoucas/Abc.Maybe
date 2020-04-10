@@ -7,111 +7,113 @@ $ErrorActionPreference = "Stop"
 
 <#
 .SYNOPSIS
-    Get the path to the system git command.
+  Get the path to the system git command.
 .INPUTS
-    None.
+  None.
 .OUTPUTS
-    System.String. Get-GitExe returns a string that contains the path to the git
-    command or $null if git is nowhere to be found.
+  System.String. Get-GitExe returns a string that contains the path to the git
+  command or $null if git is nowhere to be found.
 #>
 function Get-GitExe {
-    [CmdletBinding()]
-    param()
+  [CmdletBinding()]
+  param()
 
-    Write-Verbose 'Finding the installed git command.'
+  Write-Verbose "Finding the installed git command."
 
-    $git = (Get-Command "git.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue)
+  $git = (Get-Command "git.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue)
 
-    if ($git -eq $null) {
-        return $null
-    }
-    else {
-        return $git.Path
-    }
+  if ($git -eq $null) {
+    return $null
+  }
+  else {
+    return $git.Path
+  }
 }
 
 <#
 .SYNOPSIS
-    Get the last git commit hash of the local repository.
+  Get the last git commit hash of the local repository.
 .PARAMETER Git
-    Specifies the path to the Git executable.
+  Specifies the path to the Git executable.
 .PARAMETER Abbrev
-    If present, returns the abbreviated commit hash.
+  If present, returns the abbreviated commit hash.
 .INPUTS
-    The path to the Git executable.
+  The path to the Git executable.
 .OUTPUTS
-    System.String. Get-GitCommitHash returns a string that contains the git
-    commit hash.
+  System.String. Get-GitCommitHash returns a string that contains the git
+  commit hash.
 .NOTES
-    If anything fails, returns an empty string.
+  If anything fails, returns an empty string.
 #>
 function Get-GitCommitHash {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $Git,
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $Git,
 
-        [switch] $Abbrev
-    )
+    [switch] $Abbrev
+  )
 
-    Write-Verbose 'Getting the last git commit hash.'
+  Write-Verbose "Getting the last git commit hash."
 
-    if ($Abbrev.IsPresent) {
-        $fmt = '%h'
-    }
-    else {
-        $fmt = '%H'
-    }
+  if ($Abbrev.IsPresent) {
+    $fmt = '%h'
+  }
+  else {
+    $fmt = '%H'
+  }
 
-    $hash = ''
+  $hash = ""
 
-    try {
-        Write-Debug 'Calling git.exe log.'
-        $hash = . $git log -1 --format="$fmt" 2>&1
-    } catch {
-        Write-Warning "Git command failed: $_"
-    }
+  try {
+    Write-Debug "Calling git.exe log."
+    $hash = . $git log -1 --format="$fmt" 2>&1
+  }
+  catch {
+    Write-Warning "Git command failed: $_"
+  }
 
-    $hash
+  $hash
 }
 
 <#
 .SYNOPSIS
-    Get the git status.
+  Get the git status.
 .PARAMETER Git
-    Specifies the path to the Git executable.
+  Specifies the path to the Git executable.
 .INPUTS
-    The path to the Git executable.
+  The path to the Git executable.
 .OUTPUTS
-    System.String. Get-GitStatus returns a string that contains the git status.
+  System.String. Get-GitStatus returns a string that contains the git status.
 .NOTES
-    If anything fails, returns $null.
+  If anything fails, returns $null.
 #>
 function Get-GitStatus {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $Git
-    )
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $Git
+  )
 
-    Write-Verbose 'Getting the git status.'
+  Write-Verbose "Getting the git status."
 
-    $status = $null
+  $status = $null
 
-    try {
-        Write-Debug 'Calling git.exe status.'
-        $status = . $git status -s 2>&1
+  try {
+    Write-Debug "Calling git.exe status."
+    $status = . $git status -s 2>&1
 
-        if ($status -eq $null) {
-            $status = ''
-        }
-    } catch {
-        Write-Warning "Git command failed: $_"
+    if ($status -eq $null) {
+      $status = ""
     }
+  }
+  catch {
+    Write-Warning "Git command failed: $_"
+  }
 
-    $status
+  $status
 }
 
 ################################################################################
