@@ -1,10 +1,10 @@
 <Project>
 
   <!-- Versioning.
-    PackageVersion       = Major.Minor.Patch-PreReleaseLabel (SemVer 1.0)
+    PackageVersion       = Major.Minor.Patch-PreReleaseLabel
     AssemblyVersion      = Major.Minor.0.0
     FileVersion          = Major.Minor.BuildNumber.RevisionNumber
-    InformationalVersion = Major.Minor.Patch-PreReleaseLabel+BuildMetadata (SemVer 2.0)
+    InformationalVersion = Major.Minor.Patch-PreReleaseLabel+BuildMetadata
     NB: BuildNumber, RevisionNumber and BuildMetadata are automatically generated.
     https://docs.microsoft.com/en-gb/dotnet/standard/library-guidance/versioning
   -->
@@ -12,11 +12,11 @@
     <MajorVersion>1</MajorVersion>
     <MinorVersion>0</MinorVersion>
     <PatchVersion>0</PatchVersion>
-    <!-- SemVer 2.0: use "." to separate alphas from digits.
-         Lexicographic ASCII sort order (digit < alpha). -->
-    <!-- TODO: when we reach 1.0.0-beta, no longer replace "." by "-" in
-      Retail.targets & in pack.ps1 (get-version). -->
-    <PreReleaseLabel>alpha.2</PreReleaseLabel>
+    <!-- Format: (alpha|beta|rc)[1-9][0-9]?
+      Do not use "." or "-" to separate alphas from digits. Examples:
+      alpha1 < alpha2 < ... < alpha11 < ...< beta1 < ... < rc1 < ...
+    -->
+    <PreReleaseLabel>alpha2</PreReleaseLabel>
   </PropertyGroup>
 
   <!-- Package metadata & assembly info.
@@ -31,6 +31,7 @@
     <Copyright>Copyright © 2020 Narvalo.Org</Copyright>
 
     <Title>An Option type for C#.</Title>
+    <Description>An Option type for C#.</Description>
 
     <PackageDescription>
       A rich Option type for C#.

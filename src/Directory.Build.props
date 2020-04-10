@@ -10,6 +10,7 @@
     <Product>Abc</Product>
     <Copyright>Copyright © 2020 Narvalo.Org</Copyright>
 
+    <!-- A fake version only used during development -->
     <VersionPrefix>1.0.0</VersionPrefix>
     <VersionSuffix>DUMMY</VersionSuffix>
   </PropertyGroup>

@@ -3,29 +3,24 @@ Developer Notes.
 vNEXT
 -----
 
-Version 1.0.0-alpha-3
+Version 1.0.0-alpha3
 - Add overloads w/ IEqualityComparer<T>? Maybe<T> == T?
 - Finish MaybeComparer<T>.
-- Testing is well underway but there is still a lot to be done.
 
 Version 1.0.0-beta1
 - Stable API.
 - FIXMEs and TODOs.
-- More functional tests.
 
 Towards version 1.0.0
 - README: some pub, compare to other option types.
-- NuGet package:
-  * Test published packages.
-  * Hide internals?
-  https://docs.microsoft.com/en-us/dotnet/core/packages
+- Testing is well underway but there is still a lot to be done.
+  We need more functional tests.
+- Test published packages.
   https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets
 
-Version 2
+Version ???
 - LINQ: optimize, more ops.
 - "monadic" LINQ. Output Maybe<IEnumerable<T>> and LINQ ops.
-
-Version ???
 - Utilities to write code in the ROP style (Railway Oriented Programming).
 - Extensions.
 - Async (configurable, enumerable).
@@ -34,7 +29,6 @@ TODOs
 -----
 
 See FIXME, TODO and REVIEW within the code.
-- code formatter w/ CopyrightHeader.txt
 - Multitargeting.
   * Tests.
   * .NET Standard 2.1 & .NET Core 3.1 only:

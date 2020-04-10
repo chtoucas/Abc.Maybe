@@ -13,6 +13,12 @@
     <!-- Include the symbols -->
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 
+    <!-- Semantic version -->
+    <BuildMetadata Condition=" '$(RepositoryCommit)' != '' ">$(RepositoryCommit.Substring(0, 7))</BuildMetadata>
+    <SemanticVersion>$(MajorVersion).$(MinorVersion).$(PatchVersion)</SemanticVersion>
+    <SemanticVersion Condition=" '$(PreReleaseLabel)' != '' ">$(SemanticVersion)-$(PreReleaseLabel)</SemanticVersion>
+    <SemanticVersion Condition=" '$(BuildMetadata)' != '' ">$(SemanticVersion)+$(BuildMetadata)</SemanticVersion>
+
     <!-- Package.
       Override the dummy version set within Directory.Build.props.
       https://docs.microsoft.com/en-gb/dotnet/standard/library-guidance/versioning
@@ -20,14 +26,18 @@
     <!-- Discard warning NU5105 (SemVer 1.0) -->
     <NoWarn>$(NoWarn);NU5105</NoWarn>
     <VersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</VersionPrefix>
-    <VersionSuffix>$(PreReleaseLabel.Replace('.', '-'))</VersionSuffix>
+    <VersionSuffix>$(PreReleaseLabel)</VersionSuffix>
 
     <!-- Assembly.
       To reduce binding redirects we only include the major & minor parts.
-      We re-use the title, it does not really matter since, to my knowledge,
-      there is no UI to read it. -->
+      Oddly the default behaviour is to use the assembly name (Abc.Maybe) for
+      AssemblyTitle, not Title.
+      -->
     <AssemblyVersion>$(MajorVersion).$(MinorVersion).0.0</AssemblyVersion>
-    <Description>$(Title)</Description>
+    <AssemblyTitle>$(Title)</AssemblyTitle>
+    <Description Condition=" '$(Description)' != '' ">$(Description) </Description>
+    <Description>$(Description)[$(Configuration) build on $([System.DateTime]::UtcNow.ToString("r"))]</Description>
+    <InformationalVersion>$(SemanticVersion)</InformationalVersion>
 
     <!-- Strong name the assembly.
       https://docs.microsoft.com/en-gb/dotnet/standard/library-guidance/strong-naming
@@ -40,10 +50,8 @@
   </PropertyGroup>
 
   <!-- This target must run very early (before Build is not enough) -->
-  <Target Name="SetBuildInfo" BeforeTargets="GetAssemblyAttributes">
-    <Message Text="Adding build info to the assembly." Importance="normal" />
-
-    <Warning Text="The commit hash is empty." Condition=" '$(RepositoryCommit)' == '' " />
+  <Target Name="SetFileVersion" BeforeTargets="GetAssemblyAttributes">
+    <Message Text="Setting assembly file version." Importance="normal" />
 
     <GenerateBuildAndRevisionNumbers>
       <Output TaskParameter="BuildNumber" PropertyName="_BuildNumber"/>
@@ -51,24 +59,7 @@
     </GenerateBuildAndRevisionNumbers>
 
     <PropertyGroup>
-      <_SemVer>$(MajorVersion).$(MinorVersion).$(PatchVersion)</_SemVer>
-      <_SemVer Condition=" '$(PreReleaseLabel)' != '' ">$(_SemVer)-$(PreReleaseLabel)</_SemVer>
-
-      <_BuildMetadata>$(Configuration).$(Platform)</_BuildMetadata>
-      <_BuildMetadata Condition=" '$(Platform)|$(Prefer32Bit)' == 'AnyCPU|true' ">$(_BuildMetadata).32BitPref</_BuildMetadata>
-      <_BuildMetadata Condition=" '$(RepositoryCommit)' != '' ">$(_BuildMetadata).$(RepositoryCommit.Substring(0, 7))</_BuildMetadata>
-
-      <_SemVer>$(_SemVer)+$(_BuildMetadata)</_SemVer>
-    </PropertyGroup>
-
-    <PropertyGroup>
-      <!-- Remarks: Oddly the default behaviour is to use the assembly name
-        (Abc.Maybe) for AssemblyTitle. I want to include build infos. I would
-        have use Description for that but it does not show up in the Windows
-        properties dialog. -->
-      <AssemblyTitle>$(Title) [$(Configuration) build on $([System.DateTime]::UtcNow.ToString("r"))]</AssemblyTitle>
       <FileVersion>$(MajorVersion).$(MinorVersion).$(_BuildNumber).$(_RevisionNumber)</FileVersion>
-      <InformationalVersion>$(_SemVer)</InformationalVersion>
     </PropertyGroup>
   </Target>
 

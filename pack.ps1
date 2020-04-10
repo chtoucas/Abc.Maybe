@@ -45,8 +45,6 @@ function get-version([string] $proj) {
   $minor = $node | select -First 1 -ExpandProperty MinorVersion
   $patch = $node | select -First 1 -ExpandProperty PatchVersion
   $label = $node | select -First 1 -ExpandProperty PreReleaseLabel
-  # Temp patch the pre-release label (see Retail.props).
-  $label = $label -replace "\.", "-"
 
   "$major.$minor.$patch-$label"
 }
@@ -111,6 +109,7 @@ function run-pack([string] $projName, [switch] $force) {
   }
 
   $commit = get-commit -Force:$force.IsPresent
+  if ($commit -eq '') { carp "The commit hash is empty." }
 
   # Do NOT use --no-restore; netstandard2.1 is not currently enabled within the
   # proj file.
