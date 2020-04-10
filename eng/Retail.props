@@ -1,27 +1,47 @@
 <Project>
+
+  <!-- Versioning.
+    PackageVersion       = Major.Minor.Patch-PreReleaseLabel (SemVer 1.0)
+    AssemblyVersion      = Major.Minor.0.0
+    FileVersion          = Major.Minor.BuildNumber.RevisionNumber
+    InformationalVersion = Major.Minor.Patch-PreReleaseLabel+BuildMetadata (SemVer 2.0)
+    https://docs.microsoft.com/en-gb/dotnet/standard/library-guidance/versioning
+  -->
   <PropertyGroup>
     <MajorVersion>1</MajorVersion>
     <MinorVersion>0</MinorVersion>
     <PatchVersion>0</PatchVersion>
-    <!-- SemVer 1.0 for NuGet package (use - not . to separate alpha from a digit) -->
-    <PreReleaseLabel>alpha-2</PreReleaseLabel>
+    <!-- SemVer 2.0: use "." to separate alphas from digits.
+         Lexicographic ASCII sort order (digit < alpha). -->
+    <!-- TODO: when we reach 1.0.0-beta, update VersionSuffix: no longer
+         replace "." by "-" in Retail.targets & in pack.ps1 (get-version). -->
+    <PreReleaseLabel>alpha.2</PreReleaseLabel>
   </PropertyGroup>
 
-  <!-- https://docs.microsoft.com/en-us/dotnet/core/tools/csproj#nuget-metadata-properties -->
-
+  <!-- Package metadata & assembly info.
+    https://docs.microsoft.com/en-us/dotnet/core/tools/csproj#nuget-metadata-properties
+    https://docs.microsoft.com/en-us/dotnet/core/tools/csproj#assemblyinfo-properties
+  -->
   <PropertyGroup>
-    <Description>
+    <!-- Also defined in Directory.Build.props which is loaded before -->
+    <Authors>Chtoucas</Authors>
+    <Company>Narvalo.Org</Company>
+    <Product>Abc</Product>
+    <Copyright>Copyright © 2020 Narvalo.Org</Copyright>
+
+    <Title>An Option type for C#.</Title>
+    <Description>A rich Option type for C#.</Description>
+    <PackageDescription>
       A rich Option type for C#.
-    </Description>
+    </PackageDescription>
+    <PackageTags>Option;Maybe;LINQ;ROP;Railway;Monad</PackageTags>
 
     <PackageProjectUrl>https://github.com/chtoucas/Abc.Maybe/</PackageProjectUrl>
     <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
     <PackageReleaseNotes>See CHANGELOG in project root.</PackageReleaseNotes>
-    <PackageTags>Option;Maybe;LINQ;ROP;Railway;Monad</PackageTags>
-  </PropertyGroup>
 
-  <PropertyGroup>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/chtoucas/Abc.Maybe/</RepositoryUrl>
   </PropertyGroup>
+
 </Project>

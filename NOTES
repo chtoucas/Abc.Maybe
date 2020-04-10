@@ -15,22 +15,18 @@ Version 1.0.0-beta1
 
 Towards version 1.0.0
 - README: some pub, compare to other option types.
-- Infra
-  * Versioning (MSBuild tool), NetStandardImplicitPackageVersion
+- NuGet package:
+  * Test published packages.
+  * SourceLink?
+    https://github.com/NuGet/Home/issues/4142
+  * Improve packaging.
+    Hide internals?
+    Deterministic, ContinuousIntegrationBuild, AssemblyTitle.
+    NetStandardImplicitPackageVersion
+    Git commit hash (SourceLink, InformationalVersion).
     https://docs.microsoft.com/en-us/dotnet/core/packages
-  * Assembly version. Prefer32 in informational version (see coreflags) ?
-    MUST be done before the final release.
-    https://github.com/dotnet/runtime/blob/master/docs/project/strong-name-signing.md
-    https://docs.microsoft.com/en-gb/dotnet/standard/library-guidance/strong-naming
-  * NuGet package:
-    - Test published packages.
-    - SourceLink?
-      https://github.com/NuGet/Home/issues/4142
-    - Improve package info: description & co.
-      Deterministic, ContinuousIntegrationBuild, Title, AssemblyTitle,
-      VersionPrefix, PackageLicenseFile.
-      https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets
-      https://blog.paranoidcoding.com/2016/04/05/deterministic-builds-in-roslyn.html
+    https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets
+    https://blog.paranoidcoding.com/2016/04/05/deterministic-builds-in-roslyn.html
 
 Version 2
 - LINQ: optimize, more ops.
@@ -84,7 +80,7 @@ Async:
 Release Process
 ---------------
 
-Version
+Version (update Retail.props)
 
 API, update the files PublicAPI.Shipped.txt & PublicAPI.Unshipped.txt.
 Obsolete member: move from Shipped to Unshipped and prefix w/ *REMOVED*.

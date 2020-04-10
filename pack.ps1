@@ -42,6 +42,8 @@ function get-version([string] $proj) {
   $minor = $node | select -First 1 -ExpandProperty MinorVersion
   $patch = $node | select -First 1 -ExpandProperty PatchVersion
   $label = $node | select -First 1 -ExpandProperty PreReleaseLabel
+  # Temp patch the pre-release label (see Retail.props).
+  $label = $label -replace "\.", "-"
 
   "$major.$minor.$patch-$label"
 }
