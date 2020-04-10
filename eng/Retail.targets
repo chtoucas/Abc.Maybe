@@ -35,6 +35,9 @@
   <Target Name="SetAssemblyInfo" BeforeTargets="GetAssemblyAttributes">
     <Message Text="Creating the assembly version file..." Importance="normal" />
 
+    <Warning Text="The git commit hash is empty."
+      Condition=" '$(GitCommitHash)' == '' " />
+
     <GenerateBuildAndRevisionNumbers>
       <Output TaskParameter="BuildNumber" PropertyName="_BuildNumber"/>
       <Output TaskParameter="RevisionNumber" PropertyName="_RevisionNumber"/>
