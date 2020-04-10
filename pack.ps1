@@ -14,6 +14,7 @@ Do NOT run the test suite.
 param(
   [Alias("c")] [switch] $Clean,
   [Alias("n")] [switch] $NoTest,
+  [Alias("f")] [switch] $Force,
   [Alias("h")] [switch] $Help
 )
 
@@ -21,6 +22,7 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 . (join-path $PSScriptRoot "eng\shared.ps1")
+. (join-path $PSScriptRoot "eng\git.ps1")
 
 "Release" | New-Variable -Name CONFIGURATION -Scope Script -Option Constant
 
@@ -31,6 +33,7 @@ function print-usage {
   say "Usage: pack.ps1 [switches]"
   say "  -c|-Clean    clean the solution before anything else."
   say "  -n|-NoTest   do NOT run the test suite."
+  say "  -f|-Force    force packaging even without a git commit hash -or- there are uncommited changes."
   say "  -h|-Help     print this help and exit.`n"
 }
 
@@ -46,6 +49,28 @@ function get-version([string] $proj) {
   $label = $label -replace "\.", "-"
 
   "$major.$minor.$patch-$label"
+}
+
+function get-commit([switch] $force) {
+  $git = Get-GitExe
+
+  if ($git -eq $null) {
+      carp "git.exe could not be found in your PATH. Please ensure git is installed."
+      return ""
+  }
+
+  $status = Get-GitStatus $git
+
+  if ($status -eq $null) {
+    carp "Unabled to verify the git status."
+    if (-not $force) { return "" }
+  }
+  elseif ($status -ne '') {
+    carp "Uncommitted changes are pending."
+    if (-not $force) { return "" }
+  }
+
+  Get-GitCommitHash $git
 }
 
 function run-clean {
@@ -64,7 +89,7 @@ function run-test {
   on-lastcmderr "Test task failed."
 }
 
-function run-pack([string] $projName) {
+function run-pack([string] $projName, [switch] $force) {
   say-loud "Packing."
 
   $version = get-version (join-path $ROOT_DIR "eng\Retail.props")
@@ -83,12 +108,15 @@ function run-pack([string] $projName) {
     }
   }
 
+  $commit = get-commit -Force:$force.IsPresent
+
   # Do NOT use --no-restore; netstandard2.1 is not currently enabled within the
   # proj file.
   & dotnet pack $proj -c $CONFIGURATION --nologo `
     --output $PKG_DIR `
     -p:TargetFrameworks='\"netstandard2.0;netstandard2.1;netcoreapp3.1\"' `
-    -p:Retail=true
+    -p:Retail=true `
+    -p:RepositoryCommit=$commit
 
   on-lastcmderr "Pack task failed."
 
@@ -109,7 +137,7 @@ try {
   if ($Clean) { run-clean }
   if (-not $NoTest) { run-test }
 
-  run-pack "Abc.Maybe"
+  run-pack "Abc.Maybe" -Force:$force.IsPresent
 }
 catch {
   croak ("An unexpected error occured: {0}." -f $_.Exception.Message) `
