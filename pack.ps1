@@ -106,6 +106,8 @@ function run-pack([string] $projName, [switch] $force) {
       if ($answer -eq "n") { exit 0 }
       $answer = read-host $question
     }
+
+    remove-item $pkg
   }
 
   $commit = get-commit -Force:$force.IsPresent
