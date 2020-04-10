@@ -19,6 +19,7 @@ Remarks:
   (UInt16.MaxValue - 1).
 
 Here I implement a slighty different algorithm:
+- We use it for AssemblyFileVersion not for AssemblyVersion.
 - Use UTC time.
 - The build number is the number of half-days since 2020-01-01 00:00:00 (minus
   one to start at zero).
