@@ -9,6 +9,9 @@
     <Company>Narvalo.Org</Company>
     <Product>Abc</Product>
     <Copyright>Copyright © 2020 Narvalo.Org</Copyright>
+
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <VersionSuffix>DUMMY</VersionSuffix>
   </PropertyGroup>
 
   <PropertyGroup>

@@ -14,6 +14,7 @@
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 
     <!-- Package Version.
+      Override the dummy version set within Directory.Build.props.
       https://docs.microsoft.com/en-gb/dotnet/standard/library-guidance/versioning
     -->
     <!-- Discard warning NU5105 (SemVer 1.0) -->
