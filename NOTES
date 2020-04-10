@@ -55,7 +55,8 @@ Operations:
 - XML comments with complete examples.
   https://github.com/dotnet/dotnet-api-docs/wiki
 - Perf tool (LINQ, nulls, iterable).
-- Move to coverlet-console? runsettings.
+- Replace coverlet.msbuild by to coverlet-console? runsettings.
+  Add coverlet.collector to the test project.
 - Coverity
 - Cleanup scripts, eg: dotnet nuget locals --clear all.
 - dotnet-outdated
