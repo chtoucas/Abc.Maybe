@@ -5,46 +5,62 @@ $ErrorActionPreference = "Stop"
 
 ################################################################################
 
-<#
-.SYNOPSIS
-  Get the path to the system git command.
-.INPUTS
-  None.
-.OUTPUTS
-  System.String. Get-GitExe returns a string that contains the path to the git
-  command or $null if git is nowhere to be found.
-#>
 function Get-GitExe {
   [CmdletBinding()]
-  param()
+  param([switch] $Force)
 
   Write-Verbose "Finding the installed git command."
 
   $git = (Get-Command "git.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue)
 
   if ($git -eq $null) {
+    Write-Warning "Git could not be found in your PATH. Please ensure Git is installed."
     return $null
   }
-  else {
-    return $git.Path
+
+  $exe = $git.Path
+
+  $status = Get-GitStatus $exe
+
+  if ($status -eq $null) {
+    Write-Warning "Unabled to verify the git status."
+    if (-not $Force) { return $null }
   }
+  elseif ($status -ne "") {
+    Write-Warning "Uncommitted changes are pending."
+    if (-not $Force) { return $null }
+  }
+
+  $exe
 }
 
-<#
-.SYNOPSIS
-  Get the last git commit hash of the local repository.
-.PARAMETER Git
-  Specifies the path to the Git executable.
-.PARAMETER Abbrev
-  If present, returns the abbreviated commit hash.
-.INPUTS
-  The path to the Git executable.
-.OUTPUTS
-  System.String. Get-GitCommitHash returns a string that contains the git
-  commit hash.
-.NOTES
-  If anything fails, returns an empty string.
-#>
+function Get-GitStatus {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+    [ValidateNotNullOrEmpty()]
+    [string] $Git
+  )
+
+  Write-Verbose "Getting the git status."
+
+  $status = $null
+
+  try {
+    Write-Debug "Calling git.exe status."
+    $status = & $git status -s 2>&1
+
+    if ($status -eq $null) {
+      $status = ""
+    }
+  }
+  catch {
+    Write-Warning "Git command failed: $_"
+  }
+
+  $status
+}
+
 function Get-GitCommitHash {
   [CmdletBinding()]
   param(
@@ -68,7 +84,7 @@ function Get-GitCommitHash {
 
   try {
     Write-Debug "Calling git.exe log."
-    $hash = . $git log -1 --format="$fmt" 2>&1
+    $hash = & $git log -1 --format="$fmt" 2>&1
   }
   catch {
     Write-Warning "Git command failed: $_"
@@ -77,19 +93,7 @@ function Get-GitCommitHash {
   $hash
 }
 
-<#
-.SYNOPSIS
-  Get the git status.
-.PARAMETER Git
-  Specifies the path to the Git executable.
-.INPUTS
-  The path to the Git executable.
-.OUTPUTS
-  System.String. Get-GitStatus returns a string that contains the git status.
-.NOTES
-  If anything fails, returns $null.
-#>
-function Get-GitStatus {
+function Get-GitBranch {
   [CmdletBinding()]
   param(
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
@@ -97,23 +101,19 @@ function Get-GitStatus {
     [string] $Git
   )
 
-  Write-Verbose "Getting the git status."
+  Write-Verbose "Getting the git branch."
 
-  $status = $null
+  $branch = ""
 
   try {
-    Write-Debug "Calling git.exe status."
-    $status = . $git status -s 2>&1
-
-    if ($status -eq $null) {
-      $status = ""
-    }
+    Write-Debug "Calling git.exe rev-parse."
+    $branch = & $git rev-parse --abbrev-ref HEAD 2>&1
   }
   catch {
     Write-Warning "Git command failed: $_"
   }
 
-  $status
+  $branch
 }
 
 ################################################################################

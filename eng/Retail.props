@@ -1,11 +1,11 @@
 <Project>
 
   <!-- Versioning.
-    PackageVersion       = Major.Minor.Patch-PreReleaseLabel
     AssemblyVersion      = Major.Minor.0.0
-    FileVersion          = Major.Minor.BuildNumber.RevisionNumber
+    PackageVersion       = Major.Minor.Patch-PreReleaseLabel
     InformationalVersion = Major.Minor.Patch-PreReleaseLabel+BuildMetadata
-    NB: BuildNumber, RevisionNumber and BuildMetadata are automatically generated.
+    FileVersion          = Major.Minor.BuildNumber.RevisionNumber
+    NB: BuildMetadata, BuildNumber and RevisionNumber are automatically generated.
     https://docs.microsoft.com/en-gb/dotnet/standard/library-guidance/versioning
   -->
   <PropertyGroup>
@@ -31,7 +31,6 @@
     <Copyright>Copyright © 2020 Narvalo.Org</Copyright>
 
     <Title>An Option type for C#.</Title>
-    <Description>An Option type for C#.</Description>
 
     <PackageDescription>
       A rich Option type for C#.

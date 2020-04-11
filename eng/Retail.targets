@@ -1,4 +1,4 @@
-<Project>
+<Project InitialTargets="__CheckRetailTargets">
 
   <Import Project="$(MSBuildThisFileDirectory)Retail.tasks" />
   <Import Project="$(MSBuildThisFileDirectory)Retail.props" />
@@ -35,18 +35,8 @@
       -->
     <AssemblyVersion>$(MajorVersion).$(MinorVersion).0.0</AssemblyVersion>
     <AssemblyTitle>$(Title)</AssemblyTitle>
-    <Description Condition=" '$(Description)' != '' ">$(Description) </Description>
-    <Description>$(Description)[$(Configuration) build on $([System.DateTime]::UtcNow.ToString("r"))]</Description>
+    <Description>$(Title) Built [$([System.DateTime]::UtcNow.ToString("r"))].</Description>
     <InformationalVersion>$(SemanticVersion)</InformationalVersion>
-
-    <!-- Strong name the assembly.
-      https://docs.microsoft.com/en-gb/dotnet/standard/library-guidance/strong-naming
-      https://github.com/dotnet/runtime/blob/master/docs/project/strong-name-signing.md
-    -->
-    <SignAssembly>true</SignAssembly>
-    <DefineConstants>$(DefineConstants);SIGNED_ASSEMBLY</DefineConstants>
-    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Maybe.snk</AssemblyOriginatorKeyFile>
-    <DelaySign>false</DelaySign>
   </PropertyGroup>
 
   <!-- This target must run very early (before Build is not enough) -->
@@ -61,6 +51,12 @@
     <PropertyGroup>
       <FileVersion>$(MajorVersion).$(MinorVersion).$(_BuildNumber).$(_RevisionNumber)</FileVersion>
     </PropertyGroup>
+  </Target>
+
+  <Target Name="__CheckRetailTargets">
+    <Error Text="Retail builds MUST be strong named."
+           Condition=" $(SignAssembly) != 'true' "
+           ContinueOnError="false" />
   </Target>
 
 </Project>

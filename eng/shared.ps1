@@ -100,7 +100,7 @@ function croak {
   # write-error).
   write-host $Message -BackgroundColor Red -ForegroundColor Yellow
 
-  if ($StackTrace -ne '') { write-host $StackTrace -ForegroundColor Yellow }
+  if ($StackTrace -ne "") { write-host $StackTrace -ForegroundColor Yellow }
   exit 1
 }
 

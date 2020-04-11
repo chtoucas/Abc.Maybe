@@ -49,32 +49,10 @@ function get-version([string] $proj) {
   "$major.$minor.$patch-$label"
 }
 
-function get-commit([switch] $force) {
-  $git = Get-GitExe
-
-  if ($git -eq $null) {
-      carp "git.exe could not be found in your PATH. Please ensure git is installed."
-      return ""
-  }
-
-  $status = Get-GitStatus $git
-
-  if ($status -eq $null) {
-    carp "Unabled to verify the git status."
-    if (-not $force) { return "" }
-  }
-  elseif ($status -ne '') {
-    carp "Uncommitted changes are pending."
-    if (-not $force) { return "" }
-  }
-
-  Get-GitCommitHash $git
-}
-
 function run-clean {
   say-loud "Cleaning."
 
-  & dotnet clean -c $CONFIGURATION -v minimal --nologo
+  & dotnet clean -c $CONFIGURATION -v minimal --nologo -p:Retail=true
 
   on-lastcmderr "Clean task failed."
 }
@@ -82,7 +60,7 @@ function run-clean {
 function run-test {
   say-loud "Testing."
 
-  & dotnet test -c $CONFIGURATION -v minimal --nologo
+  & dotnet test -c $CONFIGURATION -v minimal --nologo -p:Retail=true
 
   on-lastcmderr "Test task failed."
 }
@@ -108,8 +86,16 @@ function run-pack([string] $projName, [switch] $force) {
     remove-item $pkg
   }
 
-  $commit = get-commit -Force:$force.IsPresent
-  if ($commit -eq '') { carp "The commit hash is empty." }
+  # Find commit hash and branch.
+  $commit = ""
+  $branch = ""
+  $git = Get-GitExe -Force:$force.IsPresent
+  if ($git -ne $null) {
+    $commit = Get-GitCommitHash $git
+    $branch = Get-GitBranch $git
+  }
+  if ($commit -eq "") { carp "The commit hash will be empty." }
+  if ($branch -eq "") { carp "The branch name will be empty." }
 
   # Do NOT use --no-restore; netstandard2.1 is not currently enabled within the
   # proj file.
@@ -117,7 +103,8 @@ function run-pack([string] $projName, [switch] $force) {
     --output $PKG_DIR `
     -p:TargetFrameworks='\"netstandard2.0;netstandard2.1;netcoreapp3.1\"' `
     -p:Retail=true `
-    -p:RepositoryCommit=$commit
+    -p:RepositoryCommit=$commit `
+    -p:RepositoryBranch=$branch
 
   on-lastcmderr "Pack task failed."
 
