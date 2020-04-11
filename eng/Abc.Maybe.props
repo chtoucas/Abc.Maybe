@@ -15,8 +15,16 @@
     <Title>An Option Type for C#.</Title>
 
     <PackageDescription>
-      Provides an Option type and companion helpers (parsing, LINQ).
+      Provides an Option type with companion helpers (parsing, LINQ).
+
+      An Option type, aka a Maybe type, allows to represent objects that are
+      either something (a value) or nothing. It differs from a nullable in that
+      it applies to both value types and reference types.
+
+      Nullable Reference Types (NRT) do not count since they are not actual
+      .NET types but annotations that are ignored at runtime.
     </PackageDescription>
+
     <PackageTags>Option;Maybe;LINQ;ROP;Railway;Monad</PackageTags>
   </PropertyGroup>
 

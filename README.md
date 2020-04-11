@@ -34,7 +34,7 @@ Quick Start
   * [More](#more)
   * [Samples](#samples)
 
-An option type, aka maybe type (a better fit for what we use it for), is like
+An option type, aka a maybe type (a better fit for what we use it for), is like
 a box containing a value or no value at all.
 
 (TODO: _improve what follows_)
