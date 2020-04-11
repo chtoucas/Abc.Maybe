@@ -1,14 +1,15 @@
 ﻿// See LICENSE in the project root for license information.
 
 using System;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: CLSCompliant(true)]
 [assembly: ComVisible(false)]
 
+#if !NO_INTERNALS_VISIBLE_TO
+
 // Only Abc.Testing gets access to internals, the actual test project does NOT.
-[assembly: InternalsVisibleTo("Abc.Testing" + Abc.AssemblyInfo.PublicKeySuffix)]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Abc.Testing" + Abc.AssemblyInfo.PublicKeySuffix)]
 
 namespace Abc
 {
@@ -19,7 +20,7 @@ namespace Abc
     {
         /// <summary>
         /// Gets the public key suffix suitable for use with
-        /// <see cref="InternalsVisibleToAttribute"/>.
+        /// <see cref="System.Runtime.CompilerServices.InternalsVisibleToAttribute"/>.
         /// </summary>
         public const string PublicKeySuffix =
 #if SIGNED_ASSEMBLY
@@ -34,3 +35,5 @@ namespace Abc
 #endif
     }
 }
+
+#endif

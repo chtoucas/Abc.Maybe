@@ -8,7 +8,7 @@
   <PropertyGroup>
     <Authors>Chtoucas</Authors>
     <Company>Narvalo.Org</Company>
-    <Product>Abc Library</Product>
+    <Product>Abécédaire Library</Product>
     <Copyright>Copyright (c) 2020 Narvalo.Org.</Copyright>
 
     <PackageProjectUrl>https://github.com/chtoucas/Abc.Maybe/</PackageProjectUrl>

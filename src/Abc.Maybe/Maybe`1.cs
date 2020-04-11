@@ -211,6 +211,8 @@ namespace Abc
         /// Represents a debugger type proxy for <see cref="Maybe{T}"/>.
         /// </summary>
         [ExcludeFromCodeCoverage]
+        // TODO: why CA1812 w/ NO_INTERNALS_VISIBLE_TO?
+        [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes")]
         private sealed class DebugView_
         {
             private readonly Maybe<T> _inner;
