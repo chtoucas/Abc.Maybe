@@ -83,6 +83,7 @@ function run-pack([string] $projName, [switch] $force) {
       $answer = read-host $question
     }
 
+    say "The old package file will be removed now."
     remove-item $pkg
   }
 
