@@ -1,0 +1,15 @@
+<Project>
+
+  <!-- Strong name the assembly.
+      This MUST be done rather late: Retail builds set SignAssembly to true only
+      after Directory.Build.props has been loaded.
+      https://docs.microsoft.com/en-gb/dotnet/standard/library-guidance/strong-naming
+      https://github.com/dotnet/runtime/blob/master/docs/project/strong-name-signing.md
+    -->
+  <PropertyGroup Condition=" $(SignAssembly) == 'true' ">
+    <DefineConstants>$(DefineConstants);SIGNED_ASSEMBLY</DefineConstants>
+    <AssemblyOriginatorKeyFile>$(EngRoot)Abc.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
+  </PropertyGroup>
+
+</Project>

@@ -6,10 +6,6 @@
 
   <PropertyGroup>
     <EngRoot>$(MSBuildThisFileDirectory)..\eng\</EngRoot>
-
-    <Retail Condition=" '$(Retail)' != 'true' ">false</Retail>
-    <!-- For retail builds, we unconditionally sign the assembly -->
-    <SignAssembly Condition=" '$(Retail)' == 'true' ">true</SignAssembly>
   </PropertyGroup>
 
   <!-- Package metadata & assembly info.
@@ -30,7 +26,8 @@
     <RepositoryUrl>https://github.com/chtoucas/Abc.Maybe/</RepositoryUrl>
 
     <!-- A fake version only used during development.
-      For Retail builds, the version is set within eng\$(AssemblyName).props. -->
+      For Retail builds, the version is set within eng\$(AssemblyName).props
+      which is loaded later on. -->
     <VersionPrefix>1.0.0</VersionPrefix>
     <VersionSuffix>DUMMY</VersionSuffix>
   </PropertyGroup>
@@ -61,16 +58,6 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-  </PropertyGroup>
-
-  <!-- Strong name the assembly.
-      https://docs.microsoft.com/en-gb/dotnet/standard/library-guidance/strong-naming
-      https://github.com/dotnet/runtime/blob/master/docs/project/strong-name-signing.md
-    -->
-  <PropertyGroup Condition=" $(SignAssembly) == 'true' ">
-    <DefineConstants>$(DefineConstants);SIGNED_ASSEMBLY</DefineConstants>
-    <AssemblyOriginatorKeyFile>$(EngRoot)Abc.snk</AssemblyOriginatorKeyFile>
-    <DelaySign>false</DelaySign>
   </PropertyGroup>
 
 </Project>

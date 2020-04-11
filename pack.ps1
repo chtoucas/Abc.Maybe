@@ -60,6 +60,8 @@ function run-clean {
 function run-test {
   say-loud "Testing."
 
+  # SignAssembly is not necessary but I want to check that InternalsVisibleTo
+  # works as expected.
   & dotnet test -c $CONFIGURATION -v minimal --nologo -p:SignAssembly=true
 
   on-lastcmderr "Test task failed."
@@ -98,14 +100,16 @@ function run-pack([string] $projName, [switch] $force) {
   if ($commit -eq "") { carp "The commit hash will be empty." }
   if ($branch -eq "") { carp "The branch name will be empty." }
 
-  # Do NOT use --no-restore; netstandard2.1 is not currently enabled within the
-  # proj file.
+  # Do NOT use --no-restore or --no-build; netstandard2.1 is not currently
+  # enabled within the proj file.
+  # Remove DebugType to add plain pdb's.
   & dotnet pack $proj -c $CONFIGURATION --nologo `
     --output $PKG_DIR `
     -p:TargetFrameworks='\"netstandard2.0;netstandard2.1;netcoreapp3.1\"' `
     -p:Retail=true `
     -p:RepositoryCommit=$commit `
-    -p:RepositoryBranch=$branch
+    -p:RepositoryBranch=$branch `
+    -p:DebugType=embedded
 
   on-lastcmderr "Pack task failed."
 

@@ -3,6 +3,9 @@
   <Import Project="$(MSBuildThisFileDirectory)Retail.tasks" />
 
   <PropertyGroup>
+    <!-- Unconditionally sign the assembly -->
+    <SignAssembly>true</SignAssembly>
+
     <!-- Deterministic build? Disabled as it seems to conflict with the fact
        that we change the assembly file version on every build.
        https://blog.paranoidcoding.com/2016/04/05/deterministic-builds-in-roslyn.html
@@ -10,11 +13,7 @@
     <!--<Deterministic>true</Deterministic>-->
 
     <!-- Include the symbols -->
-    <DebugType>embedded</DebugType>
-    <!--<EmbedAllSources>true</EmbedAllSources>-->
-    <!--<DebugType Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">full</DebugType>
-    <DebugType Condition=" '$(TargetFrameworkIdentifier)' != '.NETFramework' ">embedded</DebugType>-->
-    <!--<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>-->
+    <AllowedOutputExtensionsInPackageBuildOutputFolder Condition=" $(DebugType) != 'embedded' ">$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 
     <!-- Semantic version -->
     <BuildMetadata Condition=" '$(RepositoryCommit)' != '' ">$(RepositoryCommit.Substring(0, 7))</BuildMetadata>
@@ -56,15 +55,9 @@
   </Target>
 
   <Target Name="__CheckRetailTargets">
-    <Error Text="Retail builds MUST be strong named."
-           Condition=" $(SignAssembly) != 'true' " />
-
-    <Error Text="Property MajorVersion is empty."
-           Condition=" $(MajorVersion) == '' " />
-    <Error Text="Property MinorVersion is empty."
-           Condition=" $(MinorVersion) == '' " />
-    <Error Text="Property PatchVersion is empty."
-           Condition=" $(PatchVersion) == '' " />
+    <Error Text="Property MajorVersion is empty." Condition=" $(MajorVersion) == '' " />
+    <Error Text="Property MinorVersion is empty." Condition=" $(MinorVersion) == '' " />
+    <Error Text="Property PatchVersion is empty." Condition=" $(PatchVersion) == '' " />
   </Target>
 
 </Project>

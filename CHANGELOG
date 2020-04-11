@@ -5,7 +5,7 @@ vNEXT
 
 Changed
 - MaybeComparer<T>, complete rewrite, optionally structural.
-- Strong-named public assembly.
+- Strong-name the public assembly.
 - Embed the debug symbols.
 
 Internals
