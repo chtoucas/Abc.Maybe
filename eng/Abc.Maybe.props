@@ -1,27 +1,17 @@
 <Project>
 
-  <!-- Versioning.
-    AssemblyVersion      = Major.Minor.0.0
-    PackageVersion       = Major.Minor.Patch-PreReleaseLabel
-    InformationalVersion = Major.Minor.Patch-PreReleaseLabel+BuildMetadata
-    FileVersion          = Major.Minor.BuildNumber.RevisionNumber
-    NB: BuildMetadata, BuildNumber and RevisionNumber are automatically generated.
-    https://docs.microsoft.com/en-gb/dotnet/standard/library-guidance/versioning
-  -->
+  <!-- See also Directory.Build.props which is loaded before this file -->
   <PropertyGroup>
     <MajorVersion>1</MajorVersion>
     <MinorVersion>0</MinorVersion>
     <PatchVersion>0</PatchVersion>
-    <!-- Format: (alpha|beta|rc)[1-9][0-9]?
-      Do not use "." or "-" to separate alphas from digits. Examples:
+    <!--
+      Format: (alpha|beta|rc)[1-9][0-9]?
+      Do not use "." or "-" to separate alphas from digits.
       alpha1 < alpha2 < ... < alpha11 < ...< beta1 < ... < rc1 < ...
     -->
-    <PreReleaseLabel>alpha2</PreReleaseLabel>
-  </PropertyGroup>
+    <PreReleaseTag>alpha2</PreReleaseTag>
 
-  <!-- Package metadata & assembly info.
-    See also Directory.Build.props which is loaded before this file. -->
-  <PropertyGroup>
     <Title>An Option Type for C#.</Title>
 
     <PackageDescription>

@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
 
     <!--
-      CA1303      Do not pass literals as localized parameters
+      CA1303  Do not pass literals as localized parameters
     -->
     <NoWarn>$(NoWarn);CA1303</NoWarn>
 

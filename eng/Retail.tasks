@@ -5,34 +5,36 @@
   </PropertyGroup>
 
   <!--
-The algorithm used by .NET to auto-increment the assembly version is as follows:
-- The default build number increments daily.
-- The default revision number is the number of seconds since midnight local time
-  (without taking into account time zone adjustments for daylight saving time),
-  divided by 2.
-See https://docs.microsoft.com/en-us/dotnet/api/system.reflection.assemblyversionattribute?view=netframework-4.8
+    The algorithm used by .NET to auto-increment the assembly version is as
+    follows:
+    - The default build number increments daily.
+    - The default revision number is the number of seconds since midnight local
+      time (without taking into account time zone adjustments for daylight
+      saving time), divided by 2.
 
-Remarks:
-- This feature is only available to AssemblyVersion, not to AssemblyFileVersion.
-- During the same day, two builds may end up with the same assembly version.
-- Build and revision numbers must be less than or equal to 65534
-  (UInt16.MaxValue - 1).
+    Remarks:
+    - This feature is only available to AssemblyVersion, not to
+      AssemblyFileVersion.
+    - During the same day, two builds may end up with the same assembly version.
+    - Build and revision numbers must be less than or equal to 65534
+      (UInt16.MaxValue - 1).
 
-Here I implement a slighty different algorithm:
-- We use it for AssemblyFileVersion not for AssemblyVersion.
-- Use UTC time.
-- The build number is the number of half-days since 2020-01-01 00:00:00 (minus
-  one to start at zero).
-- The revision number is the number of seconds since midnight in the morning and
-  since midday in the afternoon.
+    Here we implement a slighty different algorithm:
+    - We use it for AssemblyFileVersion not for AssemblyVersion.
+    - Use UTC time.
+    - The build number is the number of half-days since 2020-01-01 00:00:00
+      (minus one to start at zero).
+    - The revision number is the number of seconds since midnight in the morning
+      and since midday in the afternoon.
 
-This way, there is less chance of getting the same numbers during a single day
-on the same build machine. The scheme will break in approximately 89 years...
+    This way, there is less chance of getting the same numbers during a single
+    day on the same build machine. The scheme will break in approximately 89
+    years...
 
-Worth reminding, if we used a scheme that simply incremented the build numbers,
-we would generate a lot of unecessary holes in the sequence. Indeed due to
-incremental batching a build might not do anything. That's a good reason to use
-an algorithm depending only on the date and the time.
+    Worth reminding, if we used a scheme that simply incremented the build
+    numbers, we would generate a lot of unecessary holes in the sequence. Indeed
+    due to incremental batching a build might not do anything. That's a good
+    reason to use an algorithm depending only on the date and the time.
   -->
   <UsingTask TaskName="GenerateBuildAndRevisionNumbers"
              TaskFactory="RoslynCodeTaskFactory"

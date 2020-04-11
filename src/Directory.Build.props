@@ -1,17 +1,10 @@
 <Project>
-  <!--
-    Common properties for all projects.
-    See https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2019
-  -->
 
   <PropertyGroup>
     <EngRoot>$(MSBuildThisFileDirectory)..\eng\</EngRoot>
   </PropertyGroup>
 
-  <!-- Package metadata & assembly info.
-    https://docs.microsoft.com/en-us/dotnet/core/tools/csproj#nuget-metadata-properties
-    https://docs.microsoft.com/en-us/dotnet/core/tools/csproj#assemblyinfo-properties
-  -->
+  <!-- Package metadata & assembly info -->
   <PropertyGroup>
     <Authors>Chtoucas</Authors>
     <Company>Narvalo.Org</Company>
@@ -24,25 +17,17 @@
 
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/chtoucas/Abc.Maybe/</RepositoryUrl>
-
-    <!-- A fake version only used during development.
-      For Retail builds, the version is set within eng\$(AssemblyName).props
-      which is loaded later on. -->
-    <VersionPrefix>1.0.0</VersionPrefix>
-    <VersionSuffix>DUMMY</VersionSuffix>
   </PropertyGroup>
 
+  <!-- Common MSBuild project options -->
   <PropertyGroup>
     <RootNamespace>Abc</RootNamespace>
 
     <LangVersion>latest</LangVersion>
-    <!--<LangVersion>8.0</LangVersion>-->
 
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <!-- Analyzers by Microsoft -->
-    <Features>$(Features);flow-analysis</Features>
 
     <!-- CONTRACTS_FULL is necessary to enable the attribute Pure -->
     <DefineConstants>$(DefineConstants);TRACE;CONTRACTS_FULL</DefineConstants>
@@ -51,8 +36,12 @@
     <!--<DefineConstants>$(DefineConstants);PURE_MAYBE</DefineConstants>-->
     <!--<DefineConstants>$(DefineConstants);PLAIN_LINQ</DefineConstants>-->
 
-    <!-- Disable warnings when using a preview version of .NET Core -->
-    <SuppressNETCoreSdkPreviewMessage Condition=" '$(_NETCoreSdkIsPreview)' == 'true' ">true</SuppressNETCoreSdkPreviewMessage>
+    <!--
+      Fake version only used during development. For Retail builds, the
+      version is set within eng\$(AssemblyName).props which is loaded after.
+    -->
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <VersionSuffix>DUMMY</VersionSuffix>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

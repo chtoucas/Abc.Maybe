@@ -3,45 +3,36 @@
   <Import Project="$(MSBuildThisFileDirectory)Retail.tasks" />
 
   <PropertyGroup>
-    <!-- Unconditionally sign the assembly -->
+    <!-- Sign the assembly and add debug symbols -->
     <SignAssembly>true</SignAssembly>
-
-    <!-- Deterministic build? Disabled as it seems to conflict with the fact
-       that we change the assembly file version on every build.
-       https://blog.paranoidcoding.com/2016/04/05/deterministic-builds-in-roslyn.html
-      -->
-    <!--<Deterministic>true</Deterministic>-->
-
-    <!-- Include the symbols -->
     <AllowedOutputExtensionsInPackageBuildOutputFolder Condition=" $(DebugType) != 'embedded' ">$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 
-    <!-- Semantic version -->
-    <BuildMetadata Condition=" '$(RepositoryCommit)' != '' ">$(RepositoryCommit.Substring(0, 7))</BuildMetadata>
-    <SemanticVersion>$(MajorVersion).$(MinorVersion).$(PatchVersion)</SemanticVersion>
-    <SemanticVersion Condition=" '$(PreReleaseLabel)' != '' ">$(SemanticVersion)-$(PreReleaseLabel)</SemanticVersion>
-    <SemanticVersion Condition=" '$(BuildMetadata)' != '' ">$(SemanticVersion)+$(BuildMetadata)</SemanticVersion>
-
-    <!-- Package.
-      Override the dummy version set within Directory.Build.props.
-      https://docs.microsoft.com/en-gb/dotnet/standard/library-guidance/versioning
-    -->
-    <!-- Discard warning NU5105 (SemVer 1.0) -->
-    <NoWarn>$(NoWarn);NU5105</NoWarn>
-    <VersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</VersionPrefix>
-    <VersionSuffix>$(PreReleaseLabel)</VersionSuffix>
-
-    <!-- Assembly.
-      To reduce binding redirects we only include the major & minor parts.
-      Oddly the default behaviour is to use AssemblyName for AssemblyTitle, not Title.
+    <!--
+      Versioning.
+        AssemblyVersion      = Major.Minor.0.0
+        PackageVersion       = Major.Minor.Patch-PreReleaseTag
+        InformationalVersion = Major.Minor.Patch-PreReleaseTag+BuildMetadata
+        FileVersion          = Major.Minor.BuildNumber.RevisionNumber
       -->
+    <BuildMetadata Condition=" '$(RepositoryCommit)' != '' ">$(RepositoryCommit.Substring(0, 7))</BuildMetadata>
+    <!-- Semantic version -->
+    <SemanticVersion>$(MajorVersion).$(MinorVersion).$(PatchVersion)</SemanticVersion>
+    <SemanticVersion Condition=" '$(PreReleaseTag)' != '' ">$(SemanticVersion)-$(PreReleaseTag)</SemanticVersion>
+    <SemanticVersion Condition=" '$(BuildMetadata)' != '' ">$(SemanticVersion)+$(BuildMetadata)</SemanticVersion>
+    <!-- Package version -->
+    <VersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</VersionPrefix>
+    <VersionSuffix>$(PreReleaseTag)</VersionSuffix>
+    <!-- Assembly version -->
     <AssemblyVersion>$(MajorVersion).$(MinorVersion).0.0</AssemblyVersion>
+    <InformationalVersion>$(SemanticVersion)</InformationalVersion>
+
+    <!-- Oddly, the default AssemblyTitle uses AssemblyName not Title -->
     <AssemblyTitle>$(Title)</AssemblyTitle>
     <Description>$(Title) Built [$([System.DateTime]::UtcNow.ToString("r"))].</Description>
-    <InformationalVersion>$(SemanticVersion)</InformationalVersion>
   </PropertyGroup>
 
   <!-- This target must run very early (before Build is not enough) -->
-  <Target Name="SetFileVersion" BeforeTargets="GetAssemblyAttributes">
+  <Target Name="SetAssemblyFileVersion" BeforeTargets="GetAssemblyAttributes">
     <Message Text="Setting assembly file version." Importance="normal" />
 
     <GenerateBuildAndRevisionNumbers>

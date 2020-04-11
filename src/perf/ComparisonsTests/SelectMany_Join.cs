@@ -1,10 +1,8 @@
 ﻿// See LICENSE in the project root for license information.
 
-namespace PerfTool.Comparisons
+namespace Abc.ComparisonsTests
 {
     using System;
-
-    using Abc;
 
     using BenchmarkDotNet.Attributes;
 

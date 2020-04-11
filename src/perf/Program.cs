@@ -1,6 +1,6 @@
 ﻿// See LICENSE in the project root for license information.
 
-namespace PerfTool
+namespace Abc
 {
     using System;
     using System.Collections.Generic;
@@ -35,7 +35,7 @@ namespace PerfTool
                 //.With(new EtwProfiler())
                 ;
 
-            BenchmarkRunner.Run<Comparisons.SelectMany_Join>(config);
+            BenchmarkRunner.Run<ComparisonsTests.SelectMany_Join>(config);
         }
 #endif
 

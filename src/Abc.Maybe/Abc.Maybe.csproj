@@ -1,12 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- The first listed framework is the one used by the VS editor.
+    <!--
+      The first listed framework is the one used by the VS editor.
       Full NRT-analysis requires .NET Core 3.0 or above, .NET Standard does
       not include the nullable annotations (version 2.1 defines the nullable
       attributes but don't use them if I understand things correctly).
       We use the version 3.1 instead of 3.0 because the former is LTS and the
-      latter is already EOL. -->
+      latter is already EOL.
+    -->
     <TargetFrameworks>netcoreapp3.1;netstandard2.0</TargetFrameworks>
 
     <Retail Condition=" '$(Retail)' != 'true' ">false</Retail>
@@ -22,9 +24,9 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <!--
-      RS0016      Symbol XXX is not part of the declared API
-      RS0017      Symbol XXX is part of the declared API, but is either not public
-                  or could not be found
+      RS0016  Symbol XXX is not part of the declared API
+      RS0017  Symbol XXX is part of the declared API, but is either not public
+              or could not be found
     -->
     <NoWarn>$(NoWarn);RS0016;RS0017</NoWarn>
   </PropertyGroup>

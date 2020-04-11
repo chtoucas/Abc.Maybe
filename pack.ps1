@@ -44,9 +44,9 @@ function get-version([string] $proj) {
   $major = $node | select -First 1 -ExpandProperty MajorVersion
   $minor = $node | select -First 1 -ExpandProperty MinorVersion
   $patch = $node | select -First 1 -ExpandProperty PatchVersion
-  $label = $node | select -First 1 -ExpandProperty PreReleaseLabel
+  $prere = $node | select -First 1 -ExpandProperty PreReleaseTag
 
-  "$major.$minor.$patch-$label"
+  "$major.$minor.$patch-$prere"
 }
 
 function run-clean {
