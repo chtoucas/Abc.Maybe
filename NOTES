@@ -15,7 +15,7 @@ Towards version 1.0.0
 - README: a bit of marketing, compare to other option types.
 - Testing is well underway but there is still a lot to be done.
   We need more functional tests.
-- Check published packages.
+- Check published packages (upgrade, debugging experience).
 - https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets
 
 Version ???

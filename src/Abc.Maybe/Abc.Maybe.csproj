@@ -14,6 +14,7 @@
     <!--<WarningsNotAsErrors>$(WarningsNotAsErrors);CS1591</WarningsNotAsErrors>-->
   </PropertyGroup>
 
+  <Import Project="$(EngRoot)$(AssemblyName).props" Condition=" '$(Retail)' == 'true' " />
   <Import Project="$(EngRoot)Retail.targets" Condition=" '$(Retail)' == 'true' " />
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">

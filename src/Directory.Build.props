@@ -12,13 +12,25 @@
     <SignAssembly Condition=" '$(Retail)' == 'true' ">true</SignAssembly>
   </PropertyGroup>
 
-  <!-- For retail builds, these properties will be overriden by Retail.props -->
+  <!-- Package metadata & assembly info.
+    https://docs.microsoft.com/en-us/dotnet/core/tools/csproj#nuget-metadata-properties
+    https://docs.microsoft.com/en-us/dotnet/core/tools/csproj#assemblyinfo-properties
+  -->
   <PropertyGroup>
     <Authors>Chtoucas</Authors>
     <Company>Narvalo.Org</Company>
-    <Product>Abc</Product>
-    <Copyright>Copyright © 2020 Narvalo.Org</Copyright>
+    <Product>Abc Library</Product>
+    <Copyright>Copyright (c) 2020 Narvalo.Org.</Copyright>
 
+    <PackageProjectUrl>https://github.com/chtoucas/Abc.Maybe/</PackageProjectUrl>
+    <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
+    <PackageReleaseNotes>See CHANGELOG in project root.</PackageReleaseNotes>
+
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/chtoucas/Abc.Maybe/</RepositoryUrl>
+
+    <!-- A fake version only used during development.
+      For Retail builds, the version is set within eng\$(AssemblyName).props. -->
     <VersionPrefix>1.0.0</VersionPrefix>
     <VersionSuffix>DUMMY</VersionSuffix>
   </PropertyGroup>
@@ -57,7 +69,7 @@
     -->
   <PropertyGroup Condition=" $(SignAssembly) == 'true' ">
     <DefineConstants>$(DefineConstants);SIGNED_ASSEMBLY</DefineConstants>
-    <AssemblyOriginatorKeyFile>$(EngRoot)Maybe.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(EngRoot)Abc.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
 

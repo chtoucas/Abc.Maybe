@@ -20,29 +20,14 @@
   </PropertyGroup>
 
   <!-- Package metadata & assembly info.
-    https://docs.microsoft.com/en-us/dotnet/core/tools/csproj#nuget-metadata-properties
-    https://docs.microsoft.com/en-us/dotnet/core/tools/csproj#assemblyinfo-properties
-  -->
+    See also Directory.Build.props which is loaded before this file. -->
   <PropertyGroup>
-    <!-- See also Directory.Build.props which is loaded before this file -->
-    <Authors>Chtoucas</Authors>
-    <Company>Narvalo.Org</Company>
-    <Product>Abc</Product>
-    <Copyright>Copyright © 2020 Narvalo.Org</Copyright>
-
-    <Title>An Option type for C#.</Title>
+    <Title>An Option Type for C#.</Title>
 
     <PackageDescription>
-      A rich Option type for C#.
+      Provides an Option type and companion helpers (parsing, LINQ).
     </PackageDescription>
     <PackageTags>Option;Maybe;LINQ;ROP;Railway;Monad</PackageTags>
-
-    <PackageProjectUrl>https://github.com/chtoucas/Abc.Maybe/</PackageProjectUrl>
-    <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
-    <PackageReleaseNotes>See CHANGELOG in project root.</PackageReleaseNotes>
-
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/chtoucas/Abc.Maybe/</RepositoryUrl>
   </PropertyGroup>
 
 </Project>

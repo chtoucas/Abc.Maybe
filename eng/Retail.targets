@@ -1,7 +1,6 @@
 <Project InitialTargets="__CheckRetailTargets">
 
   <Import Project="$(MSBuildThisFileDirectory)Retail.tasks" />
-  <Import Project="$(MSBuildThisFileDirectory)Retail.props" />
 
   <PropertyGroup>
     <!-- Deterministic build? Disabled as it seems to conflict with the fact
@@ -11,7 +10,11 @@
     <!--<Deterministic>true</Deterministic>-->
 
     <!-- Include the symbols -->
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <DebugType>embedded</DebugType>
+    <!--<EmbedAllSources>true</EmbedAllSources>-->
+    <!--<DebugType Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">full</DebugType>
+    <DebugType Condition=" '$(TargetFrameworkIdentifier)' != '.NETFramework' ">embedded</DebugType>-->
+    <!--<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>-->
 
     <!-- Semantic version -->
     <BuildMetadata Condition=" '$(RepositoryCommit)' != '' ">$(RepositoryCommit.Substring(0, 7))</BuildMetadata>
@@ -30,8 +33,7 @@
 
     <!-- Assembly.
       To reduce binding redirects we only include the major & minor parts.
-      Oddly the default behaviour is to use the assembly name (Abc.Maybe) for
-      AssemblyTitle, not Title.
+      Oddly the default behaviour is to use AssemblyName for AssemblyTitle, not Title.
       -->
     <AssemblyVersion>$(MajorVersion).$(MinorVersion).0.0</AssemblyVersion>
     <AssemblyTitle>$(Title)</AssemblyTitle>
@@ -55,8 +57,14 @@
 
   <Target Name="__CheckRetailTargets">
     <Error Text="Retail builds MUST be strong named."
-           Condition=" $(SignAssembly) != 'true' "
-           ContinueOnError="false" />
+           Condition=" $(SignAssembly) != 'true' " />
+
+    <Error Text="Property MajorVersion is empty."
+           Condition=" $(MajorVersion) == '' " />
+    <Error Text="Property MinorVersion is empty."
+           Condition=" $(MinorVersion) == '' " />
+    <Error Text="Property PatchVersion is empty."
+           Condition=" $(PatchVersion) == '' " />
   </Target>
 
 </Project>

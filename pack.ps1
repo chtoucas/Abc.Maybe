@@ -52,7 +52,7 @@ function get-version([string] $proj) {
 function run-clean {
   say-loud "Cleaning."
 
-  & dotnet clean -c $CONFIGURATION -v minimal --nologo -p:Retail=true
+  & dotnet clean -c $CONFIGURATION -v minimal --nologo
 
   on-lastcmderr "Clean task failed."
 }
@@ -60,7 +60,7 @@ function run-clean {
 function run-test {
   say-loud "Testing."
 
-  & dotnet test -c $CONFIGURATION -v minimal --nologo -p:Retail=true
+  & dotnet test -c $CONFIGURATION -v minimal --nologo -p:SignAssembly=true
 
   on-lastcmderr "Test task failed."
 }
@@ -68,7 +68,7 @@ function run-test {
 function run-pack([string] $projName, [switch] $force) {
   say-loud "Packing."
 
-  $version = get-version (join-path $ROOT_DIR "eng\Retail.props")
+  $version = get-version (join-path $ROOT_DIR "eng\$projName.props")
 
   $proj = join-path $SRC_DIR $projName
   $pkg = join-path $PKG_DIR "$projName.$version.nupkg"
