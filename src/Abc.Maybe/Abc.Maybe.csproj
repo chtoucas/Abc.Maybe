@@ -12,23 +12,22 @@
     <TargetFrameworks>netcoreapp3.1;netstandard2.0</TargetFrameworks>
 
     <Retail Condition=" '$(Retail)' != 'true' ">false</Retail>
-
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);CS1591</NoWarn>
-    <!--<WarningsNotAsErrors>$(WarningsNotAsErrors);CS1591</WarningsNotAsErrors>-->
   </PropertyGroup>
 
   <Import Project="$(EngRoot)$(AssemblyName).props" Condition=" '$(Retail)' == 'true' " />
   <Import Project="$(EngRoot)Retail.targets" Condition=" '$(Retail)' == 'true' " />
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <!--<WarningsNotAsErrors>$(WarningsNotAsErrors);CS1591</WarningsNotAsErrors>-->
+
     <!--
       RS0016  Symbol XXX is not part of the declared API
       RS0017  Symbol XXX is part of the declared API, but is either not public
               or could not be found
     -->
-    <NoWarn>$(NoWarn);RS0016;RS0017</NoWarn>
+    <NoWarn>$(NoWarn);CS1591;RS0016;RS0017</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

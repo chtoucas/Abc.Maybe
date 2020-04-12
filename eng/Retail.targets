@@ -3,10 +3,11 @@
   <Import Project="$(MSBuildThisFileDirectory)Retail.tasks" />
 
   <PropertyGroup>
-    <!-- Sign the assembly, add debug symbols, hide internals -->
     <SignAssembly>true</SignAssembly>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder Condition=" $(DebugType) != 'embedded' ">$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <DefineConstants>$(DefineConstants);NO_INTERNALS_VISIBLE_TO</DefineConstants>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder
+      Condition=" $(DebugType) != 'embedded' ">$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 
     <!--
       Versioning.
