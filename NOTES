@@ -17,8 +17,6 @@ Towards version 1.0.0
   We need more functional tests.
 - Check published packages (upgrade, debugging experience).
 - https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets
-- Target net461 or older?
-  https://github.com/dotnet/announcements/issues/31
 
 Version ???
 - More May helpers w/ Span<T>.
@@ -32,6 +30,8 @@ TODOs
 -----
 
 See FIXME, TODO and REVIEW within the code.
+- Target net461 or older?
+  https://github.com/dotnet/announcements/issues/31
 - Multitargeting: .NET Standard 2.1 & .NET Core 3.1 only. Use System.HashCode.
   Use PlatformNotSupportedException for things that could be supported but
   are not actually.
@@ -49,11 +49,11 @@ See FIXME, TODO and REVIEW within the code.
   ContinuousIntegrationBuild.
   https://github.com/NuGet/Home/issues/4142
 
-Operations:
+Other tasks:
 - XML comments with complete examples.
   https://github.com/dotnet/dotnet-api-docs/wiki
 - Perf tool (LINQ, nulls, iterable).
-- Replace coverlet.msbuild by to coverlet-console? runsettings.
+- Replace coverlet.msbuild by coverlet-console? Use runsettings.
   Add coverlet.collector to the test project. Coverity?
 - Cleanup scripts, clean obj/bin, dotnet nuget locals --clear all.
 - Local tools: find updates, dotnet-outdated.
@@ -63,7 +63,7 @@ Operations:
 Release Process
 ---------------
 
-1. Version (update Retail.props).
+1. Version (update eng\Abc.Maybe.props).
 
 2. API, update the files PublicAPI.Shipped.txt & PublicAPI.Unshipped.txt.
    Obsolete member: move from Shipped to Unshipped and prefix w/ *REMOVED*.
