@@ -5,6 +5,7 @@ vNEXT
 
 Changed
 - MaybeComparer<T>, complete rewrite, optionally structural.
+- Apply attribute EditorBrowsable to methods reserved for advanced scenarios.
 - Strong-name the public assembly.
 - Embed the debug symbols.
 

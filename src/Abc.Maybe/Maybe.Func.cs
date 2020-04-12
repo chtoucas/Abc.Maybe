@@ -3,6 +3,7 @@
 namespace Abc
 {
     using System;
+    using System.ComponentModel;
     using System.Diagnostics.Contracts;
 
     using Anexn = System.ArgumentNullException;
@@ -126,6 +127,7 @@ namespace Abc
         #region Invoke()
 
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
         public static Maybe<TResult> Invoke<TSource, TResult>(
             this Maybe<Func<TSource, TResult>> @this,
             TSource value)
@@ -136,6 +138,7 @@ namespace Abc
         }
 
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
         public static Maybe<TResult> Invoke<T1, T2, TResult>(
             this Maybe<Func<T1, T2, TResult>> @this,
             T1 first,
@@ -146,6 +149,7 @@ namespace Abc
         }
 
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
         public static Maybe<TResult> Invoke<T1, T2, T3, TResult>(
             this Maybe<Func<T1, T2, T3, TResult>> @this,
             T1 first,
@@ -158,6 +162,7 @@ namespace Abc
         }
 
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
         public static Maybe<TResult> Invoke<T1, T2, T3, T4, TResult>(
             this Maybe<Func<T1, T2, T3, T4, TResult>> @this,
             T1 first,
@@ -171,6 +176,7 @@ namespace Abc
         }
 
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
         public static Maybe<TResult> Invoke<T1, T2, T3, T4, T5, TResult>(
             this Maybe<Func<T1, T2, T3, T4, T5, TResult>> @this,
             T1 first,
@@ -189,6 +195,7 @@ namespace Abc
         #region Apply()
 
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
         public static Maybe<TResult> Apply<TSource, TResult>(
             this Maybe<Func<TSource, TResult>> @this,
             Maybe<TSource> maybe)
@@ -200,6 +207,7 @@ namespace Abc
         }
 
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
         public static Maybe<TResult> Apply<T1, T2, TResult>(
             this Maybe<Func<T1, T2, TResult>> @this,
             Maybe<T1> first,
@@ -212,6 +220,7 @@ namespace Abc
         }
 
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
         public static Maybe<TResult> Apply<T1, T2, T3, TResult>(
             this Maybe<Func<T1, T2, T3, TResult>> @this,
             Maybe<T1> first,
@@ -225,6 +234,7 @@ namespace Abc
         }
 
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
         public static Maybe<TResult> Apply<T1, T2, T3, T4, TResult>(
             this Maybe<Func<T1, T2, T3, T4, TResult>> @this,
             Maybe<T1> first,
@@ -239,6 +249,7 @@ namespace Abc
         }
 
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
         public static Maybe<TResult> Apply<T1, T2, T3, T4, T5, TResult>(
             this Maybe<Func<T1, T2, T3, T4, T5, TResult>> @this,
             Maybe<T1> first,
