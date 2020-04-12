@@ -3,6 +3,9 @@ Changelog for Abc.
 vNEXT
 -----
 
+2020-04-12, version 1.0.0-alpha3
+---------------------------------
+
 Changed
 - MaybeComparer<T>, complete rewrite, optionally structural.
 - Apply attribute EditorBrowsable to methods reserved for advanced scenarios.

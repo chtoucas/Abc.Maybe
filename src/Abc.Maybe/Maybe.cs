@@ -11,7 +11,6 @@ namespace Abc
     using Anexn = System.ArgumentNullException;
 
     // REVIEW: Maybe extensions & helpers; see also MaybeEx in "Abc.Future".
-    // - add DebuggerBrowsableState.Never to both Of()?
     // - playing with the modifier "in". Currently only added to ext methods for
     //   Maybe<T> where T is a struct.
     // - Maybe<IEnumerable>; see CollectAny().

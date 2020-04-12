@@ -3,7 +3,7 @@ Developer Notes.
 vNEXT
 -----
 
-Version 1.0.0-alpha3
+Version 1.0.0-alpha4
 - Add overloads w/ IEqualityComparer<T>? Maybe<T> == T?
 - Finish MaybeComparer<T>.
 
@@ -25,6 +25,7 @@ Version ???
 - Utilities to write code in the ROP style (Railway Oriented Programming).
 - Extensions.
 - Async (configurable, enumerable).
+- Analyzer for Of().
 
 TODOs
 -----
@@ -65,10 +66,12 @@ Release Process
 
 1. Version (update eng\Abc.Maybe.props).
 
-2. API, update the files PublicAPI.Shipped.txt & PublicAPI.Unshipped.txt.
+2. Update CHANGELOG.
+
+3. API, update the files PublicAPI.Shipped.txt & PublicAPI.Unshipped.txt.
    Obsolete member: move from Shipped to Unshipped and prefix w/ *REMOVED*.
 
-3. Git Tag
+4. Git Tag
 
 Guidelines
 ----------
