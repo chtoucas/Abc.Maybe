@@ -10,7 +10,7 @@
       Do not use "." or "-" to separate alphas from digits.
       DEV1 < DEV2 < ... < DEV11 < ... < alpha1 < ... < beta1 < ... < rc1 < ...
     -->
-    <PreReleaseTag>alpha2</PreReleaseTag>
+    <PreReleaseTag>alpha3</PreReleaseTag>
 
     <Title>An Option Type for C#.</Title>
 
