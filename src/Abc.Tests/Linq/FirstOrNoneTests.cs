@@ -77,7 +77,7 @@ namespace Abc.Linq
         public static void FirstOrNone4()
         {
             int[] source = { 5 };
-            var expected = Maybe.Of(5);
+            var expected = Maybe.Some(5);
 
             Assert.IsAssignableFrom<IList<int>>(source);
             Assert.Equal(expected, source.FirstOrNone());
@@ -97,7 +97,7 @@ namespace Abc.Linq
         public static void FirstOrNone6()
         {
             string[] source = { "!@#$%^", null!, "C", "AAA", "", "Calling Twice", "SoS" };
-            var expected = Maybe.Of("!@#$%^");
+            var expected = Maybe.SomeOrNone("!@#$%^");
 
             Assert.IsAssignableFrom<IList<string>>(source);
             Assert.Equal(expected, source.FirstOrNone());
@@ -125,7 +125,7 @@ namespace Abc.Linq
         public static void FirstOrNone8()
         {
             IEnumerable<int> source = NumberRangeGuaranteedNotCollectionType(-5, 1);
-            var expected = Maybe.Of(-5);
+            var expected = Maybe.Some(-5);
 
             Assert.Null(source as IList<int>);
             Assert.Equal(expected, source.FirstOrNone());
@@ -135,7 +135,7 @@ namespace Abc.Linq
         public static void FirstOrNone9()
         {
             IEnumerable<int> source = NumberRangeGuaranteedNotCollectionType(3, 10);
-            var expected = Maybe.Of(3);
+            var expected = Maybe.Some(3);
 
             Assert.Null(source as IList<int>);
             Assert.Equal(expected, source.FirstOrNone());
@@ -156,7 +156,7 @@ namespace Abc.Linq
         {
             int[] source = { 4 };
             Func<int, bool> predicate = IsEven;
-            var expected = Maybe.Of(4);
+            var expected = Maybe.Some(4);
 
             Assert.Equal(expected, source.FirstOrNone(predicate));
         }
@@ -176,7 +176,7 @@ namespace Abc.Linq
         {
             int[] source = { 9, 5, 1, 3, 17, 21, 50 };
             Func<int, bool> predicate = IsEven;
-            var expected = Maybe.Of(50);
+            var expected = Maybe.Some(50);
 
             Assert.Equal(expected, source.FirstOrNone(predicate));
         }
@@ -186,7 +186,7 @@ namespace Abc.Linq
         {
             int[] source = { 3, 7, 10, 7, 9, 2, 11, 17, 13, 8 };
             Func<int, bool> predicate = IsEven;
-            var expected = Maybe.Of(10);
+            var expected = Maybe.Some(10);
 
             Assert.Equal(expected, source.FirstOrNone(predicate));
         }
@@ -196,7 +196,7 @@ namespace Abc.Linq
         {
             int[] source = { 3, 7, 10, 7, 9, 2, 11, 17, 13, 8 };
             Func<int, bool> predicate = IsEven;
-            var expected = Maybe.Of(10);
+            var expected = Maybe.Some(10);
 
             Assert.Equal(expected, source.RunOnce().FirstOrNone(predicate));
         }

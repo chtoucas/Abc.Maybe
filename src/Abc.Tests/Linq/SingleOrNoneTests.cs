@@ -64,7 +64,7 @@ namespace Abc.Linq
         public static void SingleOrNone4()
         {
             int[] source = { 4 };
-            var expected = Maybe.Of(4);
+            var expected = Maybe.Some(4);
 
             Assert.Equal(expected, source.SingleOrNone());
         }
@@ -92,7 +92,7 @@ namespace Abc.Linq
         public static void SingleOrNone7()
         {
             IEnumerable<int> source = RepeatedNumberGuaranteedNotCollectionType(-5, 1);
-            var expected = Maybe.Of(-5);
+            var expected = Maybe.Some(-5);
 
             Assert.Equal(expected, source.SingleOrNone());
         }
@@ -120,7 +120,7 @@ namespace Abc.Linq
         public static void SingleOrNone10()
         {
             int[] source = { 4 };
-            var expected = Maybe.Of(4);
+            var expected = Maybe.Some(4);
 
             Assert.Equal(expected, source.SingleOrNone(i => i % 2 == 0));
         }
@@ -147,7 +147,7 @@ namespace Abc.Linq
         public static void SingleOrNone13()
         {
             int[] source = { 3, 1, 7, 9, 13, 19, 20 };
-            var expected = Maybe.Of(20);
+            var expected = Maybe.Some(20);
 
             Assert.Equal(expected, source.SingleOrNone(i => i % 2 == 0));
         }
@@ -167,7 +167,7 @@ namespace Abc.Linq
         [InlineData(42, 100)]
         public static void SingleOrNone15(int target, int range)
         {
-            var expected = Maybe.Of(target);
+            var expected = Maybe.Some(target);
             Assert.Equal(expected, Enumerable.Range(0, range).SingleOrNone(i => i == target));
         }
 
@@ -176,7 +176,7 @@ namespace Abc.Linq
         [InlineData(42, 100)]
         public static void SingleOrNone16(int target, int range)
         {
-            var expected = Maybe.Of(target);
+            var expected = Maybe.Some(target);
             Assert.Equal(expected, Enumerable.Range(0, range).RunOnce().SingleOrNone(i => i == target));
         }
     }

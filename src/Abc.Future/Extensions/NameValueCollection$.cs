@@ -31,7 +31,7 @@ namespace Abc.Extensions
         {
             if (@this is null) { throw new ArgumentNullException(nameof(@this)); }
 
-            return Maybe.Of(@this.GetValues(name));
+            return Maybe.SomeOrNone(@this.GetValues(name));
         }
 
         [Pure]

@@ -19,14 +19,14 @@ namespace Abc.Linq
         {
             get
             {
-                yield return new object[] { NumberRangeGuaranteedNotCollectionType(9, 1), 0, Maybe.Of(9) };
-                yield return new object[] { NumberRangeGuaranteedNotCollectionType(9, 10), 9, Maybe.Of(18) };
-                yield return new object[] { NumberRangeGuaranteedNotCollectionType(-4, 10), 3, Maybe.Of(-1) };
+                yield return new object[] { NumberRangeGuaranteedNotCollectionType(9, 1), 0, Maybe.Some(9) };
+                yield return new object[] { NumberRangeGuaranteedNotCollectionType(9, 10), 9, Maybe.Some(18) };
+                yield return new object[] { NumberRangeGuaranteedNotCollectionType(-4, 10), 3, Maybe.Some(-1) };
 
                 yield return new object[] { new int[] { 1, 2, 3, 4 }, 4, Maybe<int>.None };
                 yield return new object[] { Array.Empty<int>(), 0, Maybe<int>.None };
-                yield return new object[] { new int[] { -4 }, 0, Maybe.Of(-4) };
-                yield return new object[] { new int[] { 9, 8, 0, -5, 10 }, 4, Maybe.Of(10) };
+                yield return new object[] { new int[] { -4 }, 0, Maybe.Some(-4) };
+                yield return new object[] { new int[] { 9, 8, 0, -5, 10 }, 4, Maybe.Some(10) };
 
                 yield return new object[] { NumberRangeGuaranteedNotCollectionType(-4, 5), -1, Maybe<int>.None };
                 yield return new object[] { NumberRangeGuaranteedNotCollectionType(5, 5), 5, Maybe<int>.None };
@@ -92,7 +92,7 @@ namespace Abc.Linq
             string[] source = { "a", "b", null!, "d", "e" };
 
             Assert.Equal(Maybe<string>.None, source.ElementAtOrNone(2));
-            Assert.Equal(Maybe.Of("d"), source.ElementAtOrNone(3));
+            Assert.Equal(Maybe.SomeOrNone("d"), source.ElementAtOrNone(3));
         }
     }
 }

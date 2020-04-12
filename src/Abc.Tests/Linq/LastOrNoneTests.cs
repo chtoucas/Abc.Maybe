@@ -75,7 +75,7 @@ namespace Abc.Linq
         public static void LastOrNone4()
         {
             int[] source = { 5 };
-            var expected = Maybe.Of(5);
+            var expected = Maybe.Some(5);
 
             Assert.IsAssignableFrom<IList<int>>(source);
             Assert.Equal(expected, source.LastOrNone());
@@ -95,7 +95,7 @@ namespace Abc.Linq
         public static void LastOrNone6()
         {
             string[] source = { "!@#$%^", "C", "AAA", "", "Calling Twice", null!, "SoS" };
-            var expected = Maybe.Of("SoS");
+            var expected = Maybe.SomeOrNone("SoS");
 
             Assert.IsAssignableFrom<IList<string>>(source);
             Assert.Equal(expected, source.LastOrNone());
@@ -123,7 +123,7 @@ namespace Abc.Linq
         public static void LastOrNone8()
         {
             IEnumerable<int> source = NumberRangeGuaranteedNotCollectionType(-5, 1);
-            var expected = Maybe.Of(-5);
+            var expected = Maybe.Some(-5);
 
             Assert.Null(source as IList<int>);
             Assert.Equal(expected, source.LastOrNone());
@@ -133,7 +133,7 @@ namespace Abc.Linq
         public static void LastOrNone9()
         {
             IEnumerable<int> source = NumberRangeGuaranteedNotCollectionType(3, 10);
-            var expected = Maybe.Of(12);
+            var expected = Maybe.Some(12);
 
             Assert.Null(source as IList<int>);
             Assert.Equal(expected, source.LastOrNone());
@@ -153,7 +153,7 @@ namespace Abc.Linq
         {
             int[] source = { 4 };
             Func<int, bool> predicate = IsEven;
-            var expected = Maybe.Of(4);
+            var expected = Maybe.Some(4);
 
             Assert.Equal(expected, source.LastOrNone(predicate));
         }
@@ -173,7 +173,7 @@ namespace Abc.Linq
         {
             int[] source = { 9, 5, 1, 3, 17, 21, 50 };
             Func<int, bool> predicate = IsEven;
-            var expected = Maybe.Of(50);
+            var expected = Maybe.Some(50);
 
             Assert.Equal(expected, source.LastOrNone(predicate));
         }
@@ -183,7 +183,7 @@ namespace Abc.Linq
         {
             int[] source = { 3, 7, 10, 7, 9, 2, 11, 18, 13, 9 };
             Func<int, bool> predicate = IsEven;
-            var expected = Maybe.Of(18);
+            var expected = Maybe.Some(18);
 
             Assert.Equal(expected, source.LastOrNone(predicate));
         }
@@ -193,7 +193,7 @@ namespace Abc.Linq
         {
             int[] source = { 3, 7, 10, 7, 9, 2, 11, 18, 13, 9 };
             Func<int, bool> predicate = IsEven;
-            var expected = Maybe.Of(18);
+            var expected = Maybe.Some(18);
 
             Assert.Equal(expected, source.RunOnce().LastOrNone(predicate));
         }
@@ -212,7 +212,7 @@ namespace Abc.Linq
         {
             IEnumerable<int> source = ForceNotCollection(new[] { 4 });
             Func<int, bool> predicate = IsEven;
-            var expected = Maybe.Of(4);
+            var expected = Maybe.Some(4);
 
             Assert.Equal(expected, source.LastOrNone(predicate));
         }
@@ -232,7 +232,7 @@ namespace Abc.Linq
         {
             IEnumerable<int> source = ForceNotCollection(new int[] { 9, 5, 1, 3, 17, 21, 50 });
             Func<int, bool> predicate = IsEven;
-            var expected = Maybe.Of(50);
+            var expected = Maybe.Some(50);
 
             Assert.Equal(expected, source.LastOrNone(predicate));
         }
@@ -242,7 +242,7 @@ namespace Abc.Linq
         {
             IEnumerable<int> source = ForceNotCollection(new int[] { 3, 7, 10, 7, 9, 2, 11, 18, 13, 9 });
             Func<int, bool> predicate = IsEven;
-            var expected = Maybe.Of(18);
+            var expected = Maybe.Some(18);
 
             Assert.Equal(expected, source.LastOrNone(predicate));
         }
@@ -252,7 +252,7 @@ namespace Abc.Linq
         {
             IEnumerable<int> source = ForceNotCollection(new int[] { 3, 7, 10, 7, 9, 2, 11, 18, 13, 9 });
             Func<int, bool> predicate = IsEven;
-            var expected = Maybe.Of(18);
+            var expected = Maybe.Some(18);
 
             Assert.Equal(expected, source.RunOnce().LastOrNone(predicate));
         }

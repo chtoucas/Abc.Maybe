@@ -48,7 +48,7 @@ namespace Abc.Linq
             Assert.False(called);
             Assert.CalledOnNext(q, ref called);
 
-            Maybe<int> __() { called = true; return Maybe.Of(1); }
+            Maybe<int> __() { called = true; return Maybe.Some(1); }
         }
     }
 

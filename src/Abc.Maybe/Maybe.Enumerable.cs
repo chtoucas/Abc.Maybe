@@ -19,7 +19,7 @@ namespace Abc
         private static class MaybeEnumerable_<T>
         {
             internal static readonly Maybe<IEnumerable<T>> Empty =
-                Of(Enumerable.Empty<T>());
+                SomeOrNone(Enumerable.Empty<T>());
         }
     }
 

@@ -186,6 +186,8 @@ namespace Abc
             Assert.Some(anyT, Maybe.SomeOrNone(anyT));
         }
 
+        #region Square()
+
         [Fact]
         public static void Square()
         {
@@ -214,6 +216,8 @@ namespace Abc
             Assert.None(Maybe.SquareOrNone((AnyT?)null));
             Assert.Some(Maybe.SomeOrNone(anyT), Maybe.SquareOrNone(anyT));
         }
+
+        #endregion
     }
 
     // Simple conversions.

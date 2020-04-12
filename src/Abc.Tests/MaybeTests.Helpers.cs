@@ -128,7 +128,7 @@ namespace Abc
         public static void Use_NullBinder()
         {
             // Arrange
-            var source = Maybe.Of(new AnyDisposable());
+            var source = Maybe.SomeOrNone(new AnyDisposable());
             // Act & Assert
             Assert.ThrowsAnexn("binder", () =>
                 source.Use(Kunc<AnyDisposable, int>.Null));
@@ -138,7 +138,7 @@ namespace Abc
         public static void Use_NullSelector()
         {
             // Arrange
-            var source = Maybe.Of(new AnyDisposable());
+            var source = Maybe.SomeOrNone(new AnyDisposable());
             // Act & Assert
             Assert.ThrowsAnexn("selector", () =>
                 source.Use(Funk<AnyDisposable, int>.Null));
@@ -149,7 +149,7 @@ namespace Abc
         {
             // Arrange
             var obj = new AnyDisposable();
-            var source = Maybe.Of(obj);
+            var source = Maybe.SomeOrNone(obj);
             // Act
             Maybe<int> result = source.Use(_ => Maybe.Some(1));
             // Assert
@@ -162,7 +162,7 @@ namespace Abc
         {
             // Arrange
             var obj = new AnyDisposable();
-            var source = Maybe.Of(obj);
+            var source = Maybe.SomeOrNone(obj);
             // Act
             Maybe<int> result = source.Use(_ => 1);
             // Assert

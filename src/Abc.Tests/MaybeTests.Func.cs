@@ -240,7 +240,7 @@ namespace Abc
         {
             // Arrange
             var f = Thunk<AnyT>.Return(AnyResult.Value);
-            var source = Maybe.Of(f);
+            var source = Maybe.SomeOrNone(f);
             // Act & Assert
             Assert.Some(AnyResult.Value, source.Invoke(AnyT.Value));
         }
@@ -259,7 +259,7 @@ namespace Abc
         {
             // Arrange
             var f = Thunk<AnyT1, AnyT2>.Return(AnyResult.Value);
-            var source = Maybe.Of(f);
+            var source = Maybe.SomeOrNone(f);
             // Act & Assert
             Assert.Some(AnyResult.Value, source.Invoke(AnyT1.Value, AnyT2.Value));
         }
@@ -278,7 +278,7 @@ namespace Abc
         {
             // Arrange
             var f = Thunk<AnyT1, AnyT2, AnyT3>.Return(AnyResult.Value);
-            var source = Maybe.Of(f);
+            var source = Maybe.SomeOrNone(f);
             // Act & Assert
             Assert.Some(AnyResult.Value,
                     source.Invoke(AnyT1.Value, AnyT2.Value, AnyT3.Value));
@@ -298,7 +298,7 @@ namespace Abc
         {
             // Arrange
             var f = Thunk<AnyT1, AnyT2, AnyT3, AnyT4>.Return(AnyResult.Value);
-            var source = Maybe.Of(f);
+            var source = Maybe.SomeOrNone(f);
             // Act & Assert
             Assert.Some(AnyResult.Value,
                 source.Invoke(AnyT1.Value, AnyT2.Value, AnyT3.Value, AnyT4.Value));
@@ -319,7 +319,7 @@ namespace Abc
         {
             // Arrange
             var f = Thunk<AnyT1, AnyT2, AnyT3, AnyT4, AnyT5>.Return(AnyResult.Value);
-            var source = Maybe.Of(f);
+            var source = Maybe.SomeOrNone(f);
             // Act & Assert
             Assert.Some(AnyResult.Value,
                 source.Invoke(AnyT1.Value, AnyT2.Value, AnyT3.Value, AnyT4.Value, AnyT5.Value));
@@ -344,7 +344,7 @@ namespace Abc
         {
             // Arrange
             var f = Thunk<AnyT>.Return(AnyResult.Value);
-            var source = Maybe.Of(f);
+            var source = Maybe.SomeOrNone(f);
             // Act & Assert
             Assert.None(source.Apply(AnyT.None));
         }
@@ -354,7 +354,7 @@ namespace Abc
         {
             // Arrange
             var f = Thunk<AnyT>.Return(AnyResult.Value);
-            var source = Maybe.Of(f);
+            var source = Maybe.SomeOrNone(f);
             // Act & Assert
             Assert.Some(AnyResult.Value, source.Apply(AnyT.Some));
         }
@@ -375,7 +375,7 @@ namespace Abc
         {
             // Arrange
             var f = Thunk<AnyT1, AnyT2>.Return(AnyResult.Value);
-            var source = Maybe.Of(f);
+            var source = Maybe.SomeOrNone(f);
             // Act & Assert
             Assert.None(source.Apply(AnyT1.None, AnyT2.Some));
             Assert.None(source.Apply(AnyT1.Some, AnyT2.None));
@@ -386,7 +386,7 @@ namespace Abc
         {
             // Arrange
             var f = Thunk<AnyT1, AnyT2>.Return(AnyResult.Value);
-            var source = Maybe.Of(f);
+            var source = Maybe.SomeOrNone(f);
             // Act & Assert
             Assert.Some(AnyResult.Value, source.Apply(AnyT1.Some, AnyT2.Some));
         }
@@ -408,7 +408,7 @@ namespace Abc
         {
             // Arrange
             var f = Thunk<AnyT1, AnyT2, AnyT3>.Return(AnyResult.Value);
-            var source = Maybe.Of(f);
+            var source = Maybe.SomeOrNone(f);
             // Act & Assert
             Assert.None(source.Apply(AnyT1.None, AnyT2.Some, AnyT3.Some));
             Assert.None(source.Apply(AnyT1.Some, AnyT2.None, AnyT3.Some));
@@ -420,7 +420,7 @@ namespace Abc
         {
             // Arrange
             var f = Thunk<AnyT1, AnyT2, AnyT3>.Return(AnyResult.Value);
-            var source = Maybe.Of(f);
+            var source = Maybe.SomeOrNone(f);
             // Act & Assert
             Assert.Some(AnyResult.Value, source.Apply(AnyT1.Some, AnyT2.Some, AnyT3.Some));
         }
@@ -443,7 +443,7 @@ namespace Abc
         {
             // Arrange
             var f = Thunk<AnyT1, AnyT2, AnyT3, AnyT4>.Return(AnyResult.Value);
-            var source = Maybe.Of(f);
+            var source = Maybe.SomeOrNone(f);
             // Act & Assert
             Assert.None(source.Apply(AnyT1.None, AnyT2.Some, AnyT3.Some, AnyT4.Some));
             Assert.None(source.Apply(AnyT1.Some, AnyT2.None, AnyT3.Some, AnyT4.Some));
@@ -456,7 +456,7 @@ namespace Abc
         {
             // Arrange
             var f = Thunk<AnyT1, AnyT2, AnyT3, AnyT4>.Return(AnyResult.Value);
-            var source = Maybe.Of(f);
+            var source = Maybe.SomeOrNone(f);
             // Act & Assert
             Assert.Some(AnyResult.Value,
                 source.Apply(AnyT1.Some, AnyT2.Some, AnyT3.Some, AnyT4.Some));
@@ -481,7 +481,7 @@ namespace Abc
         {
             // Arrange
             var f = Thunk<AnyT1, AnyT2, AnyT3, AnyT4, AnyT5>.Return(AnyResult.Value);
-            var source = Maybe.Of(f);
+            var source = Maybe.SomeOrNone(f);
             // Act & Assert
             Assert.None(source.Apply(AnyT1.None, AnyT2.Some, AnyT3.Some, AnyT4.Some, AnyT5.Some));
             Assert.None(source.Apply(AnyT1.Some, AnyT2.None, AnyT3.Some, AnyT4.Some, AnyT5.Some));
@@ -495,7 +495,7 @@ namespace Abc
         {
             // Arrange
             var f = Thunk<AnyT1, AnyT2, AnyT3, AnyT4, AnyT5>.Return(AnyResult.Value);
-            var source = Maybe.Of(f);
+            var source = Maybe.SomeOrNone(f);
             // Act & Assert
             Assert.Some(AnyResult.Value,
                 source.Apply(AnyT1.Some, AnyT2.Some, AnyT3.Some, AnyT4.Some, AnyT5.Some));
