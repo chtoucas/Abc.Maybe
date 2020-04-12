@@ -9,7 +9,7 @@
     <Authors>Chtoucas</Authors>
     <Company>Narvalo.Org</Company>
     <Product>Abécédaire Library</Product>
-    <Copyright>Copyright (c) 2019 Narvalo.Org.</Copyright>
+    <Copyright>Copyright (c) 2019 Narvalo.Org</Copyright>
 
     <PackageProjectUrl>https://github.com/chtoucas/Abc.Maybe/</PackageProjectUrl>
     <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
@@ -40,7 +40,7 @@
     <VersionSuffix>DUMMY</VersionSuffix>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  <PropertyGroup Condition=" $(Configuration) == 'Debug' ">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <TreatSpecificWarningsAsErrors />
     <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>

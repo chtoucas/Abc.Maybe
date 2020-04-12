@@ -7,8 +7,8 @@
     <!-- BenchmarkDotNet requires that we specify the lang version -->
     <LangVersion>8.0</LangVersion>
 
-    <BenchmarkHarness Condition=" '$(BenchmarkHarness)' != 'true' ">false</BenchmarkHarness>
-    <DefineConstants Condition=" '$(BenchmarkHarness)' == 'true' ">$(DefineConstants);BENCHMARK_HARNESS</DefineConstants>
+    <BenchmarkHarness Condition=" $(BenchmarkHarness) != 'true' ">false</BenchmarkHarness>
+    <DefineConstants Condition=" $(BenchmarkHarness) == 'true' ">$(DefineConstants);BENCHMARK_HARNESS</DefineConstants>
 
     <!--
       CA1034  Nested types should not be visible

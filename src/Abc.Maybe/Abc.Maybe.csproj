@@ -11,13 +11,13 @@
     -->
     <TargetFrameworks>netcoreapp3.1;netstandard2.0</TargetFrameworks>
 
-    <Retail Condition=" '$(Retail)' != 'true' ">false</Retail>
+    <Retail Condition=" $(Retail) != 'true' ">false</Retail>
   </PropertyGroup>
 
-  <Import Project="$(EngRoot)$(AssemblyName).props" Condition=" '$(Retail)' == 'true' " />
-  <Import Project="$(EngRoot)Retail.targets" Condition=" '$(Retail)' == 'true' " />
+  <Import Project="$(EngRoot)$(AssemblyName).props" Condition=" $(Retail) == 'true' " />
+  <Import Project="$(EngRoot)Retail.targets" Condition=" $(Retail) == 'true' " />
 
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+  <PropertyGroup Condition=" $(Configuration) == 'Release' ">
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <!--<WarningsNotAsErrors>$(WarningsNotAsErrors);CS1591</WarningsNotAsErrors>-->

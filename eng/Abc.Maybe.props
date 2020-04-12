@@ -21,7 +21,7 @@ An Option type, aka a Maybe type, allows to represent objects that are either so
 
 It differs from a nullable in that it applies to both value types and reference types. Nullable Reference Types (NRT) do not count since they are not actual .NET types but annotations that are ignored at run-time.
 
-A tutorial and guidelines are available on the project website.
+A tutorial with some guidelines is available on the project website.
     ]]></PackageDescription>
 
     <PackageTags>Option;Maybe;LINQ;ROP;Railway;Monad</PackageTags>

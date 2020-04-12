@@ -17,11 +17,11 @@
         FileVersion          = Major.Minor.BuildNumber.RevisionNumber
       -->
     <!-- We use the abbreviated git commit hash (first seven chars) -->
-    <BuildMetadata Condition=" '$(RepositoryCommit)' != '' ">$(RepositoryCommit.Substring(0, 7))</BuildMetadata>
+    <BuildMetadata Condition=" $(RepositoryCommit) != '' ">$(RepositoryCommit.Substring(0, 7))</BuildMetadata>
     <!-- Semantic version -->
     <SemanticVersion>$(MajorVersion).$(MinorVersion).$(PatchVersion)</SemanticVersion>
-    <SemanticVersion Condition=" '$(PreReleaseTag)' != '' ">$(SemanticVersion)-$(PreReleaseTag)</SemanticVersion>
-    <SemanticVersion Condition=" '$(BuildMetadata)' != '' ">$(SemanticVersion)+$(BuildMetadata)</SemanticVersion>
+    <SemanticVersion Condition=" $(PreReleaseTag) != '' ">$(SemanticVersion)-$(PreReleaseTag)</SemanticVersion>
+    <SemanticVersion Condition=" $(BuildMetadata) != '' ">$(SemanticVersion)+$(BuildMetadata)</SemanticVersion>
     <!-- Package version -->
     <VersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</VersionPrefix>
     <VersionSuffix>$(PreReleaseTag)</VersionSuffix>
