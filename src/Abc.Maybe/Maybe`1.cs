@@ -645,12 +645,14 @@ namespace Abc
         /// The convention is that the empty maybe is strictly less than any
         /// other maybe.
         /// </remarks>
+        [Pure]
         public int CompareTo(Maybe<T> other) =>
             _isSome
                 ? other._isSome ? Comparer<T>.Default.Compare(_value, other._value) : 1
                 : other._isSome ? -1 : 0;
 
         /// <inheritdoc />
+        [Pure]
         int IComparable.CompareTo(object? obj)
         {
             if (obj is null) { return 1; }
@@ -663,6 +665,7 @@ namespace Abc
         }
 
         /// <inheritdoc />
+        [Pure]
         int IStructuralComparable.CompareTo(object? other, IComparer comparer)
         {
             if (comparer is null) { throw new Anexn(nameof(comparer)); }

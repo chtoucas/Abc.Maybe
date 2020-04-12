@@ -10,6 +10,7 @@ namespace Abc
     using Anexn = System.ArgumentNullException;
 
     // REVIEW: Maybe extensions & helpers; see also MaybeEx in "Abc.Future".
+    // - add DebuggerBrowsableState.Never to both Of()?
     // - playing with the modifier "in". Currently only added to ext methods for
     //   Maybe<T> where T is a struct.
     // - Maybe<IEnumerable>; see CollectAny().
@@ -221,12 +222,14 @@ namespace Abc
         /// </summary>
         public static readonly Maybe<bool> False = Some(false);
 
+        [Pure]
         public static Maybe<bool> Negate(this in Maybe<bool> @this)
         {
             return @this.IsSome ? Some(!@this.Value) : Unknown;
         }
 
         // Compare to OrElse().
+        [Pure]
         public static Maybe<bool> Or(this in Maybe<bool> @this, Maybe<bool> other)
         {
             // true  || _     = true
@@ -244,6 +247,7 @@ namespace Abc
         }
 
         // Compare to AndElse().
+        [Pure]
         public static Maybe<bool> And(this in Maybe<bool> @this, Maybe<bool> other)
         {
             // true  && true  = true

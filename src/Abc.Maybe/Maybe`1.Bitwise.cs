@@ -63,6 +63,7 @@ namespace Abc
             left.XorElse(right);
 
         // I know, this is just IsSome, but I wish to emphasize a boolean context.
+        [Pure]
         [InternalForTesting]
         internal bool ToBoolean() =>
             _isSome;
