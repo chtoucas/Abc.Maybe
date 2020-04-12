@@ -32,13 +32,9 @@
     <!-- CONTRACTS_FULL is necessary to enable the attribute Pure -->
     <DefineConstants>$(DefineConstants);TRACE;CONTRACTS_FULL</DefineConstants>
 
-    <!-- Optional symbols -->
-    <!--<DefineConstants>$(DefineConstants);PURE_MAYBE</DefineConstants>-->
-    <!--<DefineConstants>$(DefineConstants);PLAIN_LINQ</DefineConstants>-->
-
     <!--
       Fake version only used during development. For Retail builds, the
-      version is set within eng\$(AssemblyName).props which is loaded after.
+      version is set within eng\$(AssemblyName).props which is loaded later on.
     -->
     <VersionPrefix>1.0.0</VersionPrefix>
     <VersionSuffix>DUMMY</VersionSuffix>
@@ -46,7 +42,14 @@
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TreatSpecificWarningsAsErrors />
     <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Optional symbols -->
+  <PropertyGroup>
+    <!--<DefineConstants>$(DefineConstants);PLAIN_LINQ</DefineConstants>-->
+    <!--<DefineConstants>$(DefineConstants);PURE_MAYBE</DefineConstants>-->
   </PropertyGroup>
 
 </Project>
