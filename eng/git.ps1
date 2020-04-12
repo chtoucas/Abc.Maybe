@@ -66,25 +66,16 @@ function Get-GitCommitHash {
   param(
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
     [ValidateNotNullOrEmpty()]
-    [string] $Git,
-
-    [switch] $Abbrev
+    [string] $Git
   )
 
   Write-Verbose "Getting the last git commit hash."
-
-  if ($Abbrev.IsPresent) {
-    $fmt = '%h'
-  }
-  else {
-    $fmt = '%H'
-  }
 
   $hash = ""
 
   try {
     Write-Debug "Calling git.exe log."
-    $hash = & $git log -1 --format="$fmt" 2>&1
+    $hash = & $git log -1 --format="%H" 2>&1
   }
   catch {
     Write-Warning "Git command failed: $_"
