@@ -68,8 +68,9 @@ Release Process
 
 2. Update CHANGELOG.
 
-3. (Major) API, update the files PublicAPI.Shipped.txt & PublicAPI.Unshipped.txt.
-   Obsolete member: move from Shipped to Unshipped and prefix w/ *REMOVED*.
+3. (Major) Run script eng\mark-shipped.ps1
+   It updates the files PublicAPI.Shipped.txt and PublicAPI.Unshipped.txt.
+   Obsolete members are moved from Shipped to Unshipped and prefixed w/ *REMOVED*.
 
 4. (Major) Git Tag
 
