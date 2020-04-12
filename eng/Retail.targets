@@ -15,6 +15,7 @@
         InformationalVersion = Major.Minor.Patch-PreReleaseTag+BuildMetadata
         FileVersion          = Major.Minor.BuildNumber.RevisionNumber
       -->
+    <!-- We use the abbreviated git commit hash (first seven chars) -->
     <BuildMetadata Condition=" '$(RepositoryCommit)' != '' ">$(RepositoryCommit.Substring(0, 7))</BuildMetadata>
     <!-- Semantic version -->
     <SemanticVersion>$(MajorVersion).$(MinorVersion).$(PatchVersion)</SemanticVersion>

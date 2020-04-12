@@ -10,7 +10,7 @@ namespace Abc
 
     using EF = Abc.Utilities.ExceptionFactory;
 
-    // TODO: should we make it work with a comparer w/ Maybe<T>.
+    // TODO: should we make it work with a comparer for Maybe<T>.
     //   return comparer.Compare(this, maybe);
     // Split equality and order?
     // "Lifted" comparison T / Maybe<T>?

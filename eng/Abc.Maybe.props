@@ -6,24 +6,23 @@
     <MinorVersion>0</MinorVersion>
     <PatchVersion>0</PatchVersion>
     <!--
-      Format: (alpha|beta|rc)[1-9][0-9]?
+      Format: empty -or- (DEV|alpha|beta|rc)[1-9][0-9]?
       Do not use "." or "-" to separate alphas from digits.
-      alpha1 < alpha2 < ... < alpha11 < ...< beta1 < ... < rc1 < ...
+      DEV1 < DEV2 < ... < DEV11 < ... < alpha1 < ... < beta1 < ... < rc1 < ...
     -->
     <PreReleaseTag>alpha2</PreReleaseTag>
 
     <Title>An Option Type for C#.</Title>
 
-    <PackageDescription>
-      Provides an Option type with companion helpers (parsing, LINQ).
+    <PackageDescription><![CDATA[
+Provides an Option type, aka a Maybe type, with a rich API and many companion helpers (parsing, LINQ).
 
-      An Option type, aka a Maybe type, allows to represent objects that are
-      either something (a value) or nothing. It differs from a nullable in that
-      it applies to both value types and reference types.
+An Option type, aka a Maybe type, allows to represent objects that are either something (a value or a reference) or nothing.
 
-      Nullable Reference Types (NRT) do not count since they are not actual
-      .NET types but annotations that are ignored at runtime.
-    </PackageDescription>
+It differs from a nullable in that it applies to both value types and reference types. Nullable Reference Types (NRT) do not count since they are not actual .NET types but annotations that are ignored at run-time.
+
+A tutorial and guidelines are available on the project website.
+    ]]></PackageDescription>
 
     <PackageTags>Option;Maybe;LINQ;ROP;Railway;Monad</PackageTags>
   </PropertyGroup>

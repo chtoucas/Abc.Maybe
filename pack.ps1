@@ -102,7 +102,7 @@ function run-pack([string] $projName, [switch] $force) {
 
   # Do NOT use --no-restore or --no-build; netstandard2.1 is not currently
   # enabled within the proj file.
-  # Remove DebugType to add plain pdb's.
+  # Remove DebugType to use plain pdb's.
   & dotnet pack $proj -c $CONFIGURATION --nologo `
     --output $PKG_DIR `
     -p:TargetFrameworks='\"netstandard2.0;netstandard2.1;netcoreapp3.1\"' `
