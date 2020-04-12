@@ -57,6 +57,7 @@ Operations:
   Add coverlet.collector to the test project. Coverity?
 - Cleanup scripts, clean obj/bin, dotnet nuget locals --clear all.
 - Local tools: find updates, dotnet-outdated.
+  Remove refs to OpenCover and ReportGenerator in Abc.Tests.
   https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools
 
 Release Process
