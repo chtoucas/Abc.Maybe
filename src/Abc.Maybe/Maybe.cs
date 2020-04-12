@@ -44,9 +44,9 @@ namespace Abc
         /// <summary>
         /// Creates a new instance of the <see cref="Maybe{T}"/> struct from the
         /// specified nullable value.
-        /// <para>For concrete types, <see cref="Some"/>,
+        /// <para>RECOMMENDATION: for concrete types, <see cref="Some"/>,
         /// <see cref="SomeOrNone{T}(T?)"/> or <see cref="SomeOrNone{T}(T)"/>
-        /// should be used instead.</para>
+        /// should be preferred.</para>
         /// </summary>
         // Unconstrained version Of SomeOrNone() and Some().
         // F# Workflow: return.

@@ -18,7 +18,7 @@ param(
   [Alias("h")] [switch] $Help
 )
 
-Set-StrictMode -Version Latest
+Set-StrictMode -version Latest
 $ErrorActionPreference = "Stop"
 
 . (join-path $PSScriptRoot "eng\shared.ps1")

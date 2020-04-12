@@ -3,7 +3,7 @@
 Abc.Maybe features a rich option type for C#.
 - Supported frameworks:
   * .NET Standard 2.0
-  * .NET Standard 2.1 w/ nullable annotations
+  * .NET Standard 2.1
   * .NET Core 3.1.
 
 |NuGet|OpenCover|Coverlet|

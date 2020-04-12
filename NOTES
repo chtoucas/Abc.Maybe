@@ -68,10 +68,10 @@ Release Process
 
 2. Update CHANGELOG.
 
-3. API, update the files PublicAPI.Shipped.txt & PublicAPI.Unshipped.txt.
+3. (Major) API, update the files PublicAPI.Shipped.txt & PublicAPI.Unshipped.txt.
    Obsolete member: move from Shipped to Unshipped and prefix w/ *REMOVED*.
 
-4. Git Tag
+4. (Major) Git Tag
 
 Guidelines
 ----------

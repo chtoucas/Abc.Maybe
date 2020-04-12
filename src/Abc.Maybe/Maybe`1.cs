@@ -447,7 +447,7 @@ namespace Abc
         /// then applies a zipper, and eventually wraps the result.
         /// </para>
         /// <para>
-        /// Compare to the F# computation expressions for an hypothetical maybe
+        /// Compare to F# computation expressions with an hypothetical maybe
         /// workflow:
         /// <code><![CDATA[
         ///   maybe {
