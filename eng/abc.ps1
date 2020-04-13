@@ -12,7 +12,7 @@ $ErrorActionPreference = "Stop"
 
 # Root directory.
 (Get-Item $PSScriptRoot).Parent.FullName `
-  | New-Variable -Name "ROOT_DIR" -Scope Script -Option Constant
+  | New-Variable -Name "ROOT_DIR" -Scope Local -Option Constant
 
 # Artifacts directory.
 (Join-Path $ROOT_DIR "__") `
@@ -30,6 +30,7 @@ $ErrorActionPreference = "Stop"
 (Join-Path $ARTIFACTS_DIR "packages") `
   | New-Variable -Name "PKG_OUTDIR" -Scope Script -Option Constant
 
+# Reporting.
 ################################################################################
 
 # Print a message.
@@ -57,7 +58,7 @@ function Say-Loud {
 }
 
 # Print a recap.
-function Recap {
+function Write-Recap {
   [CmdletBinding()]
   param(
     [Parameter(Mandatory=$true, ValueFromPipeline=$false, ValueFromPipelineByPropertyName=$false)]
@@ -77,7 +78,7 @@ function Carp {
     [string] $Message
   )
 
-  write-warning $Message
+  Write-Warning $Message
 }
 
 # Die of errors.
@@ -99,21 +100,79 @@ function Croak {
   exit 1
 }
 
+# Helpers.
+################################################################################
+
+function Approve-ProjectRoot {
+    [CmdletBinding()]
+    param()
+
+    if (![System.IO.Path]::IsPathRooted($ROOT_DIR)) {
+        Croak "The path MUST be absolute."
+    }
+
+    if (!(Test-Path $ROOT_DIR)) {
+        Croak "The path does NOT exist."
+    }
+
+    return $ROOT_DIR
+}
+
+# Requests confirmation from the user.
+function Confirm-Yes {
+  param(
+    [Parameter(Mandatory = $true, Position = 0)]
+    [string] $Question
+  )
+
+  while ($true) {
+    $answer = (Read-Host $Question, "[y/N]")
+
+    if ($answer -eq "" -or $answer -eq "n") {
+      return $false
+    }
+    elseif ($answer -eq "y") {
+      return $true
+    }
+  }
+}
+
+function Confirm-Continue {
+  param(
+    [Parameter(Mandatory = $true, Position = 0)]
+    [string] $Question
+  )
+
+  while ($true) {
+    $answer = (Read-Host $Question, "[y/N]")
+
+    if ($answer -eq "" -or $answer -eq "n") {
+      Write-Recap "Stopping on user request."
+      exit 0
+    }
+    elseif ($answer -eq "y") {
+      break
+    }
+  }
+}
+
 # Die if the exit code of the last external command that was run is not equal to zero.
-function On-LastCmdErr {
+function Assert-CmdSuccess {
   [CmdletBinding()]
   param(
     [Parameter(Mandatory=$true, ValueFromPipeline=$false, ValueFromPipelineByPropertyName=$false)]
     [ValidateNotNullOrEmpty()]
-    [string] $Message
+    [string] $ErrMessage
   )
 
-  if ($LastExitCode -ne 0) { Croak $Message }
+  if ($LastExitCode -ne 0) { Croak $ErrMessage }
 }
 
+# Git-related functions.
 ################################################################################
 
-function Get-GitExe {
+# Find the path to the system git command.
+function Find-GitExe {
   [CmdletBinding()]
   param([switch] $Force)
 
@@ -122,7 +181,7 @@ function Get-GitExe {
   $git = (Get-Command "git.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue)
 
   if ($git -eq $null) {
-    Write-Warning "Git could not be found in your PATH. Please ensure Git is installed."
+    Carp "Git could not be found in your PATH. Please ensure Git is installed."
     return $null
   }
 
@@ -131,17 +190,18 @@ function Get-GitExe {
   $status = Get-GitStatus $exe
 
   if ($status -eq $null) {
-    Write-Warning "Unabled to verify the git status."
+    Carp "Unabled to verify the git status."
     if (-not $Force) { return $null }
   }
   elseif ($status -ne "") {
-    Write-Warning "Uncommitted changes are pending."
+    Carp "Uncommitted changes are pending."
     if (-not $Force) { return $null }
   }
 
   $exe
 }
 
+# Get the git status.
 function Get-GitStatus {
   [CmdletBinding()]
   param(
@@ -155,7 +215,6 @@ function Get-GitStatus {
   $status = $null
 
   try {
-    Write-Debug "Calling git.exe status."
     $status = & $git status -s 2>&1
 
     if ($status -eq $null) {
@@ -163,12 +222,13 @@ function Get-GitStatus {
     }
   }
   catch {
-    Write-Warning "Git command failed: $_"
+    Carp "Git command failed: $_"
   }
 
   $status
 }
 
+# Get the last git commit hash of the local repository.
 function Get-GitCommitHash {
   [CmdletBinding()]
   param(
@@ -182,16 +242,16 @@ function Get-GitCommitHash {
   $hash = ""
 
   try {
-    Write-Debug "Calling git.exe log."
     $hash = & $git log -1 --format="%H" 2>&1
   }
   catch {
-    Write-Warning "Git command failed: $_"
+    Carp "Git command failed: $_"
   }
 
   $hash
 }
 
+# Get the git branch of the local repository.
 function Get-GitBranch {
   [CmdletBinding()]
   param(
@@ -205,11 +265,10 @@ function Get-GitBranch {
   $branch = ""
 
   try {
-    Write-Debug "Calling git.exe rev-parse."
     $branch = & $git rev-parse --abbrev-ref HEAD 2>&1
   }
   catch {
-    Write-Warning "Git command failed: $_"
+    Carp "Git command failed: $_"
   }
 
   $branch

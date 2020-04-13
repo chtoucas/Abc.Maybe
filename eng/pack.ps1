@@ -21,22 +21,24 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-. (Join-Path $PSScriptRoot "shared.ps1")
+. (Join-Path $PSScriptRoot "abc.ps1")
 
 New-Variable -Name "CONFIGURATION" -Value "Release" -Scope Script -Option Constant
 
 ################################################################################
 
-function print-usage {
-  say "`nCreate a NuGet package for Abc.Maybe.`n"
-  say "Usage: pack.ps1 [switches]"
-  say "  -c|-Clean    clean the solution before anything else."
-  say "  -n|-NoTest   do NOT run the test suite."
-  say "  -f|-Force    force packaging even without a git commit hash -or- when there are uncommited changes."
-  say "  -h|-Help     print this help and exit.`n"
+function Write-Usage {
+  Say "`nCreate a NuGet package for Abc.Maybe.`n"
+  Say "Usage: pack.ps1 [switches]"
+  Say "  -c|-Clean    clean the solution before anything else."
+  Say "  -n|-NoTest   do NOT run the test suite."
+  Say "  -f|-Force    force packaging even without a git commit hash -or- when there are uncommited changes."
+  Say "  -h|-Help     print this help and exit.`n"
 }
 
-function get-pkgversion([string] $proj) {
+function Get-PackageVersion([string] $projName) {
+  $proj = Join-Path $ENG_DIR "$projName.props"
+
   $xml = [Xml] (Get-Content $proj)
   $node = (Select-Xml -Xml $xml -XPath "//Project/PropertyGroup/MajorVersion/..").Node
 
@@ -48,56 +50,51 @@ function get-pkgversion([string] $proj) {
   "$major.$minor.$patch-$prere"
 }
 
-function run-clean {
-  say-loud "Cleaning."
+function Invoke-Clean {
+  SAY-LOUD "Cleaning."
 
   & dotnet clean -c $CONFIGURATION -v minimal --nologo
 
-  on-lastcmderr "Clean task failed."
+  Assert-CmdSuccess "Clean task failed."
 }
 
-function run-test {
-  say-loud "Testing."
+function Invoke-Test {
+  SAY-LOUD "Testing."
 
   # SignAssembly is not necessary but I want to check that InternalsVisibleTo
   # works as expected.
   & dotnet test -c $CONFIGURATION -v minimal --nologo -p:SignAssembly=true
 
-  on-lastcmderr "Test task failed."
+  Assert-CmdSuccess "Test task failed."
 }
 
-function run-pack([string] $projName, [switch] $force) {
-  say-loud "Packing."
+function Invoke-Pack([string] $projName, [switch] $force) {
+  SAY-LOUD "Packing."
 
-  $version = get-pkgversion (Join-Path $ENG_DIR "$projName.props")
+  $version = Get-PackageVersion $projName
 
   $proj = Join-Path $SRC_DIR $projName
   $pkg = Join-Path $PKG_OUTDIR "$projName.$version.nupkg"
 
   if (Test-Path $pkg) {
-    carp "A package with the same version ($version) already exists."
+    Carp "A package with the same version ($version) already exists."
 
-    $question = "Do you wish to proceed anyway? [y/n]"
-    $answer = Read-Host $question
-    while ($answer -ne "y") {
-      if ($answer -eq "n") { exit 0 }
-      $answer = Read-Host $question
-    }
+    Confirm-Continue "Do you wish to proceed anyway?"
 
-    say "The old package file will be removed now."
+    Say "The old package file will be removed now."
     Remove-Item $pkg
   }
 
   # Find commit hash and branch.
   $commit = ""
   $branch = ""
-  $git = Get-GitExe -Force:$force.IsPresent
+  $git = Find-GitExe -Force:$force.IsPresent
   if ($git -ne $null) {
     $commit = Get-GitCommitHash $git
     $branch = Get-GitBranch $git
   }
-  if ($commit -eq "") { carp "The commit hash will be empty." }
-  if ($branch -eq "") { carp "The branch name will be empty." }
+  if ($commit -eq "") { Carp "The commit hash will be empty. Maybe use -Force?" }
+  if ($branch -eq "") { Carp "The branch name will be empty. Maybe use -Force?" }
 
   # Do NOT use --no-restore or --no-build; netstandard2.1 is not currently
   # enabled within the proj file.
@@ -110,29 +107,29 @@ function run-pack([string] $projName, [switch] $force) {
     -p:RepositoryBranch=$branch `
     -p:DebugType=embedded
 
-  on-lastcmderr "Pack task failed."
+  Assert-CmdSuccess "Pack task failed."
 
-  recap "To publish the package:"
-  recap "> dotnet nuget push $pkg -s https://www.nuget.org/ -k MYKEY"
+  Write-Recap "To publish the package:"
+  Write-Recap "> dotnet nuget push $pkg -s https://www.nuget.org/ -k MYKEY"
 }
 
 ################################################################################
 
 if ($Help) {
-  print-usage
+  Write-Usage
   exit 0
 }
 
 try {
-  pushd $ROOT_DIR
+  pushd (Approve-ProjectRoot)
 
-  if ($Clean) { run-clean }
-  if (-not $NoTest) { run-test }
+  if ($Clean) { Invoke-Clean }
+  if (-not $NoTest) { Invoke-Test }
 
-  run-pack "Abc.Maybe" -Force:$force.IsPresent
+  Invoke-Pack "Abc.Maybe" -Force:$force.IsPresent
 }
 catch {
-  croak ("An unexpected error occured: {0}." -f $_.Exception.Message) `
+  Croak ("An unexpected error occured: {0}." -f $_.Exception.Message) `
     -StackTrace $_.ScriptStackTrace
 }
 finally {

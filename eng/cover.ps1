@@ -49,22 +49,22 @@ param(
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-. (Join-Path $PSScriptRoot "shared.ps1")
+. (Join-Path $PSScriptRoot "abc.ps1")
 
 New-Variable -Name "CONFIGURATION" -Value "Debug" -Scope Script -Option Constant
 
 ################################################################################
 
-function print-usage {
-  say "`nRun the Code Coverage script and build human-readable reports.`n"
-  say "Usage: cover.ps1 [switches]"
-  say "  -x|-OpenCover    use OpenCover instead of Coverlet."
-  say "     -NoReport     do NOT run ReportGenerator."
-  say "     -ReportOnly   do NOT run any Code Coverage tool."
-  say "  -h|-Help         print this help and exit.`n"
+function Write-Usage {
+  Say "`nRun the Code Coverage script and build human-readable reports.`n"
+  Say "Usage: cover.ps1 [switches]"
+  Say "  -x|-OpenCover    use OpenCover instead of Coverlet."
+  Say "     -NoReport     do NOT run ReportGenerator."
+  Say "     -ReportOnly   do NOT run any Code Coverage tool."
+  Say "  -h|-Help         print this help and exit.`n"
 }
 
-function get-opencover([string] $proj) {
+function Find-OpenCover([string] $proj) {
   # Find the OpenCover version.
   $xml = [Xml] (get-content $proj)
   $xpath = "//Project/ItemGroup/PackageReference[@Include='OpenCover']"
@@ -76,7 +76,7 @@ function get-opencover([string] $proj) {
     ".nuget\packages\opencover\$version\tools\OpenCover.Console.exe"
 }
 
-function run-opencover {
+function Invoke-OpenCover {
   [CmdletBinding()]
   param(
     [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
@@ -84,7 +84,7 @@ function run-opencover {
 
     [string] $output)
 
-  say-loud "Running OpenCover."
+  SAY-LOUD "Running OpenCover."
 
   $filters = `
     "+[Abc.Maybe]*",
@@ -105,11 +105,11 @@ function run-opencover {
     -filter:$filter `
     -excludebyattribute:*.ExcludeFromCodeCoverageAttribute
 
-  on-lastcmderr "OpenCover failed."
+  Assert-CmdSuccess "OpenCover failed."
 }
 
-function run-coverlet([string] $output) {
-  say-loud "Running Coverlet."
+function Invoke-Coverlet([string] $output) {
+  SAY-LOUD "Running Coverlet."
 
   $excludes = `
     "[Abc*]System.Diagnostics.CodeAnalysis.*",
@@ -124,11 +124,11 @@ function run-coverlet([string] $output) {
     /p:Include="[Abc.Maybe]*" `
     /p:Exclude=$exclude
 
-  on-lastcmderr "Coverlet failed."
+  Assert-CmdSuccess "Coverlet failed."
 }
 
-function run-rg([string] $reports, [string] $targetdir) {
-  say-loud "Running ReportGenerator."
+function Invoke-ReportGenerator([string] $reports, [string] $targetdir) {
+  SAY-LOUD "Running ReportGenerator."
 
   & dotnet tool run reportgenerator `
     -verbosity:Warning `
@@ -136,18 +136,18 @@ function run-rg([string] $reports, [string] $targetdir) {
     -reports:$reports `
     -targetdir:$targetdir
 
-  on-lastcmderr "ReportGenerator failed."
+  Assert-CmdSuccess "ReportGenerator failed."
 }
 
 ################################################################################
 
 if ($Help) {
-  print-usage
+  Write-Usage
   exit 0
 }
 
 try {
-  pushd $ROOT_DIR
+  pushd (Approve-ProjectRoot)
 
   $tool = if ($OpenCover) { "opencover" } else { "coverlet" }
   $outdir = Join-Path $ARTIFACTS_DIR $tool
@@ -160,23 +160,23 @@ try {
   }
 
   if ($ReportOnly) {
-    carp "On your request, we do not run any Code Coverage tool."
+    Carp "On your request, we do not run any Code Coverage tool."
   }
   elseif ($OpenCover) {
-    get-opencover (Join-Path $SRC_DIR "Abc.Tests\Abc.Tests.csproj") `
-      | run-opencover -output $outxml
+    Find-OpenCover (Join-Path $SRC_DIR "Abc.Tests\Abc.Tests.csproj") `
+      | Invoke-OpenCover -output $outxml
   }
   else {
     # For coverlet.msbuild the path must be absolute if we want the result to be
     # put within the directory for artifacts and not below the test project.
-    run-coverlet $outxml
+    Invoke-Coverlet $outxml
   }
 
   if ($NoReport) {
-    carp "On your request, we do not run ReportGenerator."
+    Carp "On your request, we do not run ReportGenerator."
   }
   else {
-    run-rg $outxml $outdir
+    Invoke-ReportGenerator $outxml $outdir
 
     try {
       pushd $outdir
@@ -190,7 +190,7 @@ try {
   }
 }
 catch {
-  croak ("An unexpected error occured: {0}." -f $_.Exception.Message) `
+  Croak ("An unexpected error occured: {0}." -f $_.Exception.Message) `
     -StackTrace $_.ScriptStackTrace
 }
 finally {

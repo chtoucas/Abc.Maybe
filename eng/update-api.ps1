@@ -13,11 +13,13 @@ param()
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-. (Join-Path $PSScriptRoot "shared.ps1")
+. (Join-Path $PSScriptRoot "abc.ps1")
 
 ################################################################################
 
-function mark-shipped([string] $dir) {
+function Update-PublicAPI([string] $dir) {
+  SAY-LOUD "Processing $dir"
+
   $shippedFile = Join-Path $dir "PublicAPI.Shipped.txt"
   $shipped = Get-Content $shippedFile
 
@@ -29,8 +31,6 @@ function mark-shipped([string] $dir) {
   $unshipped = Get-Content $unshippedFile
   $removed = @()
   $removedPrefix = "*REMOVED*";
-
-  say-loud "Processing $dir"
 
   foreach ($item in $unshipped) {
     if ($item.Length -gt 0) {
@@ -44,27 +44,31 @@ function mark-shipped([string] $dir) {
     }
   }
 
+  Say "Writing PublicAPI.Shipped.txt."
   $shipped | Sort-Object | ?{ -not $removed.Contains($_) } `
     | Out-File $shippedFile -Encoding UTF8
 
+  Say "Writing PublicAPI.Unshipped.txt."
   "" | Out-File $unshippedFile -Encoding UTF8
 }
 
 ################################################################################
 
 try {
-  pushd $ROOT_DIR
+  pushd (Approve-ProjectRoot)
+  pushd $SRC_DIR
 
   foreach ($file in Get-ChildItem -Recurse -Include "PublicApi.Shipped.txt") {
     $dir = Split-Path -Parent $file
-    mark-shipped $dir
+    Update-PublicAPI $dir
   }
 }
 catch {
-  croak ("An unexpected error occured: {0}." -f $_.Exception.Message) `
+  Croak ("An unexpected error occured: {0}." -f $_.Exception.Message) `
     -StackTrace $_.ScriptStackTrace
 }
 finally {
+  popd
   popd
 }
 

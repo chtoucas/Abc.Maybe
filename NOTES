@@ -73,7 +73,7 @@ Requirement: command-line git.
 5. Publish package
 
 Post actions, only for **major** releases.
-1. Run script eng\mark-shipped.ps1
+1. Run script eng\update-api.ps1
 2. Git commit
 3. Git tag
 
