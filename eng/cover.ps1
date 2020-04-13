@@ -147,7 +147,9 @@ if ($Help) {
 }
 
 try {
-  pushd (Approve-ProjectRoot)
+  Approve-ProjectRoot
+
+  pushd $ROOT_DIR
 
   $tool = if ($OpenCover) { "opencover" } else { "coverlet" }
   $outdir = Join-Path $ARTIFACTS_DIR $tool

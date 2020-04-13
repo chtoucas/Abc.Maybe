@@ -109,8 +109,8 @@ function Invoke-Pack([string] $projName, [switch] $force) {
 
   Assert-CmdSuccess "Pack task failed."
 
-  Write-Recap "To publish the package:"
-  Write-Recap "> dotnet nuget push $pkg -s https://www.nuget.org/ -k MYKEY"
+  Chirp "To publish the package:"
+  Chirp "> dotnet nuget push $pkg -s https://www.nuget.org/ -k MYKEY"
 }
 
 ################################################################################
@@ -121,7 +121,9 @@ if ($Help) {
 }
 
 try {
-  pushd (Approve-ProjectRoot)
+  Approve-ProjectRoot
+
+  pushd $ROOT_DIR
 
   if ($Clean) { Invoke-Clean }
   if (-not $NoTest) { Invoke-Test }

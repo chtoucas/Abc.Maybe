@@ -55,7 +55,8 @@ function Update-PublicAPI([string] $dir) {
 ################################################################################
 
 try {
-  pushd (Approve-ProjectRoot)
+  Approve-ProjectRoot
+
   pushd $SRC_DIR
 
   foreach ($file in Get-ChildItem -Recurse -Include "PublicApi.Shipped.txt") {
@@ -68,7 +69,6 @@ catch {
     -StackTrace $_.ScriptStackTrace
 }
 finally {
-  popd
   popd
 }
 

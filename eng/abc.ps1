@@ -57,8 +57,7 @@ function Say-Loud {
   Write-Host $Message -BackgroundColor DarkCyan -ForegroundColor Green
 }
 
-# Print a recap.
-function Write-Recap {
+function Chirp {
   [CmdletBinding()]
   param(
     [Parameter(Mandatory=$true, ValueFromPipeline=$false, ValueFromPipelineByPropertyName=$false)]
@@ -107,15 +106,13 @@ function Approve-ProjectRoot {
     [CmdletBinding()]
     param()
 
-    if (![System.IO.Path]::IsPathRooted($ROOT_DIR)) {
-        Croak "The path MUST be absolute."
+    if (-not [System.IO.Path]::IsPathRooted($ROOT_DIR)) {
+        Croak "The root path MUST be absolute."
     }
 
-    if (!(Test-Path $ROOT_DIR)) {
-        Croak "The path does NOT exist."
+    if (-not (Test-Path $ROOT_DIR)) {
+        Croak "The root path does NOT exist."
     }
-
-    return $ROOT_DIR
 }
 
 # Requests confirmation from the user.
@@ -147,7 +144,7 @@ function Confirm-Continue {
     $answer = (Read-Host $Question, "[y/N]")
 
     if ($answer -eq "" -or $answer -eq "n") {
-      Write-Recap "Stopping on user request."
+      Chirp "Stopping on user request."
       exit 0
     }
     elseif ($answer -eq "y") {
