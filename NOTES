@@ -31,7 +31,7 @@ TODOs
 -----
 
 See FIXME, TODO and REVIEW within the code.
-- Target net461?
+- Target net461? Review !NETSTANDARD2.0 in code.
   https://github.com/dotnet/announcements/issues/31
 - Multitargeting: .NET Standard 2.1 & .NET Core 3.1 only. Use System.HashCode.
   Use PlatformNotSupportedException for things that could be supported but
@@ -84,10 +84,17 @@ Guidelines
 - _Seal classes_ unless they are designed with extensibility in mind.
 - Tag any use of the null-forgiving operator (!) with BONSANG!.
 
-Editor config (does not affect the compilation).
+Changes to the default editor config (does not affect the compilation).
 - IDE0039 - csharp_style_pattern_local_over_anonymous_function
 - IDE0060 - dotnet_code_quality_unused_parameters, (Remove unused parameter) covered by CA1801.
 https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-language-conventions?view=vs-2019
+
+Local tools:
+- qtest.cmd
+- qperf.cmd
+- eng\cover.ps1
+- eng\pack.ps1
+- eng\mark-shipped.ps1
 
 Useful tools:
 - NuGet Package Explorer

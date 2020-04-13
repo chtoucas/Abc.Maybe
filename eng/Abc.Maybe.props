@@ -15,7 +15,7 @@
     <Title>An Option Type for C#.</Title>
 
     <PackageDescription><![CDATA[
-Provides an Option type, aka a Maybe type, with a rich API and many companion helpers (parsing, LINQ).
+Provides an Option type, aka a Maybe type, with a rich API and several companion helpers (parsing, LINQ).
 
 An Option type, aka a Maybe type, allows to represent objects that are either something (a value or a reference) or nothing.
 

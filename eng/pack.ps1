@@ -18,13 +18,12 @@ param(
   [Alias("h")] [switch] $Help
 )
 
-Set-StrictMode -version Latest
+Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-. (join-path $PSScriptRoot "eng\shared.ps1")
-. (join-path $PSScriptRoot "eng\git.ps1")
+. (Join-Path $PSScriptRoot "shared.ps1")
 
-"Release" | New-Variable -Name CONFIGURATION -Scope Script -Option Constant
+New-Variable -Name "CONFIGURATION" -Value "Release" -Scope Script -Option Constant
 
 ################################################################################
 
@@ -37,14 +36,14 @@ function print-usage {
   say "  -h|-Help     print this help and exit.`n"
 }
 
-function get-version([string] $proj) {
-  $xml = [Xml] (get-content $proj)
-  $node = (select-xml -Xml $xml -XPath "//Project/PropertyGroup/MajorVersion/..").Node
+function get-pkgversion([string] $proj) {
+  $xml = [Xml] (Get-Content $proj)
+  $node = (Select-Xml -Xml $xml -XPath "//Project/PropertyGroup/MajorVersion/..").Node
 
-  $major = $node | select -First 1 -ExpandProperty MajorVersion
-  $minor = $node | select -First 1 -ExpandProperty MinorVersion
-  $patch = $node | select -First 1 -ExpandProperty PatchVersion
-  $prere = $node | select -First 1 -ExpandProperty PreReleaseTag
+  $major = $node | Select -First 1 -ExpandProperty MajorVersion
+  $minor = $node | Select -First 1 -ExpandProperty MinorVersion
+  $patch = $node | Select -First 1 -ExpandProperty PatchVersion
+  $prere = $node | Select -First 1 -ExpandProperty PreReleaseTag
 
   "$major.$minor.$patch-$prere"
 }
@@ -70,23 +69,23 @@ function run-test {
 function run-pack([string] $projName, [switch] $force) {
   say-loud "Packing."
 
-  $version = get-version (join-path $ROOT_DIR "eng\$projName.props")
+  $version = get-pkgversion (Join-Path $ENG_DIR "$projName.props")
 
-  $proj = join-path $SRC_DIR $projName
-  $pkg = join-path $PKG_DIR "$projName.$version.nupkg"
+  $proj = Join-Path $SRC_DIR $projName
+  $pkg = Join-Path $PKG_OUTDIR "$projName.$version.nupkg"
 
-  if (test-path $pkg) {
+  if (Test-Path $pkg) {
     carp "A package with the same version ($version) already exists."
 
     $question = "Do you wish to proceed anyway? [y/n]"
-    $answer = read-host $question
+    $answer = Read-Host $question
     while ($answer -ne "y") {
       if ($answer -eq "n") { exit 0 }
-      $answer = read-host $question
+      $answer = Read-Host $question
     }
 
     say "The old package file will be removed now."
-    remove-item $pkg
+    Remove-Item $pkg
   }
 
   # Find commit hash and branch.
@@ -104,7 +103,7 @@ function run-pack([string] $projName, [switch] $force) {
   # enabled within the proj file.
   # Remove DebugType to use plain pdb's.
   & dotnet pack $proj -c $CONFIGURATION --nologo `
-    --output $PKG_DIR `
+    --output $PKG_OUTDIR `
     -p:TargetFrameworks='\"netstandard2.0;netstandard2.1;netcoreapp3.1\"' `
     -p:Retail=true `
     -p:RepositoryCommit=$commit `

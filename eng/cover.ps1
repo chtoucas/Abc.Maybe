@@ -46,12 +46,12 @@ param(
   [Alias("h")] [switch] $Help
 )
 
-Set-StrictMode -version Latest
+Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-. (join-path $PSScriptRoot "eng\shared.ps1")
+. (Join-Path $PSScriptRoot "shared.ps1")
 
-"Debug" | New-Variable -Name CONFIGURATION -Scope Script -Option Constant
+New-Variable -Name "CONFIGURATION" -Value "Debug" -Scope Script -Option Constant
 
 ################################################################################
 
@@ -68,11 +68,11 @@ function get-opencover([string] $proj) {
   # Find the OpenCover version.
   $xml = [Xml] (get-content $proj)
   $xpath = "//Project/ItemGroup/PackageReference[@Include='OpenCover']"
-  $version = select-xml -Xml $xml -XPath $xpath `
-    | select -ExpandProperty Node `
-    | select -First 1 -ExpandProperty Version
+  $version = Select-Xml -Xml $xml -XPath $xpath `
+    | Select -ExpandProperty Node `
+    | Select -First 1 -ExpandProperty Version
 
-  join-path $env:USERPROFILE `
+  Join-Path $env:USERPROFILE `
     ".nuget\packages\opencover\$version\tools\OpenCover.Console.exe"
 }
 
@@ -150,20 +150,20 @@ try {
   pushd $ROOT_DIR
 
   $tool = if ($OpenCover) { "opencover" } else { "coverlet" }
-  $outdir = join-path $ARTIFACTS_DIR $tool
-  $outxml = join-path $outdir "$tool.xml"
+  $outdir = Join-Path $ARTIFACTS_DIR $tool
+  $outxml = Join-Path $outdir "$tool.xml"
 
   # Create the directory if it does not already exist.
   # Do not remove this, it must be done before calling OpenCover.
-  if (-not (test-path $outdir)) {
-    mkdir -Force -Path $outdir | out-null
+  if (-not (Test-Path $outdir)) {
+    mkdir -Force -Path $outdir | Out-Null
   }
 
   if ($ReportOnly) {
     carp "On your request, we do not run any Code Coverage tool."
   }
   elseif ($OpenCover) {
-    get-opencover (join-path $SRC_DIR "Abc.Tests\Abc.Tests.csproj") `
+    get-opencover (Join-Path $SRC_DIR "Abc.Tests\Abc.Tests.csproj") `
       | run-opencover -output $outxml
   }
   else {
@@ -181,8 +181,8 @@ try {
     try {
       pushd $outdir
 
-      cp -Force -Path "badge_combined.svg" -Destination (join-path ".." "$tool.svg")
-      cp -Force -Path "Summary.txt" -Destination (join-path ".." "$tool.txt")
+      cp -Force -Path "badge_combined.svg" -Destination (Join-Path ".." "$tool.svg")
+      cp -Force -Path "Summary.txt" -Destination (Join-Path ".." "$tool.txt")
     }
     finally {
       popd

@@ -3,6 +3,9 @@ Changelog for Abc.
 vNEXT
 -----
 
+Internals
+- New script eng\mark-shipped.ps1.
+
 2020-04-12, version 1.0.0-alpha3
 ---------------------------------
 
