@@ -64,19 +64,23 @@ Other tasks:
 Release Process
 ---------------
 
-1. Version (update eng\Abc.Maybe.props).
+Requirement: command-line git.
 
-2. Update CHANGELOG.
+1. New version in eng\Abc.Maybe.props
+2. Update CHANGELOG
+3. Git commit
+4. Run script eng\pack.ps1
+5. Publish package
 
-3. (Major) Run script eng\mark-shipped.ps1
-   It updates the files PublicAPI.Shipped.txt and PublicAPI.Unshipped.txt.
-   Obsolete members are moved from Shipped to Unshipped and prefixed w/ *REMOVED*.
+Post actions, only for **major** releases.
+1. Run script eng\mark-shipped.ps1
+2. Git commit
+3. Git tag
 
-4. (Major) Git Tag
+Development
+-----------
 
-Guidelines
-----------
-
+Coding guidelines.
 - Methods that return something should have the attribure Pure. It is not
   mandatory but it clearly states that the result should not be ignored.
   It might seem superfluous, but "ça ne mange pas de pain".
@@ -90,11 +94,11 @@ Changes to the default editor config (does not affect the compilation).
 https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-language-conventions?view=vs-2019
 
 Local tools:
-- qtest.cmd
-- qperf.cmd
-- eng\cover.ps1
-- eng\pack.ps1
-- eng\mark-shipped.ps1
+- qtest.cmd, run the test suite.
+- qperf.cmd, run the perf tool.
+- eng\cover.ps1, code coverage script.
+- eng\pack.ps1, packaging script.
+- eng\mark-shipped.ps1, update public API file.
 
 Useful tools:
 - NuGet Package Explorer
