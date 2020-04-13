@@ -1,5 +1,6 @@
-# Adapted from
-# https://github.com/dotnet/roslyn/tree/master/scripts/PublicApi
+#Requires -Version 4.0
+
+# Adapted from https://github.com/dotnet/roslyn/tree/master/scripts/PublicApi
 
 <#
 .SYNOPSIS
