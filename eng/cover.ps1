@@ -83,7 +83,7 @@ function Find-OpenCover {
         ".nuget\packages\opencover\$version\tools\OpenCover.Console.exe"
 
     if (-not (Test-Path $exe)) {
-        Croak "Couldn't find OpenCover where I expected it to be."
+        Croak "Couldn't find OpenCover v$version where I expected it to be."
     }
 
     $exe

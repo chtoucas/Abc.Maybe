@@ -151,35 +151,22 @@ function Assert-CmdSuccess {
 # Find the path to the system git command.
 function Find-GitExe {
     [CmdletBinding()]
-    param([switch] $Force)
+    param()
 
     Write-Verbose "Finding the system git command."
 
-    $git = (Get-Command "git.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue)
+    $git = Get-Command "git.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
 
     if ($git -eq $null) {
         Carp "Git could not be found in your PATH. Please ensure Git is installed."
         return $null
     }
 
-    $exe = $git.Path
-
-    $status = Get-GitStatus $exe
-
-    if ($status -eq $null) {
-        Carp "Unabled to verify the git status."
-        if (-not $Force) { return $null }
-    }
-    elseif ($status -ne "") {
-        Carp "Uncommitted changes are pending."
-        if (-not $Force) { return $null }
-    }
-
-    $exe
+    $git.Path
 }
 
-# Get the git status.
-function Get-GitStatus {
+# Verify that there are no pending changes.
+function Approve-GitStatus {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
@@ -189,18 +176,20 @@ function Get-GitStatus {
 
     Write-Verbose "Getting the git status."
 
-    $status = $null
-
     try {
-        $status = & $git status -s 2>&1
+        $status = & $Git status -s 2>&1
+
+        if ($status -eq "") {
+            return $true
+        }
+        else {
+            Carp "Uncommitted changes are pending."
+            return $false
+        }
     }
     catch {
-        Carp "Git command failed: $_"
+        Carp "Git status failed: $_"
     }
-
-    if ($status -eq $null) { $status = "" }
-
-    $status
 }
 
 # Get the last git commit hash.
@@ -214,16 +203,12 @@ function Get-GitCommitHash {
 
     Write-Verbose "Getting the last git commit hash."
 
-    $hash = ""
-
     try {
-        $hash = & $git log -1 --format="%H" 2>&1
+        return & $Git log -1 --format="%H" 2>&1
     }
     catch {
-        Carp "Git command failed: $_"
+        Carp "Git log failed: $_"
     }
-
-    $hash
 }
 
 # Get the current git branch.
@@ -237,16 +222,12 @@ function Get-GitBranch {
 
     Write-Verbose "Getting the git branch."
 
-    $branch = ""
-
     try {
-        $branch = & $git rev-parse --abbrev-ref HEAD 2>&1
+        return & $Git rev-parse --abbrev-ref HEAD 2>&1
     }
     catch {
-        Carp "Git command failed: $_"
+        Carp "Git rev-parse failed: $_"
     }
-
-    $branch
 }
 
 #endregion

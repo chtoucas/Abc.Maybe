@@ -104,13 +104,15 @@ function Invoke-Pack {
     # Find commit hash and branch.
     $commit = ""
     $branch = ""
-    $git = Find-GitExe -Force:$Force.IsPresent
+    $git = Find-GitExe
     if ($git -ne $null) {
-        $commit = Get-GitCommitHash $git
-        $branch = Get-GitBranch $git
+        if ((Approve-GitStatus $git) -or $Force.IsPresent) {
+            $commit = Get-GitCommitHash $git
+            $branch = Get-GitBranch $git
+        }
     }
-    if ($commit -eq "") { Carp "The commit hash will be empty. Maybe call w/ -Force?" }
-    if ($branch -eq "") { Carp "The branch name will be empty. Maybe call w/ -Force?" }
+    if ($commit -eq "") { Carp "The commit hash will be empty." }
+    if ($branch -eq "") { Carp "The branch name will be empty." }
 
     # Do NOT use --no-restore or --no-build; netstandard2.1 is not currently
     # enabled within the proj file.
