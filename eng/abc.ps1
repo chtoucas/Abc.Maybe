@@ -4,6 +4,7 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 ################################################################################
+#region Project-specific constants.
 
 # Note to myself: do not use a separate directory for build.
 # Build warnings MSB3277, the problem is that we then build all platforms
@@ -12,264 +13,241 @@ $ErrorActionPreference = "Stop"
 
 # Root directory.
 (Get-Item $PSScriptRoot).Parent.FullName `
-  | New-Variable -Name "ROOT_DIR" -Scope Local -Option Constant
+    | New-Variable -Name "ROOT_DIR" -Scope Local -Option Constant
 
 # Artifacts directory.
 (Join-Path $ROOT_DIR "__") `
-  | New-Variable -Name "ARTIFACTS_DIR" -Scope Script -Option Constant
+    | New-Variable -Name "ARTIFACTS_DIR" -Scope Script -Option Constant
 
 # Engineering directory.
 (Join-Path $ROOT_DIR "eng") `
-  | New-Variable -Name "ENG_DIR" -Scope Script -Option Constant
+    | New-Variable -Name "ENG_DIR" -Scope Script -Option Constant
 
 # Source directory.
 (Join-Path $ROOT_DIR "src") `
-  | New-Variable -Name "SRC_DIR" -Scope Script -Option Constant
+    | New-Variable -Name "SRC_DIR" -Scope Script -Option Constant
 
 # Packages output directory.
 (Join-Path $ARTIFACTS_DIR "packages") `
-  | New-Variable -Name "PKG_OUTDIR" -Scope Script -Option Constant
+    | New-Variable -Name "PKG_OUTDIR" -Scope Script -Option Constant
 
-# Reporting.
+function Approve-RepositoryRoot {
+    if (-not [System.IO.Path]::IsPathRooted($ROOT_DIR)) {
+        Croak "The root path MUST be absolute."
+    }
+}
+
+#endregion
 ################################################################################
+#region Reporting.
 
 # Print a message.
 function Say {
-  [CmdletBinding()]
-  param(
-    [Parameter(Mandatory=$true, ValueFromPipeline=$false, ValueFromPipelineByPropertyName=$false)]
-    [ValidateNotNullOrEmpty()]
-    [string] $Message
-  )
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $Message
+    )
 
-  Write-Host $Message
+    Write-Host $Message
 }
 
 # Say out loud a message; print it with emphasis.
 function Say-Loud {
-  [CmdletBinding()]
-  param(
-    [Parameter(Mandatory=$true, ValueFromPipeline=$false, ValueFromPipelineByPropertyName=$false)]
-    [ValidateNotNullOrEmpty()]
-    [string] $Message
-  )
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $Message
+    )
 
-  Write-Host $Message -BackgroundColor DarkCyan -ForegroundColor Green
+    Write-Host $Message -BackgroundColor DarkCyan -ForegroundColor Green
 }
 
 function Chirp {
-  [CmdletBinding()]
-  param(
-    [Parameter(Mandatory=$true, ValueFromPipeline=$false, ValueFromPipelineByPropertyName=$false)]
-    [ValidateNotNullOrEmpty()]
-    [string] $Message
-  )
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $Message
+    )
 
   Write-Host $Message -ForegroundColor Green
 }
 
 # Warn user.
 function Carp {
-  [CmdletBinding()]
-  param(
-    [Parameter(Mandatory=$true, ValueFromPipeline=$false, ValueFromPipelineByPropertyName=$false)]
-    [ValidateNotNullOrEmpty()]
-    [string] $Message
-  )
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $Message
+    )
 
   Write-Warning $Message
 }
 
 # Die of errors.
 function Croak {
-  [CmdletBinding()]
-  param(
-    [Parameter(Mandatory=$true, ValueFromPipeline=$false, ValueFromPipelineByPropertyName=$false)]
-    [ValidateNotNullOrEmpty()]
-    [string] $Message,
-
-    [string] $StackTrace
-  )
-
-  # We don't write the message to the error stream (we use Write-Host not
-  # Write-Error).
-  Write-Host $Message -BackgroundColor Red -ForegroundColor Yellow
-
-  if ($StackTrace -ne "") { Write-Host $StackTrace -ForegroundColor Yellow }
-  exit 1
-}
-
-# Helpers.
-################################################################################
-
-function Approve-ProjectRoot {
     [CmdletBinding()]
-    param()
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $Message,
 
-    if (-not [System.IO.Path]::IsPathRooted($ROOT_DIR)) {
-        Croak "The root path MUST be absolute."
-    }
+        [string] $StackTrace
+    )
 
-    if (-not (Test-Path $ROOT_DIR)) {
-        Croak "The root path does NOT exist."
-    }
+    # We don't write the message to the error stream (we use Write-Host not
+    # Write-Error).
+    Write-Host $Message -BackgroundColor Red -ForegroundColor Yellow
+
+    if ($StackTrace -ne "") { Write-Host $StackTrace -ForegroundColor Yellow }
+    exit 1
 }
 
-# Requests confirmation from the user.
-function Confirm-Yes {
-  param(
-    [Parameter(Mandatory = $true, Position = 0)]
-    [string] $Question
-  )
+#endregion
+################################################################################
+#region Misc helpers.
 
-  while ($true) {
-    $answer = (Read-Host $Question, "[y/N]")
-
-    if ($answer -eq "" -or $answer -eq "n") {
-      return $false
-    }
-    elseif ($answer -eq "y") {
-      return $true
-    }
-  }
-}
-
+# Request confirmation to continue.
 function Confirm-Continue {
-  param(
-    [Parameter(Mandatory = $true, Position = 0)]
-    [string] $Question
-  )
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0)]
+        [string] $Question
+    )
 
-  while ($true) {
-    $answer = (Read-Host $Question, "[y/N]")
+    while ($true) {
+        $answer = (Read-Host $Question, "[y/N]")
 
-    if ($answer -eq "" -or $answer -eq "n") {
-      Chirp "Stopping on user request."
-      exit 0
+        if ($answer -eq "" -or $answer -eq "n") {
+            Say "Stopping on your request."
+            exit 0
+        }
+        elseif ($answer -eq "y") {
+            break
+        }
     }
-    elseif ($answer -eq "y") {
-      break
-    }
-  }
 }
 
 # Die if the exit code of the last external command that was run is not equal to zero.
 function Assert-CmdSuccess {
-  [CmdletBinding()]
-  param(
-    [Parameter(Mandatory=$true, ValueFromPipeline=$false, ValueFromPipelineByPropertyName=$false)]
-    [ValidateNotNullOrEmpty()]
-    [string] $ErrMessage
-  )
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $ErrMessage
+    )
 
-  if ($LastExitCode -ne 0) { Croak $ErrMessage }
+    if ($LastExitCode -ne 0) { Croak $ErrMessage }
 }
 
-# Git-related functions.
+#endregion
 ################################################################################
+#region Git-related functions.
 
 # Find the path to the system git command.
 function Find-GitExe {
-  [CmdletBinding()]
-  param([switch] $Force)
+    [CmdletBinding()]
+    param([switch] $Force)
 
-  Write-Verbose "Finding the installed git command."
+    Write-Verbose "Finding the system git command."
 
-  $git = (Get-Command "git.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue)
+    $git = (Get-Command "git.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue)
 
-  if ($git -eq $null) {
-    Carp "Git could not be found in your PATH. Please ensure Git is installed."
-    return $null
-  }
+    if ($git -eq $null) {
+        Carp "Git could not be found in your PATH. Please ensure Git is installed."
+        return $null
+    }
 
-  $exe = $git.Path
+    $exe = $git.Path
 
-  $status = Get-GitStatus $exe
+    $status = Get-GitStatus $exe
 
-  if ($status -eq $null) {
-    Carp "Unabled to verify the git status."
-    if (-not $Force) { return $null }
-  }
-  elseif ($status -ne "") {
-    Carp "Uncommitted changes are pending."
-    if (-not $Force) { return $null }
-  }
+    if ($status -eq $null) {
+        Carp "Unabled to verify the git status."
+        if (-not $Force) { return $null }
+    }
+    elseif ($status -ne "") {
+        Carp "Uncommitted changes are pending."
+        if (-not $Force) { return $null }
+    }
 
-  $exe
+    $exe
 }
 
 # Get the git status.
 function Get-GitStatus {
-  [CmdletBinding()]
-  param(
-    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
-    [ValidateNotNullOrEmpty()]
-    [string] $Git
-  )
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $Git
+    )
 
-  Write-Verbose "Getting the git status."
+    Write-Verbose "Getting the git status."
 
-  $status = $null
+    $status = $null
 
-  try {
-    $status = & $git status -s 2>&1
-
-    if ($status -eq $null) {
-      $status = ""
+    try {
+        $status = & $git status -s 2>&1
     }
-  }
-  catch {
-    Carp "Git command failed: $_"
-  }
+    catch {
+        Carp "Git command failed: $_"
+    }
 
-  $status
+    if ($status -eq $null) { $status = "" }
+
+    $status
 }
 
-# Get the last git commit hash of the local repository.
+# Get the last git commit hash.
 function Get-GitCommitHash {
-  [CmdletBinding()]
-  param(
-    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
-    [ValidateNotNullOrEmpty()]
-    [string] $Git
-  )
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $Git
+    )
 
-  Write-Verbose "Getting the last git commit hash."
+    Write-Verbose "Getting the last git commit hash."
 
-  $hash = ""
+    $hash = ""
 
-  try {
-    $hash = & $git log -1 --format="%H" 2>&1
-  }
-  catch {
-    Carp "Git command failed: $_"
-  }
+    try {
+        $hash = & $git log -1 --format="%H" 2>&1
+    }
+    catch {
+        Carp "Git command failed: $_"
+    }
 
-  $hash
+    $hash
 }
 
-# Get the git branch of the local repository.
+# Get the current git branch.
 function Get-GitBranch {
-  [CmdletBinding()]
-  param(
-    [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
-    [ValidateNotNullOrEmpty()]
-    [string] $Git
-  )
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $Git
+    )
 
-  Write-Verbose "Getting the git branch."
+    Write-Verbose "Getting the git branch."
 
-  $branch = ""
+    $branch = ""
 
-  try {
-    $branch = & $git rev-parse --abbrev-ref HEAD 2>&1
-  }
-  catch {
-    Carp "Git command failed: $_"
-  }
+    try {
+        $branch = & $git rev-parse --abbrev-ref HEAD 2>&1
+    }
+    catch {
+        Carp "Git command failed: $_"
+    }
 
-  $branch
+    $branch
 }
 
+#endregion
 ################################################################################
-
