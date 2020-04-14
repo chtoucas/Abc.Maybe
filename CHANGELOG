@@ -6,12 +6,14 @@ vNEXT
 Internals
 - New script eng\update-api.ps1.
 - New option to hard clean the solution before packing.
+- Upgraded packages:
+  * ReportGenerator 4.5.5 -> 4.5.6.
 
 2020-04-12, version 1.0.0-alpha3
 ---------------------------------
 
 Changed
-- MaybeComparer<T>, complete rewrite, optionally structural.
+- [BREAKING] MaybeComparer<T>, complete rewrite, optionally structural.
 - Apply attribute EditorBrowsable to methods reserved for advanced scenarios.
 - Strong-name the public assembly.
 - Embed the debug symbols.
@@ -20,19 +22,21 @@ Internals
 - New perf project.
 - Rewrite most scripts using PowerShell.
 - Better build system.
-- Upgrade packages:
+- Upgraded packages:
   * BenchmarkDotNet 0.12.0 -> 0.12.1.
   * ReportGenerator 4.5.3 -> 4.5.5.
 
 2020-04-03, version 1.0.0-alpha-2
 ---------------------------------
 
-Changed
-- Async methods now use eager validation.
-- Maybe<T>.OrElseAsync() now expects a factory rather than a task.
-- Maybe.Compose() and Maybe.ComposeBack() now return a "maybe" rather than
-  an anonymous function.
+Added
 - The NuGet package now includes the pdb.
+
+Changed
+- [BREAKING] Maybe<T>.OrElseAsync() now expects a factory rather than a task.
+- [BREAKING] Maybe.Compose() and Maybe.ComposeBack() now return a "maybe" rather
+  than an anonymous function.
+- Async methods now use eager validation.
 
 Removed
 - Maybe<T>.GroupJoin(); use Maybe<T>.SelectMany() instead.
@@ -41,7 +45,7 @@ Removed
 
 Internals
 - Full test coverage.
-- Replaced OpenCover by coverlet as the default tool for test coverage.
+- Replaced OpenCover by Coverlet as the default tool for test coverage.
 - New project Narvalo.Future for experimental code.
 - Cleaned up project files.
   * No longer define compiler symbols NETSTANDARD2_0 and NETSTANDARD2_1 as

@@ -72,7 +72,7 @@ Requirement: command-line git.
 4. Run script eng\pack.ps1
 5. Publish package
 
-Post actions, only for non-beta releases.
+Post actions, only for production packages.
 1. Run script eng\update-api.ps1
 2. Git commit
 3. Git tag
@@ -80,26 +80,56 @@ Post actions, only for non-beta releases.
 Development
 -----------
 
-Coding guidelines.
+Rules.
+- Seal classes unless they are designed for extensibility.
+- Add nullable annotations wherever necessary.
+  Tag any use of the null-forgiving operator (!) with BONSANG!.
 - Methods that return something should have the attribure Pure. It is not
   mandatory but it clearly states that the result should not be ignored.
   It might seem superfluous, but "ça ne mange pas de pain".
-- Add _nullable annotations_ wherever necessary.
-- _Seal classes_ unless they are designed with extensibility in mind.
-- Tag any use of the null-forgiving operator (!) with BONSANG!.
+
+Versioning: Major.Minor.Patch[-PreRelease]
+- Major: Breaking changes -or- Major new features.
+- Minor: Minor new features, but backwards compatible.
+- Patch: Backwards compatible bug fixes only.
+- PreRelease:
+  DEV)   Internal, not for public consumption.
+  alpha) Used for work-in-progress and experimentation.
+  beta)  One that is feature complete for the next planned release, but may
+         contain known bugs.
+Regarding new features, we do not follow exactly semantic versioning;
+see https://docs.microsoft.com/en-us/nuget/concepts/package-versioning
+
+Under normal circumstances, we do NOT introduce breaking changes, in particular
+we do NOT remove features (we mark them as obsolete).
+If we have to, this can ONLY happen with a new MAJOR release (not minor), eg
+1.3.4 to 2.0.0 is OK, but 1.3.4 to 1.4.0 is NOT.
+Pre-releases are free to introduce new features and remove them after; it should
+not happen with beta releases but we never know.
+
+Changelog sections.
+- Added, for new features.
+- Changed, for changes in existing functionality.
+  Breaking changes MUST be prefixed w/ [BREAKING] and appeared first.
+  New obsolete methods MUST be prefixed w/ [OBSOLETE] and appear just after.
+- Removed, for now removed features.
+- Fixed, for any bug fixes.
+- Security, in case of vulnerabilities.
+- Internals, for internal changes that are of no interest outside the project.
+Partially inspired by https://keepachangelog.com/en/1.0.0/
 
 Changes to the default editor config (does not affect the compilation).
 - IDE0039 - csharp_style_pattern_local_over_anonymous_function
 - IDE0060 - dotnet_code_quality_unused_parameters, (Remove unused parameter) covered by CA1801.
 https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-language-conventions?view=vs-2019
 
-Local tools:
-- qtest.cmd, run the test suite.
-- qperf.cmd, run the perf tool.
-- eng\cover.ps1, code coverage script.
-- eng\pack.ps1, packaging script.
-- eng\mark-shipped.ps1, update public API file.
+Local tools.
+- qtest.cmd, quickly run the test suite.
+- qperf.cmd, quickly run the perf tool.
+- eng\cover.ps1, code coverage script (Coverlet or OpenCover).
+- eng\pack.ps1, packing script.
+- eng\update-api.ps1, update public API files.
 
-Useful tools:
+Useful tools.
 - NuGet Package Explorer
 - ILDasm, ILSpy, dotPeek
