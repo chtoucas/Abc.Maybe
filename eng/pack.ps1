@@ -9,6 +9,20 @@ Clean the solution before anything else.
 
 .PARAMETER NoTest
 Do NOT run the test suite.
+
+.PARAMETER Force
+Force packing even when there are uncommited changes.
+
+.PARAMETER Safe
+Hard clean the solution before creating the package by removing the 'bin' and
+'obj' directories. Normally, it should not be necessary.
+
+.PARAMETER Help
+Print help.
+
+.EXAMPLE
+PS>pack.ps1 -c -s
+Clean & safe packing.
 #>
 [CmdletBinding()]
 param(
@@ -34,9 +48,9 @@ function Write-Usage {
 Create a NuGet package for Abc.Maybe
 
 Usage: pack.ps1 [switches]
-  -c|-Clean    clean the solution before anything else.
+  -c|-Clean    soft clean the solution before anything else.
   -n|-NoTest   do NOT run the test suite.
-  -f|-Force    force packaging even without a git commit hash -or- when there are uncommited changes.
+  -f|-Force    force packing even when there are uncommited changes.
   -s|-Safe     hard clean the solution before creating the package.
   -h|-Help     print this help and exit.
 
@@ -101,7 +115,6 @@ function Invoke-Pack {
 
     if (Test-Path $pkg) {
         Carp "A package with the same version ($version) already exists."
-
         Confirm-Continue "Do you wish to proceed anyway?"
 
         Say "The old package file will be removed now."
@@ -112,16 +125,19 @@ function Invoke-Pack {
     $commit = ""
     $branch = ""
     $git = Find-GitExe
-    if ($git -ne $null) {
+    if ($git -eq $null) {
+        Confirm-Continue "Continue even without any git metadata?"
+    }
+    else {
         # Keep Approve-GitStatus before $Force: we always want to see a warning
         # when there are uncommited changes.
         if ((Approve-GitStatus $git) -or $Force) {
             $commit = Get-GitCommitHash $git
             $branch = Get-GitBranch $git
         }
+        if ($commit -eq "") { Carp "The commit hash will be empty. Maybe use -Force?" }
+        if ($branch -eq "") { Carp "The branch name will be empty. Maybe use -Force?" }
     }
-    if ($commit -eq "") { Carp "The commit hash will be empty." }
-    if ($branch -eq "") { Carp "The branch name will be empty." }
 
     # Safe packing?
     if ($Safe) {

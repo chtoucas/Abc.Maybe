@@ -26,6 +26,9 @@ Do NOT build HTML/text reports and badges w/ ReportGenerator.
 .PARAMETER ReportOnly
 Do NOT run any Code Coverage tool.
 
+.PARAMETER Help
+Print help.
+
 .EXAMPLE
 PS>cover.ps1
 Run Coverlet then build the human-readable reports.

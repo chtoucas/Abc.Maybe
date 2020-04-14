@@ -46,7 +46,7 @@ function Update-PublicAPI([string] $dir) {
     }
 
     Say "Writing PublicAPI.Shipped.txt."
-    $shipped
+    $shipped `
         | Sort-Object `
         | ?{ -not $removed.Contains($_) } `
         | Out-File $shippedPath -Encoding UTF8
