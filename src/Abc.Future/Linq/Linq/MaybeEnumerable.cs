@@ -17,6 +17,7 @@ namespace Abc.Linq.Linq
     public partial class MaybeEnumerable
     {
         [Pure]
+        [RejectedApi]
         public static Maybe<IEnumerable<TResult>> Select<T, TResult>(
             this Maybe<IEnumerable<T>> source,
             Func<T, TResult> selector)
@@ -25,6 +26,7 @@ namespace Abc.Linq.Linq
         }
 
         [Pure]
+        [RejectedApi]
         public static Maybe<IEnumerable<T>> Where<T>(
             this Maybe<IEnumerable<T>> source,
             Func<T, bool> predicate)
@@ -33,6 +35,7 @@ namespace Abc.Linq.Linq
         }
 
         [Pure]
+        [RejectedApi]
         public static Maybe<IEnumerable<TResult>> SelectMany<T, TMiddle, TResult>(
             this Maybe<IEnumerable<T>> source,
             Func<T, IEnumerable<TMiddle>> selector,

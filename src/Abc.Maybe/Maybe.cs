@@ -10,11 +10,12 @@ namespace Abc
 
     using Anexn = System.ArgumentNullException;
 
-    // REVIEW: Maybe extensions & helpers; see also MaybeEx in "Abc.Future".
-    // - playing with the modifier "in". Currently only added to ext methods for
-    //   Maybe<T> where T is a struct.
+    // TODO: Maybe extensions & helpers.
     // - Maybe<IEnumerable>; see CollectAny().
     // - IDisposable extensions? CA2000
+    // REVIEW: Maybe extensions & helpers.
+    // - playing with the modifier "in". Currently only added to ext methods for
+    //   Maybe<T> where T is a struct.
 
     /// <summary>
     /// Provides static helpers and extension methods for <see cref="Maybe{T}"/>.

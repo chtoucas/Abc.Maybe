@@ -10,7 +10,7 @@ namespace Abc.Linq
     /// <para>This class cannot be inherited.</para>
     /// </summary>
     ///
-    /// <_text><![CDATA[
+    /// <remarks><![CDATA[
     /// Overview of the new LINQ operators.
     ///
     /// Projecting:
@@ -27,6 +27,6 @@ namespace Abc.Linq
     ///
     /// Reference:
     /// https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/linq/classification-of-standard-query-operators-by-manner-of-execution
-    /// ]]></_text>
+    /// ]]></remarks>
     public static partial class Qperators { }
 }

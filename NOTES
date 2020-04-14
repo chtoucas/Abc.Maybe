@@ -4,12 +4,13 @@ vNEXT
 -----
 
 Version 1.0.0-alpha4
+Comparisons.
 - Add overloads w/ IEqualityComparer<T>? Maybe<T> == T?
 - Finish MaybeComparer<T>.
 
 Version 1.0.0-beta1
-- Stable API.
-- FIXMEs and TODOs.
+Stable API.
+- No more FIXMEs or TODOs.
 
 Towards version 1.0.0
 - README: a bit of marketing, compare to other option types.
@@ -120,7 +121,9 @@ Changelog sections.
 - Fixed, for any bug fixes.
 - Security, in case of vulnerabilities.
 - Internals, for internal changes that are of no interest outside the project.
-Partially inspired by https://keepachangelog.com/en/1.0.0/
+MAJOR releases should have a title and highlight the relevant changes made
+during the pre-release phase.
+Inspired by https://keepachangelog.com/en/1.0.0/
 
 Changes to the default editor config (does not affect the compilation).
 - IDE0039 - csharp_style_pattern_local_over_anonymous_function

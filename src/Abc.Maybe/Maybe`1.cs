@@ -17,7 +17,10 @@ namespace Abc
     using Anexn = System.ArgumentNullException;
     using EF = Abc.Utilities.ExceptionFactory;
 
-    // REVIEW: Maybe type
+    // TODO: Maybe type.
+    // - IEquatable<T> (T == Maybe<T>), IComparable<T> but a bit missleading?
+    //   Overloads w/ IEqualityComparer<T>.
+    // - naming Skip() -> Void(), Unit(), Discard(), Erase(), Forget()?
     // - nullable attrs, notnull constraint.
     //   It would make a lot of sense to add a notnull constraint on the T of
     //   Maybe<T>, but it worries me a bit (I need to gain more experience with
@@ -28,12 +31,10 @@ namespace Abc
     //   https://devblogs.microsoft.com/dotnet/try-out-nullable-reference-types/
     //   https://devblogs.microsoft.com/dotnet/nullable-reference-types-in-csharp/
     //   https://devblogs.microsoft.com/dotnet/embracing-nullable-reference-types/
-    // - IEquatable<T> (T == Maybe<T>), IComparable<T> but a bit missleading?
-    //   Overloads w/ IEqualityComparer<T>.
+    // REVIEW: Maybe type.
     // - Serializable? Binary serialization only.
     //   https://docs.microsoft.com/en-us/dotnet/standard/serialization/binary-serialization
     // - Set ops POV.
-    // - naming Skip() -> Void(), Unit(), Discard(), Erase(), Forget()?
     // - Struct really? Explain and compare to ValueTuple
     //   https://docs.microsoft.com/en-gb/dotnet/csharp/tuples
     //   http://mustoverride.com/tuples_structs/
@@ -48,7 +49,7 @@ namespace Abc
     /// in the section remarks).</para>
     /// </summary>
     ///
-    /// <_text><![CDATA[
+    /// <remarks><![CDATA[
     /// Overview.
     ///
     /// Maybe<T> is an option type for C#.
@@ -121,7 +122,7 @@ namespace Abc
     ///
     /// We also have several extension methods for specific types of T, eg
     /// structs, functions or enumerables; see the static class Maybe.
-    /// ]]></_text>
+    /// ]]></remarks>
     [DebuggerDisplay("{" + nameof(DebuggerDisplay) + ",nq}")]
     [DebuggerTypeProxy(typeof(Maybe<>.DebugView_))]
     public readonly partial struct Maybe<T>
@@ -211,7 +212,7 @@ namespace Abc
         /// Represents a debugger type proxy for <see cref="Maybe{T}"/>.
         /// </summary>
         [ExcludeFromCodeCoverage]
-        // TODO: why CA1812 when NO_INTERNALS_VISIBLE_TO is set?
+        // REVIEW: why CA1812 when NO_INTERNALS_VISIBLE_TO is set?
         [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes")]
         private sealed class DebugView_
         {

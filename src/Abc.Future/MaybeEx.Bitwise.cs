@@ -69,6 +69,7 @@ namespace Abc
         ///   None    OrElseRTL None    == None
         /// ]]></code>
         [Pure]
+        [RejectedApi]
         public static Maybe<T> OrElseRTL<T>(
             this Maybe<T> @this, Maybe<T> other)
         {
@@ -95,6 +96,7 @@ namespace Abc
         // Compare to the nullable equiv w/ x an int? and y a long?:
         //   (y.HasValue ? x : (int?)null).
         [Pure]
+        [RejectedApi]
         public static Maybe<T> AndThenRTL<T, TOther>(
             this Maybe<T> @this, Maybe<TOther> other)
         {
@@ -121,6 +123,7 @@ namespace Abc
         ///   None    Unless None     == None
         /// ]]></code>
         [Pure]
+        [RejectedApi]
         public static Maybe<T> Unless<T, TOther>(
             this Maybe<T> @this, Maybe<TOther> other)
         {
@@ -140,6 +143,7 @@ namespace Abc
         ///   None    UnlessRTL None     == None
         /// ]]></code>
         [Pure]
+        [RejectedApi]
         public static Maybe<TResult> UnlessRTL<T, TResult>(
            this Maybe<T> @this, Maybe<TResult> other)
         {
@@ -156,6 +160,7 @@ namespace Abc
         ///   None    LeftAnd None    == None
         /// ]]></code>
         [Pure]
+        [RejectedApi]
         public static Maybe<T> LeftAnd<T>(Maybe<T> left, Maybe<T> right)
         {
             return !left.IsNone && !right.IsNone ? left : right;
@@ -171,6 +176,7 @@ namespace Abc
         ///   None    RightAnd None    == None
         /// ]]></code>
         [Pure]
+        [RejectedApi]
         public static Maybe<T> RightAnd<T>(Maybe<T> left, Maybe<T> right)
         {
             return !left.IsNone && !right.IsNone ? right : left;
@@ -186,6 +192,7 @@ namespace Abc
         ///   None    Ignore None     == None
         /// ]]></code>
         [Pure]
+        [RejectedApi]
         public static Maybe<T> Ignore<T, TOther>(
             this Maybe<T> @this, Maybe<TOther> other)
         {
@@ -202,6 +209,7 @@ namespace Abc
         ///   None    ContinueWith None     == None
         /// ]]></code>
         [Pure]
+        [RejectedApi]
         public static Maybe<TResult> ContinueWith<T, TResult>(
             this Maybe<T> @this, Maybe<TResult> other)
         {

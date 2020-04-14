@@ -7,8 +7,9 @@ namespace Abc.Linq
     using System.Diagnostics.Contracts;
     using System.Linq;
 
-    // REVIEW: TSource? and Maybe<TSource>.
-    // TODO: compare to ElementAtOrDefault for nullable's.
+    // TODO: ElementAtOrNone.
+    // - TSource? and Maybe<TSource>.
+    // - compare to ElementAtOrDefault for nullable's.
 
     public static partial class Qperators
     {

@@ -10,6 +10,7 @@ namespace Abc.Linq
     public partial class QperatorsEx
     {
         [Pure]
+        [RejectedApi]
         public static IEnumerable<TResult> ZipAny<T1, T2, TResult>(
             this IEnumerable<T1> first,
             IEnumerable<T2> second,

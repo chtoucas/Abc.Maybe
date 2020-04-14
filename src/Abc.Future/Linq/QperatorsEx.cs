@@ -2,13 +2,13 @@
 
 namespace Abc.Linq
 {
-    /// <_text><![CDATA[
+    /// <remarks><![CDATA[
     /// Joining:
     /// - ZipAny()          deferred streaming execution
     ///
     /// Aggregation operations:
     /// - FoldAny()         immediate execution
     /// - ReduceAny()       immediate execution
-    /// ]]></_text>
+    /// ]]></remarks>
     public static partial class QperatorsEx { }
 }

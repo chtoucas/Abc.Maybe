@@ -43,6 +43,7 @@ namespace Abc
         /// ]]></code>
         /// </remarks>
         [Pure]
+        [RejectedApi]
         public static Maybe<TResult> GroupJoin<TOuter, TInner, TKey, TResult>(
             this Maybe<TOuter> outer,
             Maybe<TInner> inner,
@@ -66,6 +67,7 @@ namespace Abc
         // No query expression syntax.
         // If comparer is null, the default equality comparer is used instead.
         [Pure]
+        [RejectedApi]
         public static Maybe<TResult> GroupJoin<TOuter, TInner, TKey, TResult>(
             this Maybe<TOuter> outer,
             Maybe<TInner> inner,
