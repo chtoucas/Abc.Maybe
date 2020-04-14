@@ -15,6 +15,7 @@ param(
     [Alias("c")] [switch] $Clean,
     [Alias("n")] [switch] $NoTest,
     [Alias("f")] [switch] $Force,
+    [Alias("s")] [switch] $Safe,
     [Alias("h")] [switch] $Help
 )
 
@@ -36,6 +37,7 @@ Usage: pack.ps1 [switches]
   -c|-Clean    clean the solution before anything else.
   -n|-NoTest   do NOT run the test suite.
   -f|-Force    force packaging even without a git commit hash -or- when there are uncommited changes.
+  -s|-Safe     hard clean the solution before creating the package.
   -h|-Help     print this help and exit.
 
 "@
@@ -65,18 +67,9 @@ function Get-PackageVersion {
 function Invoke-Clean {
     SAY-LOUD "Cleaning."
 
-    if (Confirm-Yes "Hard clean?") {
-        Say "Deleting 'bin' and 'obj' directories."
+    & dotnet clean -c $CONFIGURATION -v minimal --nologo
 
-        Remove-BinAndObj $SRC_DIR
-    }
-    else {
-        Say "Cleaning 'bin' and 'obj' directories."
-
-        & dotnet clean -c $CONFIGURATION -v minimal --nologo
-
-        Assert-CmdSuccess -ErrMessage "Clean task failed."
-    }
+    Assert-CmdSuccess -ErrMessage "Clean task failed."
 }
 
 function Invoke-Test {
@@ -120,13 +113,24 @@ function Invoke-Pack {
     $branch = ""
     $git = Find-GitExe
     if ($git -ne $null) {
-        if ((Approve-GitStatus $git) -or $Force.IsPresent) {
+        # Keep Approve-GitStatus before $Force: we always want to see a warning
+        # when there are uncommited changes.
+        if ((Approve-GitStatus $git) -or $Force) {
             $commit = Get-GitCommitHash $git
             $branch = Get-GitBranch $git
         }
     }
     if ($commit -eq "") { Carp "The commit hash will be empty." }
     if ($branch -eq "") { Carp "The branch name will be empty." }
+
+    # Safe packing?
+    if ($Safe) {
+        if (Confirm-Yes "Hard clean?") {
+            Say "Deleting 'bin' and 'obj' directories."
+
+            Remove-BinAndObj $SRC_DIR
+        }
+    }
 
     # Do NOT use --no-restore or --no-build; netstandard2.1 is not currently
     # enabled within the proj file.
