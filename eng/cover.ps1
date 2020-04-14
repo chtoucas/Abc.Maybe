@@ -56,12 +56,17 @@ New-Variable -Name "CONFIGURATION" -Value "Debug" -Scope Script -Option Constant
 ################################################################################
 
 function Write-Usage {
-    Say "`nRun the Code Coverage script and build human-readable reports.`n"
-    Say "Usage: cover.ps1 [switches]"
-    Say "  -x|-OpenCover    use OpenCover instead of Coverlet."
-    Say "     -NoReport     do NOT run ReportGenerator."
-    Say "     -ReportOnly   do NOT run any Code Coverage tool."
-    Say "  -h|-Help         print this help and exit.`n"
+    Say @"
+
+Run the Code Coverage script and build human-readable reports.
+
+Usage: cover.ps1 [switches]
+  -x|-OpenCover    use OpenCover instead of Coverlet.
+     -NoReport     do NOT run ReportGenerator.
+     -ReportOnly   do NOT run any Code Coverage tool.
+  -h|-Help         print this help and exit.
+
+"@
 }
 
 function Find-OpenCover {
@@ -179,7 +184,7 @@ try {
         Carp "On your request, we do not run any Code Coverage tool."
     }
     elseif ($OpenCover) {
-        Find-OpenCover (Join-Path $SRC_DIR "Abc.Tests\Abc.Tests.csproj") `
+        Find-OpenCover (Join-Path $SRC_DIR "Abc.Tests\Abc.Tests.csproj" -Resolve) `
             | Invoke-OpenCover -output $outxml
     }
     else {

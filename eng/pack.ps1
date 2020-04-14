@@ -28,12 +28,17 @@ New-Variable -Name "CONFIGURATION" -Value "Release" -Scope Script -Option Consta
 ################################################################################
 
 function Write-Usage {
-    Say "`nCreate a NuGet package for Abc.Maybe.`n"
-    Say "Usage: pack.ps1 [switches]"
-    Say "  -c|-Clean    clean the solution before anything else."
-    Say "  -n|-NoTest   do NOT run the test suite."
-    Say "  -f|-Force    force packaging even without a git commit hash -or- when there are uncommited changes."
-    Say "  -h|-Help     print this help and exit.`n"
+    Say @"
+
+Create a NuGet package for Abc.Maybe
+
+Usage: pack.ps1 [switches]
+  -c|-Clean    clean the solution before anything else.
+  -n|-NoTest   do NOT run the test suite.
+  -f|-Force    force packaging even without a git commit hash -or- when there are uncommited changes.
+  -h|-Help     print this help and exit.
+
+"@
 }
 
 function Get-PackageVersion {
@@ -44,7 +49,7 @@ function Get-PackageVersion {
         [string] $ProjectName
     )
 
-    $proj = Join-Path $ENG_DIR "$ProjectName.props"
+    $proj = Join-Path $ENG_DIR "$ProjectName.props" -Resolve
 
     $xml = [Xml] (Get-Content $proj)
     $node = (Select-Xml -Xml $xml -XPath "//Project/PropertyGroup/MajorVersion/..").Node
@@ -60,9 +65,18 @@ function Get-PackageVersion {
 function Invoke-Clean {
     SAY-LOUD "Cleaning."
 
-    & dotnet clean -c $CONFIGURATION -v minimal --nologo
+    if (Confirm-Yes "Hard clean?") {
+        Say "Deleting 'bin' and 'obj' directories."
 
-    Assert-CmdSuccess -ErrMessage "Clean task failed."
+        Remove-BinAndObj $SRC_DIR
+    }
+    else {
+        Say "Cleaning 'bin' and 'obj' directories."
+
+        & dotnet clean -c $CONFIGURATION -v minimal --nologo
+
+        Assert-CmdSuccess -ErrMessage "Clean task failed."
+    }
 }
 
 function Invoke-Test {
@@ -89,7 +103,7 @@ function Invoke-Pack {
 
     $version = Get-PackageVersion $ProjectName
 
-    $proj = Join-Path $SRC_DIR $ProjectName
+    $proj = Join-Path $SRC_DIR $ProjectName -Resolve
     $pkg = Join-Path $PKG_OUTDIR "$ProjectName.$version.nupkg"
 
     if (Test-Path $pkg) {

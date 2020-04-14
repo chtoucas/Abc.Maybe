@@ -16,18 +16,18 @@ $ErrorActionPreference = "Stop"
     | New-Variable -Name "ROOT_DIR" -Scope Local -Option Constant
 
 # Artifacts directory.
-(Join-Path $ROOT_DIR "__") `
+(Join-Path $ROOT_DIR "__" -Resolve) `
     | New-Variable -Name "ARTIFACTS_DIR" -Scope Script -Option Constant
 
 # Engineering directory.
-(Join-Path $ROOT_DIR "eng") `
+(Join-Path $ROOT_DIR "eng" -Resolve) `
     | New-Variable -Name "ENG_DIR" -Scope Script -Option Constant
 
 # Source directory.
-(Join-Path $ROOT_DIR "src") `
+(Join-Path $ROOT_DIR "src" -Resolve) `
     | New-Variable -Name "SRC_DIR" -Scope Script -Option Constant
 
-# Packages output directory.
+# Packages output directory (no -Resolve, it might not exist yet).
 (Join-Path $ARTIFACTS_DIR "packages") `
     | New-Variable -Name "PKG_OUTDIR" -Scope Script -Option Constant
 
@@ -112,6 +112,25 @@ function Croak {
 #region Misc helpers.
 
 # Request confirmation to continue.
+function Confirm-Yes {
+    param(
+        [Parameter(Mandatory = $true, Position = 0)]
+        [string] $Question
+    )
+
+    while ($true) {
+        $answer = (Read-Host $Question, '[y/N]')
+
+        if ($answer -eq "" -or $answer -eq "n") {
+            return $false
+        }
+        elseif ($answer -eq "y") {
+            return $true
+        }
+    }
+}
+
+# Request confirmation to continue.
 function Confirm-Continue {
     [CmdletBinding()]
     param(
@@ -142,6 +161,35 @@ function Assert-CmdSuccess {
     )
 
     if ($LastExitCode -ne 0) { Croak $ErrMessage }
+}
+
+function Remove-BinAndObj {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [Alias('p')] [string[]] $PathList
+    )
+
+    Write-Verbose "Removing 'bin' and 'obj' directories."
+
+    $PathList | %{
+        if (-not (Test-Path $_)) {
+            Carp "Ignoring '$_'; the path does NOT exist."
+            return
+        }
+        if (-not [System.IO.Path]::IsPathRooted($_)) {
+            Carp "Ignoring '$_'; the path MUST be absolute."
+            return
+        }
+
+        Write-Verbose "Processing directory '$_'."
+
+        ls $_ -Include bin,obj -Recurse | ?{
+            Write-Verbose "Deleting '$_'."
+
+            rm $_.FullName -Force -Recurse
+        }
+    }
 }
 
 #endregion

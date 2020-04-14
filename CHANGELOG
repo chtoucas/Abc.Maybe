@@ -5,6 +5,7 @@ vNEXT
 
 Internals
 - New script eng\update-api.ps1.
+- New option to hard clean the solution before packing.
 
 2020-04-12, version 1.0.0-alpha3
 ---------------------------------

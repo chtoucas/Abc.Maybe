@@ -21,14 +21,14 @@ $ErrorActionPreference = "Stop"
 function Update-PublicAPI([string] $dir) {
     SAY-LOUD "Processing $dir"
 
-    $shippedPath = Join-Path $dir "PublicAPI.Shipped.txt"
+    $shippedPath = Join-Path $dir "PublicAPI.Shipped.txt" -Resolve
     $shipped = Get-Content $shippedPath
 
     if ($shipped -eq $null) {
         $shipped = @()
     }
 
-    $unshippedPath = Join-Path $dir "PublicAPI.Unshipped.txt"
+    $unshippedPath = Join-Path $dir "PublicAPI.Unshipped.txt" -Resolve
     $unshipped = Get-Content $unshippedPath
     $removed = @()
     $removedPrefix = "*REMOVED*";
