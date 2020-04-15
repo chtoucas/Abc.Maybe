@@ -261,20 +261,6 @@ namespace Abc
             var anyT = AnyT.New();
             Assert.Equal(anyT.Value, (AnyT)anyT.Some);
         }
-
-        //[Fact]
-        //public static void Implicit_ToMaybe()
-        //{
-        //    // Arrange
-        //    Maybe<string> none = My.NullString; // implicit cast of a null-string
-
-        //    // Act & Assert
-        //    Assert.Some(1, 1);      // the second 1 is implicit casted to Maybe<int>
-        //    Assert.None(none);
-
-        //    Assert.True(1 == One);
-        //    Assert.True(One == 1);
-        //}
     }
 
     // Core methods.

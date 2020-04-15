@@ -132,9 +132,9 @@ namespace Abc
         /// <summary>
         /// Checks whether the current instance is empty or not.
         /// </summary>
-        // We expose this property to ease extensibility, see MaybeEx in "play",
-        // but this not mandatory, in fact everything should work fine without
-        // it.
+        // We expose this property to ease extensibility, see MaybeEx in
+        // Abc.Future, but this not mandatory, in fact everything should work
+        // fine without it.
         public bool IsNone => !_isSome;
 
         /// <summary>
@@ -166,19 +166,11 @@ namespace Abc
         [Pure]
         public override string ToString() => _isSome ? $"Maybe({_value})" : "Maybe(None)";
 
-        // TODO: implicit/explicit conversion.
-        // Explicit: ??? exception or null ???
-        // Implicit conversion: test ImplicitToMaybe, see Square() and
-        // SquareOrNone() too.
-        // With null, we can write maybe == null, which is odd for a struct
-        // but at the same time we can write Maybe<string> maybe = s where s is
-        // in fact "null".
-        //
-        // Implicit conversion to Maybe<T> for equality comparison, very much
-        // like what we have will nullable values: (int?)1 == 1 works.
-        // NB: maybe (= Some(x)) == y is equivalent to maybe.Contains(y).
-        //[SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "Maybe.Of()")]
-        //public static implicit operator Maybe<T>([AllowNull] T value) => Maybe.Of(value);
+        // Implicit conversion from T to Maybe<T> could be nice. It would allow
+        // "lifted" equality comparisons, very much like what we have with
+        // nullable values (int?)1 == 1, but here it seems to be a rather bad
+        // idea, better to be explicit. For instance, maybe [= Some(x)] == y is
+        // just maybe.Contains(y), and the latter is semantically more correct.
 
         [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "ValueOrThrow()")]
         public static explicit operator T(Maybe<T> value) =>
