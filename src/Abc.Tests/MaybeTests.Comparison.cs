@@ -459,11 +459,6 @@ namespace Abc
             Assert.False(some.Equals(none, cmp));
         }
 
-        [Fact(Skip = "TODO")]
-        public static void Equals_Structural_Some_ReferenceType_WithStructuralComparer()
-        {
-        }
-
         [Fact]
         public static void Equals_Structural_Some_ReferenceType_WithCustomComparer()
         {
@@ -479,15 +474,17 @@ namespace Abc
             Assert.False(anagram.Equals(margana));
             Assert.False(anagram.Equals(other));
             Assert.False(anagram.Equals(none));
-            Assert.False(anagram.Equals(null));
-            Assert.False(anagram!.Equals(new object())); // Why do we need the "!"?
+            Assert.False(anagram.Equals(new object()));
 
             Assert.True(anagram.Equals(anagram, cmp));
             Assert.True(anagram.Equals(margana, cmp));
             Assert.False(anagram.Equals(other, cmp));
             Assert.False(anagram.Equals(none, cmp));
-            Assert.False(anagram.Equals(null, cmp));
             Assert.False(anagram.Equals(new object(), cmp));
+            Assert.False(anagram.Equals(null, cmp));
+
+            // REVIEW: very odd, after Equals(null), we must use !.
+            Assert.False(anagram.Equals(null));
         }
 
         [Fact]

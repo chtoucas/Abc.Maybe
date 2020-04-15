@@ -23,6 +23,38 @@ namespace Abc
         }
 
         [Fact]
+        public static void Default_Equals_OK()
+        {
+            Assert.True(MaybeComparer<int>.Default.Equals(MaybeComparer<int>.Default));
+            Assert.True(MaybeComparer<long>.Default.Equals(MaybeComparer<long>.Default));
+            Assert.True(MaybeComparer<string>.Default.Equals(MaybeComparer<string>.Default));
+            Assert.True(MaybeComparer<Uri>.Default.Equals(MaybeComparer<Uri>.Default));
+            Assert.True(MaybeComparer<AnyT>.Default.Equals(MaybeComparer<AnyT>.Default));
+        }
+
+        [Fact]
+        public static void Default_Equals_KO()
+        {
+            // Arrange
+            var cmp = MaybeComparer<int>.Default;
+            // Act & Assert
+            Assert.False(cmp.Equals(1));
+            Assert.False(cmp.Equals("text"));
+            Assert.False(cmp.Equals(MaybeComparer<long>.Default));
+            Assert.False(cmp.Equals(MaybeComparer<int>.Structural));
+            Assert.False(cmp.Equals(null));
+        }
+
+        [Fact]
+        public static void Default_GetHashCode()
+        {
+            // Arrange
+            var cmp = MaybeComparer<AnyT>.Default;
+            // Act & Assert
+            Assert.Equal(cmp.GetHashCode(), cmp.GetHashCode());
+        }
+
+        [Fact]
         public static void Compare_ValueType()
         {
             // Arrange
@@ -164,6 +196,112 @@ namespace Abc
             Assert.Same(MaybeComparer<string>.Structural, MaybeComparer<string>.Structural);
             Assert.Same(MaybeComparer<Uri>.Structural, MaybeComparer<Uri>.Structural);
             Assert.Same(MaybeComparer<AnyT>.Structural, MaybeComparer<AnyT>.Structural);
+        }
+
+        [Fact]
+        public static void Structural_Equals_OK()
+        {
+            Assert.True(MaybeComparer<int>.Structural.Equals(MaybeComparer<int>.Structural));
+            Assert.True(MaybeComparer<long>.Structural.Equals(MaybeComparer<long>.Structural));
+            Assert.True(MaybeComparer<string>.Structural.Equals(MaybeComparer<string>.Structural));
+            Assert.True(MaybeComparer<Uri>.Structural.Equals(MaybeComparer<Uri>.Structural));
+            Assert.True(MaybeComparer<AnyT>.Structural.Equals(MaybeComparer<AnyT>.Structural));
+        }
+
+        [Fact]
+        public static void Structural_Equals_KO()
+        {
+            // Arrange
+            var cmp = MaybeComparer<int>.Structural;
+            // Act & Assert
+            Assert.False(cmp.Equals(1));
+            Assert.False(cmp.Equals("text"));
+            Assert.False(cmp.Equals(MaybeComparer<long>.Structural));
+            Assert.False(cmp.Equals(MaybeComparer<int>.Default));
+            Assert.False(cmp.Equals(null));
+        }
+
+        [Fact]
+        public static void Structural_GetHashCode()
+        {
+            // Arrange
+            var cmp = MaybeComparer<AnyT>.Structural;
+            // Act & Assert
+            Assert.Equal(cmp.GetHashCode(), cmp.GetHashCode());
+        }
+
+        [Fact]
+        public static void Compare_Structural_ValueType()
+        {
+            // Arrange
+            var cmp = MaybeComparer<int>.Structural;
+            var none = Maybe<int>.None;
+            var one = Maybe.Some(1);
+            var two = Maybe.Some(2);
+
+            // Act & Assert
+            // With None
+            Assert.Equal(1, cmp.Compare(one, none));
+            Assert.Equal(-1, cmp.Compare(none, one));
+            Assert.Equal(0, cmp.Compare(none, none));
+
+            // Without None
+            Assert.Equal(1, cmp.Compare(two, one));
+            Assert.Equal(0, cmp.Compare(one, one));
+            Assert.Equal(-1, cmp.Compare(one, two));
+        }
+
+        [Fact]
+        public static void Equals_Structural_ValueType()
+        {
+            // Arrange
+            var cmp = MaybeComparer<int>.Structural;
+            var none = Maybe<int>.None;
+            var some = Maybe.Some(1);
+            var same = Maybe.Some(1);
+            var notSame = Maybe.Some(2);
+
+            // Act & Assert
+            // With None
+            Assert.False(cmp.Equals(some, none));
+            Assert.False(cmp.Equals(none, some));
+            Assert.True(cmp.Equals(none, none));
+
+            // Without None
+            Assert.False(cmp.Equals(notSame, some));
+            Assert.True(cmp.Equals(same, some));
+            Assert.True(cmp.Equals(some, some));
+            Assert.True(cmp.Equals(some, same));
+            Assert.False(cmp.Equals(some, notSame));
+        }
+
+        [Fact]
+        public static void GetHashCode_Structural_None()
+        {
+            Assert.Equal(0, MaybeComparer<int>.Structural.GetHashCode(Maybe<int>.None));
+            Assert.Equal(0, MaybeComparer<long>.Structural.GetHashCode(Maybe<long>.None));
+            Assert.Equal(0, MaybeComparer<string>.Structural.GetHashCode(Maybe<string>.None));
+            Assert.Equal(0, MaybeComparer<Uri>.Structural.GetHashCode(Maybe<Uri>.None));
+        }
+
+        [Fact]
+        public static void GetHashCode_Structural_Some()
+        {
+            // Arrange
+            var icmp = MaybeComparer<int>.Structural;
+            var lcmp = MaybeComparer<long>.Structural;
+            var scmp = MaybeComparer<string>.Structural;
+            var ucmp = MaybeComparer<Uri>.Structural;
+            string text = "text";
+            var someText = Maybe.SomeOrNone(text);
+            var uri = new Uri("http://www.narvalo.org");
+            var someUri = Maybe.SomeOrNone(uri);
+            // Act & Assert
+            Assert.Equal(1.GetHashCode(), icmp.GetHashCode(Maybe.Some(1)));
+            Assert.Equal(2.GetHashCode(), icmp.GetHashCode(Maybe.Some(2)));
+            Assert.Equal(2L.GetHashCode(), lcmp.GetHashCode(Maybe.Some(2L)));
+            Assert.Equal(text.GetHashCode(StringComparison.Ordinal), scmp.GetHashCode(someText));
+            Assert.Equal(uri.GetHashCode(), ucmp.GetHashCode(someUri));
         }
     }
 }
