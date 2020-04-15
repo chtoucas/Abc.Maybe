@@ -11,6 +11,7 @@ namespace Abc
 
     // REVIEW: lazy extensions. Is there anything useful we can do w/
     // Lazy<Maybe<T>> or Maybe<Lazy<T>>?
+    // Set (ensemble) POV.
 
     // NB: the code should be optimized if promoted to the main project.
 

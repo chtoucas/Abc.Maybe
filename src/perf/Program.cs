@@ -30,10 +30,7 @@ namespace Abc
         {
             string artifactsPath = GetArtifactsPath();
             var config = GetCustomConfig(artifactsPath, shortRunJob: true)
-                .WithLocalSettings()
-                // REVIEW: NuGet package BenchmarkDotNet.Diagnostics.Windows.
-                //.With(new EtwProfiler())
-                ;
+                .WithLocalSettings();
 
             BenchmarkRunner.Run<ComparisonsTests.SelectMany_Join>(config);
         }

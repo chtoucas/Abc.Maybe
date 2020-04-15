@@ -10,6 +10,7 @@ namespace Abc.Linq
     // TODO: ElementAtOrNone.
     // - TSource? and Maybe<TSource>.
     // - compare to ElementAtOrDefault for nullable's.
+    // - index < 0, throw?
 
     public static partial class Qperators
     {

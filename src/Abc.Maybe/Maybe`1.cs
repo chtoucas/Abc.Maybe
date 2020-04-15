@@ -17,29 +17,8 @@ namespace Abc
     using Anexn = System.ArgumentNullException;
     using EF = Abc.Utilities.ExceptionFactory;
 
-    // TODO: Maybe type.
-    // - IEquatable<T> (T == Maybe<T>), IComparable<T> but a bit missleading?
-    //   Overloads w/ IEqualityComparer<T>.
-    // - nullable attrs, notnull constraint.
-    //   It would make a lot of sense to add a notnull constraint on the T of
-    //   Maybe<T>, but it worries me a bit (I need to gain more experience with
-    //   the new NRT). It would allow to warn a user trying to create a
-    //   Maybe<int?> or a Maybe<string?>, maybe I managed to entirely avoid the
-    //   ability to do so, but I am not sure.
-    //   https://docs.microsoft.com/en-us/dotnet/csharp/nullable-attributes
-    //   https://devblogs.microsoft.com/dotnet/try-out-nullable-reference-types/
-    //   https://devblogs.microsoft.com/dotnet/nullable-reference-types-in-csharp/
-    //   https://devblogs.microsoft.com/dotnet/embracing-nullable-reference-types/
-    // REVIEW: Maybe type.
-    // - Serializable? Binary serialization only.
-    //   https://docs.microsoft.com/en-us/dotnet/standard/serialization/binary-serialization
-    // - Set ops POV.
-    // - Struct really? Explain and compare to ValueTuple
-    //   https://docs.microsoft.com/en-gb/dotnet/csharp/tuples
-    //   http://mustoverride.com/tuples_structs/
-    //   https://docs.microsoft.com/en-us/archive/msdn-magazine/2018/june/csharp-tuple-trouble-why-csharp-tuples-get-to-break-the-guidelines
-    //   https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/value-options
-    //   https://github.com/fsharp/fslang-design/blob/master/FSharp.Core-4.5.0.0/FS-1057-valueoption.md
+    // REVIEW: Serializable? Binary only.
+    // https://docs.microsoft.com/en-us/dotnet/standard/serialization/binary-serialization
 
     /// <summary>
     /// Represents an object that is either a single value of type
@@ -187,9 +166,13 @@ namespace Abc
         [Pure]
         public override string ToString() => _isSome ? $"Maybe({_value})" : "Maybe(None)";
 
-        // REVIEW: implicit conversion.
+        // TODO: implicit/explicit conversion.
+        // Explicit: ??? exception or null ???
         // Implicit conversion: test ImplicitToMaybe, see Square() and
         // SquareOrNone() too.
+        // With null, we can write maybe == null, which is odd for a struct
+        // but at the same time we can write Maybe<string> maybe = s where s is
+        // in fact "null".
         //
         // Implicit conversion to Maybe<T> for equality comparison, very much
         // like what we have will nullable values: (int?)1 == 1 works.
@@ -197,11 +180,6 @@ namespace Abc
         //[SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "Maybe.Of()")]
         //public static implicit operator Maybe<T>([AllowNull] T value) => Maybe.Of(value);
 
-        // TODO: explicit conversion.
-        // ??? exception or null ???
-        // with null, we can write maybe == null, which is odd for a struct
-        // but at the same time we can write Maybe<string> maybe = s where s is
-        // in fact "null".
         [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "ValueOrThrow()")]
         public static explicit operator T(Maybe<T> value) =>
             value._isSome ? value._value : throw EF.FromMaybe_NoValue;
@@ -211,13 +189,12 @@ namespace Abc
         /// </summary>
         [ExcludeFromCodeCoverage]
         // REVIEW: why CA1812 when NO_INTERNALS_VISIBLE_TO is set?
+        // Also, coverlet currently does not apply ExcludeFromCodeCoverage
+        // to the enclosed methods.
         [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes")]
         private sealed class DebugView_
         {
             private readonly Maybe<T> _inner;
-
-            // REVIEW: currently coverlet does not apply the attr
-            // ExcludeFromCodeCoverage to the enclosed methods.
 
             [ExcludeFromCodeCoverage]
             public DebugView_(Maybe<T> inner) { _inner = inner; }
