@@ -5,11 +5,7 @@ vNEXT
 
 Version 1.0.0-alpha4
 Comparisons.
-- "Lifted" comparison T w/ Maybe<T>? see also MaybeComparer<T>.
-  IEquatable<T> (T == Maybe<T>), IComparable<T> but a bit missleading?
-- Add overloads w/ IEqualityComparer<T>?
-- Finish MaybeComparer<T>.
-  Split equality and order?
+- Finish MaybeComparer<T>. Split equality and order?
 
 Version 1.0.0-beta1
 Stable API.
@@ -18,7 +14,6 @@ Stable API.
   It would make a lot of sense to add a notnull constraint on the T of Maybe<T>,
   but it worries me a bit (I need to gain more experience with the new NRT). It
   would allow to warn a user trying to create a Maybe<int?> or a Maybe<string?>.
-  Maybe I managed to entirely avoid it, but I am not sure at all.
   https://docs.microsoft.com/en-us/dotnet/csharp/nullable-attributes
   https://devblogs.microsoft.com/dotnet/try-out-nullable-reference-types/
   https://devblogs.microsoft.com/dotnet/nullable-reference-types-in-csharp/
@@ -38,13 +33,16 @@ Towards version 1.0.0
 - https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets
 
 Version ???
+- "Lifted" comparison T w/ Maybe<T>? see also MaybeComparer<T>.
+  IEquatable<T> (T == Maybe<T>), IComparable<T> but a bit missleading?
+  Add overloads w/ IEqualityComparer<T>?
 - More May helpers w/ Span<T>.
 - LINQ: optimize, more ops.
   "Monadic" LINQ. Output Maybe<IEnumerable<T>> and LINQ ops.
 - Utilities to write code in the ROP style (Railway Oriented Programming).
 - Extensions.
 - Async (configurable, enumerable).
-- Analyzer for Of().
+- Roslyn Analyzer: Of().
 
 Tasks
 -----
@@ -63,6 +61,7 @@ Tasks
 
 Other tasks
 - Perf tool (LINQ, nulls, iterable).
+- Sample code w/ C#, VB and F#.
 - BannedApiAnalyzers?
 - Deterministic build? Disabled as it seems to conflict with the fact that we
   change the assembly file version and the description on every build.
@@ -127,16 +126,17 @@ Release Process
 
 Requirement: command-line git.
 
+Pre action, for beta -or- production packages.
+0. Run script eng\update-api.ps1, then review the result.
+
 1. New version in eng\Abc.Maybe.props
 2. Update CHANGELOG
 3. Git commit
 4. Run script eng\pack.ps1
 5. Publish package
 
-Post actions, only for production packages.
-1. Run script eng\update-api.ps1
-2. Git commit
-3. Git tag
+Post action, for production packages.
+6. Git tag
 
 Development
 -----------
