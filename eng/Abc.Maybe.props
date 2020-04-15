@@ -12,7 +12,7 @@
     -->
     <PreReleaseTag>alpha3</PreReleaseTag>
 
-    <Title>An Option Type for C#.</Title>
+    <Title>An Option Type for .NET.</Title>
 
     <PackageDescription><![CDATA[
 Provides an Option type, aka a Maybe type, with a rich API and several companion helpers (parsing, LINQ).

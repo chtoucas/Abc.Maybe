@@ -1,6 +1,6 @@
 # Abc.Maybe
 
-Abc.Maybe features a rich option type for C#.
+Abc.Maybe features an option type for .NET.
 - Supported frameworks:
   * .NET Standard 2.0
   * .NET Standard 2.1

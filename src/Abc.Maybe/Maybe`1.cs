@@ -30,7 +30,7 @@ namespace Abc
     /// <remarks><![CDATA[
     /// Overview.
     ///
-    /// Maybe<T> is an option type for C#.
+    /// Maybe<T> is an Option type for .NET.
     ///
     /// The intended usage is when T is a value type, a string, a (read-only?)
     /// record, or a function. For other reference types, it should be fine as
@@ -60,7 +60,7 @@ namespace Abc
     /// - equality == and !=
     /// - comparison <, >, <=, and >=
     /// - bitwise logical |, & and ^ (and compound assignment |=, &= and ^=)
-    /// - explicit conversion from and to the underlying type T
+    /// - explicit conversion to the underlying type T
     ///
     /// Instance methods where the result is another maybe.
     /// - Bind()                unwrap then map to another maybe
