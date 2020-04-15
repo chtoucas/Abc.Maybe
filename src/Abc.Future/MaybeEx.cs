@@ -90,6 +90,16 @@ namespace Abc
     // Misc methods.
     public partial class MaybeEx
     {
+        // TODO: naming Skip() -> Void(), Unit(), Discard(), Erase(), Forget()?
+
+        /// <summary>
+        /// Discards the enclosed value while retaining the value of the property
+        /// <see cref="IsNone"/>.
+        /// </summary>
+        [Pure]
+        public static Maybe<Unit> Skip<T>(this Maybe<T> @this) =>
+            @this.IsNone ? Maybe.Zero : Maybe.Unit;
+
         // Objectives: constraint TResult : notnull, prevent the creation of
         // Maybe<TResult?>, alternative to AndThen() to avoid the creation
         // of a Maybe when it is not strictly necessary.

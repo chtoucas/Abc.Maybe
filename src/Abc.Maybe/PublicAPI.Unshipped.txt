@@ -21,7 +21,6 @@ Abc.Maybe<T>.OrElseAsync(System.Func<System.Threading.Tasks.Task<Abc.Maybe<T>>> 
 Abc.Maybe<T>.Select<TResult>(System.Func<T, TResult> selector) -> Abc.Maybe<TResult>
 Abc.Maybe<T>.SelectAsync<TResult>(System.Func<T, System.Threading.Tasks.Task<TResult>> selector) -> System.Threading.Tasks.Task<Abc.Maybe<TResult>>
 Abc.Maybe<T>.SelectMany<TMiddle, TResult>(System.Func<T, Abc.Maybe<TMiddle>> selector, System.Func<T, TMiddle, TResult> resultSelector) -> Abc.Maybe<TResult>
-Abc.Maybe<T>.Skip() -> Abc.Maybe<Abc.Unit>
 Abc.Maybe<T>.Switch<TResult>(System.Func<T, TResult> caseSome, System.Func<TResult> caseNone) -> TResult
 Abc.Maybe<T>.Switch<TResult>(System.Func<T, TResult> caseSome, TResult caseNone) -> TResult
 Abc.Maybe<T>.ToEnumerable() -> System.Collections.Generic.IEnumerable<T>

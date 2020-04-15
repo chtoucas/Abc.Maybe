@@ -20,7 +20,6 @@ namespace Abc
     // TODO: Maybe type.
     // - IEquatable<T> (T == Maybe<T>), IComparable<T> but a bit missleading?
     //   Overloads w/ IEqualityComparer<T>.
-    // - naming Skip() -> Void(), Unit(), Discard(), Erase(), Forget()?
     // - nullable attrs, notnull constraint.
     //   It would make a lot of sense to add a notnull constraint on the T of
     //   Maybe<T>, but it worries me a bit (I need to gain more experience with
@@ -94,7 +93,6 @@ namespace Abc
     /// - OrElse()              logical OR; "none"-coalescing
     /// - AndThen()             logical AND
     /// - XorElse()             logical XOR
-    /// - Skip()                discard the value
     ///
     /// Escape the maybe (no public access to the enclosed value if any,
     /// ie no property Value).
@@ -475,13 +473,6 @@ namespace Abc
                 ? Maybe.Of(zipper(_value, other._value))
                 : Maybe<TResult>.None;
         }
-
-        /// <summary>
-        /// Discards the enclosed value while retaining the value of the property
-        /// <see cref="IsNone"/>.
-        /// </summary>
-        [Pure]
-        public Maybe<Unit> Skip() => _isSome ? Maybe.Unit : Maybe.Zero;
     }
 
     // Iterable but **not** IEnumerable<>.
