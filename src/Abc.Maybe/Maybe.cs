@@ -15,7 +15,7 @@ namespace Abc
     // - IDisposable extensions? CA2000
 
     // REVIEW: playing with the modifier "in".
-    // Currently only added to ext methods for Maybe<T> where T is a struct.
+    // Currently only added to methods for Maybe<T> where T is a struct.
 
     /// <summary>
     /// Provides static helpers and extension methods for <see cref="Maybe{T}"/>.
@@ -49,7 +49,7 @@ namespace Abc
         /// <see cref="SomeOrNone{T}(T?)"/> or <see cref="SomeOrNone{T}(T)"/>
         /// should be preferred.</para>
         /// </summary>
-        // Unconstrained version Of SomeOrNone() and Some().
+        // Unconstrained version of SomeOrNone() and Some().
         // F# Workflow: return.
         [Pure]
         [EditorBrowsable(EditorBrowsableState.Advanced)]
@@ -60,15 +60,12 @@ namespace Abc
         /// Removes one level of structure, projecting the bound value into the
         /// outer level.
         /// </summary>
+        // Unconstrained version of Flatten().
+        // This could have been an ext method, but it would be confusing as we
+        // also have the LINQ Join().
         [Pure]
-        public static Maybe<T> Flatten<T>(this in Maybe<Maybe<T>> @this)
+        public static Maybe<T> Join<T>(in Maybe<Maybe<T>> @this)
             => @this.IsSome ? @this.Value : Maybe<T>.None;
-
-        // TODO: Flatten() w/ NRT.
-        [Pure]
-        public static Maybe<T> Flatten<T>(this in Maybe<Maybe<T?>> @this)
-            where T : struct
-            => @this.IsSome ? @this.Value.Squash() : Maybe<T>.None;
     }
 
     // Factory methods.
@@ -123,39 +120,48 @@ namespace Abc
         public static Maybe<T> SomeOrNone<T>(T? value) where T : class
             => value is null ? Maybe<T>.None : new Maybe<T>(value);
 
+        // Identical to Maybe.Some(Maybe.Some()).
         [Pure]
         public static Maybe<Maybe<T>> Square<T>(T value) where T : struct
             => new Maybe<Maybe<T>>(new Maybe<T>(value));
 
-        /// <remarks>
-        /// To create a "square" for an unconstrained type T, use
-        /// <c>Some(Of(value))</c> instead.
-        /// </remarks>
+        // Beware, not identical to Maybe.Some(Maybe.SomeOrNone()).
         [Pure]
         public static Maybe<Maybe<T>> SquareOrNone<T>(T? value) where T : struct
             => value.HasValue ? new Maybe<Maybe<T>>(new Maybe<T>(value.Value)) : Maybe<Maybe<T>>.None;
 
-        /// <remarks>
-        /// To create a "square" for an unconstrained type T, use
-        /// <c>Some(Of(value))</c> instead.
-        /// </remarks>
+        // Beware, not identical to Maybe.Some(Maybe.SomeOrNone()).
         [Pure]
         public static Maybe<Maybe<T>> SquareOrNone<T>(T? value) where T : class
             => value is null ? Maybe<Maybe<T>>.None : new Maybe<Maybe<T>>(new Maybe<T>(value));
     }
 
-    // Helpers for Maybe<T> where T is a struct.
+    // Conversion from generic T? to generic T.
     public partial class Maybe
     {
-        // Conversion from Maybe<T?> to Maybe<T>.
-        // TODO: for ref types, Maybe<T?> is compiled to Maybe<T>, but in VS
-        // or .NET Core?
+        [Pure]
+        public static Maybe<T> Flatten<T>(this in Maybe<Maybe<T?>> @this) where T : struct
+            => @this.IsSome ? @this.Value.Squash() : Maybe<T>.None;
+
+        [Pure]
+        public static Maybe<T> Flatten<T>(this in Maybe<Maybe<T?>> @this) where T : class
+            => @this.IsSome ? @this.Value.Squash() : Maybe<T>.None;
+
         [Pure]
         public static Maybe<T> Squash<T>(this in Maybe<T?> @this) where T : struct
             // BONSANG! when IsSome is true, Value.HasValue is also true,
             // therefore we can safely access Value.Value.
             => @this.IsSome ? Some(@this.Value!.Value) : Maybe<T>.None;
 
+        [Pure]
+        public static Maybe<T> Squash<T>(this in Maybe<T?> @this) where T : class
+            => @this.IsSome && @this.Value != null ? new Maybe<T>(@this.Value)
+                : Maybe<T>.None;
+    }
+
+    // Helpers for Maybe<T> where T is a struct.
+    public partial class Maybe
+    {
         // Conversion from Maybe<T?> to T?.
         [Pure]
         public static T? ToNullable<T>(this in Maybe<T?> @this) where T : struct

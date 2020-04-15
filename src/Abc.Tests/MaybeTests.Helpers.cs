@@ -10,24 +10,6 @@ namespace Abc
     public partial class MaybeTests
     {
         [Fact]
-        public static void Squash_None()
-        {
-            // Arrange
-            Maybe<int?> none = Maybe<int?>.None;
-            // Act & Assert
-            Assert.Equal(Ø, none.Squash());
-        }
-
-        [Fact]
-        public static void Squash_Some()
-        {
-            // Arrange
-            Maybe<int?> one = One.Select(x => (int?)x);
-            // Act & Assert
-            Assert.Equal(One, one.Squash());
-        }
-
-        [Fact]
         public static void ToNullable_None()
         {
             // Arrange

@@ -111,6 +111,7 @@ static Abc.Maybe.Invoke<T1, T2, T3, TResult>(this Abc.Maybe<System.Func<T1, T2, 
 static Abc.Maybe.Invoke<T1, T2, TResult>(this Abc.Maybe<System.Func<T1, T2, TResult>> this, T1 first, T2 second) -> Abc.Maybe<TResult>
 static Abc.Maybe.Invoke<TSource, TResult>(this Abc.Maybe<System.Func<TSource, TResult>> this, TSource value) -> Abc.Maybe<TResult>
 static Abc.Maybe.Invoke<TSource, TResult>(this System.Func<TSource, Abc.Maybe<TResult>> this, Abc.Maybe<TSource> maybe) -> Abc.Maybe<TResult>
+static Abc.Maybe.Join<T>(in Abc.Maybe<Abc.Maybe<T>> this) -> Abc.Maybe<T>
 static Abc.Maybe.Lift<T1, T2, T3, T4, T5, TResult>(this System.Func<T1, T2, T3, T4, T5, TResult> this, Abc.Maybe<T1> first, Abc.Maybe<T2> second, Abc.Maybe<T3> third, Abc.Maybe<T4> fourth, Abc.Maybe<T5> fifth) -> Abc.Maybe<TResult>
 static Abc.Maybe.Lift<T1, T2, T3, T4, TResult>(this System.Func<T1, T2, T3, T4, TResult> this, Abc.Maybe<T1> first, Abc.Maybe<T2> second, Abc.Maybe<T3> third, Abc.Maybe<T4> fourth) -> Abc.Maybe<TResult>
 static Abc.Maybe.Lift<T1, T2, T3, TResult>(this System.Func<T1, T2, T3, TResult> this, Abc.Maybe<T1> first, Abc.Maybe<T2> second, Abc.Maybe<T3> third) -> Abc.Maybe<TResult>
@@ -127,6 +128,7 @@ static Abc.Maybe.SomeOrNone<T>(T? value) -> Abc.Maybe<T>
 static Abc.Maybe.Square<T>(T value) -> Abc.Maybe<Abc.Maybe<T>>
 static Abc.Maybe.SquareOrNone<T>(T value) -> Abc.Maybe<Abc.Maybe<T>>
 static Abc.Maybe.SquareOrNone<T>(T? value) -> Abc.Maybe<Abc.Maybe<T>>
+static Abc.Maybe.Squash<T>(this in Abc.Maybe<T> this) -> Abc.Maybe<T>
 static Abc.Maybe.Squash<T>(this in Abc.Maybe<T?> this) -> Abc.Maybe<T>
 static Abc.Maybe.ToNullable<T>(this in Abc.Maybe<T> this) -> T?
 static Abc.Maybe.ToNullable<T>(this in Abc.Maybe<T?> this) -> T?

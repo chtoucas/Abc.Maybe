@@ -85,7 +85,7 @@ namespace Abc
         [Pure] private static async Task<Maybe<AnyResult>> ReturnSomeAsync<T>(T _) { await Task.Yield(); return AnyResult.Some; }
     }
 
-    // Factories.
+    // Factories: None, Of(), Some(), SomeOrNone(), Square(), SquareOrNone().
     public partial class MaybeTests
     {
         [Fact]
@@ -220,7 +220,7 @@ namespace Abc
         #endregion
     }
 
-    // Simple conversions.
+    // Simple conversions: ToString(), op_Explicit.
     public partial class MaybeTests
     {
         [Fact]
@@ -263,11 +263,9 @@ namespace Abc
         }
     }
 
-    // Core methods.
+    // Bind().
     public partial class MaybeTests
     {
-        #region Bind()
-
         [Fact]
         public static void Bind_None_NullBinder()
         {
@@ -320,45 +318,78 @@ namespace Abc
         [Fact]
         public static void Bind_SomeUri() =>
             Assert.Some(MyUri.AbsoluteUri, SomeUri.Bind(GetAbsoluteUri_));
+    }
 
-        #endregion
-
-        #region Flatten()
-
+    // Join(), Flatten() and Squash().
+    public partial class MaybeTests
+    {
         [Fact]
-        public static void Flatten_None()
+        public static void Join_Static_None()
         {
-            Assert.Equal(Ø, Maybe<Maybe<int>>.None.Flatten());
-            Assert.Equal(Ø, Maybe<Maybe<int?>>.None.Flatten());
-            Assert.Equal(NoText, Maybe<Maybe<string>>.None.Flatten());
-            Assert.Equal(NoUri, Maybe<Maybe<Uri>>.None.Flatten());
-            Assert.Equal(AnyT.None, Maybe<Maybe<AnyT>>.None.Flatten());
+            Assert.Equal(Ø, Maybe.Join(Maybe<Maybe<int>>.None));
+            Assert.Equal(NoText, Maybe.Join(Maybe<Maybe<string>>.None));
+            Assert.Equal(NoUri, Maybe.Join(Maybe<Maybe<Uri>>.None));
+            Assert.Equal(AnyT.None, Maybe.Join(Maybe<Maybe<AnyT>>.None));
+
+            Assert.Equal(Maybe<int?>.None, Maybe.Join(Maybe<Maybe<int?>>.None));
         }
 
         [Fact]
-        public static void Flatten_SomeOfNone()
+        public static void Join_Static_SomeOfNone()
         {
-            Assert.Equal(Ø, Maybe.Some(Ø).Flatten());
-            Assert.Equal(NoText, Maybe.Some(NoText).Flatten());
-            Assert.Equal(NoUri, Maybe.Some(NoUri).Flatten());
-            Assert.Equal(AnyT.None, Maybe.Some(AnyT.None).Flatten());
+            Assert.Equal(Ø, Maybe.Join(Maybe.Some(Ø)));
+            Assert.Equal(NoText, Maybe.Join(Maybe.Some(NoText)));
+            Assert.Equal(NoUri, Maybe.Join(Maybe.Some(NoUri)));
+            Assert.Equal(AnyT.None, Maybe.Join(Maybe.Some(AnyT.None)));
         }
 
         [Fact]
-        public static void Flatten_SomeOfSome()
+        public static void Join_Static_SomeOfSome()
         {
-            Assert.Equal(One, Maybe.Some(One).Flatten());
-            Assert.Equal(SomeText, Maybe.Some(SomeText).Flatten());
-            Assert.Equal(SomeUri, Maybe.Some(SomeUri).Flatten());
+            Assert.Equal(One, Maybe.Join(Maybe.Some(One)));
+            Assert.Equal(SomeText, Maybe.Join(Maybe.Some(SomeText)));
+            Assert.Equal(SomeUri, Maybe.Join(Maybe.Some(SomeUri)));
 
             var some = AnyT.Some;
-            Assert.Equal(some, Maybe.Some(some).Flatten());
+            Assert.Equal(some, Maybe.Join(Maybe.Some(some)));
 
             Maybe<int?> one = One.Select(x => (int?)x);
             Assert.Equal(One, Maybe.Some(one).Flatten());
         }
 
-        #endregion
+        [Fact]
+        public static void Flatten_None()
+        {
+            Assert.Equal(Ø, Maybe<Maybe<int?>>.None.Flatten());
+            Assert.Equal(NoText, Maybe<Maybe<string?>>.None.Flatten());
+            Assert.Equal(NoUri, Maybe<Maybe<Uri?>>.None.Flatten());
+            Assert.Equal(AnyT.None, Maybe<Maybe<AnyT?>>.None.Flatten());
+        }
+
+        [Fact]
+        public static void Flatten_Some()
+        {
+            Maybe<int?> one = One.Select(x => (int?)x);
+            Assert.Equal(One, Maybe.Some(one).Flatten());
+        }
+
+        [Fact]
+        public static void Squash_None()
+        {
+            // Arrange
+            Maybe<int?> none = Maybe<int?>.None;
+            // Act & Assert
+            Assert.Equal(Ø, none.Squash());
+        }
+
+        [Fact]
+        public static void Squash_Some()
+        {
+            // Arrange
+            Maybe<int?> one = One.Select(x => (int?)x);
+            // Act & Assert
+            Assert.Equal(One, one.Squash());
+        }
     }
 
     // Safe escapes.

@@ -92,6 +92,7 @@ namespace Abc
     public partial class MaybeEx
     {
         // TODO: naming Skip() -> Void(), Unit(), Discard(), Erase(), Forget()?
+        // Since we have Maybe.Guard(), Skip() is a natural companion to have.
 
         /// <summary>
         /// Discards the enclosed value while retaining the value of the property

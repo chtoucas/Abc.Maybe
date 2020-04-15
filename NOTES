@@ -4,8 +4,8 @@ vNEXT
 -----
 
 Version 1.0.0-alpha4
-Comparisons.
-- Finish MaybeComparer<T>. Split equality and order?
+- Revisit Square(), Flatten() & co.
+- Comparisons. Finish MaybeComparer<T>. Split equality and order?
 
 Version 1.0.0-beta1
 Stable API.
