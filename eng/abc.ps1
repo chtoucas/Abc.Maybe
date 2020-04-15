@@ -142,7 +142,7 @@ function Confirm-Continue {
         $answer = (Read-Host $Question, "[y/N]")
 
         if ($answer -eq "" -or $answer -eq "n") {
-            Say "Stopping on your request."
+            Say "`tStopping on your request."
             exit 0
         }
         elseif ($answer -eq "y") {

@@ -75,6 +75,10 @@ function Get-PackageVersion {
     $patch = $node | Select -First 1 -ExpandProperty PatchVersion
     $prere = $node | Select -First 1 -ExpandProperty PreReleaseTag
 
+    if ($prere.StartsWith("DEV")) {
+        Croak "We disallow the creation of DEV packages."
+    }
+
     "$major.$minor.$patch-$prere"
 }
 
@@ -117,7 +121,7 @@ function Invoke-Pack {
         Carp "A package with the same version ($version) already exists."
         Confirm-Continue "Do you wish to proceed anyway?"
 
-        Say "The old package file will be removed now."
+        Say "`tThe old package file will be removed now."
         Remove-Item $pkg
     }
 
@@ -142,7 +146,7 @@ function Invoke-Pack {
     # Safe packing?
     if ($Safe) {
         if (Confirm-Yes "Hard clean?") {
-            Say "Deleting 'bin' and 'obj' directories."
+            Say "`tDeleting 'bin' and 'obj' directories."
 
             Remove-BinAndObj $SRC_DIR
         }
