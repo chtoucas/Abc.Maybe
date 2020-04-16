@@ -21,6 +21,10 @@ Hard clean the solution before creating the package by removing the 'bin' and
 Print help.
 
 .EXAMPLE
+PS>pack.ps1 -n -f
+Fast packing, no test, maybe obsolete git infos.
+
+.EXAMPLE
 PS>pack.ps1 -c -s
 Clean & safe packing.
 #>

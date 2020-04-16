@@ -3,14 +3,12 @@ Developer Notes.
 vNEXT
 -----
 
-Version 1.0.0-alpha4
-- Revisit Squash(), Flatten() & SquareXXX().
-- Comparisons. Finish MaybeComparer<T>. Split equality and order?
-- Tests: compare Square() and Some(Some()) & co.
+Version 1.0.0-beta2
+- MaybeComparer<T>: split equality and order?
+- Tests: compare Square() and Some(Some()) & co. See also Flatten() & Squash().
 - Improve comparison tests (order and equality).
 
-Version 1.0.0-beta1
-Stable API.
+Version 1.0.0-beta3
 - No more FIXMEs or TODOs.
 - Nullable attributes and notnull constraint.
   It would make a lot of sense to add a notnull constraint on the T of Maybe<T>,
@@ -130,13 +128,14 @@ Release Process
 Requirement: command-line git.
 
 Pre action, for beta -or- production packages.
-0. Run script eng\update-api.ps1, then review the result.
+0. Run script eng\freeze-api.ps1, then review the result.
 
 1. New version in eng\Abc.Maybe.props
 2. Update CHANGELOG
-3. Git commit
-4. Run script eng\pack.ps1
-5. Publish package
+3. Run script eng\pack.ps1 -n -f
+4. Git commit
+5. Run script eng\pack.ps1 -c -s
+6. Publish package
 
 Post action, for production packages.
 6. Git tag
@@ -164,7 +163,7 @@ Local tools.
 - qperf.cmd, quickly run the perf tool.
 - eng\cover.ps1, code coverage script (Coverlet or OpenCover).
 - eng\pack.ps1, packing script.
-- eng\update-api.ps1, update public API files.
+- eng\freeze-api.ps1, update public API files.
 
 Useful tools.
 - NuGet Package Explorer
