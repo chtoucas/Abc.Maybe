@@ -4,7 +4,10 @@ namespace Abc
 {
     using System;
     using System.Diagnostics.Contracts;
+    using System.IO;
     using System.Linq;
+    using System.Runtime.InteropServices;
+    using System.Runtime.Serialization.Formatters.Binary;
     using System.Threading.Tasks;
 
     using Xunit;
@@ -216,6 +219,65 @@ namespace Abc
         }
 
         #endregion
+    }
+
+    // Serialization.
+    public partial class MaybeTests
+    {
+        [Fact]
+        public static void IsSerializable() =>
+            Assert.True(typeof(Maybe<>).IsSerializable);
+
+        [Fact]
+        public static void Serialization_None_WithValueType()
+        {
+            // Arrange
+            var formatter = new BinaryFormatter();
+            using var stream = new MemoryStream();
+
+            // Act & Assert (Serialize)
+            formatter.Serialize(stream, Maybe<int>.None);
+
+            // Act (Deserialize)
+            stream.Seek(0, SeekOrigin.Begin);
+            var none = (Maybe<int>)formatter.Deserialize(stream);
+            // Assert
+            Assert.None(none);
+        }
+
+        [Fact]
+        public static void Serialization_Some_WithValueType()
+        {
+            // Arrange
+            var formatter = new BinaryFormatter();
+            using var stream = new MemoryStream();
+
+            // Act & Assert (Serialize)
+            formatter.Serialize(stream, Maybe.Some(1));
+
+            // Act (Deserialize)
+            stream.Seek(0, SeekOrigin.Begin);
+            var some = (Maybe<int>)formatter.Deserialize(stream);
+            // Assert
+            Assert.Some(1, some);
+        }
+
+        [Fact]
+        public static void Serialization_Some_WithNullableValueType()
+        {
+            // Arrange
+            var formatter = new BinaryFormatter();
+            using var stream = new MemoryStream();
+
+            // Act & Assert (Serialize)
+            formatter.Serialize(stream, Maybe.Of((int?)1));
+
+            // Act (Deserialize)
+            stream.Seek(0, SeekOrigin.Begin);
+            var some = (Maybe<int?>)formatter.Deserialize(stream);
+            // Assert
+            Assert.Some(1, some);
+        }
     }
 
     // Simple conversions: ToString(), op_Explicit.

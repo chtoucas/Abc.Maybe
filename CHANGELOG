@@ -3,6 +3,9 @@ Changelog for Abc.
 vNEXT
 -----
 
+Added
+- Maybe<T> is now serializable.
+
 Removed
 - Maybe.Of() with a struct constraint.
 - Maybe.Flatten() with a struct constraint.

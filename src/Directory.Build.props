@@ -48,7 +48,6 @@
 
   <!-- Optional symbols -->
   <PropertyGroup>
-    <!--<DefineConstants>$(DefineConstants);SERIALIZABLE_MAYBE</DefineConstants>-->
     <!--<DefineConstants>$(DefineConstants);PLAIN_LINQ</DefineConstants>-->
     <!--<DefineConstants>$(DefineConstants);PURE_MAYBE</DefineConstants>-->
   </PropertyGroup>

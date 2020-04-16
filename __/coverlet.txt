@@ -1,14 +1,14 @@
 ﻿Summary
-  Generated on: 16/04/2020 - 07:40:58
+  Generated on: 16/04/2020 - 22:01:06
   Parser: OpenCoverParser
   Assemblies: 1
   Classes: 12
   Files: 20
   Line coverage: 98.4%
-  Covered lines: 710
+  Covered lines: 708
   Uncovered lines: 11
-  Coverable lines: 721
-  Total lines: 2993
+  Coverable lines: 719
+  Total lines: 2999
 
 Abc.Maybe                               98.4%
   Abc.DefaultMaybeComparer`1           100.0%

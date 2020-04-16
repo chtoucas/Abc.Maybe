@@ -3,18 +3,18 @@
 namespace Abc.Tests
 {
     using System;
+    using System.IO;
     using System.Runtime.InteropServices;
+    using System.Runtime.Serialization.Formatters.Binary;
 
     using Xunit;
 
     public static class UnitTests
     {
         [Fact]
-        public static void RuntimeSize()
-        {
+        public static void RuntimeSize() =>
             // 1 byte.
             Assert.Equal(1, Marshal.SizeOf(typeof(Unit)));
-        }
 
         [Fact]
         public static void Singleton()
@@ -66,5 +66,26 @@ namespace Abc.Tests
         [Fact]
         public static void ToString_CurrentCulture()
             => Assert.Equal("()", Unit.Default.ToString());
+
+        [Fact]
+        public static void IsSerializable() =>
+            Assert.True(typeof(Unit).IsSerializable);
+
+        [Fact]
+        public static void Serialization()
+        {
+            // Arrange
+            var formatter = new BinaryFormatter();
+            using var stream = new MemoryStream();
+
+            // Act & Assert (Serialize)
+            formatter.Serialize(stream, Unit.Default);
+
+            // Act (Deserialize)
+            stream.Seek(0, SeekOrigin.Begin);
+            var unit = (Unit)formatter.Deserialize(stream);
+            // Assert
+            Assert.Equal(Unit.Default, unit);
+        }
     }
 }
