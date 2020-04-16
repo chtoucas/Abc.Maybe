@@ -77,7 +77,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Squash_Some_ValueType()
+        public static void Squash_Some_WithValueType()
         {
             // Arrange
             Maybe<int?> one = One.Select(x => (int?)x);
@@ -86,7 +86,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Squash_Square_Some_ValueType()
+        public static void Squash_Square_Some_WithValueType()
         {
             // Arrange
             Maybe<int?> one = One.Select(x => (int?)x);
@@ -95,7 +95,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Squash_Some_ReferenceType()
+        public static void Squash_Some_WithReferenceType()
         {
             // Arrange
             Maybe<AnyT> some = AnyT.Some;
@@ -105,7 +105,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Squash_Square_Some_ReferenceType()
+        public static void Squash_Square_Some_WithReferenceType()
         {
             // Arrange
             Maybe<AnyT> some = AnyT.Some;
