@@ -13,7 +13,7 @@
       package (see pack.ps1). In the future, we might use it to publish packages
       to myget.
     -->
-    <PreReleaseTag>alpha3</PreReleaseTag>
+    <PreReleaseTag>beta1</PreReleaseTag>
 
     <Title>An Option Type for .NET.</Title>
 

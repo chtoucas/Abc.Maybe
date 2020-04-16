@@ -3,6 +3,9 @@ Changelog for Abc.
 vNEXT
 -----
 
+2020-04-16, version 1.0.0-beta1
+-------------------------------
+
 Added
 - New versions of Maybe.Squash()
     static Maybe.Squash<T>(this Maybe<T>) where T : class
@@ -12,7 +15,7 @@ Added
     static Maybe.Squash<T>(this in Maybe<T?>) where T : struct
 
 Changed
-- [OBSOLETE] Mark Maybe.Flatten() with a struct constraint; use Maybe.Squash().
+- [OBSOLETE] Maybe.Flatten() with a struct constraint; use Maybe.Squash().
 - Remove the in parameter modifier used by the Maybe.Flatten() with no generic
   type constraint.
 - LINQ ElementAtOrNone() no longer returns an empty maybe if the index is out of
@@ -22,13 +25,13 @@ Removed
 - Maybe<T>.Skip(); use Maybe<T>.IsNone with Maybe.Unit or Maybe.Zero.
 
 Internal Changes
-- New script eng\update-api.ps1.
+- New script eng\freeze-api.ps1.
 - New option to hard clean the solution before packing.
 - Upgraded packages:
   * ReportGenerator 4.5.5 -> 4.5.6.
 
 2020-04-12, version 1.0.0-alpha3
----------------------------------
+--------------------------------
 
 Changed
 - [BREAKING] MaybeComparer<T>, complete rewrite, optionally structural.
