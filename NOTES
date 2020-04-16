@@ -127,6 +127,9 @@ Release Process
 
 Requirement: command-line git.
 
+Before a production packages, check that there are no remaining FIXME and review
+the TODOs and REVIEWs.
+
 Pre action, for beta -or- production packages.
 0. Run script eng\freeze-api.ps1, then review the result.
    NB: between releases, feel free to add and remove **new** stuff.

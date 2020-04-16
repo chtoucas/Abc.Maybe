@@ -21,7 +21,7 @@ namespace Abc
     using Anexn = System.ArgumentNullException;
     using EF = Abc.Utilities.ExceptionFactory;
 
-    // REVIEW: Binary serialization (not yet enabled, nor tested).
+    // TODO: Binary serialization (not yet enabled, nor tested).
     // https://docs.microsoft.com/en-us/dotnet/standard/serialization/binary-serialization
 
     /// <summary>

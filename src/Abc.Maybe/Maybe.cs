@@ -297,7 +297,7 @@ namespace Abc
     }
 
     // Helpers for Maybe<T> where T is disposable.
-    // TODO: IDisposable extensions and CA2000.
+    // REVIEW: IDisposable extensions and CA2000.
     public partial class Maybe
     {
         // Bind() with automatic resource cleanup.
