@@ -7,10 +7,11 @@ namespace Abc.Linq
     using System.Diagnostics.Contracts;
     using System.Linq;
 
+    using Aoorexn = System.ArgumentOutOfRangeException;
+
     // TODO: ElementAtOrNone.
     // - TSource? and Maybe<TSource>.
-    // - compare to ElementAtOrDefault for nullable's.
-    // - index < 0, throw?
+    // - compare to ElementAtOrDefault for nullable's (throw for index < 0).
 
     public static partial class Qperators
     {
@@ -29,7 +30,7 @@ namespace Abc.Linq
         {
             if (source is null) { throw new ArgumentNullException(nameof(source)); }
 
-            if (index < 0) { return Maybe<TSource>.None; }
+            if (index < 0) { throw new Aoorexn(nameof(index)); }
 
             // Fast track.
             if (source is IList<TSource> list)
