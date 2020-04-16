@@ -11,13 +11,17 @@ namespace Abc
     using System.Diagnostics.Contracts;
     using System.Linq;
     using System.Runtime.CompilerServices;
+#if SERIALIZABLE_MAYBE
+    using System.Runtime.Serialization;
+    using System.Security;
+#endif
 
     using Abc.Utilities;
 
     using Anexn = System.ArgumentNullException;
     using EF = Abc.Utilities.ExceptionFactory;
 
-    // REVIEW: Serializable? Binary only.
+    // REVIEW: Binary serialization (not yet enabled, nor tested).
     // https://docs.microsoft.com/en-us/dotnet/standard/serialization/binary-serialization
 
     /// <summary>
@@ -101,15 +105,27 @@ namespace Abc
     /// We also have several extension methods for specific types of T, eg
     /// structs, functions or enumerables; see the static class Maybe.
     /// ]]></remarks>
+#if SERIALIZABLE_MAYBE
+    [Serializable]
+#endif
     [DebuggerDisplay("{" + nameof(DebuggerDisplay) + ",nq}")]
     [DebuggerTypeProxy(typeof(Maybe<>.DebugView_))]
     public readonly partial struct Maybe<T>
         : IEquatable<Maybe<T>>, IComparable<Maybe<T>>, IComparable,
             IStructuralEquatable, IStructuralComparable
+#if SERIALIZABLE_MAYBE
+            , ISerializable
+#endif
     {
         // We use explicit backing fields to be able to quickly find outside the
-        // struct all occurences of the corresponding properties .
+        // struct all occurences of the corresponding properties.
+        // Another good reason is serialization. With properties, I believe
+        // there is no guarantee that the compiler-generated names for the
+        // backing fields are always the same.
 
+#if SERIALIZABLE_MAYBE
+        [NonSerialized]
+#endif
         private readonly bool _isSome;
 
         /// <summary>
@@ -117,6 +133,33 @@ namespace Abc
         /// <para>This field is read-only.</para>
         /// </summary>
         [MaybeNull] [AllowNull] private readonly T _value;
+
+#if SERIALIZABLE_MAYBE
+        // Add proper security attribute w/ .NET Core/.NET 4.6.1.
+        // What should we use w/ .NET Standard?
+
+#pragma warning disable CA1801 // -Review unused parameters
+        [SecurityCritical]
+        private Maybe(SerializationInfo info, StreamingContext context)
+        {
+            if (info is null) { throw new Anexn(nameof(info)); }
+
+            _value = (T)info.GetValue("Value", typeof(T));
+            _isSome = _value != null;
+        }
+#pragma warning restore CA1801
+
+#pragma warning disable RS0016 // Add public types and members to the declared API
+        [SecurityCritical]
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            if (info is null) { throw new Anexn(nameof(info)); }
+
+            info.AddValue("Value", _value, typeof(T));
+        }
+#pragma warning restore RS0016
+
+#endif
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Maybe{T}" /> struct

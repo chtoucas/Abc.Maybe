@@ -10,7 +10,19 @@ Version 1.0.0-beta2
 
 Version 1.0.0-beta3
 - No more FIXMEs or TODOs.
-- Nullable attributes and notnull constraint.
+- Testing is well underway but there is still a lot to be done.
+  We need more functional tests.
+
+Towards version 1.0.0
+- Check published packages (upgrade, debugging experience). See repos Abc.
+- README: a bit of marketing, compare to other option types.
+- README: Struct really? Explain and compare to ValueTuple.
+  https://docs.microsoft.com/en-gb/dotnet/csharp/tuples
+  http://mustoverride.com/tuples_structs/
+  https://docs.microsoft.com/en-us/archive/msdn-magazine/2018/june/csharp-tuple-trouble-why-csharp-tuples-get-to-break-the-guidelines
+  https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/value-options
+  https://github.com/fsharp/fslang-design/blob/master/FSharp.Core-4.5.0.0/FS-1057-valueoption.md
+- README: Nullable attributes and notnull constraint.
   It would make a lot of sense to add a notnull constraint on the T of Maybe<T>,
   but it worries me a bit (I need to gain more experience with the new NRT). It
   would allow to warn a user trying to create a Maybe<int?> or a Maybe<string?>.
@@ -18,18 +30,6 @@ Version 1.0.0-beta3
   https://devblogs.microsoft.com/dotnet/try-out-nullable-reference-types/
   https://devblogs.microsoft.com/dotnet/nullable-reference-types-in-csharp/
   https://devblogs.microsoft.com/dotnet/embracing-nullable-reference-types/
-
-Towards version 1.0.0
-- Testing is well underway but there is still a lot to be done.
-  We need more functional tests.
-- Check published packages (upgrade, debugging experience). See repos Abc.
-- README: a bit of marketing, compare to other option types.
-  Struct really? Explain and compare to ValueTuple.
-  https://docs.microsoft.com/en-gb/dotnet/csharp/tuples
-  http://mustoverride.com/tuples_structs/
-  https://docs.microsoft.com/en-us/archive/msdn-magazine/2018/june/csharp-tuple-trouble-why-csharp-tuples-get-to-break-the-guidelines
-  https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/value-options
-  https://github.com/fsharp/fslang-design/blob/master/FSharp.Core-4.5.0.0/FS-1057-valueoption.md
 - https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets
 
 Version ???
@@ -129,6 +129,7 @@ Requirement: command-line git.
 
 Pre action, for beta -or- production packages.
 0. Run script eng\freeze-api.ps1, then review the result.
+   NB: between releases, feel free to add and remove **new** stuff.
 
 1. New version in eng\Abc.Maybe.props
 2. Update CHANGELOG
