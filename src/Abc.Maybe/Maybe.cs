@@ -10,12 +10,9 @@ namespace Abc
 
     using Anexn = System.ArgumentNullException;
 
-    // TODO: Maybe extensions & helpers.
-    // - Maybe<IEnumerable>; see CollectAny().
-    // - IDisposable extensions? CA2000
-
-    // REVIEW: playing with the modifier "in".
-    // Currently only added to methods for Maybe<T> where T is a struct.
+    // REVIEW: playing with the in parameter modifier.
+    // Currently we stay conservative and only add it to selected ext methods
+    // for Maybe<T> where T is a struct.
 
     /// <summary>
     /// Provides static helpers and extension methods for <see cref="Maybe{T}"/>.
@@ -80,7 +77,7 @@ namespace Abc
         // Unconstrained version of Squash().
         [Pure]
         [EditorBrowsable(EditorBrowsableState.Advanced)]
-        public static Maybe<T> Flatten<T>(this in Maybe<Maybe<T>> @this)
+        public static Maybe<T> Flatten<T>(this Maybe<Maybe<T>> @this)
             => @this.IsSome ? @this.Value : Maybe<T>.None;
     }
 
@@ -162,7 +159,7 @@ namespace Abc
             => @this.IsSome ? Some(@this.Value!.Value) : Maybe<T>.None;
 
         [Pure]
-        public static Maybe<T> Squash<T>(this in Maybe<T?> @this) where T : class
+        public static Maybe<T> Squash<T>(this Maybe<T?> @this) where T : class
             => @this.IsSome && @this.Value != null ? new Maybe<T>(@this.Value)
                 : Maybe<T>.None;
 
@@ -173,7 +170,7 @@ namespace Abc
 
         // Unconstrained version: Flatten().
         [Pure]
-        public static Maybe<T> Squash<T>(this in Maybe<Maybe<T?>> @this) where T : class
+        public static Maybe<T> Squash<T>(this Maybe<Maybe<T?>> @this) where T : class
             => @this.IsSome ? @this.Value.Squash() : Maybe<T>.None;
     }
 
@@ -293,6 +290,7 @@ namespace Abc
     }
 
     // Helpers for Maybe<T> where T is disposable.
+    // TODO: IDisposable extensions and CA2000.
     public partial class Maybe
     {
         // Bind() with automatic resource cleanup.

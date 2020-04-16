@@ -102,7 +102,7 @@ static Abc.Maybe.CollectAny<T>(System.Collections.Generic.IEnumerable<Abc.Maybe<
 static Abc.Maybe.Compose<TSource, TMiddle, TResult>(this System.Func<TSource, Abc.Maybe<TMiddle>> this, System.Func<TMiddle, Abc.Maybe<TResult>> other, TSource value) -> Abc.Maybe<TResult>
 static Abc.Maybe.ComposeBack<TSource, TMiddle, TResult>(this System.Func<TMiddle, Abc.Maybe<TResult>> this, System.Func<TSource, Abc.Maybe<TMiddle>> other, TSource value) -> Abc.Maybe<TResult>
 static Abc.Maybe.EmptyEnumerable<T>() -> Abc.Maybe<System.Collections.Generic.IEnumerable<T>>
-static Abc.Maybe.Flatten<T>(this in Abc.Maybe<Abc.Maybe<T>> this) -> Abc.Maybe<T>
+static Abc.Maybe.Flatten<T>(this Abc.Maybe<Abc.Maybe<T>> this) -> Abc.Maybe<T>
 static Abc.Maybe.Flatten<T>(this in Abc.Maybe<Abc.Maybe<T?>> this) -> Abc.Maybe<T>
 static Abc.Maybe.Guard(bool condition) -> Abc.Maybe<Abc.Unit>
 static Abc.Maybe.Invoke<T1, T2, T3, T4, T5, TResult>(this Abc.Maybe<System.Func<T1, T2, T3, T4, T5, TResult>> this, T1 first, T2 second, T3 third, T4 fourth, T5 fifth) -> Abc.Maybe<TResult>
@@ -127,9 +127,9 @@ static Abc.Maybe.SomeOrNone<T>(T? value) -> Abc.Maybe<T>
 static Abc.Maybe.Square<T>(T value) -> Abc.Maybe<Abc.Maybe<T>>
 static Abc.Maybe.SquareOrNone<T>(T value) -> Abc.Maybe<Abc.Maybe<T>>
 static Abc.Maybe.SquareOrNone<T>(T? value) -> Abc.Maybe<Abc.Maybe<T>>
-static Abc.Maybe.Squash<T>(this in Abc.Maybe<Abc.Maybe<T>> this) -> Abc.Maybe<T>
+static Abc.Maybe.Squash<T>(this Abc.Maybe<Abc.Maybe<T>> this) -> Abc.Maybe<T>
+static Abc.Maybe.Squash<T>(this Abc.Maybe<T> this) -> Abc.Maybe<T>
 static Abc.Maybe.Squash<T>(this in Abc.Maybe<Abc.Maybe<T?>> this) -> Abc.Maybe<T>
-static Abc.Maybe.Squash<T>(this in Abc.Maybe<T> this) -> Abc.Maybe<T>
 static Abc.Maybe.Squash<T>(this in Abc.Maybe<T?> this) -> Abc.Maybe<T>
 static Abc.Maybe.ToNullable<T>(this in Abc.Maybe<T> this) -> T?
 static Abc.Maybe.ToNullable<T>(this in Abc.Maybe<T?> this) -> T?

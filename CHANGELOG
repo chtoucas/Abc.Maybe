@@ -5,14 +5,16 @@ vNEXT
 
 Added
 - New versions of Maybe.Squash()
-    static Maybe.Squash<T>(this in Maybe<T>) where T : class
-    static Maybe.Squash<T>(this in Maybe<Maybe<T>>) where T : class
+    static Maybe.Squash<T>(this Maybe<T>) where T : class
+    static Maybe.Squash<T>(this Maybe<Maybe<T>>) where T : class
     static Maybe.Squash<T>(this in Maybe<Maybe<T?>>) where T : struct
   to complement the existing one
     static Maybe.Squash<T>(this in Maybe<T?>) where T : struct
 
 Changed
 - [OBSOLETE] Mark Maybe.Flatten() with a struct constraint; use Maybe.Squash().
+- Remove the in parameter modifier used by the Maybe.Flatten() with no generic
+  type constraint.
 - LINQ ElementAtOrNone() no longer returns an empty maybe if the index is out of
   range but rather throws an ArgumentOutOfRangeException.
 
