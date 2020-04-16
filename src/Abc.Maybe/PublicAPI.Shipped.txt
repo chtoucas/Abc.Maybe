@@ -103,7 +103,6 @@ static Abc.Maybe.Compose<TSource, TMiddle, TResult>(this System.Func<TSource, Ab
 static Abc.Maybe.ComposeBack<TSource, TMiddle, TResult>(this System.Func<TMiddle, Abc.Maybe<TResult>> this, System.Func<TSource, Abc.Maybe<TMiddle>> other, TSource value) -> Abc.Maybe<TResult>
 static Abc.Maybe.EmptyEnumerable<T>() -> Abc.Maybe<System.Collections.Generic.IEnumerable<T>>
 static Abc.Maybe.Flatten<T>(this Abc.Maybe<Abc.Maybe<T>> this) -> Abc.Maybe<T>
-static Abc.Maybe.Flatten<T>(this in Abc.Maybe<Abc.Maybe<T?>> this) -> Abc.Maybe<T>
 static Abc.Maybe.Guard(bool condition) -> Abc.Maybe<Abc.Unit>
 static Abc.Maybe.Invoke<T1, T2, T3, T4, T5, TResult>(this Abc.Maybe<System.Func<T1, T2, T3, T4, T5, TResult>> this, T1 first, T2 second, T3 third, T4 fourth, T5 fifth) -> Abc.Maybe<TResult>
 static Abc.Maybe.Invoke<T1, T2, T3, T4, TResult>(this Abc.Maybe<System.Func<T1, T2, T3, T4, TResult>> this, T1 first, T2 second, T3 third, T4 fourth) -> Abc.Maybe<TResult>
@@ -119,7 +118,6 @@ static Abc.Maybe.Lift<TSource, TResult>(this System.Func<TSource, TResult> this,
 static Abc.Maybe.Negate(this in Abc.Maybe<bool> this) -> Abc.Maybe<bool>
 static Abc.Maybe.None<T>() -> Abc.Maybe<T>
 static Abc.Maybe.Of<T>(T value) -> Abc.Maybe<T>
-static Abc.Maybe.Of<T>(T? value) -> Abc.Maybe<T>
 static Abc.Maybe.Or(this in Abc.Maybe<bool> this, Abc.Maybe<bool> other) -> Abc.Maybe<bool>
 static Abc.Maybe.Some<T>(T value) -> Abc.Maybe<T>
 static Abc.Maybe.SomeOrNone<T>(T value) -> Abc.Maybe<T>

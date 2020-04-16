@@ -3,6 +3,10 @@ Changelog for Abc.
 vNEXT
 -----
 
+Removed
+- Maybe.Of() with a struct constraint.
+- Maybe.Flatten() with a struct constraint.
+
 2020-04-16, version 1.0.0-beta1
 -------------------------------
 

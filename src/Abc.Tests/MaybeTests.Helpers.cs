@@ -21,9 +21,7 @@ namespace Abc
             Assert.Equal(NoUri, Maybe<Maybe<Uri>>.None.Flatten());
             Assert.Equal(AnyT.None, Maybe<Maybe<AnyT>>.None.Flatten());
 
-#pragma warning disable CS0618 // Type or member is obsolete
-            Assert.Equal(Ø, Maybe<Maybe<int?>>.None.Flatten());
-#pragma warning restore CS0618
+            Assert.Equal(Maybe<int?>.None, Maybe<Maybe<int?>>.None.Flatten());
             Assert.Equal(Maybe<string?>.None, Maybe<Maybe<string?>>.None.Flatten());
             Assert.Equal(Maybe<Uri?>.None, Maybe<Maybe<Uri?>>.None.Flatten());
             Assert.Equal(Maybe<AnyT?>.None, Maybe<Maybe<AnyT?>>.None.Flatten());
@@ -48,10 +46,8 @@ namespace Abc
             Maybe<AnyT> some = AnyT.Some;
             Assert.Equal(some, Maybe.Some(some).Flatten());
 
-#pragma warning disable CS0618 // Type or member is obsolete
             Maybe<int?> one = One.Select(x => (int?)x);
-            Assert.Equal(One, Maybe.Some(one).Flatten());
-#pragma warning restore CS0618
+            Assert.Equal(one, Maybe.Some(one).Flatten());
         }
 
         #endregion

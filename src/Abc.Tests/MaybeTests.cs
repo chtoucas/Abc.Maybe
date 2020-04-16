@@ -141,10 +141,8 @@ namespace Abc
         {
             Assert.Some(1, Maybe.Of(1));
 
-#pragma warning disable CS0618 // Type or member is obsolete
             Assert.None(Maybe.Of((int?)null));
             Assert.Some(1, Maybe.Of((int?)1));
-#pragma warning restore CS0618
         }
 
         [Fact]

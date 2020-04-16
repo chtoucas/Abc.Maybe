@@ -23,6 +23,11 @@ namespace Abc
     // Core methods: Of(), Flatten().
     public partial class Maybe
     {
+        // I used to disallow an output of type Maybe<T?> for Of() and Flatten()
+        // but there is actually no real reason to do that and it keeps things
+        // homogeneous (Of() and Flatten() always behave the same way).
+#if false // Only kept to be sure that I won't try it again... do NOT enable.
+
         /// <summary>
         /// Creates a new instance of the <see cref="Maybe{T}"/> struct from the
         /// specified nullable value.
@@ -40,20 +45,6 @@ namespace Abc
             => value.HasValue ? new Maybe<T>(value.Value) : Maybe<T>.None;
 
         /// <summary>
-        /// Creates a new instance of the <see cref="Maybe{T}"/> struct from the
-        /// specified nullable value.
-        /// <para>RECOMMENDATION: for concrete types, <see cref="Some"/>,
-        /// <see cref="SomeOrNone{T}(T?)"/> or <see cref="SomeOrNone{T}(T)"/>
-        /// should be preferred.</para>
-        /// </summary>
-        // Unconstrained version of SomeOrNone() and Some().
-        // F# Workflow: return.
-        [Pure]
-        [EditorBrowsable(EditorBrowsableState.Advanced)]
-        public static Maybe<T> Of<T>([AllowNull] T value)
-            => value is null ? Maybe<T>.None : new Maybe<T>(value);
-
-        /// <summary>
         /// Removes one level of structure, projecting the bound value into the
         /// outer level.
         /// </summary>
@@ -66,6 +57,22 @@ namespace Abc
         [EditorBrowsable(EditorBrowsableState.Advanced)]
         public static Maybe<T> Flatten<T>(this in Maybe<Maybe<T?>> @this) where T : struct
             => @this.IsSome ? @this.Value.Squash() : Maybe<T>.None;
+
+#endif
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="Maybe{T}"/> struct from the
+        /// specified nullable value.
+        /// <para>RECOMMENDATION: for concrete types, <see cref="Some"/>,
+        /// <see cref="SomeOrNone{T}(T?)"/> or <see cref="SomeOrNone{T}(T)"/>
+        /// should be preferred.</para>
+        /// </summary>
+        // Unconstrained version of SomeOrNone() and Some().
+        // F# Workflow: return.
+        [Pure]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        public static Maybe<T> Of<T>([AllowNull] T value)
+            => value is null ? Maybe<T>.None : new Maybe<T>(value);
 
         /// <summary>
         /// Removes one level of structure, projecting the bound value into the
