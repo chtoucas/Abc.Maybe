@@ -89,6 +89,7 @@ Format Major.Minor.Patch[-PreRelease]
 - Patch: Backwards compatible bug fixes only.
 - PreRelease:
   DEV)   Internal, not for public consumption.
+         Exist only to prevent accidental publication of a dev package.
   alpha) Used for work-in-progress and experimentation.
   beta)  One that is feature complete for the next planned release, but may
          contain known bugs.
@@ -114,7 +115,7 @@ Sections.
   introduces a breaking change.
 - Fixed, for any bug fixes.
 - Security, in case of vulnerabilities.
-- Internals, for internal changes that are of no interest outside the project.
+- Internal Changes, for changes that are of no interest outside the project.
 
 Production releases should have a title and highlight the relevant changes made
 during the pre-release phase.

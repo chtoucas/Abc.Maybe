@@ -17,7 +17,7 @@ Changed
 Removed
 - Maybe<T>.Skip(); use Maybe<T>.IsNone with Maybe.Unit or Maybe.Zero.
 
-Internals
+Internal Changes
 - New script eng\update-api.ps1.
 - New option to hard clean the solution before packing.
 - Upgraded packages:
@@ -32,7 +32,7 @@ Changed
 - Strong-name the public assembly.
 - Embed the debug symbols.
 
-Internals
+Internal Changes
 - New perf project.
 - Rewrite most scripts using PowerShell.
 - Better build system.
@@ -57,7 +57,7 @@ Removed
 - Maybe<T>.SwitchAsync(); use Maybe<T>.Switch() instead.
 - Qperators.ZipAny(); use LINQ Zip followed by Maybe.CollectAny().
 
-Internals
+Internal Changes
 - Full test coverage.
 - Replaced OpenCover by Coverlet as the default tool for test coverage.
 - New project Narvalo.Future for experimental code.
