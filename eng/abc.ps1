@@ -225,6 +225,7 @@ function Approve-GitStatus {
     Write-Verbose "Getting the git status."
 
     try {
+        # If there no uncommitted changes, the result is null, not empty.
         $status = & $Git status -s 2>&1
 
         if ($status -eq $null) {
