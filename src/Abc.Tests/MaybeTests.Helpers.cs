@@ -2,9 +2,120 @@
 
 namespace Abc
 {
+    using System;
+
     using Xunit;
 
     using Assert = AssertEx;
+
+    // Normalization: Flatten(), Squash().
+    public partial class MaybeTests
+    {
+        #region Flatten()
+
+        [Fact]
+        public static void Flatten_None()
+        {
+            Assert.Equal(Ø, Maybe<Maybe<int>>.None.Flatten());
+            Assert.Equal(NoText, Maybe<Maybe<string>>.None.Flatten());
+            Assert.Equal(NoUri, Maybe<Maybe<Uri>>.None.Flatten());
+            Assert.Equal(AnyT.None, Maybe<Maybe<AnyT>>.None.Flatten());
+
+#pragma warning disable CS0618 // Type or member is obsolete
+            Assert.Equal(Ø, Maybe<Maybe<int?>>.None.Flatten());
+#pragma warning restore CS0618
+            Assert.Equal(Maybe<string?>.None, Maybe<Maybe<string?>>.None.Flatten());
+            Assert.Equal(Maybe<Uri?>.None, Maybe<Maybe<Uri?>>.None.Flatten());
+            Assert.Equal(Maybe<AnyT?>.None, Maybe<Maybe<AnyT?>>.None.Flatten());
+        }
+
+        [Fact]
+        public static void Flatten_SomeOfNone()
+        {
+            Assert.Equal(Ø, Maybe.Some(Ø).Flatten());
+            Assert.Equal(NoText, Maybe.Some(NoText).Flatten());
+            Assert.Equal(NoUri, Maybe.Some(NoUri).Flatten());
+            Assert.Equal(AnyT.None, Maybe.Some(AnyT.None).Flatten());
+        }
+
+        [Fact]
+        public static void Flatten_SomeOfSome()
+        {
+            Assert.Equal(One, Maybe.Some(One).Flatten());
+            Assert.Equal(SomeText, Maybe.Some(SomeText).Flatten());
+            Assert.Equal(SomeUri, Maybe.Some(SomeUri).Flatten());
+
+            Maybe<AnyT> some = AnyT.Some;
+            Assert.Equal(some, Maybe.Some(some).Flatten());
+
+#pragma warning disable CS0618 // Type or member is obsolete
+            Maybe<int?> one = One.Select(x => (int?)x);
+            Assert.Equal(One, Maybe.Some(one).Flatten());
+#pragma warning restore CS0618
+        }
+
+        #endregion
+
+        #region Squash()
+
+        [Fact]
+        public static void Squash_None()
+        {
+            Assert.Equal(Ø, Maybe<int?>.None.Squash());
+            Assert.Equal(NoText, Maybe<string?>.None.Squash());
+            Assert.Equal(NoUri, Maybe<Uri?>.None.Squash());
+            Assert.Equal(AnyT.None, Maybe<AnyT?>.None.Squash());
+        }
+
+        [Fact]
+        public static void Squash_Square_None()
+        {
+            Assert.Equal(Ø, Maybe<Maybe<int?>>.None.Squash());
+            Assert.Equal(NoText, Maybe<Maybe<string?>>.None.Squash());
+            Assert.Equal(NoUri, Maybe<Maybe<Uri?>>.None.Squash());
+            Assert.Equal(AnyT.None, Maybe<Maybe<AnyT?>>.None.Squash());
+        }
+
+        [Fact]
+        public static void Squash_Some_ValueType()
+        {
+            // Arrange
+            Maybe<int?> one = One.Select(x => (int?)x);
+            // Act & Assert
+            Assert.Equal(One, one.Squash());
+        }
+
+        [Fact]
+        public static void Squash_Square_Some_ValueType()
+        {
+            // Arrange
+            Maybe<int?> one = One.Select(x => (int?)x);
+            // Act & Assert
+            Assert.Equal(One, Maybe.Some(one).Squash());
+        }
+
+        [Fact]
+        public static void Squash_Some_ReferenceType()
+        {
+            // Arrange
+            Maybe<AnyT> some = AnyT.Some;
+            Maybe<AnyT?> one = some.Select(x => (AnyT?)x);
+            // Act & Assert
+            Assert.Equal(some, one.Squash());
+        }
+
+        [Fact]
+        public static void Squash_Square_Some_ReferenceType()
+        {
+            // Arrange
+            Maybe<AnyT> some = AnyT.Some;
+            Maybe<AnyT?> one = some.Select(x => (AnyT?)x);
+            // Act & Assert
+            Assert.Equal(some, Maybe.Some(one).Squash());
+        }
+
+        #endregion
+    }
 
     // Helpers for Maybe<T> where T is a struct.
     public partial class MaybeTests

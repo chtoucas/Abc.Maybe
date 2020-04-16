@@ -23,7 +23,7 @@ namespace Abc
     /// </summary>
     public static partial class Maybe { }
 
-    // Core methods.
+    // Core methods: Of(), Flatten().
     public partial class Maybe
     {
         /// <summary>
@@ -60,15 +60,31 @@ namespace Abc
         /// Removes one level of structure, projecting the bound value into the
         /// outer level.
         /// </summary>
-        // Unconstrained version of Flatten().
-        // This could have been an ext method, but it would be confusing as we
-        // also have the LINQ Join().
+        /// <para>DO NOT USE, only here to prevent the creation of maybe's for
+        /// a nullable value type; see
+        /// <see cref="Squash{T}(in Maybe{Maybe{T?}})"/> for a better
+        /// alternative.</para>
         [Pure]
-        public static Maybe<T> Join<T>(in Maybe<Maybe<T>> @this)
+        [Obsolete("Use Squash() instead.")]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        public static Maybe<T> Flatten<T>(this in Maybe<Maybe<T?>> @this) where T : struct
+            => @this.IsSome ? @this.Value.Squash() : Maybe<T>.None;
+
+        /// <summary>
+        /// Removes one level of structure, projecting the bound value into the
+        /// outer level.
+        /// <para>RECOMMENDATION: for concrete types,
+        /// <see cref="Squash{T}(in Maybe{Maybe{T?}})"/> should be preferred.
+        /// </para>
+        /// </summary>
+        // Unconstrained version of Squash().
+        [Pure]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        public static Maybe<T> Flatten<T>(this in Maybe<Maybe<T>> @this)
             => @this.IsSome ? @this.Value : Maybe<T>.None;
     }
 
-    // Factory methods.
+    // Factory methods: None(), Some(), SomeOrNone(), Square(), SquareOrNone().
     public partial class Maybe
     {
         /// <summary>
@@ -136,17 +152,9 @@ namespace Abc
             => value is null ? Maybe<Maybe<T>>.None : new Maybe<Maybe<T>>(new Maybe<T>(value));
     }
 
-    // Conversion from generic T? to generic T.
+    // Normalization: Squash().
     public partial class Maybe
     {
-        [Pure]
-        public static Maybe<T> Flatten<T>(this in Maybe<Maybe<T?>> @this) where T : struct
-            => @this.IsSome ? @this.Value.Squash() : Maybe<T>.None;
-
-        [Pure]
-        public static Maybe<T> Flatten<T>(this in Maybe<Maybe<T?>> @this) where T : class
-            => @this.IsSome ? @this.Value.Squash() : Maybe<T>.None;
-
         [Pure]
         public static Maybe<T> Squash<T>(this in Maybe<T?> @this) where T : struct
             // BONSANG! when IsSome is true, Value.HasValue is also true,
@@ -157,6 +165,16 @@ namespace Abc
         public static Maybe<T> Squash<T>(this in Maybe<T?> @this) where T : class
             => @this.IsSome && @this.Value != null ? new Maybe<T>(@this.Value)
                 : Maybe<T>.None;
+
+        // Unconstrained version: Flatten().
+        [Pure]
+        public static Maybe<T> Squash<T>(this in Maybe<Maybe<T?>> @this) where T : struct
+            => @this.IsSome ? @this.Value.Squash() : Maybe<T>.None;
+
+        // Unconstrained version: Flatten().
+        [Pure]
+        public static Maybe<T> Squash<T>(this in Maybe<Maybe<T?>> @this) where T : class
+            => @this.IsSome ? @this.Value.Squash() : Maybe<T>.None;
     }
 
     // Helpers for Maybe<T> where T is a struct.

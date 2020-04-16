@@ -4,7 +4,7 @@ vNEXT
 -----
 
 Version 1.0.0-alpha4
-- Revisit Square(), Flatten() & co.
+- Revisit Squash(), Flatten() & SquareXXX().
 - Comparisons. Finish MaybeComparer<T>. Split equality and order?
 
 Version 1.0.0-beta1

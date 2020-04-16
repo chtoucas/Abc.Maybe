@@ -17,7 +17,7 @@ namespace Abc
     using Anexn = System.ArgumentNullException;
     using EF = Abc.Utilities.ExceptionFactory;
 
-    // REVIEW: Serializable? Binary only.
+    // TODO: Serializable? Binary only.
     // https://docs.microsoft.com/en-us/dotnet/standard/serialization/binary-serialization
 
     /// <summary>
@@ -62,7 +62,7 @@ namespace Abc
     /// - bitwise logical |, & and ^ (and compound assignment |=, &= and ^=)
     /// - explicit conversion to the underlying type T
     ///
-    /// Instance methods where the result is another maybe.
+    /// Instance (or extension) methods where the result is another maybe.
     /// - Bind()                unwrap then map to another maybe
     /// - Select()              LINQ select
     /// - SelectMany()          LINQ select many
@@ -72,9 +72,10 @@ namespace Abc
     /// - OrElse()              logical OR; "none"-coalescing
     /// - AndThen()             logical AND
     /// - XorElse()             logical XOR
+    /// - Squash()
+    /// - Flatten()             unconstrained Squash()
     ///
-    /// Escape the maybe (no public access to the enclosed value if any,
-    /// ie no property Value).
+    /// Escape/unwrap the maybe.
     /// - Switch()              pattern matching
     /// - TryGetValue()         try unwrap
     /// - ValueOrDefault()      unwrap
