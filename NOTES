@@ -6,6 +6,8 @@ vNEXT
 Version 1.0.0-alpha4
 - Revisit Squash(), Flatten() & SquareXXX().
 - Comparisons. Finish MaybeComparer<T>. Split equality and order?
+- Tests: compare Square() and Some(Some()) & co.
+- Improve comparison tests (order and equality).
 
 Version 1.0.0-beta1
 Stable API.

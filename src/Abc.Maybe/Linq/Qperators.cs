@@ -4,6 +4,10 @@ namespace Abc.Linq
 {
     using System.Collections.Generic;
 
+    // TODO: ElementAtOrNone(), how do we handle null? TSource? and Maybe<TSource>.
+    // For the others, it is simpler: we don't and if we wanted to, the solution
+    // is to use the overload with a predicate.
+
     /// <summary>
     /// Provides a set of extension methods for querying objects that implement
     /// <see cref="IEnumerable{T}"/>.

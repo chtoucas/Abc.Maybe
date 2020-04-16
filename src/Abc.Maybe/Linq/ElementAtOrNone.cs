@@ -9,9 +9,8 @@ namespace Abc.Linq
 
     using Aoorexn = System.ArgumentOutOfRangeException;
 
-    // TODO: ElementAtOrNone.
-    // - TSource? and Maybe<TSource>.
-    // - compare to ElementAtOrDefault for nullable's (throw for index < 0).
+    // REVIEW: compare ElementAtOrNone to ElementAtOrDefault for nullable's
+    // (throw for index < 0).
 
     public static partial class Qperators
     {

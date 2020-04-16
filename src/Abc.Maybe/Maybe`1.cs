@@ -17,7 +17,7 @@ namespace Abc
     using Anexn = System.ArgumentNullException;
     using EF = Abc.Utilities.ExceptionFactory;
 
-    // TODO: Serializable? Binary only.
+    // REVIEW: Serializable? Binary only.
     // https://docs.microsoft.com/en-us/dotnet/standard/serialization/binary-serialization
 
     /// <summary>
