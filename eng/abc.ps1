@@ -227,7 +227,7 @@ function Approve-GitStatus {
     try {
         $status = & $Git status -s 2>&1
 
-        if ($status -eq "") {
+        if ($status -eq $null) {
             return $true
         }
         else {
