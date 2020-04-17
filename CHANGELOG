@@ -6,6 +6,10 @@ vNEXT
 Added
 - Maybe<T> now supports binary serialization.
 
+Changed
+- With the previous version, I changed the behaviour of ElementAtOrNone(), it was
+  wrong. It clearly contradicts the XML comments, let's roll back.
+
 Removed
 - Maybe.Of() with a struct constraint; use Maybe.Of() followed by Squash().
 - Maybe.Flatten() with a struct constraint; use Maybe.Flatten() followed by Squash().

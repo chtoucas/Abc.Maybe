@@ -2,15 +2,11 @@
 
 namespace Abc.Linq
 {
-    using System;
     using System.Collections.Generic;
     using System.Diagnostics.Contracts;
     using System.Linq;
 
-    using Aoorexn = System.ArgumentOutOfRangeException;
-
-    // TODO (doc): compare ElementAtOrNone to ElementAtOrDefault for nullable's
-    // (throw for index < 0).
+    using Anexn = System.ArgumentNullException;
 
     public static partial class Qperators
     {
@@ -22,14 +18,15 @@ namespace Abc.Linq
         /// For <c>IEnumerable&lt;T?&gt;</c>, prefer
         /// <see cref="Enumerable.ElementAtOrDefault"/> over this method.
         /// </remarks>
+        /// <exception cref="Anexn"><paramref name="source"/> is null.</exception>
         [Pure]
         public static Maybe<TSource> ElementAtOrNone<TSource>(
             this IEnumerable<TSource> source,
             int index)
         {
-            if (source is null) { throw new ArgumentNullException(nameof(source)); }
+            if (source is null) { throw new Anexn(nameof(source)); }
 
-            if (index < 0) { throw new Aoorexn(nameof(index)); }
+            if (index < 0) { return Maybe<TSource>.None; }
 
             // Fast track.
             if (source is IList<TSource> list)

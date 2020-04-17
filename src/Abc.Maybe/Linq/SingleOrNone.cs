@@ -20,6 +20,7 @@ namespace Abc.Linq
         /// <c>SingleOrDefault</c> which throws an exception if there is more
         /// than one element in the sequence.</para>
         /// </summary>
+        /// <exception cref="Anexn"><paramref name="source"/> is null.</exception>
         [Pure]
         public static Maybe<TSource> SingleOrNone<TSource>(this IEnumerable<TSource> source)
         {
@@ -51,6 +52,8 @@ namespace Abc.Linq
         /// <c>SingleOrDefault</c> which throws an exception if more than one
         /// element satisfying the predicate.</para>
         /// </summary>
+        /// <exception cref="Anexn"><paramref name="source"/> or
+        /// <paramref name="predicate"/> is null.</exception>
         [Pure]
         public static Maybe<TSource> SingleOrNone<TSource>(
             this IEnumerable<TSource> source,

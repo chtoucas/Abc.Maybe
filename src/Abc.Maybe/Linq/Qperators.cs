@@ -4,7 +4,7 @@ namespace Abc.Linq
 {
     using System.Collections.Generic;
 
-    // TODO: ElementAtOrNone(), how do we handle null? TSource? and Maybe<TSource>.
+    // TODO (doc): ElementAtOrNone(), how do we handle null? TSource? and Maybe<TSource>.
     // For the others, it is simpler: we don't and if we wanted to, the solution
     // is to use the overload with a predicate.
 

@@ -28,6 +28,7 @@ namespace Abc.Linq
                 yield return new object[] { new int[] { -4 }, 0, Maybe.Some(-4) };
                 yield return new object[] { new int[] { 9, 8, 0, -5, 10 }, 4, Maybe.Some(10) };
 
+                yield return new object[] { NumberRangeGuaranteedNotCollectionType(-4, 5), -1, Maybe<int>.None };
                 yield return new object[] { NumberRangeGuaranteedNotCollectionType(5, 5), 5, Maybe<int>.None };
                 yield return new object[] { NumberRangeGuaranteedNotCollectionType(0, 0), 0, Maybe<int>.None };
             }
@@ -40,20 +41,6 @@ namespace Abc.Linq
         [Fact]
         public static void NullSource() =>
             Assert.ThrowsAnexn("source", () => NullSeq.ElementAtOrNone(1));
-
-        [Fact]
-        public static void NullableArray_NegativeIndex_Throws()
-        {
-            string[] source = { "a", "b" };
-            Assert.ThrowsAoorexn("index", () => source.ElementAtOrNone(-1));
-        }
-
-        [Fact]
-        public static void ElementAtOrNone5()
-        {
-            var source = NumberRangeGuaranteedNotCollectionType(-4, 5);
-            Assert.ThrowsAoorexn("index", () => source.ElementAtOrNone(-1));
-        }
     }
 
     public partial class ElementAtOrNoneTests
@@ -90,6 +77,13 @@ namespace Abc.Linq
         public static void ElementAtOrNone4(IEnumerable<int> source, int index, Maybe<int> expected)
         {
             Assert.Equal(expected, source.RunOnce().ElementAtOrNone(index));
+        }
+
+        [Fact]
+        public static void NullableArray_NegativeIndex_ReturnsNone()
+        {
+            string[] source = { "a", "b" };
+            Assert.None(source.ElementAtOrNone(-1));
         }
 
         [Fact(DisplayName = "NullableArray_ValidIndex_ReturnsCorrectObjecvt")]

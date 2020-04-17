@@ -15,6 +15,7 @@ namespace Abc.Linq
         /// Returns the last element of a sequence, or
         /// <see cref="Maybe{TSource}.None"/> if the sequence contains no elements.
         /// </summary>
+        /// <exception cref="Anexn"><paramref name="source"/> is null.</exception>
         [Pure]
         public static Maybe<TSource> LastOrNone<TSource>(
             this IEnumerable<TSource> source)
@@ -47,6 +48,8 @@ namespace Abc.Linq
         /// <paramref name="predicate"/>, or <see cref="Maybe{TSource}.None"/>
         /// if no such element is found.
         /// </summary>
+        /// <exception cref="Anexn"><paramref name="source"/> or
+        /// <paramref name="predicate"/> is null.</exception>
         [Pure]
         public static Maybe<TSource> LastOrNone<TSource>(
             this IEnumerable<TSource> source,
