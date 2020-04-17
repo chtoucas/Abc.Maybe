@@ -20,9 +20,7 @@
     <PackageDescription><![CDATA[
 Provides an Option type, aka a Maybe type, with a rich API and several companion helpers (parsing, LINQ).
 
-An Option type, aka a Maybe type, allows to represent objects that are either something (a value or a reference) or nothing.
-
-It differs from a nullable in that it applies to both value types and reference types. Nullable Reference Types (NRT) do not count since they are not actual .NET types but annotations that are ignored at run-time.
+An Option type, aka a Maybe type, allows to represent objects that are either something (a value or a reference) or nothing. Nullable Reference Types (NRT) do not count since they are not actual .NET types but annotations that are ignored at run-time.
 
 A tutorial with some guidelines is available on the project website.
     ]]></PackageDescription>

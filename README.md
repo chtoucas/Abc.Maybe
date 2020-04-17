@@ -1,6 +1,6 @@
 # Abc.Maybe
 
-Abc.Maybe features an option type for .NET.
+Abc.Maybe features an Option type for .NET.
 - Supported frameworks:
   * .NET Standard 2.0
   * .NET Standard 2.1
@@ -34,7 +34,7 @@ Quick Start
   * [More](#more)
   * [Samples](#samples)
 
-An option type, aka a maybe type (a better fit for what we use it for), is like
+An Option type, aka a Maybe type (a better fit for what we use it for), is like
 a box containing a value or no value at all.
 
 (TODO: _improve what follows_)
@@ -45,7 +45,7 @@ a general replacement for null references. Code quality should also improve sinc
 an algorithm with _maybe_'s is often shorter and closer to the intent, and
 therefore simpler to follow and maintain, than the counterpart written without.
 
-An option type is a very simple sum type `Maybe<T> = Some<T> | None` (exclusive
+An Option type is a very simple sum type `Maybe<T> = Some<T> | None` (exclusive
 or, but of course this is not possible in C#), whereas a "nullable" type,
 like `string`, is just a string type to which the language adds a special
 (sentinel) value, the `null` value. What's the difference? You can't ignore the
@@ -145,7 +145,7 @@ an empty _maybe_, in both cases.
 
 ### Safely extract the enclosed value
 
-`Maybe<T>` is a strict option type, we don't get direct access to the enclosed
+`Maybe<T>` is a strict Option type, we don't get direct access to the enclosed
 value.
 ```csharp
 Maybe<string> maybe = Maybe.SomeOrNone("...");
