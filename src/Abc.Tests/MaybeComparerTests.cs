@@ -166,6 +166,30 @@ namespace Abc
         }
 
         [Fact]
+        public static void Equals_ForReferenceType2()
+        {
+            // Arrange
+            var cmp = MaybeComparer<AnyStructural>.Default;
+            var none = Maybe<AnyStructural>.None;
+            var some = Maybe.SomeOrNone(new AnyStructural { Value = "chicane" });
+            var same = Maybe.SomeOrNone(new AnyStructural { Value = "caniche" });
+            var notSame = Maybe.SomeOrNone(new AnyStructural { Value = "saltimbanque" });
+
+            // Act & Assert
+            // With None
+            Assert.False(cmp.Equals(some, none));
+            Assert.False(cmp.Equals(none, some));
+            Assert.True(cmp.Equals(none, none));
+
+            // Without None
+            Assert.False(cmp.Equals(notSame, some));
+            Assert.True(cmp.Equals(same, some));
+            Assert.True(cmp.Equals(some, some));
+            Assert.True(cmp.Equals(some, same));
+            Assert.False(cmp.Equals(some, notSame));
+        }
+
+        [Fact]
         public static void Equals_WithInvalidType_ForObjects()
         {
             // Arrange
@@ -352,6 +376,30 @@ namespace Abc
             var some = Maybe.Some(1);
             var same = Maybe.Some(1);
             var notSame = Maybe.Some(2);
+
+            // Act & Assert
+            // With None
+            Assert.False(cmp.Equals(some, none));
+            Assert.False(cmp.Equals(none, some));
+            Assert.True(cmp.Equals(none, none));
+
+            // Without None
+            Assert.False(cmp.Equals(notSame, some));
+            Assert.True(cmp.Equals(same, some));
+            Assert.True(cmp.Equals(some, some));
+            Assert.True(cmp.Equals(some, same));
+            Assert.False(cmp.Equals(some, notSame));
+        }
+
+        [Fact]
+        public static void Equals_Structural_ForReferenceType()
+        {
+            // Arrange
+            var cmp = MaybeComparer<AnyStructural>.Structural;
+            var none = Maybe<AnyStructural>.None;
+            var some = Maybe.SomeOrNone(new AnyStructural { Value = "chicane" });
+            var same = Maybe.SomeOrNone(new AnyStructural { Value = "caniche" });
+            var notSame = Maybe.SomeOrNone(new AnyStructural { Value = "saltimbanque" });
 
             // Act & Assert
             // With None

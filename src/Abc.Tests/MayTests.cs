@@ -464,9 +464,9 @@ namespace Abc
         [InlineData(" Alias1 ")]
         public static void ParseEnum(string input)
         {
-            Assert.Some(SimpleEnum.One, May.ParseEnum<SimpleEnum>(input));
-            Assert.Some(SimpleEnum.One, May.ParseEnum<SimpleEnum>(input, ignoreCase: false));
-            Assert.Some(SimpleEnum.One, May.ParseEnum<SimpleEnum>(input, ignoreCase: true));
+            Assert.Some(AnyEnum.One, May.ParseEnum<AnyEnum>(input));
+            Assert.Some(AnyEnum.One, May.ParseEnum<AnyEnum>(input, ignoreCase: false));
+            Assert.Some(AnyEnum.One, May.ParseEnum<AnyEnum>(input, ignoreCase: true));
         }
 
         [Theory]
@@ -487,9 +487,9 @@ namespace Abc
         [InlineData(" alias1 ")]
         public static void ParseEnum_MixedCase(string input)
         {
-            Assert.None(May.ParseEnum<SimpleEnum>(input));
-            Assert.None(May.ParseEnum<SimpleEnum>(input, ignoreCase: false));
-            Assert.Some(SimpleEnum.One, May.ParseEnum<SimpleEnum>(input, ignoreCase: true));
+            Assert.None(May.ParseEnum<AnyEnum>(input));
+            Assert.None(May.ParseEnum<AnyEnum>(input, ignoreCase: false));
+            Assert.Some(AnyEnum.One, May.ParseEnum<AnyEnum>(input, ignoreCase: true));
         }
 
         [Theory]
@@ -501,9 +501,9 @@ namespace Abc
         // Weird but passing any integer value will succeed.
         public static void ParseEnum_AnyInteger(string input)
         {
-            Assert.Some((SimpleEnum)4, May.ParseEnum<SimpleEnum>(input));
-            Assert.Some((SimpleEnum)4, May.ParseEnum<SimpleEnum>(input, ignoreCase: false));
-            Assert.Some((SimpleEnum)4, May.ParseEnum<SimpleEnum>(input, ignoreCase: true));
+            Assert.Some((AnyEnum)4, May.ParseEnum<AnyEnum>(input));
+            Assert.Some((AnyEnum)4, May.ParseEnum<AnyEnum>(input, ignoreCase: false));
+            Assert.Some((AnyEnum)4, May.ParseEnum<AnyEnum>(input, ignoreCase: true));
         }
 
         [Theory]
@@ -517,9 +517,9 @@ namespace Abc
         [InlineData(" Whatever ")]
         public static void ParseEnum_InvalidName(string input)
         {
-            Assert.None(May.ParseEnum<SimpleEnum>(input));
-            Assert.None(May.ParseEnum<SimpleEnum>(input, ignoreCase: false));
-            Assert.None(May.ParseEnum<SimpleEnum>(input, ignoreCase: true));
+            Assert.None(May.ParseEnum<AnyEnum>(input));
+            Assert.None(May.ParseEnum<AnyEnum>(input, ignoreCase: false));
+            Assert.None(May.ParseEnum<AnyEnum>(input, ignoreCase: true));
         }
 
         [Theory]
@@ -536,9 +536,9 @@ namespace Abc
         [InlineData(" One,  Two ")]
         public static void ParseEnum_CompositeValue(string input)
         {
-            Assert.Some(FlagEnum.OneTwo, May.ParseEnum<FlagEnum>(input));
-            Assert.Some(FlagEnum.OneTwo, May.ParseEnum<FlagEnum>(input, ignoreCase: false));
-            Assert.Some(FlagEnum.OneTwo, May.ParseEnum<FlagEnum>(input, ignoreCase: true));
+            Assert.Some(AnyFlagEnum.OneTwo, May.ParseEnum<AnyFlagEnum>(input));
+            Assert.Some(AnyFlagEnum.OneTwo, May.ParseEnum<AnyFlagEnum>(input, ignoreCase: false));
+            Assert.Some(AnyFlagEnum.OneTwo, May.ParseEnum<AnyFlagEnum>(input, ignoreCase: true));
         }
 
         [Theory]
@@ -555,9 +555,9 @@ namespace Abc
         [InlineData(" one, two ")]
         public static void ParseEnum_CompositeValue_MixedCase(string input)
         {
-            Assert.None(May.ParseEnum<FlagEnum>(input));
-            Assert.None(May.ParseEnum<FlagEnum>(input, ignoreCase: false));
-            Assert.Some(FlagEnum.OneTwo, May.ParseEnum<FlagEnum>(input, ignoreCase: true));
+            Assert.None(May.ParseEnum<AnyFlagEnum>(input));
+            Assert.None(May.ParseEnum<AnyFlagEnum>(input, ignoreCase: false));
+            Assert.Some(AnyFlagEnum.OneTwo, May.ParseEnum<AnyFlagEnum>(input, ignoreCase: true));
         }
 
         [Theory]
@@ -566,9 +566,9 @@ namespace Abc
         [InlineData("onetWo")]
         public static void ParseEnum_Flags_InvalidName(string input)
         {
-            Assert.None(May.ParseEnum<SimpleEnum>(input));
-            Assert.None(May.ParseEnum<SimpleEnum>(input, ignoreCase: false));
-            Assert.None(May.ParseEnum<SimpleEnum>(input, ignoreCase: true));
+            Assert.None(May.ParseEnum<AnyEnum>(input));
+            Assert.None(May.ParseEnum<AnyEnum>(input, ignoreCase: false));
+            Assert.None(May.ParseEnum<AnyEnum>(input, ignoreCase: true));
         }
     }
 

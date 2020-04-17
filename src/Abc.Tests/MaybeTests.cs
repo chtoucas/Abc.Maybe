@@ -90,12 +90,13 @@ namespace Abc
     // Factories: None, None(), Of(), SomeXXX(), SquareXXX().
     public partial class MaybeTests
     {
+        #region None
+
         [Fact]
         public static void None_IsDefault()
         {
             Assert.Equal(default, Maybe<Unit>.None);
             Assert.Equal(default, Maybe<int>.None);
-            Assert.Equal(default, Maybe<int?>.None);
             Assert.Equal(default, Maybe<string>.None);
             Assert.Equal(default, Maybe<Uri>.None);
             Assert.Equal(default, Maybe<AnyT>.None);
@@ -103,11 +104,21 @@ namespace Abc
         }
 
         [Fact]
+        public static void None_IsDefault_ForNullable()
+        {
+            Assert.Equal(default, Maybe<Unit?>.None);
+            Assert.Equal(default, Maybe<int?>.None);
+            Assert.Equal(default, Maybe<string?>.None);
+            Assert.Equal(default, Maybe<Uri?>.None);
+            Assert.Equal(default, Maybe<AnyT?>.None);
+            Assert.Equal(default, Maybe<object?>.None);
+        }
+
+        [Fact]
         public static void None_IsNone()
         {
             Assert.None(Maybe<Unit>.None);
             Assert.None(Maybe<int>.None);
-            Assert.None(Maybe<int?>.None);
             Assert.None(Maybe<string>.None);
             Assert.None(Maybe<Uri>.None);
             Assert.None(Maybe<AnyT>.None);
@@ -115,9 +126,19 @@ namespace Abc
         }
 
         [Fact]
+        public static void None_IsNone_ForNullable()
+        {
+            Assert.None(Maybe<Unit?>.None);
+            Assert.None(Maybe<int?>.None);
+            Assert.None(Maybe<string?>.None);
+            Assert.None(Maybe<Uri?>.None);
+            Assert.None(Maybe<AnyT?>.None);
+            Assert.None(Maybe<object?>.None);
+        }
+
+        [Fact]
         public static void NoneT_IsNone()
         {
-            // NB: int? is not permitted here.
             Assert.None(Maybe.None<Unit>());
             Assert.None(Maybe.None<int>());
             Assert.None(Maybe.None<string>());
@@ -138,17 +159,23 @@ namespace Abc
             Assert.Equal(Maybe<object>.None, Maybe.None<object>());
         }
 
+        #endregion
+
         [Fact]
-        public static void Of_ForValueType()
+        public static void Of_WithValueType()
         {
-            Assert.Some(1, Maybe.Of(1));
+            Assert.Some(314, Maybe.Of(314));
+            Assert.Some(413L, Maybe.Of(413L));
 
             Assert.None(Maybe.Of((int?)null));
-            Assert.Some(1, Maybe.Of((int?)1));
+            Assert.Some(314, Maybe.Of((int?)314));
+
+            Assert.None(Maybe.Of((long?)null));
+            Assert.Some(413L, Maybe.Of((long?)413L));
         }
 
         [Fact]
-        public static void Of_ForReferenceType()
+        public static void Of_WithReferenceType()
         {
             Assert.None(Maybe.Of((string?)null));
             Assert.Some(MyText, Maybe.Of(MyText));
@@ -162,18 +189,24 @@ namespace Abc
         }
 
         [Fact]
-        public static void Some() =>
-            Assert.Some(1, Maybe.Some(1));
-
-        [Fact]
-        public static void SomeOrNone_ForValueType()
+        public static void Some()
         {
-            Assert.None(Maybe.SomeOrNone((int?)null));
-            Assert.Some(1, Maybe.SomeOrNone((int?)1));
+            Assert.Some(314, Maybe.Some(314));
+            Assert.Some(413L, Maybe.Some(413L));
         }
 
         [Fact]
-        public static void SomeOrNone_ForReferenceType()
+        public static void SomeOrNone_WithValueType()
+        {
+            Assert.None(Maybe.SomeOrNone((int?)null));
+            Assert.Some(314, Maybe.SomeOrNone((int?)314));
+
+            Assert.None(Maybe.SomeOrNone((long?)null));
+            Assert.Some(413, Maybe.SomeOrNone((long?)413));
+        }
+
+        [Fact]
+        public static void SomeOrNone_WithReferenceType()
         {
             Assert.None(Maybe.SomeOrNone((string?)null));
             Assert.Some(MyText, Maybe.SomeOrNone(MyText));
@@ -191,37 +224,38 @@ namespace Abc
         [Fact]
         public static void Square()
         {
-            Assert.Some(One, Maybe.Square(1));
-            Assert.Some(Two, Maybe.Square(2));
-            Assert.Some(TwoL, Maybe.Square(2L));
+            Assert.Some(Maybe.Some(314), Maybe.Square(314));
+            Assert.Some(Maybe.Some(314L), Maybe.Square(314L));
         }
 
         [Fact]
         public static void Square_IsSomeSome()
         {
-            Assert.Equal(Maybe.Some(Maybe.Some(1)), Maybe.Square(1));
-            Assert.Equal(Maybe.Some(Maybe.Some(2)), Maybe.Square(2));
-            Assert.Equal(Maybe.Some(Maybe.Some(2L)), Maybe.Square(2L));
+            Assert.Equal(Maybe.Some(Maybe.Some(314)), Maybe.Square(314));
+            Assert.Equal(Maybe.Some(Maybe.Some(413L)), Maybe.Square(413L));
         }
 
         [Fact]
-        public static void SquareOrNone_ForValueType()
+        public static void SquareOrNone_WithValueType()
         {
             Assert.None(Maybe.SquareOrNone((int?)null));
-            Assert.Some(One, Maybe.SquareOrNone((int?)1));
+            Assert.Some(Maybe.Some(314), Maybe.SquareOrNone((int?)314));
+
+            Assert.None(Maybe.SquareOrNone((long?)null));
+            Assert.Some(Maybe.Some(413L), Maybe.SquareOrNone((long?)413));
         }
 
         [Fact]
-        public static void SquareOrNone_ForValueType_IsNotSomeOfSomeOrNone()
+        public static void SquareOrNone_WithValueType_IsNotSomeOfSomeOrNone()
         {
             // This one is not OK, the left part is not empty.
             Assert.NotEqual(Maybe.Some(Maybe<int>.None), Maybe.SquareOrNone((int?)null));
             // This one is OK.
-            Assert.Equal(Maybe.Some(Maybe.SomeOrNone((int?)1)), Maybe.SquareOrNone((int?)1));
+            Assert.Equal(Maybe.Some(Maybe.SomeOrNone((int?)314)), Maybe.SquareOrNone((int?)314));
         }
 
         [Fact]
-        public static void SquareOrNone_ForReferenceType()
+        public static void SquareOrNone_WithReferenceType()
         {
             Assert.None(Maybe.SquareOrNone((string?)null));
             Assert.Some(Maybe.SomeOrNone(MyText), Maybe.SquareOrNone(MyText));
@@ -235,7 +269,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void SquareOrNone_ForReferenceType_IsNotSomeOfSomeOrNone()
+        public static void SquareOrNone_WithReferenceType_IsNotSomeOfSomeOrNone()
         {
             // This one is not OK.
             Assert.NotEqual(Maybe.Some(Maybe<string>.None), Maybe.SquareOrNone((string?)null));
@@ -257,115 +291,6 @@ namespace Abc
         #endregion
     }
 
-    // Serialization.
-    public partial class MaybeTests
-    {
-        [Fact]
-        public static void IsSerializable() =>
-            // Not strictly necessary since the other tests will fail too if we
-            // remove the Serializable attr, but this test is more explicit, it
-            // only fails in that specific case.
-            Assert.True(typeof(Maybe<>).IsSerializable);
-
-        [Fact]
-        public static void Serialization_None_ForValueType()
-        {
-            // Arrange
-            var formatter = new BinaryFormatter();
-            Maybe<int> none;
-            // Act (serialize then deserialize)
-            using (var stream = new MemoryStream())
-            {
-                formatter.Serialize(stream, Maybe<int>.None);
-
-                stream.Seek(0, SeekOrigin.Begin);
-                none = (Maybe<int>)formatter.Deserialize(stream);
-            }
-            // Assert
-            Assert.None(none);
-        }
-
-        [Fact]
-        public static void Serialization_None_ForReferenceType()
-        {
-            // Arrange
-            var formatter = new BinaryFormatter();
-            Maybe<AnySerializable> none;
-            // Act (serialize then deserialize)
-            using (var stream = new MemoryStream())
-            {
-                formatter.Serialize(stream, Maybe<AnySerializable>.None);
-
-                stream.Seek(0, SeekOrigin.Begin);
-                none = (Maybe<AnySerializable>)formatter.Deserialize(stream);
-            }
-            // Assert
-            Assert.None(none);
-        }
-
-        [Fact]
-        public static void Serialization_Some_ForValueType()
-        {
-            // Arrange
-            var formatter = new BinaryFormatter();
-            Maybe<int> some;
-            // Act (serialize then deserialize)
-            using (var stream = new MemoryStream())
-            {
-                formatter.Serialize(stream, Maybe.Some(1));
-
-                stream.Seek(0, SeekOrigin.Begin);
-                some = (Maybe<int>)formatter.Deserialize(stream);
-            }
-            // Assert
-            Assert.Some(1, some);
-        }
-
-        [Fact]
-        public static void Serialization_Some_WithNullableValueType()
-        {
-            // Arrange
-            var formatter = new BinaryFormatter();
-            Maybe<int?> some;
-            // Act (serialize then deserialize)
-            using (var stream = new MemoryStream())
-            {
-                formatter.Serialize(stream, Maybe.Of((int?)1));
-
-                stream.Seek(0, SeekOrigin.Begin);
-                some = (Maybe<int?>)formatter.Deserialize(stream);
-            }
-            // Assert
-            Assert.Some(1, some);
-        }
-
-        [Fact]
-        public static void Serialization_Some_ForReferenceType()
-        {
-            // Arrange
-            var formatter = new BinaryFormatter();
-            var any = new AnySerializable
-            {
-                Item1 = Int16.MaxValue,
-                Item2 = Int32.MaxValue,
-                Item3 = Int64.MaxValue
-            };
-            Maybe<AnySerializable> some;
-            // Act (serialize then deserialize)
-            using (var stream = new MemoryStream())
-            {
-                formatter.Serialize(stream, Maybe.SomeOrNone(any));
-
-                stream.Seek(0, SeekOrigin.Begin);
-                some = (Maybe<AnySerializable>)formatter.Deserialize(stream);
-            }
-            // Assert
-            // The equality test only works because AnySerializable follows
-            // structural equality rules.
-            Assert.Some(any, some);
-        }
-    }
-
     // Simple conversions: ToString(), op_Explicit.
     public partial class MaybeTests
     {
@@ -382,7 +307,7 @@ namespace Abc
         public static void ToString_Some()
         {
             // Arrange
-            string text = "My Value";
+            string text = "My Text";
             var some = Maybe.SomeOrNone(text);
             // Act & Assert
             Assert.Contains(text, some.ToString(), StringComparison.OrdinalIgnoreCase);
@@ -1077,6 +1002,97 @@ namespace Abc
 
             Assert.True(Maybe.SomeOrNone(Anagram).Contains(Margana, cmp));
             Assert.True(Maybe.SomeOrNone(Margana).Contains(Anagram, cmp));
+        }
+    }
+
+    // Serialization.
+    public partial class MaybeTests
+    {
+        [Fact]
+        public static void IsSerializable() =>
+            // Not strictly necessary since the other tests will fail too if we
+            // remove the Serializable attr, but this test is more explicit, it
+            // only fails in that specific case.
+            Assert.True(typeof(Maybe<>).IsSerializable);
+
+        [Fact]
+        public static void Serialization_None_ForValueType()
+        {
+            // Arrange
+            var formatter = new BinaryFormatter();
+            Maybe<int> none;
+            // Act (serialize then deserialize)
+            using (var stream = new MemoryStream())
+            {
+                formatter.Serialize(stream, Maybe<int>.None);
+
+                stream.Seek(0, SeekOrigin.Begin);
+                none = (Maybe<int>)formatter.Deserialize(stream);
+            }
+            // Assert
+            Assert.None(none);
+        }
+
+        [Fact]
+        public static void Serialization_None_ForReferenceType()
+        {
+            // Arrange
+            var formatter = new BinaryFormatter();
+            Maybe<AnySerializable> none;
+            // Act (serialize then deserialize)
+            using (var stream = new MemoryStream())
+            {
+                formatter.Serialize(stream, Maybe<AnySerializable>.None);
+
+                stream.Seek(0, SeekOrigin.Begin);
+                none = (Maybe<AnySerializable>)formatter.Deserialize(stream);
+            }
+            // Assert
+            Assert.None(none);
+        }
+
+        [Fact]
+        public static void Serialization_Some_ForValueType()
+        {
+            // Arrange
+            var formatter = new BinaryFormatter();
+            Maybe<int> some;
+            // Act (serialize then deserialize)
+            using (var stream = new MemoryStream())
+            {
+                formatter.Serialize(stream, Maybe.Some(314));
+
+                stream.Seek(0, SeekOrigin.Begin);
+                some = (Maybe<int>)formatter.Deserialize(stream);
+            }
+            // Assert
+            Assert.Some(314, some);
+        }
+
+        [Fact]
+        public static void Serialization_Some_ForReferenceType()
+        {
+            // Arrange
+            var formatter = new BinaryFormatter();
+            var any = new AnySerializable
+            {
+                Item1 = Int16.MaxValue,
+                Item2 = Int32.MaxValue,
+                Item3 = Int64.MaxValue
+            };
+            Maybe<AnySerializable> some;
+            // Act (serialize then deserialize)
+            using (var stream = new MemoryStream())
+            {
+                formatter.Serialize(stream, Maybe.SomeOrNone(any));
+
+                stream.Seek(0, SeekOrigin.Begin);
+                some = (Maybe<AnySerializable>)formatter.Deserialize(stream);
+            }
+            // Assert
+            // The equality test only works because AnySerializable follows
+            // structural equality rules.
+            Assert.Some(any, some);
         }
     }
 }
