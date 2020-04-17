@@ -140,6 +140,8 @@ namespace Abc
         public static Maybe<T> SomeOrNone<T>(T? value) where T : class
             => value is null ? Maybe<T>.None : new Maybe<T>(value);
 
+        // REVIEW: unconstrained version of Square()?
+
         // Identical to Maybe.Some(Maybe.Some()).
         [Pure]
         public static Maybe<Maybe<T>> Square<T>(T value) where T : struct

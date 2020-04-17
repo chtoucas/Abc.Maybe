@@ -165,7 +165,7 @@ namespace Abc
     public partial class MaybeTests
     {
         [Fact]
-        public static void Equality_None_WithValueType()
+        public static void Equality_None_ForValueType()
         {
             // Arrange
             var none = Maybe<int>.None;
@@ -197,7 +197,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Equality_Some_WithValueType()
+        public static void Equality_Some_ForValueType()
         {
             // Arrange
             var some = Maybe.Some(1);
@@ -229,7 +229,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Equality_None_WithReferenceType()
+        public static void Equality_None_ForReferenceType()
         {
             // Arrange
             var none = Maybe<AnyT>.None;
@@ -261,7 +261,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Equality_Some_WithReferenceType()
+        public static void Equality_Some_ForReferenceType()
         {
             // Arrange
             var anyT = AnyT.Value;
@@ -379,7 +379,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Equals_Structural_None_WithValueType()
+        public static void Equals_Structural_None_ForValueType()
         {
             // Arrange
             IStructuralEquatable none = Maybe<int>.None;
@@ -398,7 +398,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Equals_Structural_Some_WithValueType()
+        public static void Equals_Structural_Some_ForValueType()
         {
             // Arrange
             IStructuralEquatable some = Maybe.Some(1);
@@ -419,7 +419,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Equals_Structural_None_WithReferenceType()
+        public static void Equals_Structural_None_ForReferenceType()
         {
             // Arrange
             IStructuralEquatable none = Maybe<AnyT>.None;
@@ -438,7 +438,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Equals_Structural_Some_WithReferenceType_WithDefaultComparer()
+        public static void Equals_Structural_Some_ForReferenceType_WithDefaultComparer()
         {
             // Arrange
             var anyT = AnyT.Value;
@@ -460,7 +460,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Equals_Structural_Some_WithReferenceType_WithCustomComparer()
+        public static void Equals_Structural_Some_ForReferenceType_WithCustomComparer()
         {
             // Arrange
             IStructuralEquatable anagram = Maybe.SomeOrNone(Anagram);

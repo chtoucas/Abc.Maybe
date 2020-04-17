@@ -139,7 +139,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Of_WithValueType()
+        public static void Of_ForValueType()
         {
             Assert.Some(1, Maybe.Of(1));
 
@@ -148,7 +148,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Of_WithReferenceType()
+        public static void Of_ForReferenceType()
         {
             Assert.None(Maybe.Of((string?)null));
             Assert.Some(MyText, Maybe.Of(MyText));
@@ -166,14 +166,14 @@ namespace Abc
             Assert.Some(1, Maybe.Some(1));
 
         [Fact]
-        public static void SomeOrNone_WithValueType()
+        public static void SomeOrNone_ForValueType()
         {
             Assert.None(Maybe.SomeOrNone((int?)null));
             Assert.Some(1, Maybe.SomeOrNone((int?)1));
         }
 
         [Fact]
-        public static void SomeOrNone_WithReferenceType()
+        public static void SomeOrNone_ForReferenceType()
         {
             Assert.None(Maybe.SomeOrNone((string?)null));
             Assert.Some(MyText, Maybe.SomeOrNone(MyText));
@@ -205,14 +205,14 @@ namespace Abc
         }
 
         [Fact]
-        public static void SquareOrNone_WithValueType()
+        public static void SquareOrNone_ForValueType()
         {
             Assert.None(Maybe.SquareOrNone((int?)null));
             Assert.Some(One, Maybe.SquareOrNone((int?)1));
         }
 
         [Fact]
-        public static void SquareOrNone_WithValueType_IsNotSomeOfSomeOrNone()
+        public static void SquareOrNone_ForValueType_IsNotSomeOfSomeOrNone()
         {
             // This one is not OK, the left part is not empty.
             Assert.NotEqual(Maybe.Some(Maybe<int>.None), Maybe.SquareOrNone((int?)null));
@@ -221,7 +221,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void SquareOrNone_WithReferenceType()
+        public static void SquareOrNone_ForReferenceType()
         {
             Assert.None(Maybe.SquareOrNone((string?)null));
             Assert.Some(Maybe.SomeOrNone(MyText), Maybe.SquareOrNone(MyText));
@@ -235,7 +235,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void SquareOrNone_WithReferenceType_IsNotSomeOfSomeOrNone()
+        public static void SquareOrNone_ForReferenceType_IsNotSomeOfSomeOrNone()
         {
             // This one is not OK.
             Assert.NotEqual(Maybe.Some(Maybe<string>.None), Maybe.SquareOrNone((string?)null));
@@ -268,7 +268,7 @@ namespace Abc
             Assert.True(typeof(Maybe<>).IsSerializable);
 
         [Fact]
-        public static void Serialization_None_WithValueType()
+        public static void Serialization_None_ForValueType()
         {
             // Arrange
             var formatter = new BinaryFormatter();
@@ -286,7 +286,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Serialization_None_WithReferenceType()
+        public static void Serialization_None_ForReferenceType()
         {
             // Arrange
             var formatter = new BinaryFormatter();
@@ -304,7 +304,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Serialization_Some_WithValueType()
+        public static void Serialization_Some_ForValueType()
         {
             // Arrange
             var formatter = new BinaryFormatter();
@@ -340,7 +340,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Serialization_Some_WithReferenceType()
+        public static void Serialization_Some_ForReferenceType()
         {
             // Arrange
             var formatter = new BinaryFormatter();

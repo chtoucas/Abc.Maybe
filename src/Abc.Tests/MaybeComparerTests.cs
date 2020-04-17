@@ -55,7 +55,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Compare_WithValueType()
+        public static void Compare_ForValueType()
         {
             // Arrange
             var cmp = MaybeComparer<int>.Default;
@@ -108,7 +108,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Equals_WithValueType()
+        public static void Equals_ForValueType()
         {
             // Arrange
             var cmp = MaybeComparer<int>.Default;
@@ -132,7 +132,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Equals_WithReferenceType()
+        public static void Equals_ForReferenceType()
         {
             // Arrange
             var cmp = MaybeComparer<Uri>.Default;
@@ -231,7 +231,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Compare_Structural_WithValueType()
+        public static void Compare_Structural_ForValueType()
         {
             // Arrange
             var cmp = MaybeComparer<int>.Structural;
@@ -252,7 +252,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Equals_Structural_WithValueType()
+        public static void Equals_Structural_ForValueType()
         {
             // Arrange
             var cmp = MaybeComparer<int>.Structural;
