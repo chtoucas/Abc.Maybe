@@ -4,6 +4,7 @@ namespace Abc
 {
     using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
     using System.Runtime.CompilerServices;
     using System.Threading;
@@ -16,8 +17,7 @@ namespace Abc
     {
         protected MaybeComparer() { }
 
-#pragma warning disable CA1000 // Do not declare static members on generic types
-
+        [SuppressMessage("Design", "CA1000:Do not declare static members on generic types")]
         public static MaybeComparer<T> Default => s_Default ??= InitialiseDefault();
 
         private static MaybeComparer<T>? s_Default;
@@ -30,6 +30,7 @@ namespace Abc
             return s_Default!;
         }
 
+        [SuppressMessage("Design", "CA1000:Do not declare static members on generic types")]
         public static MaybeComparer<T> Structural => s_Structural ??= InitialiseStructural();
 
         private static MaybeComparer<T>? s_Structural;
@@ -42,8 +43,6 @@ namespace Abc
             return s_Structural!;
         }
 
-#pragma warning restore CA1000
-
         [Pure] public abstract bool Equals(Maybe<T> x, Maybe<T> y);
 
         [Pure] public abstract int GetHashCode(Maybe<T> obj);
@@ -54,7 +53,7 @@ namespace Abc
         [Pure]
         bool IEqualityComparer.Equals(object? x, object? y)
         {
-            if (x == y) { return true; }
+            if (ReferenceEquals(x, y)) { return true; }
             if (x is null || y is null) { return false; }
             if (x is Maybe<T> left && y is Maybe<T> right) { return Equals(left, right); }
             throw EF.MaybeComparer_InvalidType;

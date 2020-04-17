@@ -187,7 +187,9 @@ namespace Abc
         // REVIEW: why CA1812 when NO_INTERNALS_VISIBLE_TO is set?
         // Also, coverlet currently does not apply ExcludeFromCodeCoverage
         // to the enclosed methods.
+#if NO_INTERNALS_VISIBLE_TO
         [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes")]
+#endif
         private sealed class DebugView_
         {
             private readonly Maybe<T> _inner;

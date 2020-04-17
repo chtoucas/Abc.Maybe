@@ -68,10 +68,6 @@ namespace Abc.Tests
             => Assert.Equal("()", Unit.Default.ToString());
 
         [Fact]
-        public static void IsSerializable() =>
-            Assert.True(typeof(Unit).IsSerializable);
-
-        [Fact]
         public static void Serialization()
         {
             // Arrange

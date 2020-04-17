@@ -4,11 +4,11 @@ vNEXT
 -----
 
 Added
-- Maybe<T> is now serializable.
+- Maybe<T> now supports binary serialization.
 
 Removed
-- Maybe.Of() with a struct constraint.
-- Maybe.Flatten() with a struct constraint.
+- Maybe.Of() with a struct constraint; use Maybe.Of() followed by Squash().
+- Maybe.Flatten() with a struct constraint; use Maybe.Flatten() followed by Squash().
 
 2020-04-16, version 1.0.0-beta1
 -------------------------------

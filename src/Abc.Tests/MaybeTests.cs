@@ -227,7 +227,7 @@ namespace Abc
         public static void IsSerializable() =>
             // Not strictly necessary since the other tests will fail too if we
             // remove the Serializable attr, but this test is more explicit, it
-            // only fails in that case.
+            // only fails in that specific case.
             Assert.True(typeof(Maybe<>).IsSerializable);
 
         [Fact]
