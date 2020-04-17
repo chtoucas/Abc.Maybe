@@ -3,15 +3,14 @@ Developer Notes.
 vNEXT
 -----
 
-Version 1.0.0-beta2
-- MaybeComparer<T>: split equality and order?
-- Tests: compare Square() and Some(Some()) & co. See also Flatten() & Squash().
-- Improve comparison tests (order and equality).
-
 Version 1.0.0-beta3
 - No more FIXMEs or TODOs.
+- MaybeComparer<T>: split equality and order?
 - Testing is well underway but there is still a lot to be done.
   We need more functional tests.
+  * Compare Square() and Some(Some()) & co. See also Flatten() & Squash().
+  * Expand comparison tests (order and equality).
+  * Maybe<Func<>>
 
 Towards version 1.0.0
 - Check published packages (upgrade, debugging experience). See repos Abc.
