@@ -3,6 +3,9 @@ Changelog for Abc.
 vNEXT
 -----
 
+Changed
+- Removed the notnull constraint on the result type of Switch().
+
 2020-04-17, version 1.0.0-beta2
 -------------------------------
 

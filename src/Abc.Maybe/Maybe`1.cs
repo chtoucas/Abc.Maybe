@@ -238,8 +238,6 @@ namespace Abc
     // until it is strictly necessary.
     public partial struct Maybe<T>
     {
-        // REVIEW: notnull constraint w/ Switch().
-
         /// <summary>
         /// If the current instance encloses a value, it unwraps it using
         /// <paramref name="caseSome"/>, otherwise it executes
@@ -247,7 +245,6 @@ namespace Abc
         /// </summary>
         [Pure]
         public TResult Switch<TResult>(Func<T, TResult> caseSome, Func<TResult> caseNone)
-            where TResult : notnull
         {
             if (_isSome)
             {
@@ -268,7 +265,6 @@ namespace Abc
         /// </summary>
         [Pure]
         public TResult Switch<TResult>(Func<T, TResult> caseSome, TResult caseNone)
-            where TResult : notnull
         {
             if (_isSome)
             {
