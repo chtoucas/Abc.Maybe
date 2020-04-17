@@ -137,7 +137,7 @@ namespace Abc
         /// Checks whether the current instance is empty or not.
         /// </summary>
         // We expose this property to ease extensibility, see MaybeEx in
-        // Abc.Future, but this not mandatory, in fact everything should work
+        // Abc.Sketches, but this not mandatory, in fact everything should work
         // fine without it.
         public bool IsNone => !_isSome;
 

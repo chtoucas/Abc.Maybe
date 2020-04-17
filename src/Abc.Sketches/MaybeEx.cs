@@ -12,7 +12,7 @@ namespace Abc
     // REVIEW: lazy extensions. Is there anything useful we can do w/
     // Lazy<Maybe<T>> or Maybe<Lazy<T>>?
     // Set (ensemble) POV.
-    // Other LINQ-inspired ops: Cast(Maybe<object>)
+    // Other LINQ-inspired ops.
 
     // NB: the code should be optimized if promoted to the main project.
 
@@ -92,7 +92,7 @@ namespace Abc
     // Misc methods.
     public partial class MaybeEx
     {
-        // TODO: naming Skip() -> Void(), Unit(), Discard(), Erase(), Forget()?
+        // REVIEW: naming Skip() -> Void(), Unit(), Discard(), Erase(), Forget()?
         // Since we have Maybe.Guard(), Skip() is a natural companion to have.
 
         /// <summary>
@@ -102,6 +102,19 @@ namespace Abc
         [Pure]
         public static Maybe<Unit> Skip<T>(this Maybe<T> @this) =>
             @this.IsNone ? Maybe.Zero : Maybe.Unit;
+
+        [Pure]
+        public static Maybe<TResult> Cast<TResult>(this Maybe<object> @this) =>
+            @this.TryGetValue(out object? value) ? Maybe.Of((TResult)value)
+                : Maybe<TResult>.None;
+
+        [Pure]
+        public static Maybe<TResult> OfType<TResult>(this Maybe<object> @this) =>
+            @this.TryGetValue(out object? value) && value is TResult result
+                ? Maybe.Of(result)
+                : Maybe<TResult>.None;
+
+        #region ReplaceWith()
 
         // Objectives: constraint TResult : notnull, prevent the creation of
         // Maybe<TResult?>, alternative to AndThen() to avoid the creation
@@ -188,12 +201,18 @@ namespace Abc
         public static Maybe<T> Filter<T>(this Maybe<T> @this, bool condition)
             => condition ? @this : Maybe<T>.None;
 
+        #endregion
+
+        #region Replicate()
+
+        // REVIEW: Replicate() -> Repeat()?
+
         /// <seealso cref="Maybe{T}.Yield(int)"/>
         /// <remarks>
-        /// The difference with <see cref="Maybe{T}.Yield(int)"/> is in the treatment of
-        /// an empty maybe. <see cref="Maybe{T}.Yield(int)"/> for an empty maybe returns
-        /// an empty sequence, whereas this method returns an empty maybe (no
-        /// sequence at all).
+        /// The difference with <see cref="Maybe{T}.Yield(int)"/> is in the
+        /// treatment of an empty maybe. <see cref="Maybe{T}.Yield(int)"/> for
+        /// an empty maybe returns an empty sequence, whereas this method returns
+        /// an empty maybe (no sequence at all).
         /// </remarks>
         [Pure]
         public static Maybe<IEnumerable<T>> Replicate<T>(this Maybe<T> @this, int count)
@@ -204,10 +223,10 @@ namespace Abc
         // Beware, infinite loop!
         /// <seealso cref="Maybe{T}.Yield()"/>
         /// <remarks>
-        /// The difference with <see cref="Maybe{T}.Yield()"/> is in the treatment of
-        /// an empty maybe. <see cref="Maybe{T}.Yield()"/> for an empty maybe returns
-        /// an empty sequence, whereas this method returns an empty maybe (no
-        /// sequence at all).
+        /// The difference with <see cref="Maybe{T}.Yield()"/> is in the
+        /// treatment of an empty maybe. <see cref="Maybe{T}.Yield()"/> for an
+        /// empty maybe returns an empty sequence, whereas this method returns
+        /// an empty maybe (no sequence at all).
         /// </remarks>
         [Pure]
         public static Maybe<IEnumerable<T>> Replicate<T>(this Maybe<T> @this)
@@ -224,5 +243,7 @@ namespace Abc
                 }
             }
         }
+
+        #endregion
     }
 }

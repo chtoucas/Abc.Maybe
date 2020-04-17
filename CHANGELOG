@@ -6,6 +6,9 @@ vNEXT
 Changed
 - Removed the notnull constraint on the result type of Switch().
 
+Internal Changes
+- Rename project Abc.Future to Abc.Sketches.
+
 2020-04-17, version 1.0.0-beta2
 -------------------------------
 
@@ -84,7 +87,7 @@ Removed
 Internal Changes
 - Full test coverage.
 - Replaced OpenCover by Coverlet as the default tool for test coverage.
-- New project Narvalo.Future for experimental code.
+- New project Abc.Future for experimental code.
 - Cleaned up project files.
   * No longer define compiler symbols NETSTANDARD2_0 and NETSTANDARD2_1 as
     this is already done by MSBuild.

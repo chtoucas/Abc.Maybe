@@ -35,8 +35,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Abc.Future\Abc.Future.csproj" />
     <ProjectReference Include="..\Abc.Maybe\Abc.Maybe.csproj" />
+    <ProjectReference Include="..\Abc.Sketches\Abc.Sketches.csproj" />
     <ProjectReference Include="..\Abc.Testing\Abc.Testing.csproj" />
   </ItemGroup>
 

@@ -110,7 +110,7 @@ function Invoke-OpenCover {
 
     $filters = `
         "+[Abc.Maybe]*",
-        "-[Abc.Future]*",
+        "-[Abc.Sketches]*",
         "-[Abc.Test*]*",
         "-[Abc*]System.Diagnostics.CodeAnalysis.*",
         "-[Abc*]System.Runtime.CompilerServices.*",

@@ -33,7 +33,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Abc.Future\Abc.Future.csproj" />
     <ProjectReference Include="..\Abc.Maybe\Abc.Maybe.csproj" />
   </ItemGroup>
 
