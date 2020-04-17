@@ -15,6 +15,8 @@ namespace Abc
 
     public partial class MayEx
     {
+        [Pure]
+        [RejectedApi("Too specialised.")]
         public static Maybe<bool> ParseBoolean(string? value, BooleanStyles style)
         {
             if (value is null) { return Maybe<bool>.None; }
