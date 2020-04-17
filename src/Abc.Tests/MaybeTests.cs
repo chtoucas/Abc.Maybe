@@ -197,10 +197,27 @@ namespace Abc
         }
 
         [Fact]
+        public static void Square_IsSomeSome()
+        {
+            Assert.Equal(Maybe.Some(Maybe.Some(1)), Maybe.Square(1));
+            Assert.Equal(Maybe.Some(Maybe.Some(2)), Maybe.Square(2));
+            Assert.Equal(Maybe.Some(Maybe.Some(2L)), Maybe.Square(2L));
+        }
+
+        [Fact]
         public static void SquareOrNone_WithValueType()
         {
             Assert.None(Maybe.SquareOrNone((int?)null));
             Assert.Some(One, Maybe.SquareOrNone((int?)1));
+        }
+
+        [Fact]
+        public static void SquareOrNone_WithValueType_IsNotSomeOfSomeOrNone()
+        {
+            // This one is not OK, the left part is not empty.
+            Assert.NotEqual(Maybe.Some(Maybe<int>.None), Maybe.SquareOrNone((int?)null));
+            // This one is OK.
+            Assert.Equal(Maybe.Some(Maybe.SomeOrNone((int?)1)), Maybe.SquareOrNone((int?)1));
         }
 
         [Fact]
@@ -215,6 +232,26 @@ namespace Abc
             var anyT = AnyT.Value;
             Assert.None(Maybe.SquareOrNone((AnyT?)null));
             Assert.Some(Maybe.SomeOrNone(anyT), Maybe.SquareOrNone(anyT));
+        }
+
+        [Fact]
+        public static void SquareOrNone_WithReferenceType_IsNotSomeOfSomeOrNone()
+        {
+            // This one is not OK.
+            Assert.NotEqual(Maybe.Some(Maybe<string>.None), Maybe.SquareOrNone((string?)null));
+            // This one is OK.
+            Assert.Equal(Maybe.Some(Maybe.SomeOrNone(MyText)), Maybe.SquareOrNone(MyText));
+
+            // This one is not OK.
+            Assert.NotEqual(Maybe.Some(Maybe<Uri>.None), Maybe.SquareOrNone((Uri?)null));
+            // This one is OK.
+            Assert.Equal(Maybe.Some(Maybe.SomeOrNone(MyUri)), Maybe.SquareOrNone(MyUri));
+
+            var anyT = AnyT.Value;
+            // This one is not OK.
+            Assert.NotEqual(Maybe.Some(Maybe<AnyT>.None), Maybe.SquareOrNone((AnyT?)null));
+            // This one is OK.
+            Assert.Equal(Maybe.Some(Maybe.SomeOrNone(anyT)), Maybe.SquareOrNone(anyT));
         }
 
         #endregion

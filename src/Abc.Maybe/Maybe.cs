@@ -146,11 +146,13 @@ namespace Abc
             => new Maybe<Maybe<T>>(new Maybe<T>(value));
 
         // Beware, not identical to Maybe.Some(Maybe.SomeOrNone()).
+        // It only matches when value is not null.
         [Pure]
         public static Maybe<Maybe<T>> SquareOrNone<T>(T? value) where T : struct
             => value.HasValue ? new Maybe<Maybe<T>>(new Maybe<T>(value.Value)) : Maybe<Maybe<T>>.None;
 
         // Beware, not identical to Maybe.Some(Maybe.SomeOrNone()).
+        // It only matches when value is not null.
         [Pure]
         public static Maybe<Maybe<T>> SquareOrNone<T>(T? value) where T : class
             => value is null ? Maybe<Maybe<T>>.None : new Maybe<Maybe<T>>(new Maybe<T>(value));

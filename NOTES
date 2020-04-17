@@ -8,7 +8,7 @@ Version 1.0.0-beta3
 - MaybeComparer<T>: split equality and order?
 - Testing is well underway but there is still a lot to be done.
   We need more functional tests.
-  * Compare Square() and Some(Some()) & co. See also Flatten() & Squash().
+  * Square() and Flatten() or Squash().
   * Expand comparison tests (order and equality).
   * Maybe<Func<>>
 
