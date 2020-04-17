@@ -238,6 +238,8 @@ namespace Abc
     // until it is strictly necessary.
     public partial struct Maybe<T>
     {
+        // REVIEW: notnull constraint w/ Switch().
+
         /// <summary>
         /// If the current instance encloses a value, it unwraps it using
         /// <paramref name="caseSome"/>, otherwise it executes
