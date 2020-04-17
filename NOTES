@@ -10,6 +10,7 @@ Version 1.0.0-beta3
   We need more functional tests.
   * Square() and Flatten() or Squash().
   * Expand comparison tests (order and equality).
+    Structural comparisons w/ structural types.
   * Maybe<Func<>>
 
 Towards version 1.0.0
@@ -61,6 +62,7 @@ Tasks
     https://github.com/dotnet/roslyn-analyzers/blob/master/src/PublicApiAnalyzers/PublicApiAnalyzers.Help.md
 
 Other tasks
+- Naming tests: explain rules in this doc and fix the tests themselves if necessary.
 - Perf tool (LINQ, nulls, iterable).
 - Sample code w/ C#, VB and F#.
 - BannedApiAnalyzers?

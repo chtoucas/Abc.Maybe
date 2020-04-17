@@ -7,6 +7,8 @@ namespace Abc
 
     using Xunit;
 
+    using Assert = AssertEx;
+
     public static partial class MaybeComparerTests { }
 
     // Default.
@@ -76,7 +78,22 @@ namespace Abc
         }
 
         [Fact]
-        public static void Compare_Objects()
+        public static void Compare_InvalidType_ForObjects()
+        {
+            // Arrange
+            IComparer cmp = MaybeComparer<int>.Default;
+            object none = Maybe<int>.None;
+            object one = Maybe.Some(1);
+            // Act & Assert
+            Assert.Throws<ArgumentException>(() => cmp.Compare(new object(), new object()));
+            Assert.Throws<ArgumentException>(() => cmp.Compare(new object(), none));
+            Assert.Throws<ArgumentException>(() => cmp.Compare(new object(), one));
+            Assert.Throws<ArgumentException>(() => cmp.Compare(none, new object()));
+            Assert.Throws<ArgumentException>(() => cmp.Compare(one, new object()));
+        }
+
+        [Fact]
+        public static void Compare_ForObjects()
         {
             // Arrange
             IComparer cmp = MaybeComparer<int>.Default;
@@ -88,7 +105,6 @@ namespace Abc
             Assert.Equal(0, cmp.Compare(null, null));
             Assert.Equal(-1, cmp.Compare(null, new object()));
             Assert.Equal(1, cmp.Compare(new object(), null));
-            Assert.Equal(1, cmp.Compare(new object(), null));
 
             // With None
             Assert.Equal(1, cmp.Compare(one, none));
@@ -99,12 +115,6 @@ namespace Abc
             Assert.Equal(1, cmp.Compare(two, one));
             Assert.Equal(0, cmp.Compare(one, one));
             Assert.Equal(-1, cmp.Compare(one, two));
-
-            // Not comparable
-            Assert.Throws<ArgumentException>(() => cmp.Compare(new object(), none));
-            Assert.Throws<ArgumentException>(() => cmp.Compare(new object(), one));
-            Assert.Throws<ArgumentException>(() => cmp.Compare(none, new object()));
-            Assert.Throws<ArgumentException>(() => cmp.Compare(one, new object()));
         }
 
         [Fact]
@@ -156,6 +166,50 @@ namespace Abc
         }
 
         [Fact]
+        public static void Equals_WithInvalidType_ForObjects()
+        {
+            // Arrange
+            IEqualityComparer cmp = MaybeComparer<int>.Default;
+            object none = Maybe<int>.None;
+            object some = Maybe.Some(1);
+            // Act & Assert
+            Assert.Throws<ArgumentException>(() => cmp.Equals(new object(), new object()));
+            Assert.Throws<ArgumentException>(() => cmp.Equals(new object(), none));
+            Assert.Throws<ArgumentException>(() => cmp.Equals(new object(), some));
+            Assert.Throws<ArgumentException>(() => cmp.Equals(none, new object()));
+            Assert.Throws<ArgumentException>(() => cmp.Equals(some, new object()));
+        }
+
+        [Fact]
+        public static void Equals_ForObjects()
+        {
+            // Arrange
+            IEqualityComparer cmp = MaybeComparer<int>.Default;
+            object none = Maybe<int>.None;
+            object some = Maybe.Some(1);
+            object same = Maybe.Some(1);
+            object notSame = Maybe.Some(2);
+
+            // Act & Assert
+            Assert.True(cmp.Equals(AnyResult.Value, AnyResult.Value));
+            Assert.True(cmp.Equals(null, null));
+            Assert.False(cmp.Equals(null, new object()));
+            Assert.False(cmp.Equals(new object(), null));
+
+            // With None
+            Assert.False(cmp.Equals(some, none));
+            Assert.False(cmp.Equals(none, some));
+            Assert.True(cmp.Equals(none, none));
+
+            // Without None
+            Assert.False(cmp.Equals(notSame, some));
+            Assert.True(cmp.Equals(same, some));
+            Assert.True(cmp.Equals(some, some));
+            Assert.True(cmp.Equals(some, same));
+            Assert.False(cmp.Equals(some, notSame));
+        }
+
+        [Fact]
         public static void GetHashCode_None()
         {
             Assert.Equal(0, MaybeComparer<int>.Default.GetHashCode(Maybe<int>.None));
@@ -172,6 +226,44 @@ namespace Abc
             var lcmp = MaybeComparer<long>.Default;
             var scmp = MaybeComparer<string>.Default;
             var ucmp = MaybeComparer<Uri>.Default;
+            string text = "text";
+            var someText = Maybe.SomeOrNone(text);
+            var uri = new Uri("http://www.narvalo.org");
+            var someUri = Maybe.SomeOrNone(uri);
+            // Act & Assert
+            Assert.Equal(1.GetHashCode(), icmp.GetHashCode(Maybe.Some(1)));
+            Assert.Equal(2.GetHashCode(), icmp.GetHashCode(Maybe.Some(2)));
+            Assert.Equal(2L.GetHashCode(), lcmp.GetHashCode(Maybe.Some(2L)));
+            Assert.Equal(text.GetHashCode(StringComparison.Ordinal), scmp.GetHashCode(someText));
+            Assert.Equal(uri.GetHashCode(), ucmp.GetHashCode(someUri));
+        }
+
+        [Fact]
+        public static void GetHashCode_WithNullObj_ForObjects()
+        {
+            // Arrange
+            IEqualityComparer cmp = MaybeComparer<int>.Default;
+            // Act & Assert
+            Assert.ThrowsAnexn("obj", () => cmp.GetHashCode(null!));
+        }
+
+        [Fact]
+        public static void GetHashCode_WithInvalidType_ForObjects()
+        {
+            // Arrange
+            IEqualityComparer cmp = MaybeComparer<int>.Default;
+            // Act & Assert
+            Assert.Throws<ArgumentException>(() => cmp.GetHashCode(new object()));
+        }
+
+        [Fact]
+        public static void GetHashCode_ForObjects()
+        {
+            // Arrange
+            IEqualityComparer icmp = MaybeComparer<int>.Default;
+            IEqualityComparer lcmp = MaybeComparer<long>.Default;
+            IEqualityComparer scmp = MaybeComparer<string>.Default;
+            IEqualityComparer ucmp = MaybeComparer<Uri>.Default;
             string text = "text";
             var someText = Maybe.SomeOrNone(text);
             var uri = new Uri("http://www.narvalo.org");

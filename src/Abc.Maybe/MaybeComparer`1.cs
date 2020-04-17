@@ -9,6 +9,7 @@ namespace Abc
     using System.Runtime.CompilerServices;
     using System.Threading;
 
+    using Anexn = System.ArgumentNullException;
     using EF = Abc.Utilities.ExceptionFactory;
 
     // Pluggable comparison.
@@ -61,9 +62,10 @@ namespace Abc
 
         /// <inheritdoc />
         [Pure]
-        int IEqualityComparer.GetHashCode(object? obj)
+        int IEqualityComparer.GetHashCode(object obj)
         {
-            if (obj is null) { return 0; }
+            if (obj is null) { throw new Anexn(nameof(obj)); }
+
             if (obj is Maybe<T> maybe) { return GetHashCode(maybe); }
             throw EF.MaybeComparer_InvalidType;
         }
