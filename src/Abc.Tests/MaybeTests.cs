@@ -6,7 +6,6 @@ namespace Abc
     using System.Diagnostics.Contracts;
     using System.IO;
     using System.Linq;
-    using System.Runtime.InteropServices;
     using System.Runtime.Serialization.Formatters.Binary;
     using System.Threading.Tasks;
 
@@ -226,6 +225,9 @@ namespace Abc
     {
         [Fact]
         public static void IsSerializable() =>
+            // Not strictly necessary since the other tests will fail too if we
+            // remove the Serializable attr, but this test is more explicit, it
+            // only fails in that case.
             Assert.True(typeof(Maybe<>).IsSerializable);
 
         [Fact]
@@ -233,14 +235,33 @@ namespace Abc
         {
             // Arrange
             var formatter = new BinaryFormatter();
-            using var stream = new MemoryStream();
+            Maybe<int> none;
+            // Act (serialize then deserialize)
+            using (var stream = new MemoryStream())
+            {
+                formatter.Serialize(stream, Maybe<int>.None);
 
-            // Act & Assert (Serialize)
-            formatter.Serialize(stream, Maybe<int>.None);
+                stream.Seek(0, SeekOrigin.Begin);
+                none = (Maybe<int>)formatter.Deserialize(stream);
+            }
+            // Assert
+            Assert.None(none);
+        }
 
-            // Act (Deserialize)
-            stream.Seek(0, SeekOrigin.Begin);
-            var none = (Maybe<int>)formatter.Deserialize(stream);
+        [Fact]
+        public static void Serialization_None_WithReferenceType()
+        {
+            // Arrange
+            var formatter = new BinaryFormatter();
+            Maybe<AnySerializable> none;
+            // Act (serialize then deserialize)
+            using (var stream = new MemoryStream())
+            {
+                formatter.Serialize(stream, Maybe<AnySerializable>.None);
+
+                stream.Seek(0, SeekOrigin.Begin);
+                none = (Maybe<AnySerializable>)formatter.Deserialize(stream);
+            }
             // Assert
             Assert.None(none);
         }
@@ -250,14 +271,15 @@ namespace Abc
         {
             // Arrange
             var formatter = new BinaryFormatter();
-            using var stream = new MemoryStream();
+            Maybe<int> some;
+            // Act (serialize then deserialize)
+            using (var stream = new MemoryStream())
+            {
+                formatter.Serialize(stream, Maybe.Some(1));
 
-            // Act & Assert (Serialize)
-            formatter.Serialize(stream, Maybe.Some(1));
-
-            // Act (Deserialize)
-            stream.Seek(0, SeekOrigin.Begin);
-            var some = (Maybe<int>)formatter.Deserialize(stream);
+                stream.Seek(0, SeekOrigin.Begin);
+                some = (Maybe<int>)formatter.Deserialize(stream);
+            }
             // Assert
             Assert.Some(1, some);
         }
@@ -267,16 +289,43 @@ namespace Abc
         {
             // Arrange
             var formatter = new BinaryFormatter();
-            using var stream = new MemoryStream();
+            Maybe<int?> some;
+            // Act (serialize then deserialize)
+            using (var stream = new MemoryStream())
+            {
+                formatter.Serialize(stream, Maybe.Of((int?)1));
 
-            // Act & Assert (Serialize)
-            formatter.Serialize(stream, Maybe.Of((int?)1));
-
-            // Act (Deserialize)
-            stream.Seek(0, SeekOrigin.Begin);
-            var some = (Maybe<int?>)formatter.Deserialize(stream);
+                stream.Seek(0, SeekOrigin.Begin);
+                some = (Maybe<int?>)formatter.Deserialize(stream);
+            }
             // Assert
             Assert.Some(1, some);
+        }
+
+        [Fact]
+        public static void Serialization_Some_WithReferenceType()
+        {
+            // Arrange
+            var formatter = new BinaryFormatter();
+            var any = new AnySerializable
+            {
+                Item1 = Int16.MaxValue,
+                Item2 = Int32.MaxValue,
+                Item3 = Int64.MaxValue
+            };
+            Maybe<AnySerializable> some;
+            // Act (serialize then deserialize)
+            using (var stream = new MemoryStream())
+            {
+                formatter.Serialize(stream, Maybe.SomeOrNone(any));
+
+                stream.Seek(0, SeekOrigin.Begin);
+                some = (Maybe<AnySerializable>)formatter.Deserialize(stream);
+            }
+            // Assert
+            // The equality test only works because AnySerializable follows
+            // structural equality rules.
+            Assert.Some(any, some);
         }
     }
 

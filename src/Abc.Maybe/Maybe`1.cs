@@ -107,9 +107,11 @@ namespace Abc
     {
         // We use explicit backing fields to be able to quickly find outside the
         // struct all occurences of the corresponding properties.
-        // Another good reason is serialization. With properties, I believe
-        // there is no guarantee that the compiler-generated names for the
-        // backing fields are always the same.
+        // A more important reason is serialization. Indeed, there is no
+        // guarantee that the generated names for the backing fields stay the
+        // same across compilations.
+        //
+        // IMPORTANT: the names for the backing fields MUST NOT change.
 
         private readonly bool _isSome;
 

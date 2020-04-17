@@ -76,14 +76,15 @@ namespace Abc.Tests
         {
             // Arrange
             var formatter = new BinaryFormatter();
-            using var stream = new MemoryStream();
+            Unit unit;
+            // Act (serialize then deserialize)
+            using (var stream = new MemoryStream())
+            {
+                formatter.Serialize(stream, Unit.Default);
 
-            // Act & Assert (Serialize)
-            formatter.Serialize(stream, Unit.Default);
-
-            // Act (Deserialize)
-            stream.Seek(0, SeekOrigin.Begin);
-            var unit = (Unit)formatter.Deserialize(stream);
+                stream.Seek(0, SeekOrigin.Begin);
+                unit = (Unit)formatter.Deserialize(stream);
+            }
             // Assert
             Assert.Equal(Unit.Default, unit);
         }
