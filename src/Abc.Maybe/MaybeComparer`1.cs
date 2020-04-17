@@ -12,7 +12,7 @@ namespace Abc
     using Anexn = System.ArgumentNullException;
     using EF = Abc.Utilities.ExceptionFactory;
 
-    // Pluggable comparison.
+    // Pluggable comparison for both order and equality.
     public abstract class MaybeComparer<T>
         : IEqualityComparer<Maybe<T>>, IEqualityComparer, IComparer<Maybe<T>>, IComparer
     {

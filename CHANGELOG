@@ -4,7 +4,7 @@ vNEXT
 -----
 
 Changed
-- MaybeComparer<T>.GetHashCode(object obj) instead of GetHashCode(object? obj).
+- Change the signature of MaybeComparer<T>.GetHashCode().
   When obj is null, the method now throws.
 - Removed the notnull constraint on the result type of Switch().
 

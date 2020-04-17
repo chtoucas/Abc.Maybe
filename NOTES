@@ -3,17 +3,13 @@ Developer Notes.
 vNEXT
 -----
 
-Version 1.0.0-beta3
-- No more FIXMEs or TODOs.
-- MaybeComparer<T>: split equality and order?
+Towards version 1.0.0
 - Testing is well underway but there is still a lot to be done.
-  We need more functional tests.
+  We also need more functional tests.
   * Square() and Flatten() or Squash().
   * Expand comparison tests (order and equality).
     Structural comparisons w/ structural types.
   * Maybe<Func<>>
-
-Towards version 1.0.0
 - Check published packages (upgrade, debugging experience). See repos Abc.
 
 Documentation (README)
@@ -97,6 +93,8 @@ Format Major.Minor.Patch[-PreRelease]
   alpha) Used for work-in-progress and experimentation.
   beta)  One that is feature complete for the next planned release, but may
          contain known bugs.
+  rc)    A release that's potentially final (stable) unless significant bugs
+         emerge.
 Regarding new features, we do not follow exactly semantic versioning;
 see https://docs.microsoft.com/en-us/nuget/concepts/package-versioning
 
