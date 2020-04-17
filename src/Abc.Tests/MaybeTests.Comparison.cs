@@ -321,7 +321,7 @@ namespace Abc
     public partial class MaybeTests
     {
         [Fact]
-        public static void CompareTo_Structural_None_NullComparer()
+        public static void CompareTo_Structural_None_WithNullComparer()
         {
             // Arrange
             IStructuralComparable none = Ø;
@@ -330,7 +330,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void CompareTo_Structural_Some_NullComparer()
+        public static void CompareTo_Structural_Some_WithNullComparer()
         {
             // Arrange
             IStructuralComparable one = One;
@@ -370,7 +370,7 @@ namespace Abc
     public partial class MaybeTests
     {
         [Fact]
-        public static void Equals_Structural_NullComparer()
+        public static void Equals_Structural_WithNullComparer()
         {
             // Arrange
             IStructuralEquatable one = One;
@@ -488,7 +488,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void GetHashCode_Structural_NullComparer()
+        public static void GetHashCode_Structural_WithNullComparer()
         {
             // Arrange
             IStructuralEquatable one = One;

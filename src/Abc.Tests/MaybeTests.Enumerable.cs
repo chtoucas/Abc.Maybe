@@ -17,7 +17,7 @@ namespace Abc
             Assert.Some(Enumerable.Empty<int>(), Maybe.EmptyEnumerable<int>());
 
         [Fact]
-        public static void CollectAny_NullSource() =>
+        public static void CollectAny_WithNullSource() =>
             Assert.ThrowsAnexn("source", () =>
                 Maybe.CollectAny(default(IEnumerable<Maybe<int>>)!));
 

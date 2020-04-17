@@ -12,7 +12,7 @@ namespace Abc
     public partial class MaybeTests
     {
         [Fact]
-        public static void Invoke_NullBinder()
+        public static void Invoke_WithNullBinder()
         {
             Assert.ThrowsAnexn("binder", () =>
                 Kunc<AnyT, AnyResult>.Null
@@ -40,7 +40,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Compose_NullObject()
+        public static void Compose_WithNullObject()
         {
             Assert.ThrowsAnexn("this", () =>
                 Kunc<AnyT1, AnyT2>.Null
@@ -58,7 +58,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void ComposeBack_NullOther()
+        public static void ComposeBack_WithNullOther()
         {
             Assert.ThrowsAnexn("other", () =>
                 Kunc<AnyT2, AnyResult>.Any
@@ -80,7 +80,7 @@ namespace Abc
     public partial class MaybeTests
     {
         [Fact]
-        public static void Lift_NullSelector()
+        public static void Lift_WithNullSelector()
         {
             Assert.ThrowsAnexn("selector", () =>
                 Funk<AnyT, AnyResult>.Null
@@ -106,7 +106,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Lift2_NullObject()
+        public static void Lift2_WithNullObject()
         {
             Assert.ThrowsAnexn("this", () =>
                 Funk<AnyT1, AnyT2, AnyResult>.Null
@@ -133,7 +133,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Lift3_NullObject()
+        public static void Lift3_WithNullObject()
         {
             Assert.ThrowsAnexn("this", () =>
                 Funk<AnyT1, AnyT2, AnyT3, AnyResult>.Null
@@ -161,7 +161,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Lift4_NullObject()
+        public static void Lift4_WithNullObject()
         {
             Assert.ThrowsAnexn("this", () =>
                 Funk<AnyT1, AnyT2, AnyT3, AnyT4, AnyResult>.Null
@@ -190,7 +190,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Lift5_NullObject()
+        public static void Lift5_WithNullObject()
         {
             Assert.ThrowsAnexn("this", () =>
                 Funk<AnyT1, AnyT2, AnyT3, AnyT4, AnyT5, AnyResult>.Null

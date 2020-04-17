@@ -583,7 +583,7 @@ namespace Abc
         [InlineData(" ")]
         [InlineData("  ")]
         [InlineData("   ")]
-        public static void ParseDateTime_NullOrWhiteSpace(string input)
+        public static void ParseDateTime_WithNullOrWhiteSpace(string input)
         {
             Assert.None(May.ParseDateTime(input));
             Assert.None(May.ParseDateTime(input, new MyFormatter(), DateTimeStyles.None));

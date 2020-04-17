@@ -10,14 +10,14 @@ namespace Abc
     public partial class MaybeTests
     {
         [Fact]
-        public static void ZipWith_None_NullZipper()
+        public static void ZipWith_None_WithNullZipper()
         {
             Assert.ThrowsAnexn("zipper", () => Ø.ZipWith(TwoL, Funk<int, long, AnyResult>.Null));
             Assert.ThrowsAnexn("zipper", () => AnyT.None.ZipWith(TwoL, Funk<AnyT, long, AnyResult>.Null));
         }
 
         [Fact]
-        public static void ZipWith_Some_NullZipper()
+        public static void ZipWith_Some_WithNullZipper()
         {
             Assert.ThrowsAnexn("zipper", () => One.ZipWith(TwoL, Funk<int, long, AnyResult>.Null));
             Assert.ThrowsAnexn("zipper", () => AnyT.Some.ZipWith(TwoL, Funk<AnyT, long, AnyResult>.Null));

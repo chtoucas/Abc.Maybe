@@ -413,14 +413,14 @@ namespace Abc
     public partial class MaybeTests
     {
         [Fact]
-        public static void Bind_None_NullBinder()
+        public static void Bind_None_WithNullBinder()
         {
             Assert.ThrowsAnexn("binder", () => Ø.Bind(Kunc<int, AnyResult>.Null));
             Assert.ThrowsAnexn("binder", () => AnyT.None.Bind(Kunc<AnyT, AnyResult>.Null));
         }
 
         [Fact]
-        public static void Bind_Some_NullBinder()
+        public static void Bind_Some_WithNullBinder()
         {
             Assert.ThrowsAnexn("binder", () => One.Bind(Kunc<int, AnyResult>.Null));
             Assert.ThrowsAnexn("binder", () => AnyT.Some.Bind(Kunc<AnyT, AnyResult>.Null));
@@ -470,14 +470,14 @@ namespace Abc
     public partial class MaybeTests
     {
         [Fact]
-        public static void Switch_None_NullCaseNone_Throws()
+        public static void Switch_None_WithNullCaseNone_Throws()
         {
             Assert.ThrowsAnexn("caseNone", () => Ø.Switch(Funk<int, AnyResult>.Any, Funk<AnyResult>.Null));
             Assert.ThrowsAnexn("caseNone", () => AnyT.None.Switch(Funk<AnyT, AnyResult>.Any, Funk<AnyResult>.Null));
         }
 
         [Fact]
-        public static void Switch_None_NullCaseSome_DoesNotThrow()
+        public static void Switch_None_WithNullCaseSome_DoesNotThrow()
         {
             // Act
             AnyResult v = Ø.Switch(Funk<int, AnyResult>.Null, () => AnyResult.Value);
@@ -486,7 +486,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Switch_Some_NullCaseSome_Throws()
+        public static void Switch_Some_WithNullCaseSome_Throws()
         {
             Assert.ThrowsAnexn("caseSome", () => One.Switch(Funk<int, AnyResult>.Null, Funk<AnyResult>.Any));
             Assert.ThrowsAnexn("caseSome", () => AnyT.Some.Switch(Funk<AnyT, AnyResult>.Null, Funk<AnyResult>.Any));
@@ -496,7 +496,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Switch_Some_NullCaseNone_DoesNotThrow()
+        public static void Switch_Some_WithNullCaseNone_DoesNotThrow()
         {
             // Act
             AnyResult v = One.Switch(
@@ -613,14 +613,14 @@ namespace Abc
         }
 
         [Fact]
-        public static void ValueOrElse_None_NullFactory_Throws()
+        public static void ValueOrElse_None_WithNullFactory_Throws()
         {
             Assert.ThrowsAnexn("valueFactory", () => Ø.ValueOrElse(Funk<int>.Null));
             Assert.ThrowsAnexn("valueFactory", () => AnyT.None.ValueOrElse(Funk<AnyT>.Null));
         }
 
         [Fact]
-        public static void ValueOrElse_Some_NullFactory_DoesNotThrow()
+        public static void ValueOrElse_Some_WithNullFactory_DoesNotThrow()
         {
             Assert.Equal(1, One.ValueOrElse(Funk<int>.Null));
             Assert.Equal(MyText, SomeText.ValueOrElse(Funk<string>.Null));
@@ -683,7 +683,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void ValueOrThrow_NullException()
+        public static void ValueOrThrow_WithNullException()
         {
             Assert.ThrowsAnexn("exception", () => Ø.ValueOrThrow(null!));
             Assert.ThrowsAnexn("exception", () => AnyT.None.ValueOrThrow(null!));
@@ -734,14 +734,14 @@ namespace Abc
     public partial class MaybeTests
     {
         [Fact]
-        public static void Do_None_NullOnNone_Throws()
+        public static void Do_None_WithNullOnNone_Throws()
         {
             Assert.ThrowsAnexn("onNone", () => Ø.Do(Act<int>.Noop, Act.Null));
             Assert.ThrowsAnexn("onNone", () => AnyT.None.Do(Act<AnyT>.Noop, Act.Null));
         }
 
         [Fact]
-        public static void Do_None_NullOnSome_DoesNotThrow()
+        public static void Do_None_WithNullOnSome_DoesNotThrow()
         {
             // Act
             var ex = Record.Exception(() => Ø.Do(Act<int>.Null, Act.Noop));
@@ -750,14 +750,14 @@ namespace Abc
         }
 
         [Fact]
-        public static void Do_Some_NullOnSome_Throws()
+        public static void Do_Some_WithNullOnSome_Throws()
         {
             Assert.ThrowsAnexn("onSome", () => One.Do(Act<int>.Null, Act.Noop));
             Assert.ThrowsAnexn("onSome", () => AnyT.Some.Do(Act<AnyT>.Null, Act.Noop));
         }
 
         [Fact]
-        public static void Do_Some_NullOnNone_DoesNotThrow()
+        public static void Do_Some_WithNullOnNone_DoesNotThrow()
         {
             // Act
             var ex = Record.Exception(() => One.Do(Act<int>.Noop, Act.Null));
@@ -792,7 +792,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void OnSome_None_NullAction_DoesNotThrow()
+        public static void OnSome_None_WithNullAction_DoesNotThrow()
         {
             // Act
             var ex = Record.Exception(() => Ø.OnSome(Act<int>.Null));
@@ -801,7 +801,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void OnSome_Some_NullAction_Throws()
+        public static void OnSome_Some_WithNullAction_Throws()
         {
             Assert.ThrowsAnexn("action", () => One.OnSome(Act<int>.Null));
             Assert.ThrowsAnexn("action", () => AnyT.Some.OnSome(Act<AnyT>.Null));
@@ -1007,14 +1007,14 @@ namespace Abc
         }
 
         [Fact]
-        public static void Contains_None_NullComparer()
+        public static void Contains_None_WithNullComparer()
         {
             Assert.ThrowsAnexn("comparer", () => Ø.Contains(1, null!));
             Assert.ThrowsAnexn("comparer", () => AnyT.None.Contains(AnyT.Value, null!));
         }
 
         [Fact]
-        public static void Contains_Some_NullComparer()
+        public static void Contains_Some_WithNullComparer()
         {
             Assert.ThrowsAnexn("comparer", () => One.Contains(1, null!));
             Assert.ThrowsAnexn("comparer", () => AnyT.Some.Contains(AnyT.Value, null!));

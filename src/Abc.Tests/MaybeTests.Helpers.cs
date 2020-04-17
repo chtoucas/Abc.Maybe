@@ -214,7 +214,7 @@ namespace Abc
 #pragma warning disable CA2000 // Dispose objects before losing scope
 
         [Fact]
-        public static void Use_NullBinder()
+        public static void Use_WithNullBinder()
         {
             // Arrange
             var source = Maybe.SomeOrNone(new AnyDisposable());
@@ -224,7 +224,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Use_NullSelector()
+        public static void Use_WithNullSelector()
         {
             // Arrange
             var source = Maybe.SomeOrNone(new AnyDisposable());
