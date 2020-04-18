@@ -7,6 +7,8 @@ Changed
 - Signature of MaybeComparer<T>.GetHashCode().
   When obj is null, the method now throws.
 - Removed the notnull constraint on the result type of Switch().
+- Apply attribute EditorBrowsable to Maybe<T>.GetEnumerator() and
+  Maybe<T>.TryGetValue().
 
 Internal Changes
 - Rename project Abc.Future to Abc.Sketches.
