@@ -67,7 +67,7 @@ namespace Abc.Edu.Fx
 #endif
         }
 
-        // FIXME: infinite recursive calls. Clean up
+        // Hummm, infinite recursive calls. Clean up
         // https://stackoverflow.com/questions/7671009/some-and-many-functions-from-the-alternative-type-class
         // https://www.reddit.com/r/haskell/comments/b71oje/i_dont_understand_how_some_and_many_from_the/
 

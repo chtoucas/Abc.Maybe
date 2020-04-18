@@ -55,9 +55,6 @@ namespace Abc
                 // BONSANG! When IsSome is true, Value is NOT null.
                 Equal(expected, maybe.Value!);
             }
-
-            // REVIEW: We also test Contains().
-            True(maybe.Contains(expected));
         }
 
         /// <summary>

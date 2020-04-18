@@ -8,7 +8,9 @@ namespace Abc.Linq
 
     using Anexn = System.ArgumentNullException;
 
-    // REVIEW: FoldBackAny().
+    // REVIEW: FoldAny().
+    // - optimize (break the loop early).
+    // - FoldBackAny().
 
     // Aggregation: Fold.
     public partial class QperatorsEx
@@ -22,7 +24,6 @@ namespace Abc.Linq
             if (source is null) { throw new Anexn(nameof(source)); }
             if (accumulator is null) { throw new Anexn(nameof(accumulator)); }
 
-            // TODO: optimize (break the loop early).
             using var iter = source.GetEnumerator();
 
             var r = Maybe.Of(seed);

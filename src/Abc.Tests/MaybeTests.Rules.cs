@@ -9,7 +9,9 @@ namespace Abc
     using Assert = AssertEx;
 
     // Rules, sanity checks.
-    // REVIEW: A bit limited, we could use fuzz testing.
+    // TODO: rules.
+    // - a bit limited, we could use fuzz testing.
+    // - fourth monoid law.
 
     public partial class MaybeTests
     {
@@ -54,7 +56,6 @@ namespace Abc
     // 1) zero + x = x
     // 2) x + zero = x
     // 3) x + (y + z) = (x + y) + z
-    // TODO: fourth law
     // mconcat = foldr '(<>)' mempty
     public partial class MaybeTests
     {

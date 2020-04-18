@@ -589,34 +589,35 @@ namespace Abc
         public static void Explicit_Some_Downcasting_WhenNotUpcasted()
         {
             // Arrange
-            var obj = new BaseClass_ { };
-            Maybe<BaseClass_> m = Maybe.SomeOrNone(obj);
+            var obj = new MyBaseClass_ { };
+            var m = Maybe.SomeOrNone(obj);
             // Act & Assert
-            Assert.Throws<InvalidCastException>(() => (DerivedClass_)m);
+            Assert.Throws<InvalidCastException>(() => (MyDerivedClass_)m);
         }
 
         [Fact]
         public static void Explicit_Some_Downcasting_WhenUpcasted()
         {
             // Arrange
-            BaseClass_ obj = new DerivedClass_ { };    // upcast
-            Maybe<BaseClass_> m = Maybe.SomeOrNone(obj);
+            MyBaseClass_ obj = new MyDerivedClass_ { };    // upcast
+            var m = Maybe.SomeOrNone(obj);
             // Act & Assert
-            Assert.Equal(obj, (DerivedClass_)m);
+            Assert.Equal(obj, (MyDerivedClass_)m);
         }
 
         [Fact]
         public static void Explicit_Some_Upcasting()
         {
             // Arrange
-            var obj = new DerivedClass_ { };
-            Maybe<DerivedClass_> m = Maybe.SomeOrNone(obj);
+            var obj = new MyDerivedClass_ { };
+            var m = Maybe.SomeOrNone(obj);
             // Act & Assert
-            Assert.Equal(obj, (BaseClass_)m);
+            Assert.Equal(obj, (MyBaseClass_)m);
         }
 
-        private class BaseClass_ { }
-        private class DerivedClass_ : BaseClass_ { }
+        private class MyBaseClass_ { }
+
+        private class MyDerivedClass_ : MyBaseClass_ { }
 
         #endregion
     }

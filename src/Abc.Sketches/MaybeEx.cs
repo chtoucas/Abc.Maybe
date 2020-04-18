@@ -9,10 +9,13 @@ namespace Abc
 
     using Anexn = System.ArgumentNullException;
 
-    // REVIEW: lazy extensions. Is there anything useful we can do w/
-    // Lazy<Maybe<T>> or Maybe<Lazy<T>>?
-    // Set (ensemble) POV.
-    // Other LINQ-inspired ops.
+    // REVIEW: Maybe helpers.
+    // - lazy extensions. Is there anything useful we can do w/
+    //   Lazy<Maybe<T>> or Maybe<Lazy<T>>?
+    // - set (ensemble) POV.
+    // - other LINQ-inspired ops.
+    // - naming Skip() -> Void(), Unit(), Discard(), Erase(), Forget()?
+    // - naming Replicate() -> Repeat()?
 
     // NB: the code should be optimized if promoted to the main project.
 
@@ -92,7 +95,6 @@ namespace Abc
     // Misc methods.
     public partial class MaybeEx
     {
-        // REVIEW: naming Skip() -> Void(), Unit(), Discard(), Erase(), Forget()?
         // Since we have Maybe.Guard(), Skip() is a natural companion to have.
 
         /// <summary>
@@ -204,8 +206,6 @@ namespace Abc
         #endregion
 
         #region Replicate()
-
-        // REVIEW: Replicate() -> Repeat()?
 
         /// <seealso cref="Maybe{T}.Yield(int)"/>
         /// <remarks>

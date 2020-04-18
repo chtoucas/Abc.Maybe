@@ -5,7 +5,7 @@ namespace Abc.Utilities
     using System;
     using System.Diagnostics.Contracts;
 
-    // FIXME: use System.HashCode.
+    // For .NET Standard 2.1, use System.HashCode.
 
     /// <summary>
     /// Provides helper methods to combine hash codes.

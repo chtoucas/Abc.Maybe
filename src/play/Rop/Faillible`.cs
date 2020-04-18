@@ -39,7 +39,7 @@ namespace Abc
 
         [MaybeNull] public abstract T Value { get; }
 
-        // REVIEW: NRT?
+        // NRT?
         public abstract Exception InnerException { get; }
 
         [return: NotNull]

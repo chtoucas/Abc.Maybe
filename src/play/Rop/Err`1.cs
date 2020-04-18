@@ -12,7 +12,7 @@ namespace Abc
     using Anexn = System.ArgumentNullException;
     using EF = Abc.Utilities.ExceptionFactory;
 
-    // TODO: inner error (?) but more importantly aggregate errors.
+    // Inner error (?) but more importantly aggregate errors.
 
     [DebuggerDisplay("{" + nameof(DebuggerDisplay) + ",nq}")]
     public sealed partial class Err<T> : Result<T>

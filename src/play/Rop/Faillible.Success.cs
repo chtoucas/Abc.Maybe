@@ -19,7 +19,7 @@ namespace Abc
                 Value = default!;
             }
 
-            // FIXME: DisallowNull
+            // DisallowNull?
             public Success(T value)
             {
                 Value = value ?? throw new Anexn(nameof(value));
@@ -40,7 +40,6 @@ namespace Abc
                 => Value;
 
             public override Maybe<T> ToMaybe()
-                // TODO: if moved to the main assembly, use the ctor.
                 => Maybe.Of(Value);
 
             public override Faillible<T> OrElse(Faillible<T> other)

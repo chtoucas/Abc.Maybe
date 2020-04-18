@@ -10,6 +10,8 @@ namespace Abc
     using System.Diagnostics.Contracts;
     using System.Runtime.CompilerServices;
 
+    // Is it really useful since Result<T> can be null.
+
     // Both an Option type and a Result type, but only a simple one where the
     // error part is just a string (this is the most common use case for a
     // Result type). The main difference with a Maybe<T> is that we get the
@@ -26,8 +28,6 @@ namespace Abc
     //
     // In situations where a Maybe<T> is not suitable, for instance when T is a
     // mutable reference type, one could use a Result<T> instead.
-    //
-    // REVIEW: is it really useful, Result<T> can be null.
     [DebuggerDisplay("{" + nameof(DebuggerDisplay) + ",nq}")]
     public abstract partial class Result<T>
     {

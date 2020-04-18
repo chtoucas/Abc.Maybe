@@ -11,8 +11,9 @@ namespace Abc
     using Anexn = System.ArgumentNullException;
 
     // REVIEW: playing with the in parameter modifier.
-    // Currently we stay conservative and only add it to selected ext methods
-    // for Maybe<T> where T is a struct.
+    //   Currently we stay conservative and only add it to selected ext methods
+    //   for Maybe<T> where T is a struct.
+    // REVIEW: unconstrained version of Square()?
 
     /// <summary>
     /// Provides static helpers and extension methods for <see cref="Maybe{T}"/>.
@@ -139,8 +140,6 @@ namespace Abc
         [Pure]
         public static Maybe<T> SomeOrNone<T>(T? value) where T : class
             => value is null ? Maybe<T>.None : new Maybe<T>(value);
-
-        // REVIEW: unconstrained version of Square()?
 
         // Identical to Maybe.Some(Maybe.Some()).
         [Pure]
