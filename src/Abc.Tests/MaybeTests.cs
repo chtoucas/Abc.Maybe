@@ -15,11 +15,10 @@ namespace Abc
 
     public static partial class MaybeTests
     {
-        private const string NullString = null;
-        private const string? NullNullString = null;
-
         private const string Anagram = "chicane";
         private const string Margana = "caniche";
+
+        private static readonly Unit UNIT = Abc.Unit.Default;
 
         private static readonly Maybe<int> Ø = Maybe<int>.None;
         private static readonly Maybe<long> ØL = Maybe<long>.None;
@@ -90,13 +89,15 @@ namespace Abc
     // Factories: None, None(), Of(), SomeXXX(), SquareXXX().
     public partial class MaybeTests
     {
-        #region None
+        #region None & None<T>()
 
         [Fact]
         public static void None_IsDefault()
         {
             Assert.Equal(default, Maybe<Unit>.None);
             Assert.Equal(default, Maybe<int>.None);
+            Assert.Equal(default, Maybe<long>.None);
+
             Assert.Equal(default, Maybe<string>.None);
             Assert.Equal(default, Maybe<Uri>.None);
             Assert.Equal(default, Maybe<AnyT>.None);
@@ -108,6 +109,8 @@ namespace Abc
         {
             Assert.Equal(default, Maybe<Unit?>.None);
             Assert.Equal(default, Maybe<int?>.None);
+            Assert.Equal(default, Maybe<long?>.None);
+
             Assert.Equal(default, Maybe<string?>.None);
             Assert.Equal(default, Maybe<Uri?>.None);
             Assert.Equal(default, Maybe<AnyT?>.None);
@@ -119,6 +122,8 @@ namespace Abc
         {
             Assert.None(Maybe<Unit>.None);
             Assert.None(Maybe<int>.None);
+            Assert.None(Maybe<long>.None);
+
             Assert.None(Maybe<string>.None);
             Assert.None(Maybe<Uri>.None);
             Assert.None(Maybe<AnyT>.None);
@@ -130,6 +135,8 @@ namespace Abc
         {
             Assert.None(Maybe<Unit?>.None);
             Assert.None(Maybe<int?>.None);
+            Assert.None(Maybe<long?>.None);
+
             Assert.None(Maybe<string?>.None);
             Assert.None(Maybe<Uri?>.None);
             Assert.None(Maybe<AnyT?>.None);
@@ -141,6 +148,8 @@ namespace Abc
         {
             Assert.None(Maybe.None<Unit>());
             Assert.None(Maybe.None<int>());
+            Assert.None(Maybe.None<long>());
+
             Assert.None(Maybe.None<string>());
             Assert.None(Maybe.None<Uri>());
             Assert.None(Maybe.None<AnyT>());
@@ -153,6 +162,8 @@ namespace Abc
             // Maybe.None<T>() simply returns Maybe<T>.None.
             Assert.Equal(Maybe<Unit>.None, Maybe.None<Unit>());
             Assert.Equal(Maybe<int>.None, Maybe.None<int>());
+            Assert.Equal(Maybe<long>.None, Maybe.None<long>());
+
             Assert.Equal(Maybe<string>.None, Maybe.None<string>());
             Assert.Equal(Maybe<Uri>.None, Maybe.None<Uri>());
             Assert.Equal(Maybe<AnyT>.None, Maybe.None<AnyT>());
@@ -161,11 +172,17 @@ namespace Abc
 
         #endregion
 
+        #region Of(), Some() & SomeOrNone()
+
         [Fact]
         public static void Of_WithValueType()
         {
+            Assert.Some(UNIT, Maybe.Of(UNIT));
             Assert.Some(314, Maybe.Of(314));
             Assert.Some(413L, Maybe.Of(413L));
+
+            Assert.None(Maybe.Of((Unit?)null));
+            Assert.Some(UNIT, Maybe.Of((Unit?)UNIT));
 
             Assert.None(Maybe.Of((int?)null));
             Assert.Some(314, Maybe.Of((int?)314));
@@ -186,11 +203,16 @@ namespace Abc
             var anyT = AnyT.Value;
             Assert.None(Maybe.Of((AnyT?)null));
             Assert.Some(anyT, Maybe.Of(anyT));
+
+            var obj = new object();
+            Assert.None(Maybe.Of((object?)null));
+            Assert.Some(obj, Maybe.Of(obj));
         }
 
         [Fact]
         public static void Some()
         {
+            Assert.Some(UNIT, Maybe.Some(UNIT));
             Assert.Some(314, Maybe.Some(314));
             Assert.Some(413L, Maybe.Some(413L));
         }
@@ -198,6 +220,9 @@ namespace Abc
         [Fact]
         public static void SomeOrNone_WithValueType()
         {
+            Assert.None(Maybe.SomeOrNone((Unit?)null));
+            Assert.Some(UNIT, Maybe.SomeOrNone((Unit?)UNIT));
+
             Assert.None(Maybe.SomeOrNone((int?)null));
             Assert.Some(314, Maybe.SomeOrNone((int?)314));
 
@@ -217,13 +242,20 @@ namespace Abc
             var anyT = AnyT.Value;
             Assert.None(Maybe.SomeOrNone((AnyT?)null));
             Assert.Some(anyT, Maybe.SomeOrNone(anyT));
+
+            var obj = new object();
+            Assert.None(Maybe.SomeOrNone((object?)null));
+            Assert.Some(obj, Maybe.SomeOrNone(obj));
         }
 
-        #region Square()
+        #endregion
+
+        #region Square() & SquareOrNone()
 
         [Fact]
         public static void Square()
         {
+            Assert.Some(Maybe.Some(UNIT), Maybe.Square(UNIT));
             Assert.Some(Maybe.Some(314), Maybe.Square(314));
             Assert.Some(Maybe.Some(314L), Maybe.Square(314L));
         }
@@ -231,13 +263,19 @@ namespace Abc
         [Fact]
         public static void Square_IsSomeSome()
         {
-            Assert.Equal(Maybe.Some(Maybe.Some(314)), Maybe.Square(314));
-            Assert.Equal(Maybe.Some(Maybe.Some(413L)), Maybe.Square(413L));
+            Assert.Equal(__(UNIT), Maybe.Square(UNIT));
+            Assert.Equal(__(314), Maybe.Square(314));
+            Assert.Equal(__(413L), Maybe.Square(413L));
+
+            static Maybe<Maybe<T>> __<T>(T x) where T : struct => Maybe.Some(Maybe.Some(x));
         }
 
         [Fact]
         public static void SquareOrNone_WithValueType()
         {
+            Assert.None(Maybe.SquareOrNone((Unit?)null));
+            Assert.Some(Maybe.Some(UNIT), Maybe.SquareOrNone((Unit?)UNIT));
+
             Assert.None(Maybe.SquareOrNone((int?)null));
             Assert.Some(Maybe.Some(314), Maybe.SquareOrNone((int?)314));
 
@@ -246,12 +284,23 @@ namespace Abc
         }
 
         [Fact]
-        public static void SquareOrNone_WithValueType_IsNotSomeOfSomeOrNone()
+        public static void SquareOrNone_WithValueType_IsNotSomeOfSomeOrNone_WhenNone()
         {
-            // This one is not OK, the left part is not empty.
-            Assert.NotEqual(Maybe.Some(Maybe<int>.None), Maybe.SquareOrNone((int?)null));
-            // This one is OK.
-            Assert.Equal(Maybe.Some(Maybe.SomeOrNone((int?)314)), Maybe.SquareOrNone((int?)314));
+            Assert.NotEqual(__<Unit>(), Maybe.SquareOrNone((Unit?)null));
+            Assert.NotEqual(__<int>(), Maybe.SquareOrNone((int?)null));
+            Assert.NotEqual(__<long>(), Maybe.SquareOrNone((long?)null));
+
+            static Maybe<Maybe<T>> __<T>() where T : struct => Maybe.Some(Maybe.SomeOrNone((T?)null));
+        }
+
+        [Fact]
+        public static void SquareOrNone_WithValueType_IsSomeOfSomeOrNone_WhenSome()
+        {
+            Assert.Equal(__(UNIT), Maybe.SquareOrNone((Unit?)UNIT));
+            Assert.Equal(__(314), Maybe.SquareOrNone((int?)314));
+            Assert.Equal(__(413L), Maybe.SquareOrNone((long?)413));
+
+            static Maybe<Maybe<T>> __<T>(T x) where T : struct => Maybe.Some(Maybe.SomeOrNone((T?)x));
         }
 
         [Fact]
@@ -266,26 +315,36 @@ namespace Abc
             var anyT = AnyT.Value;
             Assert.None(Maybe.SquareOrNone((AnyT?)null));
             Assert.Some(Maybe.SomeOrNone(anyT), Maybe.SquareOrNone(anyT));
+
+            var obj = new object();
+            Assert.None(Maybe.SquareOrNone((object?)null));
+            Assert.Some(Maybe.SomeOrNone(obj), Maybe.SquareOrNone(obj));
         }
 
         [Fact]
-        public static void SquareOrNone_WithReferenceType_IsNotSomeOfSomeOrNone()
+        public static void SquareOrNone_WithReferenceType_IsNotSomeOfSomeOrNone_WhenNone()
         {
-            // This one is not OK.
-            Assert.NotEqual(Maybe.Some(Maybe<string>.None), Maybe.SquareOrNone((string?)null));
-            // This one is OK.
-            Assert.Equal(Maybe.Some(Maybe.SomeOrNone(MyText)), Maybe.SquareOrNone(MyText));
+            Assert.NotEqual(__<string>(), Maybe.SquareOrNone((string?)null));
+            Assert.NotEqual(__<Uri>(), Maybe.SquareOrNone((Uri?)null));
+            Assert.NotEqual(__<AnyT>(), Maybe.SquareOrNone((AnyT?)null));
+            Assert.NotEqual(__<object>(), Maybe.SquareOrNone((object?)null));
 
-            // This one is not OK.
-            Assert.NotEqual(Maybe.Some(Maybe<Uri>.None), Maybe.SquareOrNone((Uri?)null));
-            // This one is OK.
-            Assert.Equal(Maybe.Some(Maybe.SomeOrNone(MyUri)), Maybe.SquareOrNone(MyUri));
+            static Maybe<Maybe<T>> __<T>() where T : class => Maybe.Some(Maybe.SomeOrNone((T?)null));
+        }
+
+        [Fact]
+        public static void SquareOrNone_WithReferenceType_IsSomeOfSomeOrNone_WhenSome()
+        {
+            Assert.Equal(__(MyText), Maybe.SquareOrNone(MyText));
+            Assert.Equal(__(MyUri), Maybe.SquareOrNone(MyUri));
 
             var anyT = AnyT.Value;
-            // This one is not OK.
-            Assert.NotEqual(Maybe.Some(Maybe<AnyT>.None), Maybe.SquareOrNone((AnyT?)null));
-            // This one is OK.
-            Assert.Equal(Maybe.Some(Maybe.SomeOrNone(anyT)), Maybe.SquareOrNone(anyT));
+            Assert.Equal(__(anyT), Maybe.SquareOrNone(anyT));
+
+            var obj = new object();
+            Assert.Equal(__(obj), Maybe.SquareOrNone(obj));
+
+            static Maybe<Maybe<T>> __<T>(T x) where T : class => Maybe.Some(Maybe.SomeOrNone(x));
         }
 
         #endregion
@@ -297,10 +356,14 @@ namespace Abc
         [Fact]
         public static void ToString_None()
         {
+            Assert.Equal("Maybe(None)", Maybe<Unit>.None.ToString());
             Assert.Equal("Maybe(None)", Maybe<int>.None.ToString());
+            Assert.Equal("Maybe(None)", Maybe<long>.None.ToString());
+
             Assert.Equal("Maybe(None)", Maybe<string>.None.ToString());
             Assert.Equal("Maybe(None)", Maybe<Uri>.None.ToString());
             Assert.Equal("Maybe(None)", Maybe<AnyT>.None.ToString());
+            Assert.Equal("Maybe(None)", Maybe<object>.None.ToString());
         }
 
         [Fact]
@@ -310,7 +373,7 @@ namespace Abc
             string text = "My Text";
             var some = Maybe.SomeOrNone(text);
             // Act & Assert
-            Assert.Contains(text, some.ToString(), StringComparison.OrdinalIgnoreCase);
+            Assert.Contains(text, some.ToString(), StringComparison.Ordinal);
         }
 
         [Fact]

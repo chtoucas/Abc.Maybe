@@ -68,16 +68,16 @@ namespace Abc
             Assert.Some("value", some.ReplaceWith("value"));
             Assert.None(Ø.ReplaceWith("value"));
 
-            Assert.None(some.ReplaceWith(NullString));
-            Assert.None(Ø.ReplaceWith(NullString));
+            Assert.None(some.ReplaceWith((string)null!));
+            Assert.None(Ø.ReplaceWith((string)null!));
 
-#nullable disable
+#nullable disable warnings
             Assert.Some(2, some.ReplaceWith((int?)2));
             Assert.None(Ø.ReplaceWith((int?)2));
 
-            Assert.None(some.ReplaceWith(NullNullString));
-            Assert.None(Ø.ReplaceWith(NullNullString));
-#nullable restore
+            Assert.None(some.ReplaceWith((string?)null));
+            Assert.None(Ø.ReplaceWith((string?)null));
+#nullable restore warnings
         }
     }
 }
