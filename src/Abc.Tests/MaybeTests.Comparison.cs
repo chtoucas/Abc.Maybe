@@ -13,7 +13,7 @@ namespace Abc
     // Not actually a test of Maybe.
     public partial class MaybeTests
     {
-        // Comparison w/ null is weird.
+        // Comparison w/ null is "weird".
         //   "For the comparison operators <, >, <=, and >=, if one or both
         //   operands are null, the result is false; otherwise, the contained
         //   values of operands are compared. Do not assume that because a
@@ -75,85 +75,178 @@ namespace Abc
     //   3) Transitivity
     public partial class MaybeTests
     {
+        #region Comparisons ops
+
+        // Comparison with none always returns "false".
+
         [Fact]
-        public static void Comparison_WithNone()
+        public static void Comparison_None_None()
         {
-            // The result is always "false".
-
-            Assert.False(One < Ø);
-            Assert.False(One > Ø);
-            Assert.False(One <= Ø);
-            Assert.False(One >= Ø);
-
-            // The other way around.
-            Assert.False(Ø < One);
-            Assert.False(Ø > One);
-            Assert.False(Ø <= One);
-            Assert.False(Ø >= One);
-
+            // Arrange
             Maybe<int> none = Ø;
+
+            // Act & Assert
             Assert.False(Ø < none);
+            Assert.False(none > Ø);
+
             Assert.False(Ø > none);
+            Assert.False(none < Ø);
+
             Assert.False(Ø <= none);
+            Assert.False(none >= Ø);
+
             Assert.False(Ø >= none);
+            Assert.False(none <= Ø);
         }
 
         [Fact]
-        public static void Comparison()
+        public static void Comparison_None_Some()
+        {
+            Assert.False(One < Ø);
+            Assert.False(Ø > One);
+
+            Assert.False(One > Ø);
+            Assert.False(Ø < One);
+
+            Assert.False(One <= Ø);
+            Assert.False(Ø >= One);
+
+            Assert.False(One >= Ø);
+            Assert.False(Ø <= One);
+        }
+
+        [Fact]
+        public static void Comparison_Some_Some()
         {
             Assert.True(One < Two);
-            Assert.False(One > Two);
-            Assert.True(One <= Two);
-            Assert.False(One >= Two);
+            Assert.True(Two > One);
 
+            Assert.False(One > Two);
+            Assert.False(Two < One);
+
+            Assert.True(One <= Two);
+            Assert.True(Two >= One);
+
+            Assert.False(One >= Two);
+            Assert.False(Two <= One);
+        }
+
+        [Fact]
+        public static void Comparison_Some_Some_Identical()
+        {
+            // Arrange
             Maybe<int> one = One;
+
+            // Act & Assert
             Assert.False(One < one);
             Assert.False(One > one);
+
             Assert.True(One <= one);
             Assert.True(One >= one);
         }
 
+        #endregion
+
+        #region CompareTo()
+
         [Fact]
-        public static void CompareTo_WithNone()
+        public static void CompareTo_None()
         {
-            Assert.Equal(1, One.CompareTo(Ø));
-            Assert.Equal(-1, Ø.CompareTo(One));
             Assert.Equal(0, Ø.CompareTo(Ø));
+
+            Assert.Equal(-1, Ø.CompareTo(One));
+            Assert.Equal(-1, Ø.CompareTo(Two));
         }
 
         [Fact]
-        public static void CompareTo_WithSome()
+        public static void CompareTo_Some_WithNone()
+        {
+            Assert.Equal(1, One.CompareTo(Ø));
+            Assert.Equal(1, Two.CompareTo(Ø));
+        }
+
+        [Fact]
+        public static void CompareTo_Some_WithSome()
         {
             Assert.Equal(1, Two.CompareTo(One));
             Assert.Equal(0, One.CompareTo(One));
             Assert.Equal(-1, One.CompareTo(Two));
         }
 
+        #endregion
+
+        #region Comparable
+
         [Fact]
-        public static void Comparable()
+        public static void Comparable_None_WithNull()
         {
             // Arrange
             IComparable none = Ø;
+            // Act & Assert
+            Assert.Equal(1, none.CompareTo(null));
+        }
+
+        [Fact]
+        public static void Comparable_Some_WithNull()
+        {
+            // Arrange
+            IComparable one = One;
+            // Act & Assert
+            Assert.Equal(1, one.CompareTo(null));
+        }
+
+        [Fact]
+        public static void Comparable_None_WithInvalidType()
+        {
+            // Arrange
+            IComparable none = Ø;
+            // Act & Assert
+            Assert.ThrowsArgexn("obj", () => none.CompareTo(new object()));
+            Assert.ThrowsArgexn("obj", () => none.CompareTo(NoText));
+            Assert.ThrowsArgexn("obj", () => none.CompareTo(SomeText));
+        }
+
+        [Fact]
+        public static void Comparable_Some_WithInvalidType()
+        {
+            // Arrange
+            IComparable one = One;
+            // Act & Assert
+            Assert.ThrowsArgexn("obj", () => one.CompareTo(new object()));
+            Assert.ThrowsArgexn("obj", () => one.CompareTo(NoText));
+            Assert.ThrowsArgexn("obj", () => one.CompareTo(SomeText));
+        }
+
+        [Fact]
+        public static void Comparable_None()
+        {
+            // Arrange
+            IComparable none = Ø;
+            // Act & Assert
+            Assert.Equal(-1, none.CompareTo(One));
+            Assert.Equal(0, none.CompareTo(Ø));
+            Assert.Equal(-1, none.CompareTo(Two));
+        }
+
+        [Fact]
+        public static void Comparable_Some()
+        {
+            // Arrange
             IComparable one = One;
             IComparable two = Two;
 
             // Act & Assert
-            Assert.Equal(1, none.CompareTo(null));
-            Assert.Equal(1, one.CompareTo(null));
+            Assert.Equal(1, one.CompareTo(Ø));
+            Assert.Equal(1, two.CompareTo(Ø));
 
-            Assert.ThrowsArgexn("obj", () => none.CompareTo(new object()));
-            Assert.ThrowsArgexn("obj", () => one.CompareTo(new object()));
+            Assert.Equal(0, one.CompareTo(One));
+            Assert.Equal(0, two.CompareTo(Two));
 
-            // With None
-            Assert.Equal(1, one.CompareTo(none));
-            Assert.Equal(-1, none.CompareTo(one));
-            Assert.Equal(0, none.CompareTo(none));
-
-            // Without None
-            Assert.Equal(1, two.CompareTo(one));
-            Assert.Equal(0, one.CompareTo(one));
-            Assert.Equal(-1, one.CompareTo(two));
+            Assert.Equal(-1, one.CompareTo(Two));
+            Assert.Equal(1, two.CompareTo(One));
         }
+
+        #endregion
     }
 
     // Equality.

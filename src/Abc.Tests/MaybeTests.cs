@@ -25,6 +25,12 @@ namespace Abc
     // - AnyT
     // - object
     // and their nullable counterparts.
+    // For the other methods, we don't really bother and, in general, we write
+    // tests only with
+    // - int
+    // - string
+    // - Uri
+    // - AnyT
     // In general, we do not hesitate to write redundant tests.
 
     public static partial class MaybeTests
@@ -32,6 +38,8 @@ namespace Abc
         private const string Anagram = "chicane";
         private const string Margana = "caniche";
 
+        // Defined only to simplify the access to Unit.Default (a test method
+        // has exactly the same name).
         private static readonly Unit UNIT = Abc.Unit.Default;
 
         private static readonly Maybe<int> Ø = Maybe<int>.None;
@@ -100,7 +108,7 @@ namespace Abc
         [Pure] private static async Task<Maybe<AnyResult>> ReturnSomeAsync<T>(T _) { await Task.Yield(); return AnyResult.Some; }
     }
 
-    // Factories: None, None(), Of(), SomeXXX(), SquareXXX().
+    // Factories.
     public partial class MaybeTests
     {
         #region None & None<T>()
@@ -404,7 +412,7 @@ namespace Abc
         #endregion
     }
 
-    // Simple conversions: ToString(), op_Explicit.
+    // Simple conversions.
     public partial class MaybeTests
     {
         #region ToString()
@@ -578,7 +586,7 @@ namespace Abc
         //
 
         [Fact]
-        public static void Explicit_Some_Downcasting_WhenNotUpcasted_Throws()
+        public static void Explicit_Some_Downcasting_WhenNotUpcasted()
         {
             // Arrange
             var obj = new BaseClass_ { };
@@ -613,7 +621,7 @@ namespace Abc
         #endregion
     }
 
-    // Bind().
+    // Binding.
     public partial class MaybeTests
     {
         [Fact]
@@ -673,6 +681,8 @@ namespace Abc
     // Safe escapes.
     public partial class MaybeTests
     {
+        #region Switch()
+
         [Fact]
         public static void Switch_None_WithNullCaseNone_Throws()
         {
@@ -770,6 +780,10 @@ namespace Abc
             Assert.Equal(4, v);
         }
 
+        #endregion
+
+        #region TryGetValue()
+
         [Fact]
         public static void TryGetValue_None()
         {
@@ -796,6 +810,10 @@ namespace Abc
             Assert.Equal(anyT.Value, value);
         }
 
+        #endregion
+
+        #region ValueOrDefault()
+
         [Fact]
         public static void ValueOrDefault_None()
         {
@@ -815,6 +833,10 @@ namespace Abc
             var anyT = AnyT.New();
             Assert.Equal(anyT.Value, anyT.Some.ValueOrDefault());
         }
+
+        #endregion
+
+        #region ValueOrElse()
 
         [Fact]
         public static void ValueOrElse_None_WithNullFactory_Throws()
@@ -886,6 +908,10 @@ namespace Abc
             Assert.Equal(anyT.Value, anyT.Some.ValueOrElse(() => AnyT.Value));
         }
 
+        #endregion
+
+        #region ValueOrThrow()
+
         [Fact]
         public static void ValueOrThrow_WithNullException()
         {
@@ -932,11 +958,15 @@ namespace Abc
             var anyT = AnyT.New();
             Assert.Equal(anyT.Value, anyT.Some.ValueOrThrow(new NotSupportedException()));
         }
+
+        #endregion
     }
 
     // Side effects.
     public partial class MaybeTests
     {
+        #region Do()
+
         [Fact]
         public static void Do_None_WithNullOnNone_Throws()
         {
@@ -995,6 +1025,10 @@ namespace Abc
             Assert.False(onNoneCalled);
         }
 
+        #endregion
+
+        #region OnSome()
+
         [Fact]
         public static void OnSome_None_WithNullAction_DoesNotThrow()
         {
@@ -1032,6 +1066,10 @@ namespace Abc
             // Assert
             Assert.True(wasCalled);
         }
+
+        #endregion
+
+        #region When()
 
         [Fact]
         public static void When_None_WithFalse()
@@ -1114,17 +1152,25 @@ namespace Abc
             var ex = Record.Exception(() => SomeText.When(true, null, null));
             Assert.Null(ex);
         }
+
+        #endregion
     }
 
     // Iterable.
     public partial class MaybeTests
     {
+        #region ToEnumerable()
+
         [Fact]
         public static void ToEnumerable()
         {
             Assert.Equal(Enumerable.Repeat(MyText, 1), SomeText.ToEnumerable());
             Assert.Empty(NoText.ToEnumerable());
         }
+
+        #endregion
+
+        #region GetEnumerator()
 
         [Fact]
         public static void GetEnumerator_None_ForEach()
@@ -1177,6 +1223,10 @@ namespace Abc
             Assert.False(iter.MoveNext());
         }
 
+        #endregion
+
+        #region Yield()
+
         [Fact]
         public static void Yield_None() =>
             Assert.Empty(NoText.Yield());
@@ -1209,6 +1259,10 @@ namespace Abc
             Assert.Equal(Enumerable.Repeat(MyText, 100), SomeText.Yield(100));
             Assert.Equal(Enumerable.Repeat(MyText, 1000), SomeText.Yield(1000));
         }
+
+        #endregion
+
+        #region Contains()
 
         [Fact]
         public static void Contains_None_WithNullComparer()
@@ -1282,6 +1336,8 @@ namespace Abc
             Assert.True(Maybe.SomeOrNone(Anagram).Contains(Margana, cmp));
             Assert.True(Maybe.SomeOrNone(Margana).Contains(Anagram, cmp));
         }
+
+        #endregion
     }
 
     // Serialization.
