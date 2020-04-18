@@ -8,7 +8,11 @@
 @echo off
 @setlocal
 
+@pushd %~dp0\..
+
 @call dotnet test .\src\Abc.Tests\ %* -c Release --no-restore
+
+@popd
 
 @endlocal
 @exit /b %ERRORLEVEL%
