@@ -466,7 +466,8 @@ namespace Abc
         #endregion
 
         #region op_Explicit
-        // NB: cast to object or object? is meaningless.
+
+        // NB: explicit cast to object or object? is meaningless.
 
         [Fact]
         public static void Explicit_None_WithValueType()
@@ -535,6 +536,79 @@ namespace Abc
             var anyT = AnyT.Value;
             Assert.Equal(anyT, (AnyT?)Maybe.Of((AnyT?)anyT));
         }
+
+        //
+        // Implicit and explicit numeric conversions.
+        // See https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/numeric-conversions
+        //
+
+        [Fact]
+        public static void Explicit_Some_ImplicitNumericConversion()
+        {
+            // short -> int
+            Assert.Equal(314, (int)Maybe.Some((short)314));
+            Assert.Equal(Int16.MaxValue, (int)Maybe.Some(Int16.MaxValue));
+
+            // int -> long
+            Assert.Equal(314, (long)Maybe.Some(314));
+            Assert.Equal(Int32.MaxValue, (long)Maybe.Some(Int32.MaxValue));
+        }
+
+        [Fact]
+        public static void Explicit_Some_ExplicitNumericConversion()
+        {
+            // int -> short
+            Assert.Equal(413, (short)Maybe.Some(413));
+            Assert.Equal(Int16.MaxValue, (short)Maybe.Some((int)Int16.MaxValue));
+
+            // long -> int
+            Assert.Equal(413, (int)Maybe.Some(413L));
+            Assert.Equal(Int32.MaxValue, (int)Maybe.Some((long)Int32.MaxValue));
+        }
+
+        [Fact]
+        public static void Explicit_Some_ExplicitNumericConversion_Overflows()
+        {
+            Assert.Throws<OverflowException>(() => (short)Maybe.Some(Int32.MaxValue));
+            Assert.Throws<OverflowException>(() => (int)Maybe.Some(Int64.MaxValue));
+        }
+
+        //
+        // Upcasting & downcasting.
+        //
+
+        [Fact]
+        public static void Explicit_Some_Downcasting_WhenNotUpcasted_Throws()
+        {
+            // Arrange
+            var obj = new BaseClass_ { };
+            Maybe<BaseClass_> m = Maybe.SomeOrNone(obj);
+            // Act & Assert
+            Assert.Throws<InvalidCastException>(() => (DerivedClass_)m);
+        }
+
+        [Fact]
+        public static void Explicit_Some_Downcasting_WhenUpcasted()
+        {
+            // Arrange
+            BaseClass_ obj = new DerivedClass_ { };    // upcast
+            Maybe<BaseClass_> m = Maybe.SomeOrNone(obj);
+            // Act & Assert
+            Assert.Equal(obj, (DerivedClass_)m);
+        }
+
+        [Fact]
+        public static void Explicit_Some_Upcasting()
+        {
+            // Arrange
+            var obj = new DerivedClass_ { };
+            Maybe<DerivedClass_> m = Maybe.SomeOrNone(obj);
+            // Act & Assert
+            Assert.Equal(obj, (BaseClass_)m);
+        }
+
+        private class BaseClass_ { }
+        private class DerivedClass_ : BaseClass_ { }
 
         #endregion
     }
