@@ -5,8 +5,8 @@ vNEXT
 
 Towards version 1.0.0
 - Testing is well underway but there is still a lot to be done.
-  We also need more functional tests.
   * Split tests.
+  * More functional tests.
   * Square() and Flatten() or Squash().
   * Expand comparison tests (order and equality).
     Structural comparisons w/ structural types.

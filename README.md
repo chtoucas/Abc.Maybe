@@ -1,10 +1,26 @@
 # Abc.Maybe
 
 Abc.Maybe features an Option type for .NET.
-- Supported frameworks:
-  * .NET Standard 2.0
-  * .NET Standard 2.1
-  * .NET Core 3.1.
+
+Objectives:
+[x] Being safe (immutable, no direct access to the enclosed value if any).
+[x] Being extensible (via `TryGetValue()`).
+[x] Incurring no significant overhead when used wisely.
+[ ] Being a good citizen of the .NET ecosystem.
+    [x] Equatable, comparable, structural.
+    [x] NRT-aware.
+    [x] Debuggable.
+    [ ] Supported frameworks:
+        [x] .NET Standard 2.0/2.1.
+        [ ] .NET Framework 4.6.1 for older systems.
+[ ] Being well tested.
+    [x] 100% test coverage.
+    [ ] Functional tests.
+[ ] Being well documented.
+    [ ] XML comments with integrated examples.
+    [ ] Quick start (see below).
+    [ ] Provides guidance (see below).
+    [ ] Samples.
 
 |NuGet|OpenCover|Coverlet|
 |-----|---------|--------|
