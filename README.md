@@ -7,15 +7,18 @@ Abc.Maybe features an Option type for .NET.
 | [![NuGet](https://img.shields.io/nuget/v/Abc.Maybe.svg)](https://www.nuget.org/packages/Abc.Maybe/) | [![Coverlet](./__/coverlet.svg)](./__/coverlet.txt) | [![OpenCover](./__/opencover.svg)](./__/opencover.txt) |
 
 #### Objectives
-- [x] Being safe (immutable, no direct access to the enclosed value if any).
-- [x] Being extensible (via `TryGetValue()`).
-- [x] Incurring no significant overhead when used wisely.
+
+- [x] Being safe yet effective.
+  - [x] Immutable.
+  - [x] Curated API largely inspired by Haskell's Maybe.
+  - [x] Extensible.
+  - [x] Incurring no significant overhead when used wisely.
 - [ ] Being a good citizen of the .NET ecosystem.
   - [x] Equatable, comparable, structural.
-  - [x] NRT-aware.
+  - [x] NRT-aware (NRT = Nullable Reference Types).
   - [x] Debuggable.
   - [ ] Supported frameworks:
-    - [x] .NET Standard 2.0/2.1.
+    - [x] .NET Standard 2.0 for recent systems.
     - [ ] .NET Framework 4.6.1 for older systems.
 - [ ] Being well tested.
   - [x] 100% test coverage.
@@ -27,6 +30,7 @@ Abc.Maybe features an Option type for .NET.
   - [ ] Samples.
 
 #### Content
+
 - [Quick Start](#quick-start)
 - [Usage Guidelines](#usage-guidelines)
 - [Changelog](CHANGELOG)
@@ -75,6 +79,10 @@ not actual .NET types but annotations that the compiler can take advantage of.
 There are many other small differences. For instance, one can nest _maybe_'s
 (`Maybe<Maybe<T>>`) whereas one can't create an `int??`; `Nullable<Nullable<T>>`
 is not valid in C#.
+
+```csharp
+using Abc;
+```
 
 #### Use case scenarios
 
