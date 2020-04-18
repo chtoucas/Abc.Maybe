@@ -6,7 +6,7 @@ Abc.Maybe features an Option type for .NET.
 |-----|--------|---------|
 | [![NuGet](https://img.shields.io/nuget/v/Abc.Maybe.svg)](https://www.nuget.org/packages/Abc.Maybe/) | [![Coverlet](./__/coverlet.svg)](./__/coverlet.txt) | [![OpenCover](./__/opencover.svg)](./__/opencover.txt) |
 
-Objectives:
+#### Objectives
 - [x] Being safe (immutable, no direct access to the enclosed value if any).
 - [x] Being extensible (via `TryGetValue()`).
 - [x] Incurring no significant overhead when used wisely.
@@ -26,7 +26,7 @@ Objectives:
   - [ ] Provides guidance (see below).
   - [ ] Samples.
 
-Content
+#### Content
 - [Quick Start](#quick-start)
 - [Usage Guidelines](#usage-guidelines)
 - [Changelog](CHANGELOG)
