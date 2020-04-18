@@ -156,8 +156,8 @@ function Invoke-Pack {
         }
     }
 
-    # Do NOT use --no-restore or --no-build; netstandard2.1 is not currently
-    # enabled within the proj file.
+    # Do NOT use --no-restore or --no-build (option Safe removes everything).
+    # NB: netstandard2.1 is not currently enabled within the proj file.
     # Remove DebugType to use plain pdb's.
     & dotnet pack $proj -c $CONFIGURATION --nologo `
         --output $PKG_OUTDIR `
