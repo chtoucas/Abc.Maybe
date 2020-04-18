@@ -6,6 +6,7 @@ vNEXT
 Towards version 1.0.0
 - Testing is well underway but there is still a lot to be done.
   We also need more functional tests.
+  * Split tests.
   * Square() and Flatten() or Squash().
   * Expand comparison tests (order and equality).
     Structural comparisons w/ structural types.
@@ -40,7 +41,9 @@ Version ???
 - Utilities to write code in the ROP style (Railway Oriented Programming).
 - Extensions.
 - Async (configurable, enumerable).
-- Roslyn Analyzer: Of().
+- Roslyn Analyzer:
+  * Of(), Flatten().
+  * SelectMany(), ZipWith(), Bind().
 
 Tasks
 -----
