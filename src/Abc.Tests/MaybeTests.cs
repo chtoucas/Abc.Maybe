@@ -13,6 +13,20 @@ namespace Abc
 
     using Assert = AssertEx;
 
+    // For the core methods (factories, simple conversions), we do testing with
+    // many different types even if this is rather unnecessary but, among other
+    // things, we wish to see Maybe at work in all kind of situation (in
+    // particular with NRTs).
+    // - Unit
+    // - int
+    // - long
+    // - string
+    // - Uri
+    // - AnyT
+    // - object
+    // and their nullable counterparts.
+    // In general, we do not hesitate to write redundant tests.
+
     public static partial class MaybeTests
     {
         private const string Anagram = "chicane";
@@ -92,12 +106,24 @@ namespace Abc
         #region None & None<T>()
 
         [Fact]
-        public static void None_IsDefault()
+        public static void None_WithValueType_IsDefault()
         {
             Assert.Equal(default, Maybe<Unit>.None);
             Assert.Equal(default, Maybe<int>.None);
             Assert.Equal(default, Maybe<long>.None);
+        }
 
+        [Fact]
+        public static void None_WithValueType_IsDefault_ForNullable()
+        {
+            Assert.Equal(default, Maybe<Unit?>.None);
+            Assert.Equal(default, Maybe<int?>.None);
+            Assert.Equal(default, Maybe<long?>.None);
+        }
+
+        [Fact]
+        public static void None_WithReferenceType_IsDefault()
+        {
             Assert.Equal(default, Maybe<string>.None);
             Assert.Equal(default, Maybe<Uri>.None);
             Assert.Equal(default, Maybe<AnyT>.None);
@@ -105,12 +131,8 @@ namespace Abc
         }
 
         [Fact]
-        public static void None_IsDefault_ForNullable()
+        public static void None_WithReferenceType_IsDefault_ForNullable()
         {
-            Assert.Equal(default, Maybe<Unit?>.None);
-            Assert.Equal(default, Maybe<int?>.None);
-            Assert.Equal(default, Maybe<long?>.None);
-
             Assert.Equal(default, Maybe<string?>.None);
             Assert.Equal(default, Maybe<Uri?>.None);
             Assert.Equal(default, Maybe<AnyT?>.None);
@@ -118,12 +140,24 @@ namespace Abc
         }
 
         [Fact]
-        public static void None_IsNone()
+        public static void None_WithValueType_IsNone()
         {
             Assert.None(Maybe<Unit>.None);
             Assert.None(Maybe<int>.None);
             Assert.None(Maybe<long>.None);
+        }
 
+        [Fact]
+        public static void None_WithValueType_IsNone_ForNullable()
+        {
+            Assert.None(Maybe<Unit?>.None);
+            Assert.None(Maybe<int?>.None);
+            Assert.None(Maybe<long?>.None);
+        }
+
+        [Fact]
+        public static void None_WithReferenceType_IsNone()
+        {
             Assert.None(Maybe<string>.None);
             Assert.None(Maybe<Uri>.None);
             Assert.None(Maybe<AnyT>.None);
@@ -131,12 +165,8 @@ namespace Abc
         }
 
         [Fact]
-        public static void None_IsNone_ForNullable()
+        public static void None_WithReferenceType_IsNone_ForNullable()
         {
-            Assert.None(Maybe<Unit?>.None);
-            Assert.None(Maybe<int?>.None);
-            Assert.None(Maybe<long?>.None);
-
             Assert.None(Maybe<string?>.None);
             Assert.None(Maybe<Uri?>.None);
             Assert.None(Maybe<AnyT?>.None);
@@ -144,12 +174,16 @@ namespace Abc
         }
 
         [Fact]
-        public static void NoneT_IsNone()
+        public static void NoneT_WithValueType_IsNone()
         {
             Assert.None(Maybe.None<Unit>());
             Assert.None(Maybe.None<int>());
             Assert.None(Maybe.None<long>());
+        }
 
+        [Fact]
+        public static void NoneT_WithReferenceType_IsNone()
+        {
             Assert.None(Maybe.None<string>());
             Assert.None(Maybe.None<Uri>());
             Assert.None(Maybe.None<AnyT>());
@@ -157,13 +191,16 @@ namespace Abc
         }
 
         [Fact]
-        public static void NoneT_ReturnsNone()
+        public static void NoneT_WithValueType_ReturnsNone()
         {
-            // Maybe.None<T>() simply returns Maybe<T>.None.
             Assert.Equal(Maybe<Unit>.None, Maybe.None<Unit>());
             Assert.Equal(Maybe<int>.None, Maybe.None<int>());
             Assert.Equal(Maybe<long>.None, Maybe.None<long>());
+        }
 
+        [Fact]
+        public static void NoneT_WithReferenceType_ReturnsNone()
+        {
             Assert.Equal(Maybe<string>.None, Maybe.None<string>());
             Assert.Equal(Maybe<Uri>.None, Maybe.None<Uri>());
             Assert.Equal(Maybe<AnyT>.None, Maybe.None<AnyT>());
@@ -180,7 +217,11 @@ namespace Abc
             Assert.Some(UNIT, Maybe.Of(UNIT));
             Assert.Some(314, Maybe.Of(314));
             Assert.Some(413L, Maybe.Of(413L));
+        }
 
+        [Fact]
+        public static void Of_WithValueType_ForNullable()
+        {
             Assert.None(Maybe.Of((Unit?)null));
             Assert.Some(UNIT, Maybe.Of((Unit?)UNIT));
 
@@ -194,19 +235,32 @@ namespace Abc
         [Fact]
         public static void Of_WithReferenceType()
         {
-            Assert.None(Maybe.Of((string?)null));
             Assert.Some(MyText, Maybe.Of(MyText));
-
-            Assert.None(Maybe.Of((Uri?)null));
             Assert.Some(MyUri, Maybe.Of(MyUri));
 
             var anyT = AnyT.Value;
-            Assert.None(Maybe.Of((AnyT?)null));
             Assert.Some(anyT, Maybe.Of(anyT));
 
             var obj = new object();
-            Assert.None(Maybe.Of((object?)null));
             Assert.Some(obj, Maybe.Of(obj));
+        }
+
+        [Fact]
+        public static void Of_WithReferenceType_ForNullable()
+        {
+            Assert.None(Maybe.Of((string?)null));
+            Assert.Some(MyText, Maybe.Of((string?)MyText));
+
+            Assert.None(Maybe.Of((Uri?)null));
+            Assert.Some(MyUri, Maybe.Of((Uri?)MyUri));
+
+            var anyT = AnyT.Value;
+            Assert.None(Maybe.Of((AnyT?)null));
+            Assert.Some(anyT, Maybe.Of((AnyT?)anyT));
+
+            var obj = new object();
+            Assert.None(Maybe.Of((object?)null));
+            Assert.Some(obj, Maybe.Of((object?)obj));
         }
 
         [Fact]
@@ -353,17 +407,40 @@ namespace Abc
     // Simple conversions: ToString(), op_Explicit.
     public partial class MaybeTests
     {
+        #region ToString()
+
         [Fact]
-        public static void ToString_None()
+        public static void ToString_None_WithValueType()
         {
             Assert.Equal("Maybe(None)", Maybe<Unit>.None.ToString());
             Assert.Equal("Maybe(None)", Maybe<int>.None.ToString());
             Assert.Equal("Maybe(None)", Maybe<long>.None.ToString());
+        }
 
+        [Fact]
+        public static void ToString_None_WithValueType_ForNullable()
+        {
+            Assert.Equal("Maybe(None)", Maybe<Unit?>.None.ToString());
+            Assert.Equal("Maybe(None)", Maybe<int?>.None.ToString());
+            Assert.Equal("Maybe(None)", Maybe<long?>.None.ToString());
+        }
+
+        [Fact]
+        public static void ToString_None_WithReferenceType()
+        {
             Assert.Equal("Maybe(None)", Maybe<string>.None.ToString());
             Assert.Equal("Maybe(None)", Maybe<Uri>.None.ToString());
             Assert.Equal("Maybe(None)", Maybe<AnyT>.None.ToString());
             Assert.Equal("Maybe(None)", Maybe<object>.None.ToString());
+        }
+
+        [Fact]
+        public static void ToString_None_WithReferenceType_ForNullable()
+        {
+            Assert.Equal("Maybe(None)", Maybe<string?>.None.ToString());
+            Assert.Equal("Maybe(None)", Maybe<Uri?>.None.ToString());
+            Assert.Equal("Maybe(None)", Maybe<AnyT?>.None.ToString());
+            Assert.Equal("Maybe(None)", Maybe<object?>.None.ToString());
         }
 
         [Fact]
@@ -377,24 +454,89 @@ namespace Abc
         }
 
         [Fact]
-        public static void Explicit_FromMaybe_WithNone()
+        public static void ToString_Some_ForNullable()
         {
-            Assert.Throws<InvalidCastException>(() => (int)Ø);
-            Assert.Throws<InvalidCastException>(() => (string)NoText);
-            Assert.Throws<InvalidCastException>(() => (Uri)NoUri);
-            Assert.Throws<InvalidCastException>(() => (AnyT)AnyT.None);
+            // Arrange
+            string text = "My Text";
+            var some = Maybe.Of((string?)text);
+            // Act & Assert
+            Assert.Contains(text, some.ToString(), StringComparison.Ordinal);
+        }
+
+        #endregion
+
+        #region op_Explicit
+        // NB: cast to object or object? is meaningless.
+
+        [Fact]
+        public static void Explicit_None_WithValueType()
+        {
+            Assert.Throws<InvalidCastException>(() => (Unit)Maybe<Unit>.None);
+            Assert.Throws<InvalidCastException>(() => (int)Maybe<int>.None);
+            Assert.Throws<InvalidCastException>(() => (long)Maybe<long>.None);
         }
 
         [Fact]
-        public static void Explicit_FromMaybe_WithSome()
+        public static void Explicit_None_WithValueType_ForNullable()
         {
-            Assert.Equal(1, (int)One);
-            Assert.Equal(MyText, (string)SomeText);
-            Assert.Equal(MyUri, (Uri)SomeUri);
-
-            var anyT = AnyT.New();
-            Assert.Equal(anyT.Value, (AnyT)anyT.Some);
+            Assert.Throws<InvalidCastException>(() => (Unit?)Maybe<Unit?>.None);
+            Assert.Throws<InvalidCastException>(() => (int?)Maybe<int?>.None);
+            Assert.Throws<InvalidCastException>(() => (long?)Maybe<long?>.None);
         }
+
+        [Fact]
+        public static void Explicit_None_WithReferenceType()
+        {
+            Assert.Throws<InvalidCastException>(() => (string)Maybe<string>.None);
+            Assert.Throws<InvalidCastException>(() => (Uri)Maybe<Uri>.None);
+            Assert.Throws<InvalidCastException>(() => (AnyT)Maybe<AnyT>.None);
+        }
+
+        [Fact]
+        public static void Explicit_None_WithReferenceType_ForNullable()
+        {
+            Assert.Throws<InvalidCastException>(() => (string?)Maybe<string?>.None);
+            Assert.Throws<InvalidCastException>(() => (Uri?)Maybe<Uri?>.None);
+            Assert.Throws<InvalidCastException>(() => (AnyT?)Maybe<AnyT?>.None);
+        }
+
+        [Fact]
+        public static void Explicit_Some_WithValueType()
+        {
+            Assert.Equal(UNIT, (Unit)Maybe.Some(UNIT));
+            Assert.Equal(314, (int)Maybe.Some(314));
+            Assert.Equal(413L, (long)Maybe.Some(413L));
+        }
+
+        [Fact]
+        public static void Explicit_Some_WithValueType_ForNullable()
+        {
+            Assert.Equal(UNIT, (Unit?)Maybe.Of((Unit?)UNIT));
+            Assert.Equal(314, (int?)Maybe.Of((int?)314));
+            Assert.Equal(413L, (long?)Maybe.Of((long?)413L));
+        }
+
+        [Fact]
+        public static void Explicit_Some_WithReferenceType()
+        {
+            Assert.Equal(MyText, (string)Maybe.SomeOrNone(MyText));
+            Assert.Equal(MyUri, (Uri)Maybe.SomeOrNone(MyUri));
+
+            var anyT = AnyT.Value;
+            Assert.Equal(anyT, (AnyT)Maybe.SomeOrNone(anyT));
+        }
+
+        [Fact]
+        public static void Explicit_Some_WithReferenceType_ForNullable()
+        {
+            Assert.Equal(MyText, (string?)Maybe.Of((string?)MyText));
+            Assert.Equal(MyUri, (Uri?)Maybe.Of((Uri?)MyUri));
+
+            var anyT = AnyT.Value;
+            Assert.Equal(anyT, (AnyT?)Maybe.Of((AnyT?)anyT));
+        }
+
+        #endregion
     }
 
     // Bind().
