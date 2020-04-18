@@ -280,6 +280,7 @@ namespace Abc
         [Pure]
         // Code size = 31 bytes.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
         public bool TryGetValue([MaybeNullWhen(false)] out T value)
         {
             if (_isSome)
@@ -471,6 +472,7 @@ namespace Abc
     public partial struct Maybe<T>
     {
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
         public IEnumerator<T> GetEnumerator() =>
             // BONSANG! When _isSome is true, _value is NOT null.
             _isSome ? new SingletonList<T>.Iterator(_value!)
