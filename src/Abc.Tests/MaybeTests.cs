@@ -116,7 +116,7 @@ namespace Abc
         #region None & None<T>()
 
         [Fact]
-        public static void None_WithValueType_IsDefault()
+        public static void None_IsDefault_ForValueT()
         {
             Assert.Equal(default, Maybe<Unit>.None);
             Assert.Equal(default, Maybe<int>.None);
@@ -124,7 +124,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void None_WithValueType_IsDefault_ForNullable()
+        public static void None_IsDefault_ForValueT_NullableT()
         {
             Assert.Equal(default, Maybe<Unit?>.None);
             Assert.Equal(default, Maybe<int?>.None);
@@ -132,7 +132,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void None_WithReferenceType_IsDefault()
+        public static void None_IsDefault_ForReferenceT()
         {
             Assert.Equal(default, Maybe<string>.None);
             Assert.Equal(default, Maybe<Uri>.None);
@@ -141,7 +141,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void None_WithReferenceType_IsDefault_ForNullable()
+        public static void None_IsDefault_ForReferenceT_NullableT()
         {
             Assert.Equal(default, Maybe<string?>.None);
             Assert.Equal(default, Maybe<Uri?>.None);
@@ -150,7 +150,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void None_WithValueType_IsNone()
+        public static void None_IsNone_ForValueT()
         {
             Assert.None(Maybe<Unit>.None);
             Assert.None(Maybe<int>.None);
@@ -158,7 +158,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void None_WithValueType_IsNone_ForNullable()
+        public static void None_IsNone_ForValueT_NullableT()
         {
             Assert.None(Maybe<Unit?>.None);
             Assert.None(Maybe<int?>.None);
@@ -166,7 +166,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void None_WithReferenceType_IsNone()
+        public static void None_IsNone_ForReferenceT()
         {
             Assert.None(Maybe<string>.None);
             Assert.None(Maybe<Uri>.None);
@@ -175,7 +175,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void None_WithReferenceType_IsNone_ForNullable()
+        public static void None_IsNone_ForReferenceT_NullableT()
         {
             Assert.None(Maybe<string?>.None);
             Assert.None(Maybe<Uri?>.None);
@@ -184,7 +184,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void NoneT_WithValueType_IsNone()
+        public static void NoneT_IsNone_ForValueT()
         {
             Assert.None(Maybe.None<Unit>());
             Assert.None(Maybe.None<int>());
@@ -192,7 +192,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void NoneT_WithReferenceType_IsNone()
+        public static void NoneT_IsNone_ForReferenceT()
         {
             Assert.None(Maybe.None<string>());
             Assert.None(Maybe.None<Uri>());
@@ -201,7 +201,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void NoneT_WithValueType_ReturnsNone()
+        public static void NoneT_ReturnsNone_ForValueT()
         {
             Assert.Equal(Maybe<Unit>.None, Maybe.None<Unit>());
             Assert.Equal(Maybe<int>.None, Maybe.None<int>());
@@ -209,7 +209,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void NoneT_WithReferenceType_ReturnsNone()
+        public static void NoneT_ReturnsNone_ForReferenceT()
         {
             Assert.Equal(Maybe<string>.None, Maybe.None<string>());
             Assert.Equal(Maybe<Uri>.None, Maybe.None<Uri>());
@@ -222,7 +222,7 @@ namespace Abc
         #region Of(), Some() & SomeOrNone()
 
         [Fact]
-        public static void Of_WithValueType()
+        public static void Of_WithValueT()
         {
             Assert.Some(UNIT, Maybe.Of(UNIT));
             Assert.Some(314, Maybe.Of(314));
@@ -230,7 +230,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Of_WithValueType_ForNullable()
+        public static void Of_WithValueT_NullableT()
         {
             Assert.None(Maybe.Of((Unit?)null));
             Assert.Some(UNIT, Maybe.Of((Unit?)UNIT));
@@ -243,7 +243,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Of_WithReferenceType()
+        public static void Of_WithReferenceT()
         {
             Assert.Some(MyText, Maybe.Of(MyText));
             Assert.Some(MyUri, Maybe.Of(MyUri));
@@ -256,7 +256,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Of_WithReferenceType_ForNullable()
+        public static void Of_WithReferenceT_NullableT()
         {
             Assert.None(Maybe.Of((string?)null));
             Assert.Some(MyText, Maybe.Of((string?)MyText));
@@ -282,7 +282,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void SomeOrNone_WithValueType()
+        public static void SomeOrNone_WithValueT()
         {
             Assert.None(Maybe.SomeOrNone((Unit?)null));
             Assert.Some(UNIT, Maybe.SomeOrNone((Unit?)UNIT));
@@ -295,7 +295,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void SomeOrNone_WithReferenceType()
+        public static void SomeOrNone_WithReferenceT()
         {
             Assert.None(Maybe.SomeOrNone((string?)null));
             Assert.Some(MyText, Maybe.SomeOrNone(MyText));
@@ -325,7 +325,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Square_IsSomeSome()
+        public static void Square_IsSomeOfSome()
         {
             Assert.Equal(__(UNIT), Maybe.Square(UNIT));
             Assert.Equal(__(314), Maybe.Square(314));
@@ -335,7 +335,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void SquareOrNone_WithValueType()
+        public static void SquareOrNone_WithValueT()
         {
             Assert.None(Maybe.SquareOrNone((Unit?)null));
             Assert.Some(Maybe.Some(UNIT), Maybe.SquareOrNone((Unit?)UNIT));
@@ -348,7 +348,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void SquareOrNone_WithValueType_IsNotSomeOfSomeOrNone_WhenNone()
+        public static void SquareOrNone_WithValueT_IsNotSomeOfSomeOrNone_WhenNone()
         {
             Assert.NotEqual(__<Unit>(), Maybe.SquareOrNone((Unit?)null));
             Assert.NotEqual(__<int>(), Maybe.SquareOrNone((int?)null));
@@ -358,7 +358,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void SquareOrNone_WithValueType_IsSomeOfSomeOrNone_WhenSome()
+        public static void SquareOrNone_WithValueT_IsSomeOfSomeOrNone_WhenSome()
         {
             Assert.Equal(__(UNIT), Maybe.SquareOrNone((Unit?)UNIT));
             Assert.Equal(__(314), Maybe.SquareOrNone((int?)314));
@@ -368,7 +368,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void SquareOrNone_WithReferenceType()
+        public static void SquareOrNone_WithReferenceT()
         {
             Assert.None(Maybe.SquareOrNone((string?)null));
             Assert.Some(Maybe.SomeOrNone(MyText), Maybe.SquareOrNone(MyText));
@@ -386,7 +386,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void SquareOrNone_WithReferenceType_IsNotSomeOfSomeOrNone_WhenNone()
+        public static void SquareOrNone_WithReferenceT_IsNotSomeOfSomeOrNone_WhenNone()
         {
             Assert.NotEqual(__<string>(), Maybe.SquareOrNone((string?)null));
             Assert.NotEqual(__<Uri>(), Maybe.SquareOrNone((Uri?)null));
@@ -397,7 +397,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void SquareOrNone_WithReferenceType_IsSomeOfSomeOrNone_WhenSome()
+        public static void SquareOrNone_WithReferenceT_IsSomeOfSomeOrNone_WhenSome()
         {
             Assert.Equal(__(MyText), Maybe.SquareOrNone(MyText));
             Assert.Equal(__(MyUri), Maybe.SquareOrNone(MyUri));
@@ -420,7 +420,7 @@ namespace Abc
         #region ToString()
 
         [Fact]
-        public static void ToString_None_WithValueType()
+        public static void ToString_OnNone_ForValueT()
         {
             Assert.Equal("Maybe(None)", Maybe<Unit>.None.ToString());
             Assert.Equal("Maybe(None)", Maybe<int>.None.ToString());
@@ -428,7 +428,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void ToString_None_WithValueType_ForNullable()
+        public static void ToString_OnNone_ForValueT_ForNullableT()
         {
             Assert.Equal("Maybe(None)", Maybe<Unit?>.None.ToString());
             Assert.Equal("Maybe(None)", Maybe<int?>.None.ToString());
@@ -436,7 +436,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void ToString_None_WithReferenceType()
+        public static void ToString_OnNone_ForReferenceT()
         {
             Assert.Equal("Maybe(None)", Maybe<string>.None.ToString());
             Assert.Equal("Maybe(None)", Maybe<Uri>.None.ToString());
@@ -445,7 +445,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void ToString_None_WithReferenceType_ForNullable()
+        public static void ToString_OnNone_ForReferenceT_ForNullableT()
         {
             Assert.Equal("Maybe(None)", Maybe<string?>.None.ToString());
             Assert.Equal("Maybe(None)", Maybe<Uri?>.None.ToString());
@@ -454,7 +454,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void ToString_Some()
+        public static void ToString_OnSome()
         {
             // Arrange
             string text = "My Text";
@@ -464,7 +464,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void ToString_Some_ForNullable()
+        public static void ToString_OnSome_ForNullableT()
         {
             // Arrange
             string text = "My Text";
@@ -480,7 +480,7 @@ namespace Abc
         // NB: explicit cast to object or object? is meaningless.
 
         [Fact]
-        public static void Explicit_None_WithValueType()
+        public static void Explicit_OnNone_ForValueT()
         {
             Assert.Throws<InvalidCastException>(() => (Unit)Maybe<Unit>.None);
             Assert.Throws<InvalidCastException>(() => (int)Maybe<int>.None);
@@ -488,7 +488,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Explicit_None_WithValueType_ForNullable()
+        public static void Explicit_OnNone_ForValueT_ForNullableT()
         {
             Assert.Throws<InvalidCastException>(() => (Unit?)Maybe<Unit?>.None);
             Assert.Throws<InvalidCastException>(() => (int?)Maybe<int?>.None);
@@ -496,7 +496,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Explicit_None_WithReferenceType()
+        public static void Explicit_OnNone_ForReferenceT()
         {
             Assert.Throws<InvalidCastException>(() => (string)Maybe<string>.None);
             Assert.Throws<InvalidCastException>(() => (Uri)Maybe<Uri>.None);
@@ -504,7 +504,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Explicit_None_WithReferenceType_ForNullable()
+        public static void Explicit_OnNone_ForReferenceT_ForNullableT()
         {
             Assert.Throws<InvalidCastException>(() => (string?)Maybe<string?>.None);
             Assert.Throws<InvalidCastException>(() => (Uri?)Maybe<Uri?>.None);
@@ -512,7 +512,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Explicit_Some_WithValueType()
+        public static void Explicit_OnSome_ForValueT()
         {
             Assert.Equal(UNIT, (Unit)Maybe.Some(UNIT));
             Assert.Equal(314, (int)Maybe.Some(314));
@@ -520,7 +520,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Explicit_Some_WithValueType_ForNullable()
+        public static void Explicit_OnSome_ForValueT_ForNullableT()
         {
             Assert.Equal(UNIT, (Unit?)Maybe.Of((Unit?)UNIT));
             Assert.Equal(314, (int?)Maybe.Of((int?)314));
@@ -528,7 +528,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Explicit_Some_WithReferenceType()
+        public static void Explicit_OnSome_ForReferenceT()
         {
             Assert.Equal(MyText, (string)Maybe.SomeOrNone(MyText));
             Assert.Equal(MyUri, (Uri)Maybe.SomeOrNone(MyUri));
@@ -538,7 +538,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Explicit_Some_WithReferenceType_ForNullable()
+        public static void Explicit_OnSome_ForReferenceT_ForNullableT()
         {
             Assert.Equal(MyText, (string?)Maybe.Of((string?)MyText));
             Assert.Equal(MyUri, (Uri?)Maybe.Of((Uri?)MyUri));
@@ -553,7 +553,7 @@ namespace Abc
         //
 
         [Fact]
-        public static void Explicit_Some_ImplicitNumericConversion()
+        public static void Explicit_OnSome_ImplicitNumericConversion()
         {
             // short -> int
             Assert.Equal(314, (int)Maybe.Some((short)314));
@@ -565,7 +565,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Explicit_Some_ExplicitNumericConversion()
+        public static void Explicit_OnSome_ExplicitNumericConversion()
         {
             // int -> short
             Assert.Equal(413, (short)Maybe.Some(413));
@@ -577,7 +577,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Explicit_Some_ExplicitNumericConversion_Overflows()
+        public static void Explicit_OnSome_ExplicitNumericConversion_Overflows()
         {
             Assert.Throws<OverflowException>(() => (short)Maybe.Some(Int32.MaxValue));
             Assert.Throws<OverflowException>(() => (int)Maybe.Some(Int64.MaxValue));
@@ -588,7 +588,7 @@ namespace Abc
         //
 
         [Fact]
-        public static void Explicit_Some_Downcasting_WhenNotUpcasted()
+        public static void Explicit_OnSome_Downcasting_WhenNotUpcasted()
         {
             // Arrange
             var obj = new MyBaseClass_ { };
@@ -598,7 +598,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Explicit_Some_Downcasting_WhenUpcasted()
+        public static void Explicit_OnSome_Downcasting_WhenUpcasted()
         {
             // Arrange
             MyBaseClass_ obj = new MyDerivedClass_ { };    // upcast
@@ -608,7 +608,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Explicit_Some_Upcasting()
+        public static void Explicit_OnSome_Upcasting()
         {
             // Arrange
             var obj = new MyDerivedClass_ { };
@@ -628,21 +628,21 @@ namespace Abc
     public partial class MaybeTests
     {
         [Fact]
-        public static void Bind_None_WithNullBinder()
+        public static void Bind_OnNone_WithNullBinder()
         {
             Assert.ThrowsAnexn("binder", () => Ø.Bind(Kunc<int, AnyResult>.Null));
             Assert.ThrowsAnexn("binder", () => AnyT.None.Bind(Kunc<AnyT, AnyResult>.Null));
         }
 
         [Fact]
-        public static void Bind_Some_WithNullBinder()
+        public static void Bind_OnSome_WithNullBinder()
         {
             Assert.ThrowsAnexn("binder", () => One.Bind(Kunc<int, AnyResult>.Null));
             Assert.ThrowsAnexn("binder", () => AnyT.Some.Bind(Kunc<AnyT, AnyResult>.Null));
         }
 
         [Fact]
-        public static void Bind_None()
+        public static void Bind_OnNone()
         {
             Assert.None(Ø.Bind(ReturnSome));
             Assert.None(NoText.Bind(ReturnSome));
@@ -651,7 +651,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Bind_Some_ReturnsNone()
+        public static void Bind_OnSome_ReturnsNone()
         {
             Assert.None(One.Bind(ReturnNone));
             Assert.None(SomeText.Bind(ReturnNone));
@@ -660,7 +660,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Bind_Some_ReturnsSome()
+        public static void Bind_OnSome_ReturnsSome()
         {
             Assert.Some(AnyResult.Value, One.Bind(ReturnSome));
             Assert.Some(AnyResult.Value, SomeText.Bind(ReturnSome));
@@ -669,15 +669,15 @@ namespace Abc
         }
 
         [Fact]
-        public static void Bind_SomeInt32() =>
+        public static void Bind_OnSomeInt32() =>
             Assert.Some(6, Two.Bind(Times3_));
 
         [Fact]
-        public static void Bind_SomeInt64() =>
+        public static void Bind_OnSomeInt64() =>
             Assert.Some(8L, TwoL.Bind(Times4_));
 
         [Fact]
-        public static void Bind_SomeUri() =>
+        public static void Bind_OnSomeUri() =>
             Assert.Some(MyUri.AbsoluteUri, SomeUri.Bind(GetAbsoluteUri_));
     }
 
@@ -687,14 +687,14 @@ namespace Abc
         #region Switch()
 
         [Fact]
-        public static void Switch_None_WithNullCaseNone_Throws()
+        public static void Switch_OnNone_WithNullCaseNone_Throws()
         {
             Assert.ThrowsAnexn("caseNone", () => Ø.Switch(Funk<int, AnyResult>.Any, Funk<AnyResult>.Null));
             Assert.ThrowsAnexn("caseNone", () => AnyT.None.Switch(Funk<AnyT, AnyResult>.Any, Funk<AnyResult>.Null));
         }
 
         [Fact]
-        public static void Switch_None_WithNullCaseSome_DoesNotThrow()
+        public static void Switch_OnNone_WithNullCaseSome_DoesNotThrow()
         {
             // Act
             AnyResult v = Ø.Switch(Funk<int, AnyResult>.Null, () => AnyResult.Value);
@@ -703,7 +703,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Switch_Some_WithNullCaseSome_Throws()
+        public static void Switch_OnSome_WithNullCaseSome_Throws()
         {
             Assert.ThrowsAnexn("caseSome", () => One.Switch(Funk<int, AnyResult>.Null, Funk<AnyResult>.Any));
             Assert.ThrowsAnexn("caseSome", () => AnyT.Some.Switch(Funk<AnyT, AnyResult>.Null, Funk<AnyResult>.Any));
@@ -713,7 +713,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Switch_Some_WithNullCaseNone_DoesNotThrow()
+        public static void Switch_OnSome_WithNullCaseNone_DoesNotThrow()
         {
             // Act
             AnyResult v = One.Switch(
@@ -724,7 +724,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Switch_None()
+        public static void Switch_OnNone()
         {
             // Arrange
             bool onSomeCalled = false;
@@ -740,7 +740,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Switch_None_WithConstCaseNone()
+        public static void Switch_OnNone_WithConstCaseNone()
         {
             // Arrange
             bool onSomeCalled = false;
@@ -754,7 +754,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Switch_Some()
+        public static void Switch_OnSome()
         {
             // Arrange
             bool onSomeCalled = false;
@@ -770,7 +770,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Switch_Some_WithConstCaseNone()
+        public static void Switch_OnSome_WithConstCaseNone()
         {
             // Arrange
             bool onSomeCalled = false;
@@ -788,7 +788,7 @@ namespace Abc
         #region TryGetValue()
 
         [Fact]
-        public static void TryGetValue_None()
+        public static void TryGetValue_OnNone()
         {
             Assert.False(Ø.TryGetValue(out int _));
             Assert.False(NoText.TryGetValue(out string _));
@@ -797,7 +797,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void TryGetValue_Some()
+        public static void TryGetValue_OnSome()
         {
             Assert.True(One.TryGetValue(out int one));
             Assert.Equal(1, one);
@@ -818,7 +818,7 @@ namespace Abc
         #region ValueOrDefault()
 
         [Fact]
-        public static void ValueOrDefault_None()
+        public static void ValueOrDefault_OnNone()
         {
             Assert.Equal(0, Ø.ValueOrDefault());
             Assert.Null(NoText.ValueOrDefault());
@@ -827,7 +827,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void ValueOrDefault_Some()
+        public static void ValueOrDefault_OnSome()
         {
             Assert.Equal(1, One.ValueOrDefault());
             Assert.Equal(MyText, SomeText.ValueOrDefault());
@@ -842,14 +842,14 @@ namespace Abc
         #region ValueOrElse()
 
         [Fact]
-        public static void ValueOrElse_None_WithNullFactory_Throws()
+        public static void ValueOrElse_OnNone_WithNullFactory_Throws()
         {
             Assert.ThrowsAnexn("valueFactory", () => Ø.ValueOrElse(Funk<int>.Null));
             Assert.ThrowsAnexn("valueFactory", () => AnyT.None.ValueOrElse(Funk<AnyT>.Null));
         }
 
         [Fact]
-        public static void ValueOrElse_Some_WithNullFactory_DoesNotThrow()
+        public static void ValueOrElse_OnSome_WithNullFactory_DoesNotThrow()
         {
             Assert.Equal(1, One.ValueOrElse(Funk<int>.Null));
             Assert.Equal(MyText, SomeText.ValueOrElse(Funk<string>.Null));
@@ -860,7 +860,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void ValueOrElse_None()
+        public static void ValueOrElse_OnNone()
         {
             Assert.Equal(3, Ø.ValueOrElse(3));
             Assert.Equal("other", NoText.ValueOrElse("other"));
@@ -873,7 +873,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void ValueOrElse_None_WithFactory()
+        public static void ValueOrElse_OnNone_WithFactory()
         {
             Assert.Equal(3, Ø.ValueOrElse(() => 3));
             Assert.Equal("other", NoText.ValueOrElse(() => "other"));
@@ -886,7 +886,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void ValueOrElse_Some()
+        public static void ValueOrElse_OnSome()
         {
             Assert.Equal(1, One.ValueOrElse(3));
             Assert.Equal(MyText, SomeText.ValueOrElse("other"));
@@ -899,7 +899,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void ValueOrElse_Some_WithFactory()
+        public static void ValueOrElse_OnSome_WithFactory()
         {
             Assert.Equal(1, One.ValueOrElse(() => 3));
             Assert.Equal(MyText, SomeText.ValueOrElse(() => "other"));
@@ -923,7 +923,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void ValueOrThrow_None()
+        public static void ValueOrThrow_OnNone()
         {
             Assert.Throws<InvalidOperationException>(() => Ø.ValueOrThrow());
             Assert.Throws<InvalidOperationException>(() => NoText.ValueOrThrow());
@@ -932,7 +932,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void ValueOrThrow_None_WithCustomException()
+        public static void ValueOrThrow_OnNone_WithCustomException()
         {
             Assert.Throws<NotSupportedException>(() => Ø.ValueOrThrow(new NotSupportedException()));
             Assert.Throws<NotSupportedException>(() => NoText.ValueOrThrow(new NotSupportedException()));
@@ -941,7 +941,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void ValueOrThrow_Some()
+        public static void ValueOrThrow_OnSome()
         {
             Assert.Equal(1, One.ValueOrThrow());
             Assert.Equal(MyText, SomeText.ValueOrThrow());
@@ -952,7 +952,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void ValueOrThrow_Some_WithCustomException()
+        public static void ValueOrThrow_OnSome_WithCustomException()
         {
             Assert.Equal(1, One.ValueOrThrow(new NotSupportedException()));
             Assert.Equal(MyText, SomeText.ValueOrThrow(new NotSupportedException()));
@@ -971,14 +971,14 @@ namespace Abc
         #region Do()
 
         [Fact]
-        public static void Do_None_WithNullOnNone_Throws()
+        public static void Do_OnNone_WithNullOnNone_Throws()
         {
             Assert.ThrowsAnexn("onNone", () => Ø.Do(Act<int>.Noop, Act.Null));
             Assert.ThrowsAnexn("onNone", () => AnyT.None.Do(Act<AnyT>.Noop, Act.Null));
         }
 
         [Fact]
-        public static void Do_None_WithNullOnSome_DoesNotThrow()
+        public static void Do_OnNone_WithNullOnSome_DoesNotThrow()
         {
             // Act
             var ex = Record.Exception(() => Ø.Do(Act<int>.Null, Act.Noop));
@@ -987,14 +987,14 @@ namespace Abc
         }
 
         [Fact]
-        public static void Do_Some_WithNullOnSome_Throws()
+        public static void Do_OnSome_WithNullOnSome_Throws()
         {
             Assert.ThrowsAnexn("onSome", () => One.Do(Act<int>.Null, Act.Noop));
             Assert.ThrowsAnexn("onSome", () => AnyT.Some.Do(Act<AnyT>.Null, Act.Noop));
         }
 
         [Fact]
-        public static void Do_Some_WithNullOnNone_DoesNotThrow()
+        public static void Do_OnSome_WithNullOnNone_DoesNotThrow()
         {
             // Act
             var ex = Record.Exception(() => One.Do(Act<int>.Noop, Act.Null));
@@ -1003,7 +1003,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Do_None()
+        public static void Do_OnNone()
         {
             // Arrange
             bool onSomeCalled = false;
@@ -1016,7 +1016,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Do_Some()
+        public static void Do_OnSome()
         {
             // Arrange
             bool onSomeCalled = false;
@@ -1033,7 +1033,7 @@ namespace Abc
         #region OnSome()
 
         [Fact]
-        public static void OnSome_None_WithNullAction_DoesNotThrow()
+        public static void OnSome_OnNone_WithNullAction_DoesNotThrow()
         {
             // Act
             var ex = Record.Exception(() => Ø.OnSome(Act<int>.Null));
@@ -1042,14 +1042,14 @@ namespace Abc
         }
 
         [Fact]
-        public static void OnSome_Some_WithNullAction_Throws()
+        public static void OnSome_OnSome_WithNullAction_Throws()
         {
             Assert.ThrowsAnexn("action", () => One.OnSome(Act<int>.Null));
             Assert.ThrowsAnexn("action", () => AnyT.Some.OnSome(Act<AnyT>.Null));
         }
 
         [Fact]
-        public static void OnSome_None()
+        public static void OnSome_OnNone()
         {
             // Arrange
             bool wasCalled = false;
@@ -1060,7 +1060,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void OnSome_Some()
+        public static void OnSome_OnSome()
         {
             // Arrange
             bool wasCalled = false;
@@ -1075,7 +1075,7 @@ namespace Abc
         #region When()
 
         [Fact]
-        public static void When_None_WithFalse()
+        public static void When_OnNone_WithFalse()
         {
             // Arrange
             bool onSomeCalled = false;
@@ -1091,7 +1091,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void When_Some_WithFalse()
+        public static void When_OnSome_WithFalse()
         {
             // Arrange
             bool onSomeCalled = false;
@@ -1107,7 +1107,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void When_None_WithTrue()
+        public static void When_OnNone_WithTrue()
         {
             // Arrange
             bool onSomeCalled = false;
@@ -1132,7 +1132,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void When_Some_WithTrue()
+        public static void When_OnSome_WithTrue()
         {
             // Arrange
             bool onSomeCalled = false;
@@ -1176,7 +1176,7 @@ namespace Abc
         #region GetEnumerator()
 
         [Fact]
-        public static void GetEnumerator_None_ForEach()
+        public static void GetEnumerator_OnNone_ForEach()
         {
             foreach (string _ in NoText)
             {
@@ -1185,7 +1185,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void GetEnumerator_None_ExplicitIterator()
+        public static void GetEnumerator_OnNone_ExplicitIterator()
         {
             var iter = NoText.GetEnumerator();
 
@@ -1195,7 +1195,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void GetEnumerator_Some_ForEach()
+        public static void GetEnumerator_OnSome_ForEach()
         {
             // Arrange
             int count = 0;
@@ -1211,7 +1211,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void GetEnumerator_Some_ExplicitIterator()
+        public static void GetEnumerator_OnSome_ExplicitIterator()
         {
             var iter = SomeText.GetEnumerator();
 
@@ -1231,11 +1231,11 @@ namespace Abc
         #region Yield()
 
         [Fact]
-        public static void Yield_None() =>
+        public static void Yield_OnNone() =>
             Assert.Empty(NoText.Yield());
 
         [Fact]
-        public static void Yield_None_WithCount()
+        public static void Yield_OnNone_WithCount()
         {
             Assert.Empty(NoText.Yield(0));
             Assert.Empty(NoText.Yield(10));
@@ -1244,7 +1244,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Yield_Some()
+        public static void Yield_OnSome()
         {
             Assert.Equal(Enumerable.Repeat(MyText, 0), SomeText.Yield().Take(0));
             Assert.Equal(Enumerable.Repeat(MyText, 1), SomeText.Yield().Take(1));
@@ -1254,7 +1254,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Yield_Some_WithCount()
+        public static void Yield_OnSome_WithCount()
         {
             Assert.Equal(Enumerable.Repeat(MyText, 0), SomeText.Yield(0));
             Assert.Equal(Enumerable.Repeat(MyText, 1), SomeText.Yield(1));
@@ -1268,21 +1268,21 @@ namespace Abc
         #region Contains()
 
         [Fact]
-        public static void Contains_None_WithNullComparer()
+        public static void Contains_OnNone_WithNullComparer()
         {
             Assert.ThrowsAnexn("comparer", () => Ø.Contains(1, null!));
             Assert.ThrowsAnexn("comparer", () => AnyT.None.Contains(AnyT.Value, null!));
         }
 
         [Fact]
-        public static void Contains_Some_WithNullComparer()
+        public static void Contains_OnSome_WithNullComparer()
         {
             Assert.ThrowsAnexn("comparer", () => One.Contains(1, null!));
             Assert.ThrowsAnexn("comparer", () => AnyT.Some.Contains(AnyT.Value, null!));
         }
 
         [Fact]
-        public static void Contains_None_Int32()
+        public static void Contains_OnNone_Int32()
         {
             Assert.False(Ø.Contains(0));
             Assert.False(Ø.Contains(1));
@@ -1290,7 +1290,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Contains_None_Text()
+        public static void Contains_OnNone_Text()
         {
             Assert.False(NoText.Contains("XXX"));
             Assert.False(NoText.Contains("XXX", StringComparer.Ordinal));
@@ -1298,7 +1298,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Contains_SomeInt32()
+        public static void Contains_OnSomeInt32()
         {
             Assert.False(One.Contains(0));
             Assert.True(One.Contains(1));
@@ -1306,7 +1306,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Contains_SomeText()
+        public static void Contains_OnSomeText()
         {
             Assert.True(Maybe.SomeOrNone("XXX").Contains("XXX"));
             // Default comparison does NOT ignore case.
@@ -1315,7 +1315,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Contains_SomeText_WithComparer()
+        public static void Contains_OnSomeText_WithComparer()
         {
             Assert.True(Maybe.SomeOrNone("XXX").Contains("XXX", StringComparer.Ordinal));
             Assert.False(Maybe.SomeOrNone("XXX").Contains("xxx", StringComparer.Ordinal));
@@ -1327,7 +1327,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Contains_SomeText_Anagram()
+        public static void Contains_OnSomeText_Anagram()
         {
             // Arrange
             var cmp = new AnagramEqualityComparer();
@@ -1354,7 +1354,7 @@ namespace Abc
             Assert.True(typeof(Maybe<>).IsSerializable);
 
         [Fact]
-        public static void Serialization_None_ForValueType()
+        public static void Serialization_OnNone_ForValueType()
         {
             // Arrange
             var formatter = new BinaryFormatter();
@@ -1372,7 +1372,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Serialization_None_ForReferenceType()
+        public static void Serialization_OnNone_ForReferenceType()
         {
             // Arrange
             var formatter = new BinaryFormatter();
@@ -1390,7 +1390,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Serialization_Some_ForValueType()
+        public static void Serialization_OnSome_ForValueType()
         {
             // Arrange
             var formatter = new BinaryFormatter();
@@ -1408,7 +1408,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Serialization_Some_ForReferenceType()
+        public static void Serialization_OnSome_ForReferenceType()
         {
             // Arrange
             var formatter = new BinaryFormatter();
@@ -1434,7 +1434,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Serialization_None_ForNotSerializable()
+        public static void Serialization_OnNone_ForNotSerializable()
         {
             // Arrange
             var formatter = new BinaryFormatter();
@@ -1444,7 +1444,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Serialization_Some_ForNotSerializable()
+        public static void Serialization_OnSome_ForNotSerializable()
         {
             // Arrange
             var some = Maybe.SomeOrNone(AnyT.Value);
