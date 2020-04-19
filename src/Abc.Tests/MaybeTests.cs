@@ -6,6 +6,7 @@ namespace Abc
     using System.Diagnostics.Contracts;
     using System.IO;
     using System.Linq;
+    using System.Runtime.Serialization;
     using System.Runtime.Serialization.Formatters.Binary;
     using System.Threading.Tasks;
 
@@ -31,7 +32,8 @@ namespace Abc
     // - string
     // - Uri
     // - AnyT
-    // In general, we do not hesitate to write redundant tests.
+    // In general, we do not hesitate to test the obvious and to write redundant
+    // tests.
 
     public static partial class MaybeTests
     {
@@ -1429,6 +1431,27 @@ namespace Abc
             // The equality test only works because AnySerializable follows
             // structural equality rules.
             Assert.Some(any, some);
+        }
+
+        [Fact]
+        public static void Serialization_None_ForNotSerializable()
+        {
+            // Arrange
+            var formatter = new BinaryFormatter();
+            // Act & Assert
+            using var stream = new MemoryStream();
+            Assert.Throws<SerializationException>(() => formatter.Serialize(stream, Maybe<AnyT>.None));
+        }
+
+        [Fact]
+        public static void Serialization_Some_ForNotSerializable()
+        {
+            // Arrange
+            var some = Maybe.SomeOrNone(AnyT.Value);
+            var formatter = new BinaryFormatter();
+            // Act & Assert
+            using var stream = new MemoryStream();
+            Assert.Throws<SerializationException>(() => formatter.Serialize(stream, some));
         }
     }
 }
