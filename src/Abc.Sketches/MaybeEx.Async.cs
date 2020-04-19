@@ -14,8 +14,9 @@ namespace Abc
     // Async methods.
     public partial class MaybeEx
     {
-        // Not extension methods: we already have instance methods with the same
-        // names. Only for testing.
+        // Not an extension method: we already have an instance method with the
+        // exact same signature, yet they differ, the instance method uses eager
+        // validation, this one does not.
         [Pure]
         public static Task<Maybe<TResult>> BindAsync<T, TResult>(
             Maybe<T> maybe,
@@ -37,8 +38,9 @@ namespace Abc
                 : Maybe<TResult>.None;
         }
 
-        // Not extension methods: we already have instance methods with the same
-        // names. Only for testing.
+        // Not an extension method: we already have an instance method with the
+        // exact same signature, yet they differ, the instance method uses eager
+        // validation, this one does not.
         [Pure]
         public static Task<Maybe<TResult>> SelectAsync<T, TResult>(
             Maybe<T> maybe,
@@ -60,8 +62,9 @@ namespace Abc
                 : Maybe<TResult>.None;
         }
 
-        // Not extension methods: we already have instance methods with the same
-        // names. Only for testing.
+        // Not an extension method: we already have an instance method with the
+        // exact same signature, yet they differ, the instance method uses eager
+        // validation, this one does not.
         [Pure]
         public static Task<Maybe<T>> OrElseAsync<T>(
             Maybe<T> maybe,
