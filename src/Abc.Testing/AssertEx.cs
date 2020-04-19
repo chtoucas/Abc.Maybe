@@ -35,61 +35,57 @@ namespace Abc
         /// Verifies that the specified delegate throws an exception of type
         /// <see cref="ArgumentException"/> (and not a derived exception type).
         /// </summary>
-        public static void ThrowsArgexn(string argName, Action testCode)
-        {
-            ArgumentException ex = Throws<ArgumentException>(testCode);
-            Equal(argName, ex.ParamName);
-        }
+        public static void ThrowsArgexn(Action testCode) =>
+            Throws<ArgumentException>(null, testCode);
 
         /// <summary>
         /// Verifies that the specified delegate throws an exception of type
         /// <see cref="ArgumentException"/> (and not a derived exception type).
         /// </summary>
-        public static void ThrowsArgexn(string argName, Func<object> testCode)
-        {
-            ArgumentException ex = Throws<ArgumentException>(testCode);
-            Equal(argName, ex.ParamName);
-        }
+        public static void ThrowsArgexn(Func<object> testCode) =>
+            Throws<ArgumentException>(null, testCode);
+
+        /// <summary>
+        /// Verifies that the specified delegate throws an exception of type
+        /// <see cref="ArgumentException"/> (and not a derived exception type).
+        /// </summary>
+        public static void ThrowsArgexn(string argName, Action testCode) =>
+            Throws<ArgumentException>(argName, testCode);
+
+        /// <summary>
+        /// Verifies that the specified delegate throws an exception of type
+        /// <see cref="ArgumentException"/> (and not a derived exception type).
+        /// </summary>
+        public static void ThrowsArgexn(string argName, Func<object> testCode) =>
+            Throws<ArgumentException>(argName, testCode);
 
         /// <summary>
         /// Verifies that the specified delegate throws an exception of type
         /// <see cref="Anexn"/> (and not a derived exception type).
         /// </summary>
-        public static void ThrowsAnexn(string argName, Action testCode)
-        {
-            Anexn ex = Throws<Anexn>(testCode);
-            Equal(argName, ex.ParamName);
-        }
+        public static void ThrowsAnexn(string argName, Action testCode) =>
+            Throws<Anexn>(argName, testCode);
 
         /// <summary>
         /// Verifies that the specified delegate throws an exception of type
         /// <see cref="Anexn"/> (and not a derived exception type).
         /// </summary>
-        public static void ThrowsAnexn(string argName, Func<object> testCode)
-        {
-            Anexn ex = Throws<Anexn>(testCode);
-            Equal(argName, ex.ParamName);
-        }
+        public static void ThrowsAnexn(string argName, Func<object> testCode) =>
+            Throws<Anexn>(argName, testCode);
 
         /// <summary>
         /// Verifies that the specified delegate throws an exception of type
         /// <see cref="Aoorexn"/> (and not a derived exception type).
         /// </summary>
-        public static void ThrowsAoorexn(string argName, Action testCode)
-        {
-            Aoorexn ex = Throws<Aoorexn>(testCode);
-            Equal(argName, ex.ParamName);
-        }
+        public static void ThrowsAoorexn(string argName, Action testCode) =>
+            Throws<Aoorexn>(argName, testCode);
 
         /// <summary>
         /// Verifies that the specified delegate throws an exception of type
         /// <see cref="Aoorexn"/> (and not a derived exception type).
         /// </summary>
-        public static void ThrowsAoorexn(string argName, Func<object> testCode)
-        {
-            Aoorexn ex = Throws<Aoorexn>(testCode);
-            Equal(argName, ex.ParamName);
-        }
+        public static void ThrowsAoorexn(string argName, Func<object> testCode) =>
+            Throws<Aoorexn>(argName, testCode);
     }
 
     // Async.
@@ -119,8 +115,7 @@ namespace Abc
                 }
 #pragma warning restore CS4014
 
-                Anexn ex = await ThrowsAsync<Anexn>(testCode);
-                Equal(argName, ex.ParamName);
+                await ThrowsAsync<Anexn>(argName, testCode);
             }
         }
     }

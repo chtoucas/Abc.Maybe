@@ -32,7 +32,7 @@ namespace Abc
         //    ordering.
         // Choice 3 is for sorting.
         [Fact]
-        public static void Comparisons()
+        public static void Nullable_Comparisons()
         {
             int? one = 1;
             int? nil = null;
@@ -65,17 +65,40 @@ namespace Abc
             Assert.Equal(-1, cmp.Compare(nil, one));   // "nil < one"
             Assert.Equal(0, cmp.Compare(nil, nil));    // "nil >= nil"
         }
+
+        [Fact]
+        public static void Nullable_Comparisons_ForNotComparable()
+        {
+            MyNotComparableStruct_? x = new MyNotComparableStruct_ { Value = "XXX" };
+            MyNotComparableStruct_? y = new MyNotComparableStruct_ { Value = "YYY" };
+            MyNotComparableStruct_? nil = null;
+            var cmp = Comparer<MyNotComparableStruct_?>.Default;
+
+            Assert.Equal(1, cmp.Compare(x, nil));
+            Assert.Equal(-1, cmp.Compare(nil, x));
+            Assert.Equal(0, cmp.Compare(nil, nil));
+
+            Assert.ThrowsArgexn(() => cmp.Compare(x, x));
+            Assert.ThrowsArgexn(() => cmp.Compare(x, y));
+        }
+
+        private struct MyNotComparableStruct_
+        {
+            public string Value;
+        }
     }
 
     // Order comparison.
     //
     // Expected algebraic properties.
-    //   1) Reflexivity
-    //   2) Anti-symmetry
-    //   3) Transitivity
+    //   1) Reflexivity     x <= x
+    //   2) Anti-symmetry   (x <= y and y <= x) => x = y
+    //   3) Transitivity    (x <= y and y <= z) => x <= z
+    //
+    // Beware, <= does NOT define a proper ordering when none is included.
     public partial class MaybeTests
     {
-        #region Comparisons ops
+        #region Comparison ops
 
         // Comparison with none always returns "false".
 
@@ -84,51 +107,82 @@ namespace Abc
         {
             // Arrange
             Maybe<int> none = Ø;
-
             // Act & Assert
-            Assert.False(Ø < none);
-            Assert.False(none > Ø);
-
-            Assert.False(Ø > none);
             Assert.False(none < Ø);
-
-            Assert.False(Ø <= none);
-            Assert.False(none >= Ø);
-
-            Assert.False(Ø >= none);
             Assert.False(none <= Ø);
+            Assert.False(none > Ø);
+            Assert.False(none >= Ø);
+        }
+
+        [Fact]
+        public static void Comparison_None_None_ForNotComparable()
+        {
+            // Arrange
+            var none = AnyT.None;
+            // Act & Assert
+            Assert.False(none < AnyT.None);
+            Assert.False(none <= AnyT.None);
+            Assert.False(none > AnyT.None);
+            Assert.False(none >= AnyT.None);
         }
 
         [Fact]
         public static void Comparison_None_Some()
         {
-            Assert.False(One < Ø);
-            Assert.False(Ø > One);
-
-            Assert.False(One > Ø);
             Assert.False(Ø < One);
-
-            Assert.False(One <= Ø);
+            Assert.False(Ø <= One);
+            Assert.False(Ø > One);
             Assert.False(Ø >= One);
 
+            Assert.False(One < Ø);
+            Assert.False(One <= Ø);
+            Assert.False(One > Ø);
             Assert.False(One >= Ø);
-            Assert.False(Ø <= One);
+        }
+
+        [Fact]
+        public static void Comparison_None_Some_ForNotComparable()
+        {
+            // Arrange
+            var some = AnyT.Some;
+
+            // Act & Assert
+            Assert.False(AnyT.None < some);
+            Assert.False(AnyT.None <= some);
+            Assert.False(AnyT.None > some);
+            Assert.False(AnyT.None >= some);
+
+            Assert.False(some < AnyT.None);
+            Assert.False(some <= AnyT.None);
+            Assert.False(some > AnyT.None);
+            Assert.False(some >= AnyT.None);
         }
 
         [Fact]
         public static void Comparison_Some_Some()
         {
             Assert.True(One < Two);
-            Assert.True(Two > One);
-
-            Assert.False(One > Two);
-            Assert.False(Two < One);
-
             Assert.True(One <= Two);
-            Assert.True(Two >= One);
-
+            Assert.False(One > Two);
             Assert.False(One >= Two);
+
+            Assert.False(Two < One);
             Assert.False(Two <= One);
+            Assert.True(Two > One);
+            Assert.True(Two >= One);
+        }
+
+        [Fact]
+        public static void Comparison_Some_Some_ForNotComparable()
+        {
+            // Arrange
+            var x = AnyT.Some;
+            var y = AnyT.Some;
+            // Act & Assert
+            Assert.ThrowsArgexn(() => x < y);
+            Assert.ThrowsArgexn(() => x <= y);
+            Assert.ThrowsArgexn(() => x > y);
+            Assert.ThrowsArgexn(() => x >= y);
         }
 
         [Fact]
@@ -136,13 +190,24 @@ namespace Abc
         {
             // Arrange
             Maybe<int> one = One;
-
             // Act & Assert
             Assert.False(One < one);
-            Assert.False(One > one);
-
             Assert.True(One <= one);
+            Assert.False(One > one);
             Assert.True(One >= one);
+        }
+
+        [Fact(Skip = "Not comparable")]
+        public static void Comparison_Some_Some_Identical_ForNotComparable()
+        {
+            // Arrange
+            var x = AnyT.Some;
+            var copy = x;
+            // Act & Assert
+            Assert.ThrowsArgexn(() => x < copy);
+            Assert.ThrowsArgexn(() => x <= copy);
+            Assert.ThrowsArgexn(() => x > copy);
+            Assert.ThrowsArgexn(() => x >= copy);
         }
 
         #endregion
@@ -150,13 +215,23 @@ namespace Abc
         #region CompareTo()
 
         [Fact]
-        public static void CompareTo_None()
-        {
+        public static void CompareTo_None_WithNone() =>
             Assert.Equal(0, Ø.CompareTo(Ø));
 
+        [Fact]
+        public static void CompareTo_None_WithNone_ForNotComparable() =>
+            Assert.Equal(0, AnyT.None.CompareTo(AnyT.None));
+
+        [Fact]
+        public static void CompareTo_None_WithSome()
+        {
             Assert.Equal(-1, Ø.CompareTo(One));
             Assert.Equal(-1, Ø.CompareTo(Two));
         }
+
+        [Fact]
+        public static void CompareTo_None_WithSome_ForNotComparable() =>
+            Assert.Equal(-1, AnyT.None.CompareTo(AnyT.Some));
 
         [Fact]
         public static void CompareTo_Some_WithNone()
@@ -166,12 +241,32 @@ namespace Abc
         }
 
         [Fact]
-        public static void CompareTo_Some_WithSome()
+        public static void CompareTo_Some_WithNone_ForNotComparable() =>
+            Assert.Equal(1, AnyT.Some.CompareTo(AnyT.None));
+
+        [Fact]
+        public static void CompareTo_Some_WithSome_Identical() =>
+            Assert.Equal(0, One.CompareTo(One));
+
+        [Fact(Skip = "Not comparable")]
+        public static void CompareTo_Some_WithSome_Identical_ForNotComparable()
+        {
+            // Arrange
+            var x = AnyT.Some;
+            // Act & Assert
+            Assert.ThrowsArgexn(() => x.CompareTo(x));
+        }
+
+        [Fact]
+        public static void CompareTo_Some_WithSome_Different()
         {
             Assert.Equal(1, Two.CompareTo(One));
-            Assert.Equal(0, One.CompareTo(One));
             Assert.Equal(-1, One.CompareTo(Two));
         }
+
+        [Fact]
+        public static void CompareTo_Some_WithSome_Different_ForNotComparable() =>
+            Assert.ThrowsArgexn(() => AnyT.Some.CompareTo(AnyT.Some));
 
         #endregion
 
@@ -247,6 +342,16 @@ namespace Abc
         }
 
         #endregion
+
+        [Fact]
+        public static void Comparable_ForNotComparable()
+        {
+            // Arrange
+            IComparable x = AnyT.Some;
+            IComparable y = AnyT.Some;
+            // Act & Assert
+            Assert.ThrowsArgexn(() => x.CompareTo(y));
+        }
     }
 
     // Equality.

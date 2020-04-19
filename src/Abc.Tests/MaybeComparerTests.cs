@@ -85,11 +85,11 @@ namespace Abc
             object none = Maybe<int>.None;
             object one = Maybe.Some(1);
             // Act & Assert
-            Assert.Throws<ArgumentException>(() => cmp.Compare(new object(), new object()));
-            Assert.Throws<ArgumentException>(() => cmp.Compare(new object(), none));
-            Assert.Throws<ArgumentException>(() => cmp.Compare(new object(), one));
-            Assert.Throws<ArgumentException>(() => cmp.Compare(none, new object()));
-            Assert.Throws<ArgumentException>(() => cmp.Compare(one, new object()));
+            Assert.ThrowsArgexn(() => cmp.Compare(new object(), new object()));
+            Assert.ThrowsArgexn(() => cmp.Compare(new object(), none));
+            Assert.ThrowsArgexn(() => cmp.Compare(new object(), one));
+            Assert.ThrowsArgexn(() => cmp.Compare(none, new object()));
+            Assert.ThrowsArgexn(() => cmp.Compare(one, new object()));
         }
 
         [Fact]
@@ -197,11 +197,11 @@ namespace Abc
             object none = Maybe<int>.None;
             object some = Maybe.Some(1);
             // Act & Assert
-            Assert.Throws<ArgumentException>(() => cmp.Equals(new object(), new object()));
-            Assert.Throws<ArgumentException>(() => cmp.Equals(new object(), none));
-            Assert.Throws<ArgumentException>(() => cmp.Equals(new object(), some));
-            Assert.Throws<ArgumentException>(() => cmp.Equals(none, new object()));
-            Assert.Throws<ArgumentException>(() => cmp.Equals(some, new object()));
+            Assert.ThrowsArgexn(() => cmp.Equals(new object(), new object()));
+            Assert.ThrowsArgexn(() => cmp.Equals(new object(), none));
+            Assert.ThrowsArgexn(() => cmp.Equals(new object(), some));
+            Assert.ThrowsArgexn(() => cmp.Equals(none, new object()));
+            Assert.ThrowsArgexn(() => cmp.Equals(some, new object()));
         }
 
         [Fact]
@@ -277,7 +277,7 @@ namespace Abc
             // Arrange
             IEqualityComparer cmp = MaybeComparer<int>.Default;
             // Act & Assert
-            Assert.Throws<ArgumentException>(() => cmp.GetHashCode(new object()));
+            Assert.ThrowsArgexn(() => cmp.GetHashCode(new object()));
         }
 
         [Fact]

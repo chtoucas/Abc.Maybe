@@ -4,8 +4,7 @@ vNEXT
 -----
 
 Changed
-- Signature of MaybeComparer<T>.GetHashCode().
-  When obj is null, the method now throws.
+- MaybeComparer<T>.GetHashCode() now throws when "obj" is null.
 - Removed the notnull constraint on the result type of Switch().
 - Apply attribute EditorBrowsable to Maybe<T>.GetEnumerator() and
   Maybe<T>.TryGetValue().

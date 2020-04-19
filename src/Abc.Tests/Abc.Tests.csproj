@@ -5,12 +5,13 @@
     <IsPackable>false</IsPackable>
 
     <!--
-      CA1034  Nested types should not be visible
-      CA1707  Identifiers should not contain underscores
-      CA2007  Consider calling ConfigureAwait on the awaited task
-      IDE0002 Simplify Member Access
+      CA1034    Nested types should not be visible
+      CA1707    Identifiers should not contain underscores
+      CA2007    Consider calling ConfigureAwait on the awaited task
+      IDE0002   Simplify Member Access
+      xUnit1004 Test methods should not be skipped
     -->
-    <NoWarn>$(NoWarn);CA1034;CA1707;CA2007;IDE0002</NoWarn>
+    <NoWarn>$(NoWarn);CA1034;CA1707;CA2007;IDE0002;xUnit1004</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

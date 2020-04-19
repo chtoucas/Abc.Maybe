@@ -523,6 +523,9 @@ namespace Abc
     // The comparison operators behave like the ones for nullable value types:
     // if one of the operand is empty, return false, otherwise compare the
     // values.
+    // FIXME: comparisons when T is not comparable.
+    // - x.CompareTo(x) should throw.
+    // - x < x & co should throw.
     public partial struct Maybe<T>
     {
         /// <summary>
