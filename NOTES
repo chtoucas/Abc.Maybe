@@ -172,7 +172,7 @@ Testing.
 - Test what's not supposed to work too, eg misuses.
 - Tests should provide samples.
 Naming tests and grouping them are here to help us to find the relevant test
-cases and, more importantly, the missing ones too. The only real rule is that
+cases and, more importantly, spot the missing ones. The only real rule is that
 what does a test should be easily understandable from the name.
 Anyway, in general, we use the following pattern for unit tests:
 - Property or method name, followed by
