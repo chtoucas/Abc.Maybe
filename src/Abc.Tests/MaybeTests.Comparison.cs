@@ -245,11 +245,10 @@ namespace Abc
             Assert.Equal(1, AnyT.Some.CompareTo(AnyT.None));
 
         [Fact]
-        public static void CompareTo_Some_WithSome_Identical() =>
-            Assert.Equal(0, One.CompareTo(One));
+        public static void CompareTo_Some_WithSome_AndIdentical() => Assert.Equal(0, One.CompareTo(One));
 
         [Fact(Skip = "Not comparable")]
-        public static void CompareTo_Some_WithSome_Identical_ForNotComparable()
+        public static void CompareTo_Some_WithSome_AndIdentical_ForNotComparable()
         {
             // Arrange
             var x = AnyT.Some;
@@ -258,14 +257,14 @@ namespace Abc
         }
 
         [Fact]
-        public static void CompareTo_Some_WithSome_Different()
+        public static void CompareTo_Some_WithSome_AndDifferent()
         {
             Assert.Equal(1, Two.CompareTo(One));
             Assert.Equal(-1, One.CompareTo(Two));
         }
 
         [Fact]
-        public static void CompareTo_Some_WithSome_Different_ForNotComparable() =>
+        public static void CompareTo_Some_WithSome_AndDifferent_ForNotComparable() =>
             Assert.ThrowsArgexn(() => AnyT.Some.CompareTo(AnyT.Some));
 
         #endregion

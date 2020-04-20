@@ -167,12 +167,20 @@ Changes to the default editor config (does not affect the compilation).
 - IDE0060 - dotnet_code_quality_unused_parameters, (Remove unused parameter) covered by CA1801.
 https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-language-conventions?view=vs-2019
 
-Naming tests.
+Testing.
+- Do not hesitate to test the obvious and to write redundant tests.
+- Test what's not supposed to work too, eg misuses.
+- Tests should provide samples.
+Naming tests and grouping them are here to help us to find the relevant test
+cases and, more importantly, the missing ones too. The only real rule is that
+what does a test should be easily understandable from the name.
+Anyway, in general, we use the following pattern for unit tests:
 - Property or method name, followed by
-- Instance type, followed by
-- "With" parameters separated by "And", followed by
-- "For" generic parameters separated by "And", followed by
-- "When" parameters condition separated by "And"
+- Instance, followed by
+- Expectation, followed by
+- "With" for parameters, followed by
+- "For" for generic parameters, followed by
+- "When" for specific conditions
 
 Local tools.
 - qtest.cmd, quickly run the test suite.

@@ -140,40 +140,29 @@ namespace Abc
     // Helpers for Maybe<Unit>.
     public partial class MaybeTests
     {
-        [Fact]
-        public static void Unit() => Assert.Some(Abc.Unit.Default, Maybe.Unit);
+        [Fact] public static void Unit_IsSome() => Assert.Some(Unit.Default, Maybe.Unit);
 
-        [Fact]
-        public static void Zero() => Assert.None(Maybe.Zero);
+        [Fact] public static void Zero_IsNone() => Assert.None(Maybe.Zero);
 
-        [Fact]
-        public static void Guard()
-        {
-            Assert.Equal(Maybe.Zero, Maybe.Guard(false));
-            Assert.Equal(Maybe.Unit, Maybe.Guard(true));
-        }
+        [Fact] public static void Guard_ReturnsZero_WithFalse() => Assert.Equal(Maybe.Zero, Maybe.Guard(false));
+
+        [Fact] public static void Guard_ReturnsUnit_WithTrue() => Assert.Equal(Maybe.Unit, Maybe.Guard(true));
     }
 
     // Helpers for Maybe<bool>.
     public partial class MaybeTests
     {
-        [Fact]
-        public static void True() => Assert.Some(Maybe.True);
+        [Fact] public static void True_IsSome() => Assert.Some(true, Maybe.True);
 
-        [Fact]
-        public static void False() => Assert.Some(Maybe.False);
+        [Fact] public static void False_IsSome() => Assert.Some(false, Maybe.False);
 
-        [Fact]
-        public static void Unknown() => Assert.None(Maybe.Unknown);
+        [Fact] public static void Unknown_IsNone() => Assert.None(Maybe.Unknown);
 
-        [Fact]
-        public static void Negate_True() => Assert.Some(false, Maybe.True.Negate());
+        [Fact] public static void Negate_True() => Assert.Some(false, Maybe.True.Negate());
 
-        [Fact]
-        public static void Negate_False() => Assert.Some(true, Maybe.False.Negate());
+        [Fact] public static void Negate_False() => Assert.Some(true, Maybe.False.Negate());
 
-        [Fact]
-        public static void Negate_Unknown() => Assert.Unknown(Maybe.Unknown.Negate());
+        [Fact] public static void Negate_Unknown() => Assert.Unknown(Maybe.Unknown.Negate());
 
         [Fact]
         public static void Or()
