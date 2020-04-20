@@ -479,7 +479,7 @@ namespace Abc
         // NB: explicit cast to object or object? is meaningless.
 
         [Fact]
-        public static void Explicit_None_Throws_ForValueT()
+        public static void OpExplicit_None_Throws_ForValueT()
         {
             Assert.Throws<InvalidCastException>(() => (Unit)Maybe<Unit>.None);
             Assert.Throws<InvalidCastException>(() => (int)Maybe<int>.None);
@@ -487,7 +487,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Explicit_None_Throws_ForValueT_AndNullable()
+        public static void OpExplicit_None_Throws_ForValueT_AndNullable()
         {
             Assert.Throws<InvalidCastException>(() => (Unit?)Maybe<Unit?>.None);
             Assert.Throws<InvalidCastException>(() => (int?)Maybe<int?>.None);
@@ -495,7 +495,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Explicit_None_Throws_ForReferenceT()
+        public static void OpExplicit_None_Throws_ForReferenceT()
         {
             Assert.Throws<InvalidCastException>(() => (string)Maybe<string>.None);
             Assert.Throws<InvalidCastException>(() => (Uri)Maybe<Uri>.None);
@@ -503,7 +503,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Explicit_None_Throws_ForReferenceT_AndNullable()
+        public static void OpExplicit_None_Throws_ForReferenceT_AndNullable()
         {
             Assert.Throws<InvalidCastException>(() => (string?)Maybe<string?>.None);
             Assert.Throws<InvalidCastException>(() => (Uri?)Maybe<Uri?>.None);
@@ -511,7 +511,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Explicit_Some_ForValueT()
+        public static void OpExplicit_Some_ForValueT()
         {
             Assert.Equal(Unit.Default, (Unit)Maybe.Some(Unit.Default));
             Assert.Equal(314, (int)Maybe.Some(314));
@@ -519,7 +519,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Explicit_Some_ForValueT_AndNullable()
+        public static void OpExplicit_Some_ForValueT_AndNullable()
         {
             Assert.Equal(Unit.Default, (Unit?)Maybe.Of((Unit?)Unit.Default));
             Assert.Equal(314, (int?)Maybe.Of((int?)314));
@@ -527,7 +527,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Explicit_Some_ForReferenceT()
+        public static void OpExplicit_Some_ForReferenceT()
         {
             Assert.Equal(MyText, (string)Maybe.SomeOrNone(MyText));
             Assert.Equal(MyUri, (Uri)Maybe.SomeOrNone(MyUri));
@@ -537,7 +537,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Explicit_Some_ForReferenceT_AndNullable()
+        public static void OpExplicit_Some_ForReferenceT_AndNullable()
         {
             Assert.Equal(MyText, (string?)Maybe.Of((string?)MyText));
             Assert.Equal(MyUri, (Uri?)Maybe.Of((Uri?)MyUri));
@@ -552,7 +552,7 @@ namespace Abc
         //
 
         [Fact]
-        public static void Explicit_Some_ImplicitNumericConversion()
+        public static void OpExplicit_Some_ImplicitNumericConversion()
         {
             // short -> int
             Assert.Equal(314, (int)Maybe.Some((short)314));
@@ -564,7 +564,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Explicit_Some_ExplicitNumericConversion()
+        public static void OpExplicit_Some_ExplicitNumericConversion()
         {
             // int -> short
             Assert.Equal(413, (short)Maybe.Some(413));
@@ -576,7 +576,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Explicit_Some_ExplicitNumericConversion_Overflows()
+        public static void OpExplicit_Some_ExplicitNumericConversion_Overflows()
         {
             Assert.Throws<OverflowException>(() => (short)Maybe.Some(Int32.MaxValue));
             Assert.Throws<OverflowException>(() => (int)Maybe.Some(Int64.MaxValue));
@@ -587,7 +587,7 @@ namespace Abc
         //
 
         [Fact]
-        public static void Explicit_Some_Throws_WhenDowncasting_AndNotUpcasted()
+        public static void OpExplicit_Some_Throws_WhenDowncasting_AndNotUpcasted()
         {
             // Arrange
             var obj = new MyBaseClass_ { };
@@ -597,7 +597,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Explicit_Some_WhenDowncasting_AndUpcasted()
+        public static void OpExplicit_Some_WhenDowncasting_AndUpcasted()
         {
             // Arrange
             MyBaseClass_ obj = new MyDerivedClass_ { };    // upcast
@@ -607,7 +607,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Explicit_Some_WhenUpcasting()
+        public static void OpExplicit_Some_WhenUpcasting()
         {
             // Arrange
             var obj = new MyDerivedClass_ { };
