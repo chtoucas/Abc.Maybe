@@ -1,627 +1,652 @@
-Série de tests pour I:\github\Abc.Maybe\src\Abc.Tests\bin\Release\netcoreapp3.1\Abc.Tests.dll(.NETCoreApp,Version=v3.1)
-Les tests suivants sont disponibles :
-    Abc.AssertTests.EagerValidationTest
-    Abc.AssertTests.EagerValidationTestAsync
-    Abc.AssertTests.AsyncValidationTest_NotAwaited_DoesNotThrow
-    Abc.AssertTests.AsyncValidationTest
-    Abc.MaybeComparerTests.Default_Repeated
-    Abc.MaybeComparerTests.Default_Equals_OK
-    Abc.MaybeComparerTests.Default_Equals_KO
-    Abc.MaybeComparerTests.Default_GetHashCode
-    Abc.MaybeComparerTests.Compare_ForValueType
-    Abc.MaybeComparerTests.Compare_InvalidType_ForObjects
-    Abc.MaybeComparerTests.Compare_ForObjects
-    Abc.MaybeComparerTests.Equals_ForValueType
-    Abc.MaybeComparerTests.Equals_ForReferenceType
-    Abc.MaybeComparerTests.Equals_ForReferenceType2
-    Abc.MaybeComparerTests.Equals_WithInvalidType_ForObjects
-    Abc.MaybeComparerTests.Equals_ForObjects
-    Abc.MaybeComparerTests.GetHashCode_None
-    Abc.MaybeComparerTests.GetHashCode_Some
-    Abc.MaybeComparerTests.GetHashCode_WithNullObj_ForObjects
-    Abc.MaybeComparerTests.GetHashCode_WithInvalidType_ForObjects
-    Abc.MaybeComparerTests.GetHashCode_ForObjects
-    Abc.MaybeComparerTests.Structural_Repeated
-    Abc.MaybeComparerTests.Structural_Equals_OK
-    Abc.MaybeComparerTests.Structural_Equals_KO
-    Abc.MaybeComparerTests.Structural_GetHashCode
-    Abc.MaybeComparerTests.Compare_Structural_ForValueType
-    Abc.MaybeComparerTests.Equals_Structural_ForValueType
-    Abc.MaybeComparerTests.Equals_Structural_ForReferenceType
-    Abc.MaybeComparerTests.GetHashCode_Structural_None
-    Abc.MaybeComparerTests.GetHashCode_Structural_Some
-    Abc.MaybeTests.Join_None_WithNullOuterKeySelector
-    Abc.MaybeTests.Join_None_WithNullOuterKeySelector_WithComparer
-    Abc.MaybeTests.Join_Some_WithNullOuterKeySelector
-    Abc.MaybeTests.Join_Some_WithNullOuterKeySelector_WithComparer
-    Abc.MaybeTests.Join_None_WithNullInnerKeySelector
-    Abc.MaybeTests.Join_None_WithNullInnerKeySelector_WithComparer
-    Abc.MaybeTests.Join_Some_WithNullInnerKeySelector
-    Abc.MaybeTests.Join_Some_WithNullInnerKeySelector_WithComparer
-    Abc.MaybeTests.Join_None_WithNullResultSelector
-    Abc.MaybeTests.Join_None_WithNullResultSelector_WithComparer
-    Abc.MaybeTests.Join_Some_WithNullResultSelector
-    Abc.MaybeTests.Join_Some_WithNullResultSelector_WithComparer
-    Abc.MaybeTests.Join_None
-    Abc.MaybeTests.Join_Some_WithNone
-    Abc.MaybeTests.Join_Some_WithSome_Unmatched
-    Abc.MaybeTests.Join_Some_WithSome_Matched
-    Abc.MaybeTests.Join_WithNullComparer
-    Abc.MaybeTests.Join_WithComparer
-    Abc.MaybeTests.Join_Some_WithSome_ComplexType_Unmatched
-    Abc.MaybeTests.Join_Some_WithSome_ComplexType_Matched
-    Abc.MaybeTests.GroupJoin_None_WithNullOuterKeySelector
-    Abc.MaybeTests.GroupJoin_None_WithNullOuterKeySelector_WithComparer
-    Abc.MaybeTests.GroupJoin_Some_WithNullOuterKeySelector
-    Abc.MaybeTests.GroupJoin_Some_WithNullOuterKeySelector_WithComparer
-    Abc.MaybeTests.GroupJoin_None_WithNullInnerKeySelector
-    Abc.MaybeTests.GroupJoin_None_WithNullInnerKeySelector_WithComparer
-    Abc.MaybeTests.GroupJoin_Some_WithNullInnerKeySelector
-    Abc.MaybeTests.GroupJoin_Some_WithNullInnerKeySelector_WithComparer
-    Abc.MaybeTests.GroupJoin_None_WithNullResultSelector
-    Abc.MaybeTests.GroupJoin_None_WithNullResultSelector_WithComparer
-    Abc.MaybeTests.GroupJoin_Some_WithNullResultSelector
-    Abc.MaybeTests.GroupJoin_Some_WithNullResultSelector_WithComparer
-    Abc.MaybeTests.GroupJoin_WithNullComparer
-    Abc.MaybeTests.GroupJoin_WithComparer
-    Abc.MaybeTests.GroupJoin_Some_WithSome_ComplexType_Unmatched
-    Abc.MaybeTests.GroupJoin_Some_WithSome_ComplexType_Matched
-    Abc.MaybeTests.Query_PythagoreanTriple_KO
-    Abc.MaybeTests.Query_PythagoreanTriple_OK
-    Abc.MaybeTests.Functor_FirstLaw
-    Abc.MaybeTests.Functor_SecondLaw
-    Abc.MaybeTests.OrElse_LeftIdentity
-    Abc.MaybeTests.OrElse_RightIdentity
-    Abc.MaybeTests.OrElse_Associativity
-    Abc.MaybeTests.Bind_LeftZero
-    Abc.MaybeTests.AndThen_Associativity
-    Abc.MaybeTests.Lift2_WithSome
-    Abc.MaybeTests.Lift3_WithNullObject
-    Abc.MaybeTests.Lift3_WithNone
-    Abc.MaybeTests.Lift3_WithSome
-    Abc.MaybeTests.Lift4_WithNullObject
-    Abc.MaybeTests.Lift4_WithNone
-    Abc.MaybeTests.Lift4_WithSome
-    Abc.MaybeTests.Lift5_WithNullObject
-    Abc.MaybeTests.Lift5_WithNone
-    Abc.MaybeTests.Lift5_WithSome
-    Abc.MaybeTests.Invoke_None
-    Abc.MaybeTests.Invoke_Some
-    Abc.MaybeTests.Invoke2_None
-    Abc.MaybeTests.Invoke2_Some
-    Abc.MaybeTests.Invoke3_None
-    Abc.MaybeTests.Invoke3_Some
-    Abc.MaybeTests.Invoke4_None
-    Abc.MaybeTests.Invoke4_Some
-    Abc.MaybeTests.Invoke5_None
-    Abc.MaybeTests.Invoke5_Some
-    Abc.MaybeTests.Apply_None
-    Abc.MaybeTests.Apply_Some_WithNone
-    Abc.MaybeTests.Apply_Some_WithSome
-    Abc.MaybeTests.Apply2_None
-    Abc.MaybeTests.Apply2_Some_WithNone
-    Abc.MaybeTests.Apply2_Some_WithSome
-    Abc.MaybeTests.Apply3_None
-    Abc.MaybeTests.Apply3_Some_WithNone
-    Abc.MaybeTests.Apply3_Some_WithSome
-    Abc.MaybeTests.Apply4_None
-    Abc.MaybeTests.Apply4_Some_WithNone
-    Abc.MaybeTests.Apply4_Some_WithSome
-    Abc.MaybeTests.Apply5_None
-    Abc.MaybeTests.Apply5_Some_WithNone
-    Abc.MaybeTests.Apply5_Some_WithSome
-    Abc.MaybeTests.Flatten_None
-    Abc.MaybeTests.Flatten_SomeOfNone
-    Abc.MaybeTests.Flatten_SomeOfSome
-    Abc.MaybeTests.Squash_None
-    Abc.MaybeTests.Squash_Square_None
-    Abc.MaybeTests.Squash_Some_ForValueType
-    Abc.MaybeTests.Squash_Square_Some_ForValueType
-    Abc.MaybeTests.Squash_Some_ForReferenceType
-    Abc.MaybeTests.Squash_Square_Some_ForReferenceType
-    Abc.MaybeTests.ToNullable_None
-    Abc.MaybeTests.ToNullable_Some
-    Abc.MaybeTests.Unit
-    Abc.MaybeTests.Zero
-    Abc.MaybeTests.Guard
-    Abc.MaybeTests.True
-    Abc.MaybeTests.False
-    Abc.MaybeTests.Unknown
-    Abc.MaybeTests.Negate_True
-    Abc.MaybeTests.Negate_False
-    Abc.MaybeTests.Negate_Unknown
-    Abc.MaybeTests.Or
-    Abc.MaybeTests.And
-    Abc.MaybeTests.Use_WithNullBinder
-    Abc.MaybeTests.Use_WithNullSelector
-    Abc.MaybeTests.Use_Bind
-    Abc.MaybeTests.Use_Select
-    Abc.MaybeTests.ZipWith_None_WithNullZipper
-    Abc.MaybeTests.ZipWith_Some_WithNullZipper
-    Abc.MaybeTests.ZipWith
-    Abc.MaybeTests.Skip_None
-    Abc.MaybeTests.Skip_Some
-    Abc.MaybeTests.ReplaceWith
-    Abc.MaybeTests.Select_None_WithNullSelector
-    Abc.MaybeTests.Select_Some_WithNullSelector
-    Abc.MaybeTests.Select_None
-    Abc.MaybeTests.Select_SomeInt32
-    Abc.MaybeTests.Select_SomeInt64
-    Abc.MaybeTests.Select_SomeUri
-    Abc.MaybeTests.Where_None_WithNullPredicate
-    Abc.MaybeTests.Where_Some_WithNullPredicate
-    Abc.MaybeTests.Where_None
-    Abc.MaybeTests.Where_Some
-    Abc.MaybeTests.SelectMany_None_WithNullSelector
-    Abc.MaybeTests.SelectMany_Some_WithNullSelector
-    Abc.MaybeTests.SelectMany_None_WithNullResultSelector
-    Abc.MaybeTests.SelectMany_Some_WithNullResultSelector
-    Abc.MaybeTests.SelectMany_None_WithNone
-    Abc.MaybeTests.SelectMany_None_WithSome
-    Abc.MaybeTests.SelectMany_Some_WithNone
-    Abc.MaybeTests.SelectMany_Some_WithSome
-    Abc.MaybeTests.Bind_Some_ReturnsSome
-    Abc.MaybeTests.Bind_SomeInt32
-    Abc.MaybeTests.Bind_SomeInt64
-    Abc.MaybeTests.Bind_SomeUri
-    Abc.MaybeTests.Switch_None_WithNullCaseNone_Throws
-    Abc.MaybeTests.Switch_None_WithNullCaseSome_DoesNotThrow
-    Abc.MaybeTests.Switch_Some_WithNullCaseSome_Throws
-    Abc.MaybeTests.Switch_Some_WithNullCaseNone_DoesNotThrow
-    Abc.MaybeTests.Switch_None
-    Abc.MaybeTests.Switch_None_WithConstCaseNone
-    Abc.MaybeTests.Switch_Some
-    Abc.MaybeTests.Switch_Some_WithConstCaseNone
-    Abc.MaybeTests.TryGetValue_None
-    Abc.MaybeTests.TryGetValue_Some
-    Abc.MaybeTests.ValueOrDefault_None
-    Abc.MaybeTests.ValueOrDefault_Some
-    Abc.MaybeTests.ValueOrElse_None_WithNullFactory_Throws
-    Abc.MaybeTests.ValueOrElse_Some_WithNullFactory_DoesNotThrow
-    Abc.MaybeTests.ValueOrElse_None
-    Abc.MaybeTests.ValueOrElse_None_WithFactory
-    Abc.MaybeTests.ValueOrElse_Some
-    Abc.MaybeTests.ValueOrElse_Some_WithFactory
-    Abc.MaybeTests.ValueOrThrow_WithNullException
-    Abc.MaybeTests.ValueOrThrow_None
-    Abc.MaybeTests.ValueOrThrow_None_WithCustomException
-    Abc.MaybeTests.ValueOrThrow_Some
-    Abc.MaybeTests.ValueOrThrow_Some_WithCustomException
-    Abc.MaybeTests.Do_None_WithNullOnNone_Throws
-    Abc.MaybeTests.Do_None_WithNullOnSome_DoesNotThrow
-    Abc.MaybeTests.Do_Some_WithNullOnSome_Throws
-    Abc.MaybeTests.Do_Some_WithNullOnNone_DoesNotThrow
-    Abc.MaybeTests.Do_None
-    Abc.MaybeTests.Do_Some
-    Abc.MaybeTests.OnSome_None_WithNullAction_DoesNotThrow
-    Abc.MaybeTests.OnSome_Some_WithNullAction_Throws
-    Abc.MaybeTests.OnSome_None
-    Abc.MaybeTests.OnSome_Some
-    Abc.MaybeTests.When_None_WithFalse
-    Abc.MaybeTests.When_Some_WithFalse
-    Abc.MaybeTests.When_None_WithTrue
-    Abc.MaybeTests.When_Some_WithTrue
-    Abc.MaybeTests.ToEnumerable
-    Abc.MaybeTests.GetEnumerator_None_ForEach
-    Abc.MaybeTests.GetEnumerator_None_ExplicitIterator
-    Abc.MaybeTests.GetEnumerator_Some_ForEach
-    Abc.MaybeTests.GetEnumerator_Some_ExplicitIterator
-    Abc.MaybeTests.Yield_None
-    Abc.MaybeTests.Yield_None_WithCount
-    Abc.MaybeTests.Yield_Some
-    Abc.MaybeTests.Yield_Some_WithCount
-    Abc.MaybeTests.Contains_None_WithNullComparer
-    Abc.MaybeTests.Contains_Some_WithNullComparer
-    Abc.MaybeTests.Contains_None_Int32
-    Abc.MaybeTests.Contains_None_Text
-    Abc.MaybeTests.Contains_SomeInt32
-    Abc.MaybeTests.Contains_SomeText
-    Abc.MaybeTests.Contains_SomeText_WithComparer
-    Abc.MaybeTests.Contains_SomeText_Anagram
-    Abc.MaybeTests.IsSerializable
-    Abc.MaybeTests.Serialization_None_ForValueType
-    Abc.MaybeTests.Serialization_None_ForReferenceType
-    Abc.MaybeTests.Serialization_Some_ForValueType
-    Abc.MaybeTests.Serialization_Some_ForReferenceType
-    Abc.MaybeTests.EmptyEnumerable
-    Abc.MaybeTests.CollectAny_WithNullSource
-    Abc.MaybeTests.CollectAny_IsDeferred
-    Abc.MaybeTests.CollectAny_WithEmpty
-    Abc.MaybeTests.CollectAny_None2None
-    Abc.MaybeTests.CollectAny_None2Some
-    Abc.MaybeTests.CollectAny_Some2None
-    Abc.MaybeTests.CollectAny_Some2Some
-    Abc.MaybeTests.CollectAny_OnlySome
-    Abc.MaybeTests.CollectAny_OnlyNone
-    Abc.MaybeTests.Invoke_WithNullBinder
-    Abc.MaybeTests.Invoke_WithNone
-    Abc.MaybeTests.Invoke_WithSome
-    Abc.MaybeTests.Compose_WithNullObject
-    Abc.MaybeTests.Compose
-    Abc.MaybeTests.ComposeBack_WithNullOther
-    Abc.MaybeTests.ComposeBack
-    Abc.MaybeTests.Lift_WithNullSelector
-    Abc.MaybeTests.Lift_WithNone
-    Abc.MaybeTests.Lift_WithSome
-    Abc.MaybeTests.Lift2_WithNullObject
-    Abc.MaybeTests.Lift2_WithNone
-    Abc.MaybeTests.None_WithValueType_IsDefault
-    Abc.MaybeTests.None_WithValueType_IsDefault_ForNullable
-    Abc.MaybeTests.None_WithReferenceType_IsDefault
-    Abc.MaybeTests.None_WithReferenceType_IsDefault_ForNullable
-    Abc.MaybeTests.None_WithValueType_IsNone
-    Abc.MaybeTests.None_WithValueType_IsNone_ForNullable
-    Abc.MaybeTests.None_WithReferenceType_IsNone
-    Abc.MaybeTests.None_WithReferenceType_IsNone_ForNullable
-    Abc.MaybeTests.NoneT_WithValueType_IsNone
-    Abc.MaybeTests.NoneT_WithReferenceType_IsNone
-    Abc.MaybeTests.NoneT_WithValueType_ReturnsNone
-    Abc.MaybeTests.NoneT_WithReferenceType_ReturnsNone
-    Abc.MaybeTests.Of_WithValueType
-    Abc.MaybeTests.Of_WithValueType_ForNullable
-    Abc.MaybeTests.Of_WithReferenceType
-    Abc.MaybeTests.Of_WithReferenceType_ForNullable
-    Abc.MaybeTests.Some
-    Abc.MaybeTests.SomeOrNone_WithValueType
-    Abc.MaybeTests.SomeOrNone_WithReferenceType
-    Abc.MaybeTests.Square
-    Abc.MaybeTests.Square_IsSomeSome
-    Abc.MaybeTests.SquareOrNone_WithValueType
-    Abc.MaybeTests.SquareOrNone_WithValueType_IsNotSomeOfSomeOrNone_WhenNone
-    Abc.MaybeTests.SquareOrNone_WithValueType_IsSomeOfSomeOrNone_WhenSome
-    Abc.MaybeTests.SquareOrNone_WithReferenceType
-    Abc.MaybeTests.SquareOrNone_WithReferenceType_IsNotSomeOfSomeOrNone_WhenNone
-    Abc.MaybeTests.SquareOrNone_WithReferenceType_IsSomeOfSomeOrNone_WhenSome
-    Abc.MaybeTests.ToString_None_WithValueType
-    Abc.MaybeTests.ToString_None_WithValueType_ForNullable
-    Abc.MaybeTests.ToString_None_WithReferenceType
-    Abc.MaybeTests.ToString_None_WithReferenceType_ForNullable
-    Abc.MaybeTests.ToString_Some
-    Abc.MaybeTests.ToString_Some_ForNullable
-    Abc.MaybeTests.Explicit_None_WithValueType
-    Abc.MaybeTests.Explicit_None_WithValueType_ForNullable
-    Abc.MaybeTests.Explicit_None_WithReferenceType
-    Abc.MaybeTests.Explicit_None_WithReferenceType_ForNullable
-    Abc.MaybeTests.Explicit_Some_WithValueType
-    Abc.MaybeTests.Explicit_Some_WithValueType_ForNullable
-    Abc.MaybeTests.Explicit_Some_WithReferenceType
-    Abc.MaybeTests.Explicit_Some_WithReferenceType_ForNullable
-    Abc.MaybeTests.Explicit_Some_ImplicitNumericConversion
-    Abc.MaybeTests.Explicit_Some_ExplicitNumericConversion
-    Abc.MaybeTests.Explicit_Some_ExplicitNumericConversion_Overflows
-    Abc.MaybeTests.Explicit_Some_Downcasting_WhenNotUpcasted
-    Abc.MaybeTests.Explicit_Some_Downcasting_WhenUpcasted
-    Abc.MaybeTests.Explicit_Some_Upcasting
-    Abc.MaybeTests.Bind_None_WithNullBinder
-    Abc.MaybeTests.Bind_Some_WithNullBinder
-    Abc.MaybeTests.Bind_None
-    Abc.MaybeTests.Bind_Some_ReturnsNone
-    Abc.MaybeTests.BindAsync_None_WithNullBinder
-    Abc.MaybeTests.BindAsync_Some_WithNullBinder
-    Abc.MaybeTests.BindAsync_None
-    Abc.MaybeTests.BindAsync_None_Sync
-    Abc.MaybeTests.BindAsync_Some_WithBinderReturningNone
-    Abc.MaybeTests.BindAsync_Some_WithBinderReturningNone_Sync
-    Abc.MaybeTests.BindAsync_Some_WithBinderReturningSome
-    Abc.MaybeTests.BindAsync_Some_WithBinderReturningSome_Sync
-    Abc.MaybeTests.BindAsync_SomeInt32
-    Abc.MaybeTests.BindAsync_SomeInt32_Sync
-    Abc.MaybeTests.BindAsync_SomeInt64
-    Abc.MaybeTests.BindAsync_SomeInt64_Sync
-    Abc.MaybeTests.BindAsync_SomeUri
-    Abc.MaybeTests.BindAsync_SomeUri_Sync
-    Abc.MaybeTests.SelectAsync_None_WithNullSelector
-    Abc.MaybeTests.SelectAsync_Some_WithNullSelector
-    Abc.MaybeTests.SelectAsync_None
-    Abc.MaybeTests.SelectAsync_None_Sync
-    Abc.MaybeTests.SelectAsync_SomeInt32
-    Abc.MaybeTests.SelectAsync_SomeInt32_Sync
-    Abc.MaybeTests.SelectAsync_SomeInt64
-    Abc.MaybeTests.SelectAsync_SomeInt64_Sync
-    Abc.MaybeTests.SelectAsync_SomeUri
-    Abc.MaybeTests.SelectAsync_SomeUri_Sync
-    Abc.MaybeTests.OrElseAsync_None_WithNullOther
-    Abc.MaybeTests.OrElseAsync_Some_WithNullOther
-    Abc.MaybeTests.OrElseAsync_None
-    Abc.MaybeTests.OrElseAsync_None_Sync
-    Abc.MaybeTests.OrElseAsync_Some
-    Abc.MaybeTests.OrElseAsync_Some_Sync
-    Abc.MaybeTests.OrElseAsync_SomeInt32
-    Abc.MaybeTests.OrElseAsync_SomeInt32_Sync
-    Abc.MaybeTests.OrElseAsync_SomeText
-    Abc.MaybeTests.OrElseAsync_SomeText_Sync
-    Abc.MaybeTests.OrElseAsync_SomeUri
-    Abc.MaybeTests.OrElseAsync_SomeUri_Sync
-    Abc.MaybeTests.OrElse
-    Abc.MaybeTests.AndThen
-    Abc.MaybeTests.XorElse
-    Abc.MaybeTests.BitwiseOr
-    Abc.MaybeTests.BitwiseAnd
-    Abc.MaybeTests.ExclusiveOr
-    Abc.MaybeTests.OrElseRTL
-    Abc.MaybeTests.AndThenRTL
-    Abc.MaybeTests.Unless
-    Abc.MaybeTests.UnlessRTL
-    Abc.MaybeTests.LeftAnd
-    Abc.MaybeTests.RightAnd
-    Abc.MaybeTests.Ignore
-    Abc.MaybeTests.ContinueWith
-    Abc.MaybeTests.Comparisons
-    Abc.MaybeTests.Comparison_None_None
-    Abc.MaybeTests.Comparison_None_Some
-    Abc.MaybeTests.Comparison_Some_Some
-    Abc.MaybeTests.Comparison_Some_Some_Identical
-    Abc.MaybeTests.CompareTo_None
-    Abc.MaybeTests.CompareTo_Some_WithNone
-    Abc.MaybeTests.CompareTo_Some_WithSome
-    Abc.MaybeTests.Comparable_None_WithNull
-    Abc.MaybeTests.Comparable_Some_WithNull
-    Abc.MaybeTests.Comparable_None_WithInvalidType
-    Abc.MaybeTests.Comparable_Some_WithInvalidType
-    Abc.MaybeTests.Comparable_None
-    Abc.MaybeTests.Comparable_Some
-    Abc.MaybeTests.Equality_None_ForValueType
-    Abc.MaybeTests.Equality_Some_ForValueType
-    Abc.MaybeTests.Equality_None_ForReferenceType
-    Abc.MaybeTests.Equality_Some_ForReferenceType
-    Abc.MaybeTests.GetHashCode_None
-    Abc.MaybeTests.GetHashCode_Some
-    Abc.MaybeTests.CompareTo_Structural_None_WithNullComparer
-    Abc.MaybeTests.CompareTo_Structural_Some_WithNullComparer
-    Abc.MaybeTests.CompareTo_Structural
-    Abc.MaybeTests.Equals_Structural_WithNullComparer
-    Abc.MaybeTests.Equals_Structural_None_ForValueType
-    Abc.MaybeTests.Equals_Structural_Some_ForValueType
-    Abc.MaybeTests.Equals_Structural_None_ForReferenceType
-    Abc.MaybeTests.Equals_Structural_Some_ForReferenceType_WithDefaultComparer
-    Abc.MaybeTests.Equals_Structural_Some_ForReferenceType_WithCustomComparer
-    Abc.MaybeTests.GetHashCode_Structural_WithNullComparer
-    Abc.MaybeTests.GetHashCode_Structural_None_WithDefaultComparer
-    Abc.MaybeTests.GetHashCode_Structural_None_WithCustomComparer
-    Abc.MaybeTests.GetHashCode_Structural_Some_WithDefaultComparer
-    Abc.MaybeTests.GetHashCode_Structural_Some_WithCustomComparer
-    Abc.MaybeTests.Equality_CompositeObject
-    Abc.MayTests.ParseXXX_None
-    Abc.MayTests.ParseBoolean_None
-    Abc.MayTests.ParseBoolean_Some
-    Abc.MayTests.ParseInt16
-    Abc.MayTests.ParseInt16_Invariant
-    Abc.MayTests.ParseInt32
-    Abc.MayTests.ParseInt32_Invariant
-    Abc.MayTests.ParseInt64
-    Abc.MayTests.ParseInt64_Invariant
-    Abc.MayTests.ParseSingle
-    Abc.MayTests.ParseSingle_Invariant
-    Abc.MayTests.ParseDouble
-    Abc.MayTests.ParseDouble_Invariant
-    Abc.MayTests.ParseDecimal
-    Abc.MayTests.ParseDecimal_Invariant
-    Abc.MayTests.ParseSByte
-    Abc.MayTests.ParseSByte_Invariant
-    Abc.MayTests.ParseByte_Some
-    Abc.MayTests.ParseUInt16
-    Abc.MayTests.ParseUInt16_Invariant
-    Abc.MayTests.ParseUInt32
-    Abc.MayTests.ParseUInt32_Invariant
-    Abc.MayTests.ParseUInt64
-    Abc.MayTests.ParseUInt64_Invariant
-    Abc.MayTests.ParseEnum
-    Abc.MayTests.ParseEnum_MixedCase
-    Abc.MayTests.ParseEnum_AnyInteger
-    Abc.MayTests.ParseEnum_InvalidName
-    Abc.MayTests.ParseEnum_CompositeValue
-    Abc.MayTests.ParseEnum_CompositeValue_MixedCase
-    Abc.MayTests.ParseEnum_Flags_InvalidName
-    Abc.MayTests.ParseDateTime_WithNullOrWhiteSpace
-    Abc.MayTests.ParseDateTimeExactly_InvalidArgs
-    Abc.MayTests.ParseDateTime_String
-    Abc.MayTests.ParseDateTime_String_FormatProvider_DateTimeStyles_U
-    Abc.MayTests.ParseDateTime_String_FormatProvider_DateTimeStyles_G
-    Abc.MayTests.ParseDateTime_TimeDesignators_NetCore
-    Abc.MayTests.ParseDateTimeExact_ToStringThenParseExactRoundtrip
-    Abc.MayTests.CreateUri_None
-    Abc.MayTests.CreateUri_Some
-    Abc.Utilities.EmptyIteratorTests.Iterate
-    GetEnumerator() always returns the same iterator.
-    GetEnumerator() (untyped) always returns the same iterator.
-    Abc.Utilities.NeverEndingSequenceTests.Current
-    Abc.Utilities.NeverEndingSequenceTests.Current_Untyped
-    Abc.Utilities.NeverEndingSequenceTests.MoveNext
-    Abc.Utilities.NeverEndingSequenceTests.Reset
-    Abc.Utilities.NeverEndingSequenceTests.Dispose
-    Abc.Utilities.SingletonListTests.Indexer_Get_InvalidIndex
-    Abc.Utilities.SingletonListTests.Indexer_Get
-    Abc.Utilities.SingletonListTests.Indexer_Set
-    Abc.Utilities.SingletonListTests.IndexOf_OK
-    Abc.Utilities.SingletonListTests.IndexOf_KO
-    Abc.Utilities.SingletonListTests.Insert
-    Abc.Utilities.SingletonListTests.RemoveAt
-    Abc.Utilities.SingletonListTests.Count
-    Abc.Utilities.SingletonListTests.IsReadOnly
-    Abc.Utilities.SingletonListTests.Add
-    Abc.Utilities.SingletonListTests.Clear
-    Abc.Utilities.SingletonListTests.Contains_OK
-    Abc.Utilities.SingletonListTests.Contains_KO
-    Abc.Utilities.SingletonListTests.CopyTo
-    Abc.Utilities.SingletonListTests.Remove
-    GetEnumerator() returns a new iterator.
-    Abc.Utilities.SingletonListTests.Iterate
-    Abc.Tests.UnitTests.RuntimeSize
-    Abc.Tests.UnitTests.Singleton
-    Abc.Tests.UnitTests.Equality
-    Abc.Tests.UnitTests.HashCode
-    Abc.Tests.UnitTests.ToString_CurrentCulture
-    Abc.Tests.UnitTests.Serialization
-    Abc.Linq.ElementAtOrNoneTests.NullSource
-    ElementAtOrNone() for int's returns the same result when called repeatedly.
-    ElementAtOrNone() for string's returns the same result when called repeatedly.
-    ElementAtOrDefault
-    ElementAtOrDefaultRunOnce
-    Abc.Linq.ElementAtOrNoneTests.NullableArray_NegativeIndex_ReturnsNone
-    NullableArray_ValidIndex_ReturnsCorrectObjecvt
-    Abc.Linq.FirstOrNoneTests.NullSource
-    Abc.Linq.FirstOrNoneTests.NullSource_WithPredicate
-    Abc.Linq.FirstOrNoneTests.NullPredicate
-    FirstOrNone() for int's returns the same result when called repeatedly.
-    FirstOrNone() for string's returns the same result when called repeatedly.
-    FirstOrNone() for an empty IList<T>.
-    FirstOrNone() for an IList<T> of one element.
-    FirstOrNone() for an IList<T> of many elements whose first is none.
-    FirstOrNone() for an IList<T> of many elements whose first is some.
-    EmptyNotIListT
-    OneElementNotIListT
-    ManyElementsNotIListT
-    EmptySource
-    FirstOrNone() on a list of one element returns some.
-    FirstOrNone() w/ predicate always false returns none.
-    FirstOrNone() w/ predicate returns last.
-    FirstOrNone() w/ predicate returns some (1).
-    FirstOrNone() w/ predicate returns some (2).
-    Abc.Linq.FoldAnyTests.NullSource
-    Abc.Linq.FoldAnyTests.NullAccumulator
-    Abc.Linq.FoldAnyTests.NullSource_WithPredicate
-    Abc.Linq.FoldAnyTests.NullAccumulator_WithPredicate
-    Abc.Linq.FoldAnyTests.NullPredicate
-    Abc.Linq.LastOrNoneTests.NullSource
-    Abc.Linq.LastOrNoneTests.NullSource_WithPredicate
-    Abc.Linq.LastOrNoneTests.NullPredicate
-    LastOrNone() for int's returns the same result when called repeatedly.
-    LastOrNone() for string's returns the same result when called repeatedly.
-    EmptyIListT
-    IListTOneElement
-    IListTManyElementsLastIsDefault
-    IListTManyElementsLastIsNotDefault
-    EmptyNotIListT
-    OneElementNotIListT
-    ManyElementsNotIListT
-    EmptyIListSource
-    OneElementIListTruePredicate
-    ManyElementsIListPredicateFalseForAll
-    IListPredicateTrueOnlyForLast
-    IListPredicateTrueForSome
-    IListPredicateTrueForSomeRunOnce
-    EmptyNotIListSource
-    OneElementNotIListTruePredicate
-    ManyElementsNotIListPredicateFalseForAll
-    NotIListPredicateTrueOnlyForLast
-    NotIListPredicateTrueForSome
-    NotIListPredicateTrueForSomeRunOnce
-    Abc.Linq.ReduceAnyTests.NullSource
-    Abc.Linq.ReduceAnyTests.NullAccumulator
-    Abc.Linq.ReduceAnyTests.NullSource_WithPredicate
-    Abc.Linq.ReduceAnyTests.NullAccumulator_WithPredicate
-    Abc.Linq.ReduceAnyTests.NullPredicate
-    Abc.Linq.SelectAnyTests.NullSource
-    Abc.Linq.SelectAnyTests.NullSelector
-    Abc.Linq.SelectAnyTests.Enumerable_Deferred
-    Abc.Linq.SelectAnyTests.Array_OnlyNone
-    Abc.Linq.SelectAnyTests.List_OnlyNone
-    Abc.Linq.SelectAnyTests.ReadOnlyCollection_OnlyNone
-    Abc.Linq.SelectAnyTests.Collection_OnlyNone
-    Abc.Linq.SelectAnyTests.Enumerable_OnlyNone
-    Abc.Linq.SelectAnyTests.Array_OnlySome
-    Abc.Linq.SelectAnyTests.List_OnlySome
-    Abc.Linq.SelectAnyTests.ReadOnlyCollection_OnlySome
-    Abc.Linq.SelectAnyTests.Collection_OnlySome
-    Abc.Linq.SelectAnyTests.Enumerable_OnlySome
-    Abc.Linq.SelectAnyTests.Array_Mixed
-    Abc.Linq.SelectAnyTests.List_Mixed
-    Abc.Linq.SelectAnyTests.ReadOnlyCollection_Mixed
-    Abc.Linq.SelectAnyTests.Collection_Mixed
-    Abc.Linq.SelectAnyTests.Enumerable_Mixed
-    Abc.Linq.SelectAnyTests.Array_CurrentAfterEnumeration
-    Abc.Linq.SelectAnyTests.List_CurrentAfterEnumeration
-    Abc.Linq.SelectAnyTests.ReadOnlyCollection_CurrentAfterEnumeration
-    Abc.Linq.SelectAnyTests.Collection_CurrentAfterEnumeration
-    Abc.Linq.SelectAnyTests.Enumerable_CurrentAfterEnumeration
-    Abc.Linq.SelectAnyTests.Array_Twice
-    Abc.Linq.SelectAnyTests.List_Twice
-    Abc.Linq.SelectAnyTests.ReadOnlyCollection_Twice
-    Abc.Linq.SelectAnyTests.Collection_Twice
-    Abc.Linq.SelectAnyTests.Enumerable_Twice
-    Abc.Linq.SingleOrNoneTests.NullSource
-    Abc.Linq.SingleOrNoneTests.NullSource_WithPredicate
-    Abc.Linq.SingleOrNoneTests.NullPredicate
-    SingleOrNone() for int's returns the same result when called repeatedly.
-    SingleOrNone() for string's returns the same result when called repeatedly.
-    EmptyIList
-    SingleElementIList
-    ManyElementIList
-    EmptyNotIList
-    SingleElementNotIList
-    ManyElementNotIList
-    EmptySourceWithPredicate
-    SingleElementPredicateTrue
-    SingleElementPredicateFalse
-    ManyElementsPredicateFalseForAll
-    ManyElementsPredicateTrueForLast
-    ManyElementsPredicateTrueForFirstAndFifth
-    FindSingleMatch
-    RunOnce
-    Abc.Linq.WhereAnyTests.NullSource
-    Abc.Linq.WhereAnyTests.NullPredicate
-    Abc.Linq.WhereAnyTests.Enumerable_Deferred
-    Abc.Linq.WhereAnyTests.Array_AlwaysTrue
-    Abc.Linq.WhereAnyTests.List_AlwaysTrue
-    Abc.Linq.WhereAnyTests.ReadOnlyCollection_AlwaysTrue
-    Abc.Linq.WhereAnyTests.Collection_AlwaysTrue
-    Abc.Linq.WhereAnyTests.Enumerable_AlwaysTrue
-    Abc.Linq.WhereAnyTests.Array_AlwaysFalse
-    Abc.Linq.WhereAnyTests.List_AlwaysFalse
-    Abc.Linq.WhereAnyTests.ReadOnlyCollection_AlwaysFalse
-    Abc.Linq.WhereAnyTests.Collection_AlwaysFalse
-    Abc.Linq.WhereAnyTests.Enumerable_AlwaysFalse
-    Abc.Linq.WhereAnyTests.Array_TrueOrFalse
-    Abc.Linq.WhereAnyTests.List_TrueOrFalse
-    Abc.Linq.WhereAnyTests.ReadOnlyCollection_TrueOrFalse
-    Abc.Linq.WhereAnyTests.Collection_TrueOrFalse
-    Abc.Linq.WhereAnyTests.Enumerable_TrueOrFalse
-    Abc.Linq.WhereAnyTests.Array_BooleanOrUnknown
-    Abc.Linq.WhereAnyTests.List_BooleanOrUnknown
-    Abc.Linq.WhereAnyTests.ReadOnlyCollection_BooleanOrUnknown
-    Abc.Linq.WhereAnyTests.Collection_BooleanOrUnknown
-    Abc.Linq.WhereAnyTests.Enumerable_BooleanOrUnknown
-    Abc.Linq.ZipAnyTests.NullFirst
-    Abc.Linq.ZipAnyTests.NullSecond
-    Abc.Linq.ZipAnyTests.NullResultSelector
-    Abc.Linq.ZipAnyTests.Enumerable_Deferred
-    Abc.Linq.ZipAnyTests.ImplicitTypeParameters_OnlyNone
-    Abc.Linq.ZipAnyTests.ImplicitTypeParameters_OnlySome
-    Abc.Linq.ZipAnyTests.ImplicitTypeParameters_Mixed
-    Abc.Linq.ZipAnyTests.ExplicitTypeParameters
-    Abc.MaybeTests+HelperClass.BindAsync_None_WithNullBinder
-    Abc.MaybeTests+HelperClass.BindAsync_Some_WithNullBinder
-    Abc.MaybeTests+HelperClass.BindAsync_None
-    Abc.MaybeTests+HelperClass.BindAsync_None_Sync
-    Abc.MaybeTests+HelperClass.BindAsync_Some_WithBinderReturningNone
-    Abc.MaybeTests+HelperClass.BindAsync_Some_WithBinderReturningNone_Sync
-    Abc.MaybeTests+HelperClass.BindAsync_Some_WithBinderReturningSome
-    Abc.MaybeTests+HelperClass.BindAsync_Some_WithBinderReturningSome_Sync
-    Abc.MaybeTests+HelperClass.BindAsync_SomeInt32
-    Abc.MaybeTests+HelperClass.BindAsync_SomeInt32_Sync
-    Abc.MaybeTests+HelperClass.BindAsync_SomeInt64
-    Abc.MaybeTests+HelperClass.BindAsync_SomeInt64_Sync
-    Abc.MaybeTests+HelperClass.BindAsync_SomeUri
-    Abc.MaybeTests+HelperClass.BindAsync_SomeUri_Sync
-    Abc.MaybeTests+HelperClass.SelectAsync_None_WithNullSelector
-    Abc.MaybeTests+HelperClass.SelectAsync_Some_WithNullSelector
-    Abc.MaybeTests+HelperClass.SelectAsync_None
-    Abc.MaybeTests+HelperClass.SelectAsync_None_Sync
-    Abc.MaybeTests+HelperClass.SelectAsync_SomeInt32
-    Abc.MaybeTests+HelperClass.SelectAsync_SomeInt32_Sync
-    Abc.MaybeTests+HelperClass.SelectAsync_SomeInt64
-    Abc.MaybeTests+HelperClass.SelectAsync_SomeInt64_Sync
-    Abc.MaybeTests+HelperClass.SelectAsync_SomeUri
-    Abc.MaybeTests+HelperClass.SelectAsync_SomeUri_Sync
-    Abc.MaybeTests+HelperClass.OrElseAsync_None_WithNullOther
-    Abc.MaybeTests+HelperClass.OrElseAsync_Some_WithNullOther
-    Abc.MaybeTests+HelperClass.OrElseAsync_None
-    Abc.MaybeTests+HelperClass.OrElseAsync_None_Sync
-    Abc.MaybeTests+HelperClass.OrElseAsync_Some
-    Abc.MaybeTests+HelperClass.OrElseAsync_Some_Sync
-    Abc.MaybeTests+HelperClass.OrElseAsync_SomeInt32
-    Abc.MaybeTests+HelperClass.OrElseAsync_SomeInt32_Sync
-    Abc.MaybeTests+HelperClass.OrElseAsync_SomeText
-    Abc.MaybeTests+HelperClass.OrElseAsync_SomeText_Sync
-    Abc.MaybeTests+HelperClass.OrElseAsync_SomeUri
-    Abc.MaybeTests+HelperClass.OrElseAsync_SomeUri_Sync
+Abc.AssertTests.EagerValidationTest
+Abc.AssertTests.EagerValidationTestAsync
+Abc.AssertTests.AsyncValidationTest_NotAwaited_DoesNotThrow
+Abc.AssertTests.AsyncValidationTest
+Abc.MaybeComparerTests.Default_Repeated
+Abc.MaybeComparerTests.Default_Equals_OK
+Abc.MaybeComparerTests.Default_Equals_KO
+Abc.MaybeComparerTests.Default_GetHashCode
+Abc.MaybeComparerTests.Compare_ForValueType
+Abc.MaybeComparerTests.Compare_InvalidType_ForObjects
+Abc.MaybeComparerTests.Compare_ForObjects
+Abc.MaybeComparerTests.Equals_ForValueType
+Abc.MaybeComparerTests.Equals_ForReferenceType
+Abc.MaybeComparerTests.Equals_ForReferenceType2
+Abc.MaybeComparerTests.Equals_WithInvalidType_ForObjects
+Abc.MaybeComparerTests.Equals_ForObjects
+Abc.MaybeComparerTests.GetHashCode_None
+Abc.MaybeComparerTests.GetHashCode_Some
+Abc.MaybeComparerTests.GetHashCode_WithNullObj_ForObjects
+Abc.MaybeComparerTests.GetHashCode_WithInvalidType_ForObjects
+Abc.MaybeComparerTests.GetHashCode_ForObjects
+Abc.MaybeComparerTests.Structural_Repeated
+Abc.MaybeComparerTests.Structural_Equals_OK
+Abc.MaybeComparerTests.Structural_Equals_KO
+Abc.MaybeComparerTests.Structural_GetHashCode
+Abc.MaybeComparerTests.Compare_Structural_ForValueType
+Abc.MaybeComparerTests.Equals_Structural_ForValueType
+Abc.MaybeComparerTests.Equals_Structural_ForReferenceType
+Abc.MaybeComparerTests.GetHashCode_Structural_None
+Abc.MaybeComparerTests.GetHashCode_Structural_Some
+Abc.MaybeTests.Where_None_WithNullPredicate
+Abc.MaybeTests.Where_Some_WithNullPredicate
+Abc.MaybeTests.Where_None
+Abc.MaybeTests.Where_Some
+Abc.MaybeTests.SelectMany_None_WithNullSelector
+Abc.MaybeTests.SelectMany_Some_WithNullSelector
+Abc.MaybeTests.SelectMany_None_WithNullResultSelector
+Abc.MaybeTests.SelectMany_Some_WithNullResultSelector
+Abc.MaybeTests.SelectMany_None_WithNone
+Abc.MaybeTests.SelectMany_None_WithSome
+Abc.MaybeTests.SelectMany_Some_WithNone
+Abc.MaybeTests.SelectMany_Some_WithSome
+Abc.MaybeTests.Join_None_WithNullOuterKeySelector
+Abc.MaybeTests.Join_None_WithNullOuterKeySelector_WithComparer
+Abc.MaybeTests.Join_Some_WithNullOuterKeySelector
+Abc.MaybeTests.Join_Some_WithNullOuterKeySelector_WithComparer
+Abc.MaybeTests.Join_None_WithNullInnerKeySelector
+Abc.MaybeTests.Join_None_WithNullInnerKeySelector_WithComparer
+Abc.MaybeTests.Join_Some_WithNullInnerKeySelector
+Abc.MaybeTests.Join_Some_WithNullInnerKeySelector_WithComparer
+Abc.MaybeTests.Join_None_WithNullResultSelector
+Abc.MaybeTests.Join_None_WithNullResultSelector_WithComparer
+Abc.MaybeTests.Join_Some_WithNullResultSelector
+Abc.MaybeTests.Join_Some_WithNullResultSelector_WithComparer
+Abc.MaybeTests.Join_None
+Abc.MaybeTests.Join_Some_WithNone
+Abc.MaybeTests.Join_Some_WithSome_Unmatched
+Abc.MaybeTests.Join_Some_WithSome_Matched
+Abc.MaybeTests.Join_WithNullComparer
+Abc.MaybeTests.Join_WithComparer
+Abc.MaybeTests.Join_Some_WithSome_ComplexType_Unmatched
+Abc.MaybeTests.Join_Some_WithSome_ComplexType_Matched
+Abc.MaybeTests.GroupJoin_None_WithNullOuterKeySelector
+Abc.MaybeTests.GroupJoin_None_WithNullOuterKeySelector_WithComparer
+Abc.MaybeTests.GroupJoin_Some_WithNullOuterKeySelector
+Abc.MaybeTests.GroupJoin_Some_WithNullOuterKeySelector_WithComparer
+Abc.MaybeTests.GroupJoin_None_WithNullInnerKeySelector
+Abc.MaybeTests.GroupJoin_None_WithNullInnerKeySelector_WithComparer
+Abc.MaybeTests.GroupJoin_Some_WithNullInnerKeySelector
+Abc.MaybeTests.GroupJoin_Some_WithNullInnerKeySelector_WithComparer
+Abc.MaybeTests.GroupJoin_None_WithNullResultSelector
+Abc.MaybeTests.GroupJoin_None_WithNullResultSelector_WithComparer
+Abc.MaybeTests.GroupJoin_Some_WithNullResultSelector
+Abc.MaybeTests.GroupJoin_Some_WithNullResultSelector_WithComparer
+Abc.MaybeTests.GroupJoin_WithNullComparer
+Abc.MaybeTests.GroupJoin_WithComparer
+Abc.MaybeTests.GroupJoin_Some_WithSome_ComplexType_Unmatched
+Abc.MaybeTests.GroupJoin_Some_WithSome_ComplexType_Matched
+Abc.MaybeTests.Query_PythagoreanTriple_KO
+Abc.MaybeTests.Query_PythagoreanTriple_OK
+Abc.MaybeTests.Functor_FirstLaw
+Abc.MaybeTests.Functor_SecondLaw
+Abc.MaybeTests.OrElse_LeftIdentity
+Abc.MaybeTests.OrElse_RightIdentity
+Abc.MaybeTests.OrElse_Associativity
+Abc.MaybeTests.Bind_LeftZero
+Abc.MaybeTests.AndThen_Associativity
+Abc.MaybeTests.Invoke_WithNone
+Abc.MaybeTests.Invoke_WithSome
+Abc.MaybeTests.Compose_WithNullObject
+Abc.MaybeTests.Compose
+Abc.MaybeTests.ComposeBack_WithNullOther
+Abc.MaybeTests.ComposeBack
+Abc.MaybeTests.Lift_WithNullSelector
+Abc.MaybeTests.Lift_WithNone
+Abc.MaybeTests.Lift_WithSome
+Abc.MaybeTests.Lift2_WithNullObject
+Abc.MaybeTests.Lift2_WithNone
+Abc.MaybeTests.Lift2_WithSome
+Abc.MaybeTests.Lift3_WithNullObject
+Abc.MaybeTests.Lift3_WithNone
+Abc.MaybeTests.Lift3_WithSome
+Abc.MaybeTests.Lift4_WithNullObject
+Abc.MaybeTests.Lift4_WithNone
+Abc.MaybeTests.Lift4_WithSome
+Abc.MaybeTests.Lift5_WithNullObject
+Abc.MaybeTests.Lift5_WithNone
+Abc.MaybeTests.Lift5_WithSome
+Abc.MaybeTests.Invoke_None
+Abc.MaybeTests.Invoke_Some
+Abc.MaybeTests.Invoke2_None
+Abc.MaybeTests.Invoke2_Some
+Abc.MaybeTests.Invoke3_None
+Abc.MaybeTests.Invoke3_Some
+Abc.MaybeTests.Invoke4_None
+Abc.MaybeTests.Invoke4_Some
+Abc.MaybeTests.Invoke5_None
+Abc.MaybeTests.Invoke5_Some
+Abc.MaybeTests.Apply_None
+Abc.MaybeTests.Apply_Some_WithNone
+Abc.MaybeTests.Apply_Some_WithSome
+Abc.MaybeTests.Apply2_None
+Abc.MaybeTests.Apply2_Some_WithNone
+Abc.MaybeTests.Apply2_Some_WithSome
+Abc.MaybeTests.Apply3_None
+Abc.MaybeTests.Apply3_Some_WithNone
+Abc.MaybeTests.Apply3_Some_WithSome
+Abc.MaybeTests.Apply4_None
+Abc.MaybeTests.Apply4_Some_WithNone
+Abc.MaybeTests.Apply4_Some_WithSome
+Abc.MaybeTests.Apply5_None
+Abc.MaybeTests.Apply5_Some_WithNone
+Abc.MaybeTests.Apply5_Some_WithSome
+Abc.MaybeTests.Flatten_None
+Abc.MaybeTests.Flatten_SomeOfNone
+Abc.MaybeTests.Flatten_SomeOfSome
+Abc.MaybeTests.Squash_None
+Abc.MaybeTests.Squash_Square_None
+Abc.MaybeTests.Squash_Some_ForValueType
+Abc.MaybeTests.Squash_Square_Some_ForValueType
+Abc.MaybeTests.Squash_Some_ForReferenceType
+Abc.MaybeTests.Squash_Square_Some_ForReferenceType
+Abc.MaybeTests.ToNullable_None
+Abc.MaybeTests.ToNullable_Some
+Abc.MaybeTests.Unit_IsSome
+Abc.MaybeTests.Zero_IsNone
+Abc.MaybeTests.Guard_ReturnsZero_WithFalse
+Abc.MaybeTests.Guard_ReturnsUnit_WithTrue
+Abc.MaybeTests.True_IsSome
+Abc.MaybeTests.False_IsSome
+Abc.MaybeTests.Unknown_IsNone
+Abc.MaybeTests.Negate_True
+Abc.MaybeTests.Negate_False
+Abc.MaybeTests.Negate_Unknown
+Abc.MaybeTests.Or
+Abc.MaybeTests.And
+Abc.MaybeTests.Use_WithNullBinder
+Abc.MaybeTests.Use_WithNullSelector
+Abc.MaybeTests.Use_Bind
+Abc.MaybeTests.Use_Select
+Abc.MaybeTests.ZipWith_None_WithNullZipper
+Abc.MaybeTests.ZipWith_Some_WithNullZipper
+Abc.MaybeTests.ZipWith
+Abc.MaybeTests.Skip_None
+Abc.MaybeTests.Skip_Some
+Abc.MaybeTests.ReplaceWith
+Abc.MaybeTests.Select_None_WithNullSelector
+Abc.MaybeTests.Select_Some_WithNullSelector
+Abc.MaybeTests.Select_None
+Abc.MaybeTests.Select_SomeInt32
+Abc.MaybeTests.Select_SomeInt64
+Abc.MaybeTests.Select_SomeUri
+Abc.MaybeTests.OpExplicit_Some_WhenDowncasting_AndUpcasted
+Abc.MaybeTests.OpExplicit_Some_WhenUpcasting
+Abc.MaybeTests.Bind_None_Throws_WithNullBinder
+Abc.MaybeTests.Bind_Some_Throws_WithNullBinder
+Abc.MaybeTests.Bind_None_ReturnsNone_WithBinderReturningNone
+Abc.MaybeTests.Bind_None_ReturnsNone_WithBinderReturningSome
+Abc.MaybeTests.Bind_Some_ReturnsNone_WithBinderReturningNone
+Abc.MaybeTests.Bind_Some_ReturnsSome_WithBinderReturningSome
+Abc.MaybeTests.Bind_Some_ForInt32
+Abc.MaybeTests.Bind_Some_ForInt64
+Abc.MaybeTests.Bind_Some_ForUri
+Abc.MaybeTests.Switch_None_Throws_WithNullCaseNone
+Abc.MaybeTests.Switch_None_DoesNotThrow_WithNullCaseSome
+Abc.MaybeTests.Switch_Some_Throws_WithNullCaseSome
+Abc.MaybeTests.Switch_Some_DoesNotThrow_WithNullCaseNone
+Abc.MaybeTests.Switch_None
+Abc.MaybeTests.Switch_None_WithConstCaseNone
+Abc.MaybeTests.Switch_Some
+Abc.MaybeTests.Switch_Some_WithConstCaseNone
+Abc.MaybeTests.TryGetValue_None
+Abc.MaybeTests.TryGetValue_Some
+Abc.MaybeTests.ValueOrDefault_None
+Abc.MaybeTests.ValueOrDefault_Some
+Abc.MaybeTests.ValueOrElse_None_Throws_WithNullFactory
+Abc.MaybeTests.ValueOrElse_Some_DoesNotThrow_WithNullFactory
+Abc.MaybeTests.ValueOrElse_None
+Abc.MaybeTests.ValueOrElse_None_WithFactory
+Abc.MaybeTests.ValueOrElse_Some
+Abc.MaybeTests.ValueOrElse_Some_WithFactory
+Abc.MaybeTests.ValueOrThrow_None_Throws
+Abc.MaybeTests.ValueOrThrow_None_Throws_WithNullException
+Abc.MaybeTests.ValueOrThrow_None_Throws_WithCustomException
+Abc.MaybeTests.ValueOrThrow_Some_DoesNotThrow
+Abc.MaybeTests.ValueOrThrow_Some_DoesNotThrow_WithNullException
+Abc.MaybeTests.ValueOrThrow_Some_DoesNotThrow_WithCustomException
+Abc.MaybeTests.Do_None_Throws_WithNullOnNone
+Abc.MaybeTests.Do_None_DoesNotThrow_WithNullOnSome
+Abc.MaybeTests.Do_Some_Throws_WithNullOnSome
+Abc.MaybeTests.Do_Some_DoesNotThrow_WithNullOnNone
+Abc.MaybeTests.Do_None
+Abc.MaybeTests.Do_Some
+Abc.MaybeTests.OnSome_None_DoesNotThrow_WithNullAction
+Abc.MaybeTests.OnSome_Some_Throws_WithNullAction
+Abc.MaybeTests.OnSome_None
+Abc.MaybeTests.OnSome_Some
+Abc.MaybeTests.When_None_WithFalse
+Abc.MaybeTests.When_Some_WithFalse
+Abc.MaybeTests.When_None_WithTrue
+Abc.MaybeTests.When_Some_WithTrue
+Abc.MaybeTests.ToEnumerable
+Abc.MaybeTests.GetEnumerator_None_ForEach
+Abc.MaybeTests.GetEnumerator_None_ExplicitIterator
+Abc.MaybeTests.GetEnumerator_Some_ForEach
+Abc.MaybeTests.GetEnumerator_Some_ExplicitIterator
+Abc.MaybeTests.Yield_None
+Abc.MaybeTests.Yield_None_WithCount
+Abc.MaybeTests.Yield_Some
+Abc.MaybeTests.Yield_Some_WithCount
+Abc.MaybeTests.Contains_None_Throws_WithNullComparer
+Abc.MaybeTests.Contains_Some_Throws_WithNullComparer
+Abc.MaybeTests.Contains_None_ForInt32
+Abc.MaybeTests.Contains_Some_ForInt32
+Abc.MaybeTests.Contains_None_ForString
+Abc.MaybeTests.Contains_Some_ForString
+Abc.MaybeTests.Contains_Some_ForString_WithOrdinalComparer
+Abc.MaybeTests.Contains_Some_ForString_WithOrdinalIgnoreCaseComparer
+Abc.MaybeTests.Contains_Some_ForString_WithAnagramComparer
+Abc.MaybeTests.IsSerializable
+Abc.MaybeTests.Serialization_None_ForValueT
+Abc.MaybeTests.Serialization_None_ForReferenceT
+Abc.MaybeTests.Serialization_Some_ForValueT
+Abc.MaybeTests.Serialization_Some_ForReferenceT
+Abc.MaybeTests.Serialization_None_Throws_ForNotSerializable
+Abc.MaybeTests.Serialization_Some_Throws_ForNotSerializable
+Abc.MaybeTests.EmptyEnumerable
+Abc.MaybeTests.CollectAny_WithNullSource
+Abc.MaybeTests.CollectAny_IsDeferred
+Abc.MaybeTests.CollectAny_WithEmpty
+Abc.MaybeTests.CollectAny_None2None
+Abc.MaybeTests.CollectAny_None2Some
+Abc.MaybeTests.CollectAny_Some2None
+Abc.MaybeTests.CollectAny_Some2Some
+Abc.MaybeTests.CollectAny_OnlySome
+Abc.MaybeTests.CollectAny_OnlyNone
+Abc.MaybeTests.Invoke_WithNullBinder
+Abc.MaybeTests.Equality_None_ForValueT
+Abc.MaybeTests.Equality_Some_ForValueT
+Abc.MaybeTests.Equality_None_ForReferenceT
+Abc.MaybeTests.Equality_Some_ForReferenceT
+Abc.MaybeTests.GetHashCode_None
+Abc.MaybeTests.GetHashCode_Some
+Abc.MaybeTests.Equality_CompositeObject
+Abc.MaybeTests.None_IsDefault_ForValueT
+Abc.MaybeTests.None_IsDefault_ForValueT_AndNullable
+Abc.MaybeTests.None_IsDefault_ForReferenceT
+Abc.MaybeTests.None_IsDefault_ForReferenceT_AndNullable
+Abc.MaybeTests.None_IsNone_ForValueT
+Abc.MaybeTests.None_IsNone_ForValueT_AndNullable
+Abc.MaybeTests.None_IsNone_ForReferenceT
+Abc.MaybeTests.None_IsNone_ForReferenceT_AndNullable
+Abc.MaybeTests.NoneT_IsNone_ForValueT
+Abc.MaybeTests.NoneT_IsNone_ForReferenceT
+Abc.MaybeTests.NoneT_ReturnsNone_ForValueT
+Abc.MaybeTests.NoneT_ReturnsNone_ForReferenceT
+Abc.MaybeTests.Of_ForValueT
+Abc.MaybeTests.Of_ForValueT_AndNullable
+Abc.MaybeTests.Of_ForReferenceT
+Abc.MaybeTests.Of_ForReferenceT_AndNullable
+Abc.MaybeTests.Some
+Abc.MaybeTests.SomeOrNone_ForValueT
+Abc.MaybeTests.SomeOrNone_ForReferenceT
+Abc.MaybeTests.Square
+Abc.MaybeTests.Square_IsSomeOfSome
+Abc.MaybeTests.SquareOrNone_ForValueT
+Abc.MaybeTests.SquareOrNone_ForValueT_WithNull_IsNotSomeOfSomeOrNone
+Abc.MaybeTests.SquareOrNone_ForValueT_WithNotNull_IsSomeOfSomeOrNone
+Abc.MaybeTests.SquareOrNone_ForReferenceT
+Abc.MaybeTests.SquareOrNone_ForReferenceT_WithNull_IsNotSomeOfSomeOrNone
+Abc.MaybeTests.SquareOrNone_ForReferenceT_WithNotNull_IsSomeOfSomeOrNone
+Abc.MaybeTests.ToString_None_ForValueT
+Abc.MaybeTests.ToString_None_ForValueT_AndNullable
+Abc.MaybeTests.ToString_None_ForReferenceT
+Abc.MaybeTests.ToString_None_ForReferenceT_AndNullable
+Abc.MaybeTests.ToString_Some
+Abc.MaybeTests.ToString_Some_ForNullable
+Abc.MaybeTests.OpExplicit_None_Throws_ForValueT
+Abc.MaybeTests.OpExplicit_None_Throws_ForValueT_AndNullable
+Abc.MaybeTests.OpExplicit_None_Throws_ForReferenceT
+Abc.MaybeTests.OpExplicit_None_Throws_ForReferenceT_AndNullable
+Abc.MaybeTests.OpExplicit_Some_ForValueT
+Abc.MaybeTests.OpExplicit_Some_ForValueT_AndNullable
+Abc.MaybeTests.OpExplicit_Some_ForReferenceT
+Abc.MaybeTests.OpExplicit_Some_ForReferenceT_AndNullable
+Abc.MaybeTests.OpExplicit_Some_ImplicitNumericConversion
+Abc.MaybeTests.OpExplicit_Some_ExplicitNumericConversion
+Abc.MaybeTests.OpExplicit_Some_ExplicitNumericConversion_Overflows
+Abc.MaybeTests.OpExplicit_Some_Throws_WhenDowncasting_AndNotUpcasted
+Abc.MaybeTests.BindAsync_None_WithNullBinder
+Abc.MaybeTests.BindAsync_Some_WithNullBinder
+Abc.MaybeTests.BindAsync_None
+Abc.MaybeTests.BindAsync_None_Sync
+Abc.MaybeTests.BindAsync_Some_WithBinderReturningNone
+Abc.MaybeTests.BindAsync_Some_WithBinderReturningNone_Sync
+Abc.MaybeTests.BindAsync_Some_WithBinderReturningSome
+Abc.MaybeTests.BindAsync_Some_WithBinderReturningSome_Sync
+Abc.MaybeTests.BindAsync_SomeInt32
+Abc.MaybeTests.BindAsync_SomeInt32_Sync
+Abc.MaybeTests.BindAsync_SomeInt64
+Abc.MaybeTests.BindAsync_SomeInt64_Sync
+Abc.MaybeTests.BindAsync_SomeUri
+Abc.MaybeTests.BindAsync_SomeUri_Sync
+Abc.MaybeTests.SelectAsync_None_WithNullSelector
+Abc.MaybeTests.SelectAsync_Some_WithNullSelector
+Abc.MaybeTests.SelectAsync_None
+Abc.MaybeTests.SelectAsync_None_Sync
+Abc.MaybeTests.SelectAsync_SomeInt32
+Abc.MaybeTests.SelectAsync_SomeInt32_Sync
+Abc.MaybeTests.SelectAsync_SomeInt64
+Abc.MaybeTests.SelectAsync_SomeInt64_Sync
+Abc.MaybeTests.SelectAsync_SomeUri
+Abc.MaybeTests.SelectAsync_SomeUri_Sync
+Abc.MaybeTests.OrElseAsync_None_WithNullOther
+Abc.MaybeTests.OrElseAsync_Some_WithNullOther
+Abc.MaybeTests.OrElseAsync_None
+Abc.MaybeTests.OrElseAsync_None_Sync
+Abc.MaybeTests.OrElseAsync_Some
+Abc.MaybeTests.OrElseAsync_Some_Sync
+Abc.MaybeTests.OrElseAsync_SomeInt32
+Abc.MaybeTests.OrElseAsync_SomeInt32_Sync
+Abc.MaybeTests.OrElseAsync_SomeText
+Abc.MaybeTests.OrElseAsync_SomeText_Sync
+Abc.MaybeTests.OrElseAsync_SomeUri
+Abc.MaybeTests.OrElseAsync_SomeUri_Sync
+Abc.MaybeTests.OrElse
+Abc.MaybeTests.AndThen
+Abc.MaybeTests.XorElse
+Abc.MaybeTests.BitwiseOr
+Abc.MaybeTests.BitwiseAnd
+Abc.MaybeTests.ExclusiveOr
+Abc.MaybeTests.OrElseRTL
+Abc.MaybeTests.AndThenRTL
+Abc.MaybeTests.Unless
+Abc.MaybeTests.UnlessRTL
+Abc.MaybeTests.LeftAnd
+Abc.MaybeTests.RightAnd
+Abc.MaybeTests.Ignore
+Abc.MaybeTests.ContinueWith
+Abc.MaybeTests.Nullable_Comparisons
+Abc.MaybeTests.Nullable_Comparisons_ForNotComparable
+Abc.MaybeTests.ValueTuple_Comparisons_ForNotComparable
+Abc.MaybeTests.OpComparison_None_None_ReturnsFalse
+Abc.MaybeTests.OpComparison_None_None_ReturnsFalse_ForNotComparable
+Abc.MaybeTests.OpComparison_None_Some_ReturnsFalse
+Abc.MaybeTests.OpComparison_None_Some_ReturnsFalse_ForNotComparable
+Abc.MaybeTests.OpComparison_Some_Some_WhenEqual
+Abc.MaybeTests.OpComparison_Some_Some_WhenEqual_ForNotComparable
+Abc.MaybeTests.OpComparison_Some_Some_WhenNotEqual
+Abc.MaybeTests.OpComparison_Some_Some_WhenNotEqual_Throws_ForNotComparable
+Abc.MaybeTests.CompareTo_None_WithNone
+Abc.MaybeTests.CompareTo_None_WithNone_ForNotComparable
+Abc.MaybeTests.CompareTo_None_WithSome
+Abc.MaybeTests.CompareTo_None_WithSome_ForNotComparable
+Abc.MaybeTests.CompareTo_Some_WithNone
+Abc.MaybeTests.CompareTo_Some_WithNone_ForNotComparable
+Abc.MaybeTests.CompareTo_Some_WithSome_AndEqual
+Abc.MaybeTests.CompareTo_Some_WithSome_AndEqual_ForNotComparable
+Abc.MaybeTests.CompareTo_Some_WithSome_AndNotEqual
+Abc.MaybeTests.CompareTo_Some_WithSome_AndNotEqual_Throws_ForNotComparable
+Abc.MaybeTests.Comparable_None_WithNull
+Abc.MaybeTests.Comparable_Some_WithNull
+Abc.MaybeTests.Comparable_None_Throws_WithInvalidType
+Abc.MaybeTests.Comparable_Some_Throws_WithInvalidType
+Abc.MaybeTests.Comparable_None_WithNone
+Abc.MaybeTests.Comparable_None_WithNone_ForNotComparable
+Abc.MaybeTests.Comparable_None_WithSome
+Abc.MaybeTests.Comparable_None_WithSome_ForNotComparable
+Abc.MaybeTests.Comparable_Some_WithNone
+Abc.MaybeTests.Comparable_Some_WithNone_ForNotComparable
+Abc.MaybeTests.Comparable_Some_WithSome_AndEqual
+Abc.MaybeTests.Comparable_Some_WithSome_AndEqual_ForNotComparable
+Abc.MaybeTests.Comparable_Some_WithSome_AndNotEqual
+Abc.MaybeTests.Comparable_Some_WithSome_AndNotEqual_Throws_ForNotComparable
+Abc.MayTests.ParseXXX_None
+Abc.MayTests.ParseBoolean_None
+Abc.MayTests.ParseBoolean_Some
+Abc.MayTests.ParseInt16
+Abc.MayTests.ParseInt16_Invariant
+Abc.MayTests.ParseInt32
+Abc.MayTests.ParseInt32_Invariant
+Abc.MayTests.ParseInt64
+Abc.MayTests.ParseInt64_Invariant
+Abc.MayTests.ParseSingle
+Abc.MayTests.ParseSingle_Invariant
+Abc.MayTests.ParseDouble
+Abc.MayTests.ParseDouble_Invariant
+Abc.MayTests.ParseDecimal
+Abc.MayTests.ParseDecimal_Invariant
+Abc.MayTests.ParseSByte
+Abc.MayTests.ParseSByte_Invariant
+Abc.MayTests.ParseByte_Some
+Abc.MayTests.ParseUInt16
+Abc.MayTests.ParseUInt16_Invariant
+Abc.MayTests.ParseUInt32
+Abc.MayTests.ParseUInt32_Invariant
+Abc.MayTests.ParseUInt64
+Abc.MayTests.ParseUInt64_Invariant
+Abc.MayTests.ParseEnum
+Abc.MayTests.ParseEnum_MixedCase
+Abc.MayTests.ParseEnum_AnyInteger
+Abc.MayTests.ParseEnum_InvalidName
+Abc.MayTests.ParseEnum_CompositeValue
+Abc.MayTests.ParseEnum_CompositeValue_MixedCase
+Abc.MayTests.ParseEnum_Flags_InvalidName
+Abc.MayTests.ParseDateTime_WithNullOrWhiteSpace
+Abc.MayTests.ParseDateTimeExactly_InvalidArgs
+Abc.MayTests.ParseDateTime_String
+Abc.MayTests.ParseDateTime_String_FormatProvider_DateTimeStyles_U
+Abc.MayTests.ParseDateTime_String_FormatProvider_DateTimeStyles_G
+Abc.MayTests.ParseDateTime_TimeDesignators_NetCore
+Abc.MayTests.ParseDateTimeExact_ToStringThenParseExactRoundtrip
+Abc.MayTests.CreateUri_None
+Abc.MayTests.CreateUri_Some
+Abc.Utilities.EmptyIteratorTests.Iterate
+GetEnumerator() always returns the same iterator.
+GetEnumerator() (untyped) always returns the same iterator.
+Abc.Utilities.NeverEndingSequenceTests.Current
+Abc.Utilities.NeverEndingSequenceTests.Current_Untyped
+Abc.Utilities.NeverEndingSequenceTests.MoveNext
+Abc.Utilities.NeverEndingSequenceTests.Reset
+Abc.Utilities.NeverEndingSequenceTests.Dispose
+Abc.Utilities.SingletonListTests.Indexer_Get_InvalidIndex
+Abc.Utilities.SingletonListTests.Indexer_Get
+Abc.Utilities.SingletonListTests.Indexer_Set
+Abc.Utilities.SingletonListTests.IndexOf_OK
+Abc.Utilities.SingletonListTests.IndexOf_KO
+Abc.Utilities.SingletonListTests.Insert
+Abc.Utilities.SingletonListTests.RemoveAt
+Abc.Utilities.SingletonListTests.Count
+Abc.Utilities.SingletonListTests.IsReadOnly
+Abc.Utilities.SingletonListTests.Add
+Abc.Utilities.SingletonListTests.Clear
+Abc.Utilities.SingletonListTests.Contains_OK
+Abc.Utilities.SingletonListTests.Contains_KO
+Abc.Utilities.SingletonListTests.CopyTo
+Abc.Utilities.SingletonListTests.Remove
+GetEnumerator() returns a new iterator.
+Abc.Utilities.SingletonListTests.Iterate
+Abc.Tests.UnitTests.RuntimeSize
+Abc.Tests.UnitTests.Singleton
+Abc.Tests.UnitTests.Equality
+Abc.Tests.UnitTests.HashCode
+Abc.Tests.UnitTests.ToString_CurrentCulture
+Abc.Tests.UnitTests.Serialization
+Abc.Linq.ElementAtOrNoneTests.NullSource
+ElementAtOrNone() for int's returns the same result when called repeatedly.
+ElementAtOrNone() for string's returns the same result when called repeatedly.
+ElementAtOrDefault
+ElementAtOrDefaultRunOnce
+Abc.Linq.ElementAtOrNoneTests.NullableArray_NegativeIndex_ReturnsNone
+NullableArray_ValidIndex_ReturnsCorrectObjecvt
+Abc.Linq.FirstOrNoneTests.NullSource
+Abc.Linq.FirstOrNoneTests.NullSource_WithPredicate
+Abc.Linq.FirstOrNoneTests.NullPredicate
+FirstOrNone() for int's returns the same result when called repeatedly.
+FirstOrNone() for string's returns the same result when called repeatedly.
+FirstOrNone() for an empty IList<T>.
+FirstOrNone() for an IList<T> of one element.
+FirstOrNone() for an IList<T> of many elements whose first is none.
+FirstOrNone() for an IList<T> of many elements whose first is some.
+EmptyNotIListT
+OneElementNotIListT
+ManyElementsNotIListT
+EmptySource
+FirstOrNone() on a list of one element returns some.
+FirstOrNone() w/ predicate always false returns none.
+FirstOrNone() w/ predicate returns last.
+FirstOrNone() w/ predicate returns some (1).
+FirstOrNone() w/ predicate returns some (2).
+Abc.Linq.FoldAnyTests.NullSource
+Abc.Linq.FoldAnyTests.NullAccumulator
+Abc.Linq.FoldAnyTests.NullSource_WithPredicate
+Abc.Linq.FoldAnyTests.NullAccumulator_WithPredicate
+Abc.Linq.FoldAnyTests.NullPredicate
+Abc.Linq.LastOrNoneTests.NullSource
+Abc.Linq.LastOrNoneTests.NullSource_WithPredicate
+Abc.Linq.LastOrNoneTests.NullPredicate
+LastOrNone() for int's returns the same result when called repeatedly.
+LastOrNone() for string's returns the same result when called repeatedly.
+EmptyIListT
+IListTOneElement
+IListTManyElementsLastIsDefault
+IListTManyElementsLastIsNotDefault
+EmptyNotIListT
+OneElementNotIListT
+ManyElementsNotIListT
+EmptyIListSource
+OneElementIListTruePredicate
+ManyElementsIListPredicateFalseForAll
+IListPredicateTrueOnlyForLast
+IListPredicateTrueForSome
+IListPredicateTrueForSomeRunOnce
+EmptyNotIListSource
+OneElementNotIListTruePredicate
+ManyElementsNotIListPredicateFalseForAll
+NotIListPredicateTrueOnlyForLast
+NotIListPredicateTrueForSome
+NotIListPredicateTrueForSomeRunOnce
+Abc.Linq.ReduceAnyTests.NullSource
+Abc.Linq.ReduceAnyTests.NullAccumulator
+Abc.Linq.ReduceAnyTests.NullSource_WithPredicate
+Abc.Linq.ReduceAnyTests.NullAccumulator_WithPredicate
+Abc.Linq.ReduceAnyTests.NullPredicate
+Abc.Linq.SelectAnyTests.NullSource
+Abc.Linq.SelectAnyTests.NullSelector
+Abc.Linq.SelectAnyTests.Enumerable_Deferred
+Abc.Linq.SelectAnyTests.Array_OnlyNone
+Abc.Linq.SelectAnyTests.List_OnlyNone
+Abc.Linq.SelectAnyTests.ReadOnlyCollection_OnlyNone
+Abc.Linq.SelectAnyTests.Collection_OnlyNone
+Abc.Linq.SelectAnyTests.Enumerable_OnlyNone
+Abc.Linq.SelectAnyTests.Array_OnlySome
+Abc.Linq.SelectAnyTests.List_OnlySome
+Abc.Linq.SelectAnyTests.ReadOnlyCollection_OnlySome
+Abc.Linq.SelectAnyTests.Collection_OnlySome
+Abc.Linq.SelectAnyTests.Enumerable_OnlySome
+Abc.Linq.SelectAnyTests.Array_Mixed
+Abc.Linq.SelectAnyTests.List_Mixed
+Abc.Linq.SelectAnyTests.ReadOnlyCollection_Mixed
+Abc.Linq.SelectAnyTests.Collection_Mixed
+Abc.Linq.SelectAnyTests.Enumerable_Mixed
+Abc.Linq.SelectAnyTests.Array_CurrentAfterEnumeration
+Abc.Linq.SelectAnyTests.List_CurrentAfterEnumeration
+Abc.Linq.SelectAnyTests.ReadOnlyCollection_CurrentAfterEnumeration
+Abc.Linq.SelectAnyTests.Collection_CurrentAfterEnumeration
+Abc.Linq.SelectAnyTests.Enumerable_CurrentAfterEnumeration
+Abc.Linq.SelectAnyTests.Array_Twice
+Abc.Linq.SelectAnyTests.List_Twice
+Abc.Linq.SelectAnyTests.ReadOnlyCollection_Twice
+Abc.Linq.SelectAnyTests.Collection_Twice
+Abc.Linq.SelectAnyTests.Enumerable_Twice
+Abc.Linq.SingleOrNoneTests.NullSource
+Abc.Linq.SingleOrNoneTests.NullSource_WithPredicate
+Abc.Linq.SingleOrNoneTests.NullPredicate
+SingleOrNone() for int's returns the same result when called repeatedly.
+SingleOrNone() for string's returns the same result when called repeatedly.
+EmptyIList
+SingleElementIList
+ManyElementIList
+EmptyNotIList
+SingleElementNotIList
+ManyElementNotIList
+EmptySourceWithPredicate
+SingleElementPredicateTrue
+SingleElementPredicateFalse
+ManyElementsPredicateFalseForAll
+ManyElementsPredicateTrueForLast
+ManyElementsPredicateTrueForFirstAndFifth
+FindSingleMatch
+RunOnce
+Abc.Linq.WhereAnyTests.NullSource
+Abc.Linq.WhereAnyTests.NullPredicate
+Abc.Linq.WhereAnyTests.Enumerable_Deferred
+Abc.Linq.WhereAnyTests.Array_AlwaysTrue
+Abc.Linq.WhereAnyTests.List_AlwaysTrue
+Abc.Linq.WhereAnyTests.ReadOnlyCollection_AlwaysTrue
+Abc.Linq.WhereAnyTests.Collection_AlwaysTrue
+Abc.Linq.WhereAnyTests.Enumerable_AlwaysTrue
+Abc.Linq.WhereAnyTests.Array_AlwaysFalse
+Abc.Linq.WhereAnyTests.List_AlwaysFalse
+Abc.Linq.WhereAnyTests.ReadOnlyCollection_AlwaysFalse
+Abc.Linq.WhereAnyTests.Collection_AlwaysFalse
+Abc.Linq.WhereAnyTests.Enumerable_AlwaysFalse
+Abc.Linq.WhereAnyTests.Array_TrueOrFalse
+Abc.Linq.WhereAnyTests.List_TrueOrFalse
+Abc.Linq.WhereAnyTests.ReadOnlyCollection_TrueOrFalse
+Abc.Linq.WhereAnyTests.Collection_TrueOrFalse
+Abc.Linq.WhereAnyTests.Enumerable_TrueOrFalse
+Abc.Linq.WhereAnyTests.Array_BooleanOrUnknown
+Abc.Linq.WhereAnyTests.List_BooleanOrUnknown
+Abc.Linq.WhereAnyTests.ReadOnlyCollection_BooleanOrUnknown
+Abc.Linq.WhereAnyTests.Collection_BooleanOrUnknown
+Abc.Linq.WhereAnyTests.Enumerable_BooleanOrUnknown
+Abc.Linq.ZipAnyTests.NullFirst
+Abc.Linq.ZipAnyTests.NullSecond
+Abc.Linq.ZipAnyTests.NullResultSelector
+Abc.Linq.ZipAnyTests.Enumerable_Deferred
+Abc.Linq.ZipAnyTests.ImplicitTypeParameters_OnlyNone
+Abc.Linq.ZipAnyTests.ImplicitTypeParameters_OnlySome
+Abc.Linq.ZipAnyTests.ImplicitTypeParameters_Mixed
+Abc.Linq.ZipAnyTests.ExplicitTypeParameters
+Abc.MaybeTests+MaybeHelper.BindAsync_None_WithNullBinder
+Abc.MaybeTests+MaybeHelper.BindAsync_Some_WithNullBinder
+Abc.MaybeTests+MaybeHelper.BindAsync_None
+Abc.MaybeTests+MaybeHelper.BindAsync_None_Sync
+Abc.MaybeTests+MaybeHelper.BindAsync_Some_WithBinderReturningNone
+Abc.MaybeTests+MaybeHelper.BindAsync_Some_WithBinderReturningNone_Sync
+Abc.MaybeTests+MaybeHelper.BindAsync_Some_WithBinderReturningSome
+Abc.MaybeTests+MaybeHelper.BindAsync_Some_WithBinderReturningSome_Sync
+Abc.MaybeTests+MaybeHelper.BindAsync_SomeInt32
+Abc.MaybeTests+MaybeHelper.BindAsync_SomeInt32_Sync
+Abc.MaybeTests+MaybeHelper.BindAsync_SomeInt64
+Abc.MaybeTests+MaybeHelper.BindAsync_SomeInt64_Sync
+Abc.MaybeTests+MaybeHelper.BindAsync_SomeUri
+Abc.MaybeTests+MaybeHelper.BindAsync_SomeUri_Sync
+Abc.MaybeTests+MaybeHelper.SelectAsync_None_WithNullSelector
+Abc.MaybeTests+MaybeHelper.SelectAsync_Some_WithNullSelector
+Abc.MaybeTests+MaybeHelper.SelectAsync_None
+Abc.MaybeTests+MaybeHelper.SelectAsync_None_Sync
+Abc.MaybeTests+MaybeHelper.SelectAsync_SomeInt32
+Abc.MaybeTests+MaybeHelper.SelectAsync_SomeInt32_Sync
+Abc.MaybeTests+MaybeHelper.SelectAsync_SomeInt64
+Abc.MaybeTests+MaybeHelper.SelectAsync_SomeInt64_Sync
+Abc.MaybeTests+MaybeHelper.SelectAsync_SomeUri
+Abc.MaybeTests+MaybeHelper.SelectAsync_SomeUri_Sync
+Abc.MaybeTests+MaybeHelper.OrElseAsync_None_WithNullOther
+Abc.MaybeTests+MaybeHelper.OrElseAsync_Some_WithNullOther
+Abc.MaybeTests+MaybeHelper.OrElseAsync_None
+Abc.MaybeTests+MaybeHelper.OrElseAsync_None_Sync
+Abc.MaybeTests+MaybeHelper.OrElseAsync_Some
+Abc.MaybeTests+MaybeHelper.OrElseAsync_Some_Sync
+Abc.MaybeTests+MaybeHelper.OrElseAsync_SomeInt32
+Abc.MaybeTests+MaybeHelper.OrElseAsync_SomeInt32_Sync
+Abc.MaybeTests+MaybeHelper.OrElseAsync_SomeText
+Abc.MaybeTests+MaybeHelper.OrElseAsync_SomeText_Sync
+Abc.MaybeTests+MaybeHelper.OrElseAsync_SomeUri
+Abc.MaybeTests+MaybeHelper.OrElseAsync_SomeUri_Sync
+Abc.MaybeTests+Structural.CompareTo_None_WithNullComparer
+Abc.MaybeTests+Structural.CompareTo_Some_WithNullComparer
+Abc.MaybeTests+Structural.CompareTo
+Abc.MaybeTests+Structural.Equals_WithNullComparer
+Abc.MaybeTests+Structural.Equals_None_ForValueT
+Abc.MaybeTests+Structural.Equals_Some_ForValueT
+Abc.MaybeTests+Structural.Equals_None_ForReferenceT
+Abc.MaybeTests+Structural.Equals_Some_ForReferenceT_WithDefaultComparer
+Abc.MaybeTests+Structural.Equals_Some_ForReferenceT_WithCustomComparer
+Abc.MaybeTests+Structural.GetHashCode_WithNullComparer
+Abc.MaybeTests+Structural.GetHashCode_None_WithDefaultComparer
+Abc.MaybeTests+Structural.GetHashCode_None_WithCustomComparer
+Abc.MaybeTests+Structural.GetHashCode_Some_WithDefaultComparer
+Abc.MaybeTests+Structural.GetHashCode_Some_WithCustomComparer
