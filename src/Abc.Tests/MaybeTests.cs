@@ -49,17 +49,14 @@ namespace Abc
         private static readonly Maybe<string> NoText = Maybe<string>.None;
         private static readonly Maybe<string> SomeText = Maybe.SomeOrNone(MyText);
 
-        private static readonly Uri MyUri;
+        private static readonly Uri MyUri = My_.Uri;
         private static readonly Maybe<Uri> NoUri = Maybe<Uri>.None;
-        private static readonly Maybe<Uri> SomeUri;
+        private static readonly Maybe<Uri> SomeUri = Maybe.SomeOrNone(My_.Uri);
 
-#pragma warning disable CA1810 // Initialize reference type static fields inline
-        static MaybeTests()
+        private static class My_
         {
-            MyUri = new Uri("http://www.narvalo.org");
-            SomeUri = Maybe.SomeOrNone(MyUri);
+            internal static readonly Uri Uri = new Uri("http://www.narvalo.org");
         }
-#pragma warning restore CA1810
 
         [Pure]
         public static Func<Task<Maybe<T>>> ReturnSync_<T>(T result) where T : notnull
@@ -107,7 +104,7 @@ namespace Abc
     // Factories.
     public partial class MaybeTests
     {
-        #region None & None<T>()
+        #region None
 
         [Fact]
         public static void None_IsDefault_ForValueT()
@@ -177,6 +174,10 @@ namespace Abc
             Assert.None(Maybe<object?>.None);
         }
 
+        #endregion
+
+        #region None<T>()
+
         [Fact]
         public static void NoneT_IsNone_ForValueT()
         {
@@ -213,7 +214,7 @@ namespace Abc
 
         #endregion
 
-        #region Of(), Some() & SomeOrNone()
+        #region Of()
 
         [Fact]
         public static void Of_ForValueT()
@@ -266,6 +267,10 @@ namespace Abc
             Assert.None(Maybe.Of((object?)null));
             Assert.Some(obj, Maybe.Of((object?)obj));
         }
+
+        #endregion
+
+        #region Some() & SomeOrNone()
 
         [Fact]
         public static void Some()

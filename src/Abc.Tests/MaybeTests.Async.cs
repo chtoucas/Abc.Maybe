@@ -267,7 +267,7 @@ namespace Abc
     // Extension methods (delayed validation).
     public partial class MaybeTests
     {
-        public static class HelperClass
+        public static class MaybeHelper
         {
             #region BindAsync()
 
