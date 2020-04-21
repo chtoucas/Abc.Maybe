@@ -11,6 +11,10 @@
     <DelaySign>false</DelaySign>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" $(GenerateDocumentationFile) == 'true' and $(AssemblyName) != 'Abc.Maybe' ">
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
       <PrivateAssets>all</PrivateAssets>

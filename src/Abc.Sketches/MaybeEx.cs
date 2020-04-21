@@ -99,7 +99,7 @@ namespace Abc
 
         /// <summary>
         /// Discards the enclosed value while retaining the value of the property
-        /// <see cref="IsNone"/>.
+        /// <see cref="Maybe{T}.IsNone"/>.
         /// </summary>
         [Pure]
         public static Maybe<Unit> Skip<T>(this Maybe<T> @this) =>

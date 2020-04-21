@@ -5,7 +5,9 @@
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DefineConstants>$(DefineConstants);NO_INTERNALS_VISIBLE_TO</DefineConstants>
+
     <AllowedOutputExtensionsInPackageBuildOutputFolder
       Condition=" $(DebugType) != 'embedded' ">$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 

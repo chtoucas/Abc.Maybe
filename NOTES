@@ -51,6 +51,13 @@ Tasks
 - FIXME, TODO and REVIEW within the code.
 - XML comments with complete examples.
   https://github.com/dotnet/dotnet-api-docs/wiki
+  IMPORTANT: when done, replace in Abc.Maybe.csproj
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  by
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);CS1591</WarningsNotAsErrors>
+  See if we can do better in Directory.Build.targets (NoWarn).
+  Add in Retail.targets
+    <NoWarn />
 - Multitargeting:
   * Target net461? Review !NETSTANDARD2.0 in code.
     https://github.com/dotnet/announcements/issues/31
