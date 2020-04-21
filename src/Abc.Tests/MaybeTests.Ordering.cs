@@ -651,20 +651,16 @@ namespace Abc
             }
 
             // Shorter strings come first.
-            internal sealed class CustomLengthComparer : IComparer<string>, IComparer
+            internal sealed class CustomLengthComparer : IComparer
             {
-                public int Compare(string? x, string? y)
-                {
-                    if (x is null) { return y is null ? 0 : -1; }
-                    if (y is null) { return 1; }
-                    return -x.Length.CompareTo(y.Length);
-                }
-
                 public int Compare(object? x, object? y)
                 {
                     if (x is null) { return y is null ? 0 : -1; }
                     if (y is null) { return 1; }
-                    if (x is string left && y is string right) { return Compare(left, right); }
+                    if (x is string left && y is string right)
+                    {
+                        return -left.Length.CompareTo(right.Length);
+                    }
                     throw new ArgumentException("Type of argument is not compatible with string.");
                 }
             }
