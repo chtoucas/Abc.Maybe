@@ -119,7 +119,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void OpComparison_Some_Some_WhenNotEqual_Throws_ForNotComparable()
+        public static void OpComparison_Some_Some_WhenNotEqual_ForNotComparable_Throws()
         {
             // Arrange
             var x = AnyT.Some;
@@ -135,6 +135,9 @@ namespace Abc
 
         #region CompareTo()
 
+        // If we add/update tests here, do the same w/ IComparable.CompareTo()
+        // and IStructuralComparable.CompareTo().
+
         [Fact]
         public static void CompareTo_None_WithNone() => Assert.Equal(0, Ø.CompareTo(Ø));
 
@@ -143,21 +146,33 @@ namespace Abc
             Assert.Equal(0, AnyT.None.CompareTo(AnyT.None));
 
         [Fact]
-        public static void CompareTo_None_WithSome() => Assert.Equal(-1, Ø.CompareTo(One));
+        public static void CompareTo_None_WithSome()
+        {
+            Assert.Equal(-1, Ø.CompareTo(One));
+            Assert.Equal(-1, Ø.CompareTo(Two));
+        }
 
         [Fact]
         public static void CompareTo_None_WithSome_ForNotComparable() =>
             Assert.Equal(-1, AnyT.None.CompareTo(AnyT.Some));
 
         [Fact]
-        public static void CompareTo_Some_WithNone() => Assert.Equal(1, One.CompareTo(Ø));
+        public static void CompareTo_Some_WithNone()
+        {
+            Assert.Equal(1, One.CompareTo(Ø));
+            Assert.Equal(1, Two.CompareTo(Ø));
+        }
 
         [Fact]
         public static void CompareTo_Some_WithNone_ForNotComparable() =>
             Assert.Equal(1, AnyT.Some.CompareTo(AnyT.None));
 
         [Fact]
-        public static void CompareTo_Some_WithSome_AndEqual() => Assert.Equal(0, One.CompareTo(One));
+        public static void CompareTo_Some_WithSome_AndEqual()
+        {
+            Assert.Equal(0, One.CompareTo(One));
+            Assert.Equal(0, Two.CompareTo(Two));
+        }
 
         [Fact]
         public static void CompareTo_Some_WithSome_AndEqual_ForNotComparable()
@@ -178,12 +193,15 @@ namespace Abc
         }
 
         [Fact]
-        public static void CompareTo_Some_WithSome_AndNotEqual_Throws_ForNotComparable() =>
+        public static void CompareTo_Some_WithSome_AndNotEqual_ForNotComparable_Throws() =>
             Assert.ThrowsArgexn(() => AnyT.Some.CompareTo(AnyT.Some));
 
         #endregion
 
-        #region CompareTo() from IComparable
+        #region IComparable.CompareTo()
+
+        // If we add/update tests here, do the same w/ CompareTo() and
+        // IStructuralComparable.CompareTo().
 
         [Fact]
         public static void Comparable_None_WithNull()
@@ -224,6 +242,10 @@ namespace Abc
             Assert.ThrowsArgexn("obj", () => one.CompareTo(NoText));
             Assert.ThrowsArgexn("obj", () => one.CompareTo(SomeText));
         }
+
+        //
+        // What follows is "identical" to what we do w/ CompareTo().
+        //
 
         [Fact]
         public static void Comparable_None_WithNone()
@@ -314,7 +336,7 @@ namespace Abc
         }
 
         [Fact]
-        public static void Comparable_Some_WithSome_AndNotEqual_Throws_ForNotComparable()
+        public static void Comparable_Some_WithSome_AndNotEqual_ForNotComparable_Throws()
         {
             // Arrange
             IComparable some = AnyT.Some;
@@ -328,7 +350,165 @@ namespace Abc
     // Structural comparisons.
     public partial class MaybeTests
     {
-        // Ordering.
+        // Tests identical to the those written for IComparable.CompareTo().
+        // 1) If we add/update tests here, do the same w/ CompareTo() and
+        //    IComparable.CompareTo().
+        // 2) Use AnyComparer when any comparer will do the job.
+        public static partial class Structural
+        {
+            [Fact]
+            public static void Comparable_None_WithNull()
+            {
+                // Arrange
+                var cmp = new AnyComparer();
+                IStructuralComparable none = Ø;
+                // Act & Assert
+                Assert.Equal(1, none.CompareTo(null, cmp));
+            }
+
+            [Fact]
+            public static void Comparable_Some_WithNull()
+            {
+                // Arrange
+                var cmp = new AnyComparer();
+                IStructuralComparable one = One;
+                // Act & Assert
+                Assert.Equal(1, one.CompareTo(null, cmp));
+            }
+
+            [Fact]
+            public static void Comparable_None_Throws_WithInvalidType()
+            {
+                // Arrange
+                var cmp = new AnyComparer();
+                IStructuralComparable none = Ø;
+                // Act & Assert
+                Assert.ThrowsArgexn("other", () => none.CompareTo(new object(), cmp));
+                Assert.ThrowsArgexn("other", () => none.CompareTo(NoText, cmp));
+                Assert.ThrowsArgexn("other", () => none.CompareTo(SomeText, cmp));
+            }
+
+            [Fact]
+            public static void Comparable_Some_Throws_WithInvalidType()
+            {
+                // Arrange
+                var cmp = new AnyComparer();
+                IStructuralComparable one = One;
+                // Act & Assert
+                Assert.ThrowsArgexn("other", () => one.CompareTo(new object(), cmp));
+                Assert.ThrowsArgexn("other", () => one.CompareTo(NoText, cmp));
+                Assert.ThrowsArgexn("other", () => one.CompareTo(SomeText, cmp));
+            }
+
+            [Fact]
+            public static void Comparable_None_WithNone()
+            {
+                // Arrange
+                var cmp = new AnyComparer();
+                IStructuralComparable none = Ø;
+                // Act & Assert
+                Assert.Equal(0, none.CompareTo(Ø, cmp));
+            }
+
+            [Fact]
+            public static void Comparable_None_WithNone_ForNotComparable()
+            {
+                // Arrange
+                var cmp = new AnyComparer();
+                IStructuralComparable none = AnyT.None;
+                // Act & Assert
+                Assert.Equal(0, none.CompareTo(AnyT.None, cmp));
+            }
+
+            [Fact]
+            public static void Comparable_None_WithSome()
+            {
+                // Arrange
+                var cmp = new AnyComparer();
+                IStructuralComparable none = Ø;
+                // Act & Assert
+                Assert.Equal(-1, none.CompareTo(One, cmp));
+                Assert.Equal(-1, none.CompareTo(Two, cmp));
+            }
+
+            [Fact]
+            public static void Comparable_None_WithSome_ForNotComparable()
+            {
+                // Arrange
+                var cmp = new AnyComparer();
+                IStructuralComparable none = AnyT.None;
+                // Act & Assert
+                Assert.Equal(-1, none.CompareTo(AnyT.Some, cmp));
+            }
+
+            [Fact]
+            public static void Comparable_Some_WithNone()
+            {
+                // Arrange
+                var cmp = new AnyComparer();
+                IStructuralComparable one = One;
+                IStructuralComparable two = Two;
+                // Act & Assert
+                Assert.Equal(1, one.CompareTo(Ø, cmp));
+                Assert.Equal(1, two.CompareTo(Ø, cmp));
+            }
+
+            [Fact]
+            public static void Comparable_Some_WithNone_ForNotComparable()
+            {
+                // Arrange
+                var cmp = new AnyComparer();
+                IStructuralComparable some = AnyT.Some;
+                // Act & Assert
+                Assert.Equal(1, some.CompareTo(AnyT.None, cmp));
+            }
+
+            [Fact]
+            public static void Comparable_Some_WithSome_AndEqual()
+            {
+                // Arrange
+                var cmp = Comparer<int>.Default;
+                IStructuralComparable one = One;
+                // Act & Assert
+                Assert.Equal(0, one.CompareTo(One, cmp));
+            }
+
+            [Fact]
+            public static void Comparable_Some_WithSome_AndEqual_ForNotComparable()
+            {
+                // Arrange
+                var cmp = Comparer<AnyT>.Default;
+                var anyT = AnyT.Value;
+                IStructuralComparable x = Maybe.SomeOrNone(anyT);
+                var y = Maybe.SomeOrNone(anyT);
+                // Act & Assert
+                Assert.Equal(0, x.CompareTo(y, cmp));
+            }
+
+            [Fact]
+            public static void Comparable_Some_WithSome_AndNotEqual()
+            {
+                // Arrange
+                var cmp = Comparer<int>.Default;
+                IStructuralComparable one = One;
+                IStructuralComparable two = Two;
+                // Act & Assert
+                Assert.Equal(-1, one.CompareTo(Two, cmp));
+                Assert.Equal(1, two.CompareTo(One, cmp));
+            }
+
+            [Fact]
+            public static void Comparable_Some_WithSome_AndNotEqual_ForNotComparable_Throws()
+            {
+                // Arrange
+                var cmp = Comparer<AnyT>.Default;
+                IStructuralComparable some = AnyT.Some;
+                // Act & Assert
+                Assert.ThrowsArgexn(() => some.CompareTo(AnyT.Some, cmp));
+            }
+        }
+
+        // Specific tests.
         public static partial class Structural
         {
             [Fact]
@@ -349,31 +529,144 @@ namespace Abc
                 Assert.ThrowsAnexn("comparer", () => one.CompareTo(One, null!));
             }
 
+            //
+            // The custom comparer (IComparer) does get called!
+            //
+
             [Fact]
-            public static void CompareTo()
+            public static void Comparable_Some_WithSome_AndEqual_CallsComparer()
+            {
+                // Arrange
+                IStructuralComparable one = One;
+                // Act & Assert
+                Assert.Throws<UnexpectedCallException>(() => one.CompareTo(One, new AnyComparer()));
+            }
+
+            [Fact]
+            public static void Comparable_Some_WithSome_AndEqual_ForNotComparable_CallsComparer()
+            {
+                // Arrange
+                var anyT = AnyT.Value;
+                IStructuralComparable x = Maybe.SomeOrNone(anyT);
+                var y = Maybe.SomeOrNone(anyT);
+                // Act & Assert
+                Assert.Throws<UnexpectedCallException>(() => x.CompareTo(y, new AnyComparer()));
+            }
+
+            [Fact]
+            public static void Comparable_Some_WithSome_AndNotEqual_CallsComparer()
+            {
+                // Arrange
+                IStructuralComparable one = One;
+                // Act & Assert
+                Assert.Throws<UnexpectedCallException>(() => one.CompareTo(Two, new AnyComparer()));
+            }
+
+            [Fact]
+            public static void Comparable_Some_WithSome_AndNotEqual_ForNotComparable_CallsComparer()
+            {
+                // Arrange
+                IStructuralComparable some = AnyT.Some;
+                // Act & Assert
+                Assert.Throws<UnexpectedCallException>(() => some.CompareTo(AnyT.Some, new AnyComparer()));
+            }
+
+            //
+            // The custom comparer (IComparer<T>) must be compatible with the underlying type.
+            //
+
+            [Fact]
+            public static void Comparable_Some_WithSome_AndEqual_Throws_WithNotCompatibleComparer()
+            {
+                // Arrange
+                var cmp = Comparer<AnyT>.Default;
+                IStructuralComparable one = One;
+                // Act & Assert
+                Assert.ThrowsArgexn(() => one.CompareTo(One, cmp));
+            }
+
+            [Fact]
+            public static void Comparable_Some_WithSome_AndEqual_ForNotComparable_Throws_WithNotCompatibleComparer()
             {
                 // Arrange
                 var cmp = Comparer<int>.Default;
-                IStructuralComparable none = Ø;
-                IStructuralComparable one = One;
-                IStructuralComparable two = Two;
-
+                var anyT = AnyT.Value;
+                IStructuralComparable x = Maybe.SomeOrNone(anyT);
+                var y = Maybe.SomeOrNone(anyT);
                 // Act & Assert
-                Assert.ThrowsArgexn("other", () => none.CompareTo(new object(), cmp));
-                Assert.ThrowsArgexn("other", () => one.CompareTo(new object(), cmp));
+                Assert.ThrowsArgexn(() => x.CompareTo(y, cmp));
+            }
 
-                Assert.Equal(1, none.CompareTo(null, cmp));
-                Assert.Equal(1, one.CompareTo(null, cmp));
+            [Fact]
+            public static void Comparable_Some_WithSome_AndNotEqual_Throws_WithNotCompatibleComparer()
+            {
+                // Arrange
+                var cmp = Comparer<AnyT>.Default;
+                IStructuralComparable one = One;
+                // Act & Assert
+                Assert.ThrowsArgexn(() => one.CompareTo(Two, cmp));
+            }
 
-                // With None
-                Assert.Equal(1, one.CompareTo(Ø, cmp));
-                Assert.Equal(-1, none.CompareTo(One, cmp));
-                Assert.Equal(0, none.CompareTo(Ø, cmp));
+            // NB: actually identical to
+            /// <seealso cref="Comparable_Some_WithSome_AndNotEqual_ForNotComparable_Throws"/>
+            [Fact]
+            public static void Comparable_Some_WithSome_AndNotEqual_ForNotComparable_Throws_WithNotCompatibleComparer()
+            {
+                // Arrange
+                var cmp = Comparer<int>.Default;
+                IStructuralComparable some = AnyT.Some;
+                // Act & Assert
+                Assert.ThrowsArgexn(() => some.CompareTo(AnyT.Some, cmp));
+            }
 
-                // Without None
-                Assert.Equal(1, two.CompareTo(One, cmp));
-                Assert.Equal(0, one.CompareTo(One, cmp));
-                Assert.Equal(-1, one.CompareTo(Two, cmp));
+            //
+            // TODO: Using a custom comparer.
+            //
+
+            [Fact]
+            public static void Comparable_Some_WithSome_AndEqual_WithCustomComparer()
+            {
+                // Arrange
+                var cmp = new CustomLengthComparer();
+                IStructuralComparable x = SomeText;
+                var y = SomeText;
+                // Act & Assert
+                Assert.Equal(0, x.CompareTo(y, cmp));
+            }
+
+            [Fact]
+            public static void Comparable_Some_WithSome_AndNotEqual_WithCustomComparer()
+            {
+                // Arrange
+                var cmp = new CustomLengthComparer();
+                IStructuralComparable x = Maybe.SomeOrNone("XXX");
+                // Act & Assert
+                Assert.Equal(-1, x.CompareTo(Maybe.SomeOrNone(""), cmp));
+                Assert.Equal(-1, x.CompareTo(Maybe.SomeOrNone("Y"), cmp));
+                Assert.Equal(-1, x.CompareTo(Maybe.SomeOrNone("YY"), cmp));
+                Assert.Equal(0, x.CompareTo(Maybe.SomeOrNone("YYY"), cmp));
+                Assert.Equal(1, x.CompareTo(Maybe.SomeOrNone("YYYY"), cmp));
+                Assert.Equal(1, x.CompareTo(Maybe.SomeOrNone("YYYYY"), cmp));
+                Assert.Equal(1, x.CompareTo(Maybe.SomeOrNone("YYYYYY"), cmp));
+            }
+
+            // Shorter strings come first.
+            internal sealed class CustomLengthComparer : IComparer<string>, IComparer
+            {
+                public int Compare(string? x, string? y)
+                {
+                    if (x is null) { return y is null ? 0 : -1; }
+                    if (y is null) { return 1; }
+                    return -x.Length.CompareTo(y.Length);
+                }
+
+                public int Compare(object? x, object? y)
+                {
+                    if (x is null) { return y is null ? 0 : -1; }
+                    if (y is null) { return 1; }
+                    if (x is string left && y is string right) { return Compare(left, right); }
+                    throw new ArgumentException("Type of argument is not compatible with string.");
+                }
             }
         }
     }
