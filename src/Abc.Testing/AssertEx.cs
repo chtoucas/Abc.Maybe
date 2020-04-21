@@ -33,14 +33,16 @@ namespace Abc
     {
         /// <summary>
         /// Verifies that the specified delegate throws an exception of type
-        /// <see cref="ArgumentException"/> (and not a derived exception type).
+        /// <see cref="ArgumentException"/> (and not a derived exception type)
+        /// with a null parameter name.
         /// </summary>
         public static void ThrowsArgexn(Action testCode) =>
             Throws<ArgumentException>(null, testCode);
 
         /// <summary>
         /// Verifies that the specified delegate throws an exception of type
-        /// <see cref="ArgumentException"/> (and not a derived exception type).
+        /// <see cref="ArgumentException"/> (and not a derived exception type)
+        /// with a null parameter name.
         /// </summary>
         public static void ThrowsArgexn(Func<object> testCode) =>
             Throws<ArgumentException>(null, testCode);

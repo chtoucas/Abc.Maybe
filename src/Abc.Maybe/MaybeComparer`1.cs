@@ -54,6 +54,7 @@ namespace Abc
         [Pure]
         bool IEqualityComparer.Equals(object? x, object? y)
         {
+            // REVIEW: x == y?
             if (ReferenceEquals(x, y)) { return true; }
             if (x is null || y is null) { return false; }
             if (x is Maybe<T> left && y is Maybe<T> right) { return Equals(left, right); }
