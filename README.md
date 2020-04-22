@@ -16,7 +16,7 @@ Abc.Maybe features an Option type for .NET.
 - [ ] Being a good citizen of the .NET ecosystem.
   - [x] Equatable, comparable, structural.
   - [x] NRT-aware (NRT = Nullable Reference Types).
-  - [x] Debuggable.
+  - [x] Debugger-friendly.
   - [ ] Supported frameworks:
     - [x] .NET Standard 2.0 for recent systems.
     - [ ] .NET Framework 4.6.1 for older systems.
