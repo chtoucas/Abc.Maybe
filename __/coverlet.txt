@@ -1,5 +1,5 @@
 ﻿Summary
-  Generated on: 17/04/2020 - 17:40:22
+  Generated on: 22/04/2020 - 08:09:06
   Parser: OpenCoverParser
   Assemblies: 1
   Classes: 12
@@ -8,7 +8,7 @@
   Covered lines: 719
   Uncovered lines: 0
   Coverable lines: 719
-  Total lines: 3011
+  Total lines: 3026
 
 Abc.Maybe                              100.0%
   Abc.DefaultMaybeComparer`1           100.0%

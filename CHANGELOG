@@ -12,6 +12,8 @@ Changed
 Internal Changes
 - Rename project Abc.Future to Abc.Sketches.
 - Ensure that all projects have well-formed XML comments.
+- Upgraded packages:
+  * Microsoft.NET.Test.Sdk 16.5.0 -> 16.6.0.
 
 2020-04-17, version 1.0.0-beta2
 -------------------------------
