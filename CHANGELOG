@@ -11,6 +11,7 @@ Changed
 
 Internal Changes
 - Rename project Abc.Future to Abc.Sketches.
+- Ensure that all projects have well-formed XML comments.
 
 2020-04-17, version 1.0.0-beta2
 -------------------------------

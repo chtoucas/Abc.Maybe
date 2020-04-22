@@ -14,6 +14,7 @@
     <Retail Condition=" $(Retail) != 'true' ">false</Retail>
   </PropertyGroup>
 
+  <!-- Settings for Retail builds -->
   <Import Project="$(EngRoot)$(AssemblyName).props" Condition=" $(Retail) == 'true' " />
   <Import Project="$(EngRoot)Retail.targets" Condition=" $(Retail) == 'true' " />
 
@@ -28,8 +29,7 @@
 
   <PropertyGroup Condition=" $(Configuration) == 'Release' ">
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);CS1591</NoWarn>
-    <!--<WarningsNotAsErrors>$(WarningsNotAsErrors);CS1591</WarningsNotAsErrors>-->
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);CS1591</WarningsNotAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
