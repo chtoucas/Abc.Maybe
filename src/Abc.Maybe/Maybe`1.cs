@@ -104,6 +104,9 @@ namespace Abc
     public readonly partial struct Maybe<T>
         : IEquatable<Maybe<T>>, IComparable<Maybe<T>>, IComparable,
             IStructuralEquatable, IStructuralComparable
+#if NONGENERIC_MAYBE
+            , IMaybe
+#endif
     {
         // We use explicit backing fields to be able to quickly find outside the
         // struct all occurences of the corresponding properties.
@@ -158,6 +161,12 @@ namespace Abc
         [MaybeNull]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal T Value { get { Debug.Assert(_isSome); return _value; } }
+
+#if NONGENERIC_MAYBE
+        bool IMaybe.IsSome => _isSome;
+
+        object? IMaybe.Value { get { Debug.Assert(_isSome); return _value; } }
+#endif
 
         [ExcludeFromCodeCoverage]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -638,7 +647,7 @@ namespace Abc
             if (obj is null) { return 1; }
             if (!(obj is Maybe<T> maybe))
             {
-                throw EF.InvalidType(nameof(obj), typeof(Maybe<>), obj);
+                throw EF.InvalidType(nameof(obj), typeof(Maybe<T>), obj);
             }
 
             return CompareTo(maybe);
@@ -651,7 +660,9 @@ namespace Abc
             if (comparer is null) { throw new Anexn(nameof(comparer)); }
 
             if (other is null) { return 1; }
-            if (!(other is Maybe<T> maybe))
+
+#if NONGENERIC_MAYBE
+            if (!(other is IMaybe maybe))
             {
                 throw EF.InvalidType(nameof(other), typeof(Maybe<>), other);
             }
@@ -660,8 +671,21 @@ namespace Abc
             // be for T not for Maybe<T>, in particular it is not meant to work
             // with MaybeComparer<T>.Default.
             return _isSome
+                ? maybe.IsSome ? comparer.Compare(_value, maybe.Value) : 1
+                : maybe.IsSome ? -1 : 0;
+#else
+            if (!(other is Maybe<T> maybe))
+            {
+                throw EF.InvalidType(nameof(other), typeof(Maybe<T>), other);
+            }
+
+            // NB: structural comparison means that the comparer is expected to
+            // be for T not for Maybe<T>, in particular it is not meant to work
+            // with MaybeComparer<T>.Default.
+            return _isSome
                 ? maybe._isSome ? comparer.Compare(_value, maybe._value) : 1
                 : maybe._isSome ? -1 : 0;
+#endif
         }
     }
 

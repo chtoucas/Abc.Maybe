@@ -14,7 +14,7 @@ Abc.Maybe features an Option type for .NET.
   - [x] Extensible.
   - [x] Incurring no significant overhead when used wisely.
 - [ ] Being a good citizen of the .NET ecosystem.
-  - [x] Equatable, comparable, structural.
+  - [x] Equatable and comparable, both optionally structural.
   - [x] NRT-aware (NRT = Nullable Reference Types).
   - [x] Debugger-friendly.
   - [ ] Supported frameworks:

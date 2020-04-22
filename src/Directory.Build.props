@@ -48,6 +48,7 @@
 
   <!-- Optional symbols -->
   <PropertyGroup>
+    <DefineConstants>$(DefineConstants);NONGENERIC_MAYBE</DefineConstants>
     <!--<DefineConstants>$(DefineConstants);PLAIN_LINQ</DefineConstants>-->
     <!--<DefineConstants>$(DefineConstants);PURE_MAYBE</DefineConstants>-->
   </PropertyGroup>
