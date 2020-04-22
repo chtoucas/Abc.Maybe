@@ -512,7 +512,7 @@ namespace Abc
         public static partial class Structural
         {
             [Fact]
-            public static void CompareTo_None_WithNullComparer()
+            public static void Comparable_None_WithNullComparer()
             {
                 // Arrange
                 IStructuralComparable none = Ø;
@@ -521,7 +521,7 @@ namespace Abc
             }
 
             [Fact]
-            public static void CompareTo_Some_WithNullComparer()
+            public static void Comparable_Some_WithNullComparer()
             {
                 // Arrange
                 IStructuralComparable one = One;
@@ -635,7 +635,7 @@ namespace Abc
             }
 
             [Fact]
-            public static void Comparable_Some_WithSome_AndNotEqual_WithCustomComparer()
+            public static void Comparable_Some_WithSome_AndNotEqual_WithCustomComparer_ForString()
             {
                 // Arrange
                 var cmp = new ReversedLengthComparer();
@@ -648,6 +648,66 @@ namespace Abc
                 Assert.Equal(1, x.CompareTo(Maybe.SomeOrNone("YYYY"), cmp));
                 Assert.Equal(1, x.CompareTo(Maybe.SomeOrNone("YYYYY"), cmp));
                 Assert.Equal(1, x.CompareTo(Maybe.SomeOrNone("YYYYYY"), cmp));
+            }
+
+            [Fact]
+            public static void Comparable_Some_WithSome_AndNotEqual_WithCustomComparer_ForDouble()
+            {
+                // Arrange
+                var cmp = new ReversedNaNComparer();
+                var other = new ReversedLengthComparer();
+                var x = Maybe.Some(Double.NaN);
+                var y = Maybe.Some(1d);
+
+                // Act & Assert
+                Assert.Equal(-1, x.CompareTo(y));
+                Assert.Equal(-1, ((IStructuralComparable)x).CompareTo(y, other));
+                Assert.Equal(1, ((IStructuralComparable)x).CompareTo(y, cmp));
+
+                Assert.Equal(1, y.CompareTo(x));
+                Assert.Equal(1, ((IStructuralComparable)y).CompareTo(x, other));
+                Assert.Equal(-1, ((IStructuralComparable)y).CompareTo(x, cmp));
+            }
+
+            [Fact(Skip = "WIP")]
+            public static void Comparable_Some_WithSome_AndNotEqual_WithCustomComparer_Hybrid()
+            {
+                // Arrange
+                var cmp = new ReversedNaNComparer();
+                var other = new ReversedLengthComparer();
+                var x = Maybe.Some(Double.NaN);
+                var y = Maybe.Some(1f);
+
+                // Act & Assert
+                Assert.Equal(-1, ((IStructuralComparable)x).CompareTo(y, other));
+                Assert.Equal(1, ((IStructuralComparable)x).CompareTo(y, cmp));
+
+                Assert.Equal(1, ((IStructuralComparable)y).CompareTo(x, other));
+                Assert.Equal(-1, ((IStructuralComparable)y).CompareTo(x, cmp));
+            }
+
+            private sealed class ReversedNaNComparer : IComparer
+            {
+                public int Compare(object? x, object? y)
+                {
+                    if (x is float f0)
+                    {
+                        float right = (float)y!;
+                        return Single.IsNaN(f0) ? 1
+                            : Single.IsNaN(right) ? -1
+                            : Comparer<float>.Default.Compare(f0, right);
+                    }
+
+                    if (x is double d0)
+                    {
+                        double right = (double)y!;
+                        return Double.IsNaN(d0) ? 1
+                            : Double.IsNaN(right) ? -1
+                            : Comparer<double>.Default.Compare(d0, right);
+                    }
+
+                    return Comparer.Default.Compare(x, y);
+                }
             }
         }
     }
