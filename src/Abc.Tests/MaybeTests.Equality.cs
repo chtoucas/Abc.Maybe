@@ -174,6 +174,7 @@ namespace Abc
     // Structural equality.
     public partial class MaybeTests
     {
+        // TODO: tests w/ IMaybe.
         public static partial class Structural
         {
             [Fact]

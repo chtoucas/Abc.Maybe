@@ -103,10 +103,7 @@ namespace Abc
     [DebuggerTypeProxy(typeof(Maybe<>.DebugView_))]
     public readonly partial struct Maybe<T>
         : IEquatable<Maybe<T>>, IComparable<Maybe<T>>, IComparable,
-            IStructuralEquatable, IStructuralComparable
-#if NONGENERIC_MAYBE
-            , IMaybe
-#endif
+            IStructuralEquatable, IStructuralComparable, IMaybe
     {
         // We use explicit backing fields to be able to quickly find outside the
         // struct all occurences of the corresponding properties.
@@ -162,11 +159,11 @@ namespace Abc
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal T Value { get { Debug.Assert(_isSome); return _value; } }
 
-#if NONGENERIC_MAYBE
+        /// <inheritdoc />
         bool IMaybe.IsSome => _isSome;
 
+        /// <inheritdoc />
         object? IMaybe.Value { get { Debug.Assert(_isSome); return _value; } }
-#endif
 
         [ExcludeFromCodeCoverage]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -645,6 +642,7 @@ namespace Abc
         int IComparable.CompareTo(object? obj)
         {
             if (obj is null) { return 1; }
+
             if (!(obj is Maybe<T> maybe))
             {
                 throw EF.InvalidType(nameof(obj), typeof(Maybe<T>), obj);
@@ -661,31 +659,21 @@ namespace Abc
 
             if (other is null) { return 1; }
 
-#if NONGENERIC_MAYBE
+            // Structural comparison means that the comparer is expected to
+            // compare the underlying values -and- without restriction on their
+            // defined type (IMaybe not Maybe<T> as in IComparable.CompareTo()).
+            // In particular, it is not meant to work with MaybeComparer<T>.Default.
+
             if (!(other is IMaybe maybe))
             {
+                // NB: typeof(Maybe<>) not typeof(Maybe<T>) since the comparison
+                // is permitted here when the generic type params differ.
                 throw EF.InvalidType(nameof(other), typeof(Maybe<>), other);
             }
 
-            // NB: structural comparison means that the comparer is expected to
-            // be for T not for Maybe<T>, in particular it is not meant to work
-            // with MaybeComparer<T>.Default.
             return _isSome
                 ? maybe.IsSome ? comparer.Compare(_value, maybe.Value) : 1
                 : maybe.IsSome ? -1 : 0;
-#else
-            if (!(other is Maybe<T> maybe))
-            {
-                throw EF.InvalidType(nameof(other), typeof(Maybe<T>), other);
-            }
-
-            // NB: structural comparison means that the comparer is expected to
-            // be for T not for Maybe<T>, in particular it is not meant to work
-            // with MaybeComparer<T>.Default.
-            return _isSome
-                ? maybe._isSome ? comparer.Compare(_value, maybe._value) : 1
-                : maybe._isSome ? -1 : 0;
-#endif
         }
     }
 
@@ -724,12 +712,12 @@ namespace Abc
         {
             if (comparer is null) { throw new Anexn(nameof(comparer)); }
 
-            if (other is null || !(other is Maybe<T> maybe)) { return false; }
+            // See comments in IStructuralComparable.CompareTo().
 
-            // NB: structural comparison means that the comparer is expected to
-            // be for T not for Maybe<T>.
-            return _isSome ? maybe._isSome && comparer.Equals(_value, maybe._value)
-                : !maybe._isSome;
+            if (other is null || !(other is IMaybe maybe)) { return false; }
+
+            return _isSome ? maybe.IsSome && comparer.Equals(_value, maybe.Value)
+                : !maybe.IsSome;
         }
 
         /// <inheritdoc />

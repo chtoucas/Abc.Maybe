@@ -1,20 +1,23 @@
 ﻿// See LICENSE in the project root for license information.
 
-#if NONGENERIC_MAYBE
-
 namespace Abc
 {
-    // FIXME: nongeneric Maybe for structural comparisons.
-
     /// <summary>
     /// Nongeneric interface for <see cref="Maybe{T}"/> so that we can perform
-    /// structural comparisons between heterogeneous types.
+    /// structural comparisons between maybe's with heterogeneous generic type
+    /// parameters.
     /// </summary>
     internal interface IMaybe
     {
+        /// <summary>
+        /// Checks whether the current instance does hold a value or not.
+        /// </summary>
         bool IsSome { get; }
+
+        /// <summary>
+        /// Gets the enclosed value.
+        /// <para>You MUST check IsSome before calling this property.</para>
+        /// </summary>
         object? Value { get; }
     }
 }
-
-#endif

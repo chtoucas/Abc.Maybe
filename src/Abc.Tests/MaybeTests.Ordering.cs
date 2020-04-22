@@ -353,7 +353,11 @@ namespace Abc
         // Tests identical to the those written for IComparable.CompareTo().
         // 1) If we add/update tests here, do the same w/ CompareTo() and
         //    IComparable.CompareTo().
-        // 2) Use AnyComparer when any comparer will do the job.
+        // 2) We compare to a maybe with the same generic type param, except for
+        //    Comparable_None_Throws_WithInvalidType
+        //    Comparable_Some_Throws_WithInvalidType
+        // 3) Use AnyComparer when any comparer will do the job; otherwise use
+        //    the default comparer.
         public static partial class Structural
         {
             [Fact]
@@ -383,15 +387,10 @@ namespace Abc
                 var cmp = new AnyComparer();
                 IStructuralComparable none = Ø;
                 // Act & Assert
-#if NONGENERIC_MAYBE
+                // NONGENERIC_MAYBE
                 Assert.ThrowsArgexn("other", () => none.CompareTo(new object(), cmp));
                 Assert.Equal(0, none.CompareTo(NoText, cmp));
                 Assert.Equal(-1, none.CompareTo(SomeText, cmp));
-#else
-                Assert.ThrowsArgexn("other", () => none.CompareTo(new object(), cmp));
-                Assert.ThrowsArgexn("other", () => none.CompareTo(NoText, cmp));
-                Assert.ThrowsArgexn("other", () => none.CompareTo(SomeText, cmp));
-#endif
             }
 
             [Fact]
@@ -401,15 +400,10 @@ namespace Abc
                 var cmp = new AnyComparer();
                 IStructuralComparable one = One;
                 // Act & Assert
-#if NONGENERIC_MAYBE
+                // NONGENERIC_MAYBE
                 Assert.ThrowsArgexn("other", () => one.CompareTo(new object(), cmp));
                 Assert.Equal(1, one.CompareTo(NoText, cmp));
                 Assert.Throws<UnexpectedCallException>(() => one.CompareTo(SomeText, cmp));
-#else
-                Assert.ThrowsArgexn("other", () => one.CompareTo(new object(), cmp));
-                Assert.ThrowsArgexn("other", () => one.CompareTo(NoText, cmp));
-                Assert.ThrowsArgexn("other", () => one.CompareTo(SomeText, cmp));
-#endif
             }
 
             [Fact]
@@ -681,11 +675,7 @@ namespace Abc
                 Assert.Equal(-1, ((IStructuralComparable)y).CompareTo(x, cmp));
             }
 
-#if NONGENERIC_MAYBE
             [Fact]
-#else
-            [Fact(Skip = "WIP")]
-#endif
             public static void Comparable_Some_WithSome_AndNotEqual_WithCustomComparer_Hybrid()
             {
                 // Arrange
