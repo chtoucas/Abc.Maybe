@@ -8,6 +8,7 @@ Changed
 - Removed the notnull constraint on the result type of Switch().
 - Apply attribute EditorBrowsable to Maybe<T>.GetEnumerator() and
   Maybe<T>.TryGetValue().
+- Structural comparisons are now possible even when the generic type params differ.
 
 Internal Changes
 - Rename project Abc.Future to Abc.Sketches.
