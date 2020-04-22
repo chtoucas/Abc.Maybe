@@ -627,7 +627,7 @@ namespace Abc
             public static void Comparable_Some_WithSome_AndEqual_WithCustomComparer()
             {
                 // Arrange
-                var cmp = new CustomLengthComparer();
+                var cmp = new ReversedLengthComparer();
                 IStructuralComparable x = SomeText;
                 var y = SomeText;
                 // Act & Assert
@@ -638,7 +638,7 @@ namespace Abc
             public static void Comparable_Some_WithSome_AndNotEqual_WithCustomComparer()
             {
                 // Arrange
-                var cmp = new CustomLengthComparer();
+                var cmp = new ReversedLengthComparer();
                 IStructuralComparable x = Maybe.SomeOrNone("XXX");
                 // Act & Assert
                 Assert.Equal(-1, x.CompareTo(Maybe.SomeOrNone(""), cmp));
@@ -648,21 +648,6 @@ namespace Abc
                 Assert.Equal(1, x.CompareTo(Maybe.SomeOrNone("YYYY"), cmp));
                 Assert.Equal(1, x.CompareTo(Maybe.SomeOrNone("YYYYY"), cmp));
                 Assert.Equal(1, x.CompareTo(Maybe.SomeOrNone("YYYYYY"), cmp));
-            }
-
-            // Shorter strings come first.
-            internal sealed class CustomLengthComparer : IComparer
-            {
-                public int Compare(object? x, object? y)
-                {
-                    if (x is null) { return y is null ? 0 : -1; }
-                    if (y is null) { return 1; }
-                    if (x is string left && y is string right)
-                    {
-                        return -left.Length.CompareTo(right.Length);
-                    }
-                    throw new ArgumentException("Type of argument is not compatible with string.");
-                }
             }
         }
     }
