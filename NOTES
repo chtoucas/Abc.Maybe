@@ -3,7 +3,7 @@ Developer Notes.
 Towards version 1.0.0
 ---------------------
 
-- See NONGENERIC_MAYBE.
+- See NONGENERIC_MAYBE / PATCHED_EQUALITY
 - Testing is well underway but there is still a lot to be done.
   * Split tests.
   * More functional tests.

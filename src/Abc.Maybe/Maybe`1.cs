@@ -163,7 +163,10 @@ namespace Abc
         bool IMaybe.IsSome => _isSome;
 
         /// <inheritdoc />
-        object? IMaybe.Value { get { Debug.Assert(_isSome); return _value; } }
+        // Here it is permitted to access the enclosed value even when IsSome is
+        // false. For instance, it could be useful if we wanted to implement
+        // a comparison such that Maybe(x) < Maybe(y) is equivalent to x < y.
+        object? IMaybe.Value => _value;
 
         [ExcludeFromCodeCoverage]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -671,6 +674,9 @@ namespace Abc
                 throw EF.InvalidType(nameof(other), typeof(Maybe<>), other);
             }
 
+            // REVIEW: direct structural ordering comparison? This would change
+            // the behaviour when the instance or other is empty.
+            //return comparer.Compare(_value, maybe.Value);
             return _isSome
                 ? maybe.IsSome ? comparer.Compare(_value, maybe.Value) : 1
                 : maybe.IsSome ? -1 : 0;
@@ -698,9 +704,16 @@ namespace Abc
         /// </summary>
         [Pure]
         public bool Equals(Maybe<T> other) =>
+            // REVIEW: patched equality?
+#if PATCHED_EQUALITY
+            // This is not the same w/ nested Maybe's; see the tests with
+            // SquareOrNone(null) and the equivalence or not w/ Some of Some.
+            EqualityComparer<T>.Default.Equals(_value, other._value);
+#else
             _isSome
                 ? other._isSome && EqualityComparer<T>.Default.Equals(_value, other._value)
                 : !other._isSome;
+#endif
 
         /// <inheritdoc />
         [Pure]
@@ -716,6 +729,9 @@ namespace Abc
 
             if (other is null || !(other is IMaybe maybe)) { return false; }
 
+            // REVIEW: direct structural equality comparison? This would change
+            // the behaviour when the instance or other is empty.
+            //return comparer.Equals(_value, maybe.Value);
             return _isSome ? maybe.IsSome && comparer.Equals(_value, maybe.Value)
                 : !maybe.IsSome;
         }
