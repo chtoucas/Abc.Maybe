@@ -34,7 +34,7 @@
 
     <!--
       Fake version only used during development. For Retail builds, the
-      version is set within eng\$(AssemblyName).props which is loaded later on.
+      version is set within eng\Retail.targets which is loaded later on.
     -->
     <VersionPrefix>1.0.0</VersionPrefix>
     <VersionSuffix>DUMMY</VersionSuffix>
