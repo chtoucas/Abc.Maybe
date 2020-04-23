@@ -335,12 +335,26 @@ var q = from x in maybe
 
 #### `Maybe<bool>` and 3VL
 
+### Advanced
+
+#### Extensibility
+
+#### Nullable generic type parameter
+
+#### Equality rules
+
+#### Ordering rules
+
 ### More
 
 See the XML comments for samples.
 - LINQ and collection extensions in `Abc.Linq` and `Abc.Extensions`.
 - Parsing helpers provided by the static class `May`.
 - XML & SQL data type helpers in `Abc.Extensions`.
+
+#### Custom builds
+
+`PATCH_EQUALITY`
 
 ### Samples
 

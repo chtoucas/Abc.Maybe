@@ -3,12 +3,13 @@ Developer Notes.
 Towards version 1.0.0
 ---------------------
 
-- See NONGENERIC_MAYBE / PATCHED_EQUALITY
+- PATCH_EQUALITY actionable via MSBuild?
 - Testing is well underway but there is still a lot to be done.
   * Split tests.
   * More functional tests.
   * Square() and Flatten() or Squash().
   * Expand comparison tests (order and equality).
+    See NONGENERIC_MAYBE
     Structural comparisons w/ structural types.
     https://stackoverflow.com/questions/4968580/why-arent-istructuralequatable-and-istructuralcomparable-generic
   * Maybe<Func<>>
@@ -48,6 +49,7 @@ vNEXT
 - Roslyn Analyzer:
   * Of(), Flatten().
   * SelectMany(), ZipWith(), Bind().
+- Serialization (XML)
 
 Main tasks
 - FIXME, TODO and REVIEW within the code.
@@ -63,6 +65,7 @@ Main tasks
     are not actually.
   * How to handle PublicAPI.XXX.txt?
     https://github.com/dotnet/roslyn-analyzers/blob/master/src/PublicApiAnalyzers/PublicApiAnalyzers.Help.md
+- Localised messages.
 
 Other tasks
 - Naming tests: explain rules in this doc and fix the tests themselves if necessary.
