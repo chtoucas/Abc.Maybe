@@ -346,7 +346,7 @@ namespace Abc
             Assert.Some(Maybe.Some(413L), Maybe.SquareOrNone((long?)413));
         }
 
-#if PATCHED_EQUALITY
+#if PATCH_EQUALITY
         [Fact]
         public static void SquareOrNone_ForValueT_WithNull_IsSomeOfSomeOrNone()
         {
@@ -396,7 +396,7 @@ namespace Abc
             Assert.Some(Maybe.SomeOrNone(obj), Maybe.SquareOrNone(obj));
         }
 
-#if PATCHED_EQUALITY
+#if PATCH_EQUALITY
         [Fact]
         public static void SquareOrNone_ForReferenceT_WithNull_IsSomeOfSomeOrNone()
         {

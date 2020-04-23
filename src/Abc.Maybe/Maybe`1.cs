@@ -704,10 +704,16 @@ namespace Abc
         /// </summary>
         [Pure]
         public bool Equals(Maybe<T> other) =>
-            // REVIEW: patched equality?
-#if PATCHED_EQUALITY
-            // This is not the same w/ nested Maybe's; see the tests with
-            // SquareOrNone(null) and the equivalence or not w/ Some of Some.
+#if PATCH_EQUALITY
+            // This does not change the equality when T is not a maybe itself,
+            // but it changes the behaviour of a nested empty maybe:
+            //   Maybe.Some(Maybe.Some(... (Maybe.Some(Maybe<T>.None))...))
+            // is now empty. Indeed, here Equals() for a nested maybe simply
+            // reduces to the default equality comparer of T.
+            // The only avantage(?) is that
+            //   Maybe.SquareXXX() = Maybe.Some(Maybe.SomeXXX())
+            // This is a curiosity, do NOT enable: the contract of Maybe.Some()
+            // is that it always returns a non-empty maybe.
             EqualityComparer<T>.Default.Equals(_value, other._value);
 #else
             _isSome
