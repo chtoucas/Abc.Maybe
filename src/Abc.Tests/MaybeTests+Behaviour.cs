@@ -16,7 +16,7 @@ namespace Abc
         public static partial class Behaviour
         {
 #if PATCH_EQUALITY
-            [Fact]
+            [Fact(Skip = "WIP")]
             public static void NthPower_ReturnsNone_WithNull_ForValueT()
             {
                 Assert.None(__<Unit>());
@@ -27,7 +27,7 @@ namespace Abc
                     => Maybe.Some(Maybe.Some(Maybe.SomeOrNone((T?)null)));
             }
 
-            [Fact]
+            [Fact(Skip = "WIP")]
             public static void NthPower_ReturnsNone_WithNull_ForReferenceT()
             {
                 Assert.None(__<string>());
@@ -39,6 +39,23 @@ namespace Abc
                     => Maybe.Some(Maybe.Some(Maybe.SomeOrNone((T?)null)));
             }
 #else
+            [Fact]
+            public static void SomeOfNone_ReturnsSome_ForValueT()
+            {
+                Assert.Some(Maybe.Some(Maybe<Unit>.None));
+                Assert.Some(Maybe.Some(Maybe<int>.None));
+                Assert.Some(Maybe.Some(Maybe<long>.None));
+            }
+
+            [Fact]
+            public static void SomeOfNone_ReturnsSome_ForReferenceT()
+            {
+                Assert.Some(Maybe.Some(Maybe<string>.None));
+                Assert.Some(Maybe.Some(Maybe<Uri>.None));
+                Assert.Some(Maybe.Some(Maybe<AnyT>.None));
+                Assert.Some(Maybe.Some(Maybe<object>.None));
+            }
+
             [Fact]
             public static void NthPower_ReturnsSome_WithNull_ForValueT()
             {
