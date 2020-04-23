@@ -15,6 +15,16 @@
     <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 
+  <!-- Optional symbols -->
+  <PropertyGroup>
+    <!-- For explanations, see Maybe<T>.Equals(Maybe<T> other) -->
+    <DefineConstants Condition=" $(PatchEquality) == 'true' ">$(DefineConstants);PATCH_EQUALITY</DefineConstants>
+
+    <!--<DefineConstants>$(DefineConstants);PLAIN_LINQ</DefineConstants>-->
+    <!--<DefineConstants>$(DefineConstants);PURE_MAYBE</DefineConstants>-->
+  </PropertyGroup>
+
+  <!-- Common packages -->
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
       <PrivateAssets>all</PrivateAssets>
@@ -23,13 +33,30 @@
   </ItemGroup>
 
   <Target Name="DisplaySettingsBeforeCompile" BeforeTargets="Compile"
-          Condition=" $(DisplaySettings) == 'true' ">
-    <Message Text="> $(AssemblyName) for $(TargetFramework) will be SIGNED."
-             Condition=" $(SignAssembly) == 'true' and $(TargetFramework) != '' "
-             Importance="high" />
-    <Message Text="> $(AssemblyName) for $(TargetFramework) will use EMBEDDED PDBs."
-             Condition=" $(DebugType) == 'embedded' and $(TargetFramework) != '' "
-             Importance="high" />
+          Condition=" $(DisplaySettings) == 'true' and $(TargetFramework) != '' ">
+    <PropertyGroup>
+      <!--
+        Standard settings
+      -->
+      <_MyMessage Condition="  $(SignAssembly) == 'true' ">&gt; will be SIGNED.</_MyMessage>
+      <_MyMessage Condition="  $(SignAssembly) == 'false' ">&gt; will NOT be SIGNED.</_MyMessage>
+
+      <_MyMessage Condition="  $(CheckForOverflowUnderflow) == 'true' ">$(_MyMessage)%0A&gt; will use CHECKED ARITHMETIC.</_MyMessage>
+      <_MyMessage Condition="  $(CheckForOverflowUnderflow) == 'false' ">$(_MyMessage)%0A&gt; will NOT use CHECKED ARITHMETIC.</_MyMessage>
+
+      <!-- Possible values: "full," "pdbonly," "portable", "embedded", and "none" -->
+      <_MyMessage>$(_MyMessage)%0A&gt; will use %24(DebugType) = "$(DebugType)".</_MyMessage>
+
+      <_MyMessage Condition="  $(GenerateDocumentationFile) == 'true' ">$(_MyMessage)%0A&gt; will generate its XML DOCUMENTATION.</_MyMessage>
+      <_MyMessage Condition="  $(GenerateDocumentationFile) == 'false' ">$(_MyMessage)%0A&gt; will NOT generate its XML DOCUMENTATION.</_MyMessage>
+
+      <!--
+        Local settings
+      -->
+      <_MyMessage Condition="  $(PatchEquality) == 'true' ">$(_MyMessage)%0A&gt; will use PATCHED EQUALITY.</_MyMessage>
+    </PropertyGroup>
+
+    <Message Text="> $(AssemblyName) for $(TargetFramework)%0A$(_MyMessage)" Importance="high" />
   </Target>
 
 </Project>

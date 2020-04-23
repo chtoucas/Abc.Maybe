@@ -46,13 +46,4 @@
     <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
   </PropertyGroup>
 
-  <!-- Optional symbols -->
-  <PropertyGroup>
-    <!-- For explanations, see Maybe<T>.Equals(Maybe<T> other) -->
-    <!--<DefineConstants>$(DefineConstants);PATCH_EQUALITY</DefineConstants>-->
-
-    <!--<DefineConstants>$(DefineConstants);PLAIN_LINQ</DefineConstants>-->
-    <!--<DefineConstants>$(DefineConstants);PURE_MAYBE</DefineConstants>-->
-  </PropertyGroup>
-
 </Project>
