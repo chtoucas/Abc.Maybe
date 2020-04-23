@@ -5,10 +5,9 @@
 
 @pushd %~dp0\..
 
-@call dotnet build -c Release --no-restore ^
+@call dotnet build -c Release --no-restore %* ^
     /p:GenerateDocumentationFile=true ^
-    /p:SignAssembly=true ^
-    -- %*
+    /p:SignAssembly=true
 
 @popd
 

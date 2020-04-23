@@ -161,6 +161,7 @@ function Invoke-Pack {
     # Remove DebugType to use plain pdb's.
     & dotnet pack $proj -c $CONFIGURATION --nologo `
         --output $PKG_OUTDIR `
+        -p:DisplaySettings=true `
         -p:TargetFrameworks='\"netstandard2.0;netstandard2.1;netcoreapp3.1\"' `
         -p:Retail=true `
         -p:RepositoryCommit=$commit `

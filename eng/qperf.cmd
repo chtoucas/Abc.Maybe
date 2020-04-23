@@ -5,7 +5,7 @@
 
 @pushd %~dp0\..
 
-@call dotnet run -c Release -p .\src\perf\ -- %*
+@call dotnet run -c Release %* -p .\src\perf\
 
 @popd
 

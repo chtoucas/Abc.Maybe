@@ -22,4 +22,14 @@
     </PackageReference>
   </ItemGroup>
 
+  <Target Name="DisplaySettingsBeforeCompile" BeforeTargets="Compile"
+          Condition=" $(DisplaySettings) == 'true' ">
+    <Message Text="> $(AssemblyName) for $(TargetFramework) will be SIGNED."
+             Condition=" $(SignAssembly) == 'true' and $(TargetFramework) != '' "
+             Importance="high" />
+    <Message Text="> $(AssemblyName) for $(TargetFramework) will use EMBEDDED PDBs."
+             Condition=" $(DebugType) == 'embedded' and $(TargetFramework) != '' "
+             Importance="high" />
+  </Target>
+
 </Project>
