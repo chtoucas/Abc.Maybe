@@ -732,7 +732,7 @@ namespace Abc
         {
             if (comparer is null) { throw new Anexn(nameof(comparer)); }
 
-            // See comments in IStructuralComparable.CompareTo().
+            // See comments within IStructuralComparable.CompareTo().
 
             if (other is null || !(other is IMaybe maybe)) { return false; }
 
