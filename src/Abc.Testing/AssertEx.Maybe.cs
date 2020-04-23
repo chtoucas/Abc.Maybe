@@ -30,11 +30,18 @@ namespace Abc
         {
             False(maybe.IsNone, "The maybe should not be empty.");
 
+#if INTERNALS_VISIBLE_TO
             if (maybe.IsSome)
             {
                 // BONSANG! When IsSome is true, Value is NOT null.
                 Equal(expected, maybe.Value!);
             }
+#else
+            if (maybe.TryGetValue(out T value))
+            {
+                Equal(expected, value);
+            }
+#endif
 
             // We also test Contains().
             True(maybe.Contains(expected));
@@ -50,11 +57,18 @@ namespace Abc
         {
             False(maybe.IsNone, "The maybe should not be empty.");
 
+#if INTERNALS_VISIBLE_TO
             if (maybe.IsSome)
             {
                 // BONSANG! When IsSome is true, Value is NOT null.
                 Equal(expected, maybe.Value!);
             }
+#else
+            if (maybe.TryGetValue(out IEnumerable<T>? value))
+            {
+                Equal(expected, value);
+            }
+#endif
         }
 
         /// <summary>
@@ -62,14 +76,22 @@ namespace Abc
         /// boolean context.
         /// </summary>
         public static void LogicalTrue<T>(Maybe<T> maybe)
+#if INTERNALS_VISIBLE_TO
             => True(maybe.ToBoolean(), "The maybe should evaluate to true.");
+#else
+            => False(maybe.IsNone, "The maybe should evaluate to true.");
+#endif
 
         /// <summary>
         /// Verifies that <paramref name="maybe"/> evaluates to false in a
         /// boolean context.
         /// </summary>
         public static void LogicalFalse<T>(Maybe<T> maybe)
+#if INTERNALS_VISIBLE_TO
             => False(maybe.ToBoolean(), "The maybe should evaluate to false.");
+#else
+            => True(maybe.IsNone, "The maybe should evaluate to false.");
+#endif
 
         /// <summary>
         /// Verifies that <paramref name="maybe"/> is <see cref="Maybe.Unknown"/>.

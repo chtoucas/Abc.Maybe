@@ -5,7 +5,7 @@
 ::
 :: Standard settings:
 :: > qbuild /p:SignAssembly=true
-:: > qbuild /p:CheckForOverflowUnderflow=true
+:: > qbuild /p:CheckForOverflowUnderflow=false
 :: > qbuild /p:DebugType=embedded
 :: > qbuild /p:GenerateDocumentationFile=true   --> always included but can be overriden
 ::                                              (to ensure that the XML comments are well-formed)
@@ -14,6 +14,7 @@
 :: > qbuild /p:DisplaySettings=true
 :: > qbuild /p:Retail=true
 :: > qbuild /p:PatchEquality=true
+:: > qbuild /p:VisibleInternals=false
 
 @echo off
 @setlocal

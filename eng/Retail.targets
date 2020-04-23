@@ -3,12 +3,15 @@
   <Import Project="$(MSBuildThisFileDirectory)Retail.tasks" />
 
   <PropertyGroup>
-    <!-- Even if the following props are already set, we always override them -->
+    <!--
+      Even if the following props are already set with the right value, we
+      override them here to be crystal about what to expect for Retail builds.
+    -->
     <SignAssembly>true</SignAssembly>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <VisibleInternals>false</VisibleInternals>
 
-    <DefineConstants>$(DefineConstants);NO_INTERNALS_VISIBLE_TO</DefineConstants>
     <AllowedOutputExtensionsInPackageBuildOutputFolder
       Condition=" $(DebugType) != 'embedded' ">$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 

@@ -1,12 +1,12 @@
 <Project>
 
   <!--
-    Strong name the assembly.
-    This MUST be done rather late: Retail builds set SignAssembly to true only
-    after Directory.Build.props has been loaded.
+    Beware, some things MUST be done rather late (here). For instance, Retail
+    builds set SignAssembly to true only after Directory.Build.props has been
+    loaded.
   -->
+
   <PropertyGroup Condition=" $(SignAssembly) == 'true' ">
-    <DefineConstants>$(DefineConstants);SIGNED_ASSEMBLY</DefineConstants>
     <AssemblyOriginatorKeyFile>$(EngRoot)Abc.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
@@ -15,16 +15,15 @@
     <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 
-  <!-- Optional symbols -->
   <PropertyGroup>
-    <!-- For explanations, see Maybe<T>.Equals(Maybe<T> other) -->
+    <DefineConstants Condition=" $(SignAssembly) == 'true' ">$(DefineConstants);SIGNED_ASSEMBLY</DefineConstants>
     <DefineConstants Condition=" $(PatchEquality) == 'true' ">$(DefineConstants);PATCH_EQUALITY</DefineConstants>
+    <DefineConstants Condition=" $(VisibleInternals) == 'true' ">$(DefineConstants);INTERNALS_VISIBLE_TO</DefineConstants>
 
     <!--<DefineConstants>$(DefineConstants);PLAIN_LINQ</DefineConstants>-->
     <!--<DefineConstants>$(DefineConstants);PURE_MAYBE</DefineConstants>-->
   </PropertyGroup>
 
-  <!-- Common packages -->
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
       <PrivateAssets>all</PrivateAssets>

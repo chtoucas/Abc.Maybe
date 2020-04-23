@@ -19,7 +19,7 @@
     <RepositoryUrl>https://github.com/chtoucas/Abc.Maybe/</RepositoryUrl>
   </PropertyGroup>
 
-  <!-- Common MSBuild project options -->
+  <!-- Standard MSBuild properties -->
   <PropertyGroup>
     <RootNamespace>Abc</RootNamespace>
 
@@ -38,6 +38,12 @@
     -->
     <VersionPrefix>1.0.0</VersionPrefix>
     <VersionSuffix>DUMMY</VersionSuffix>
+  </PropertyGroup>
+
+  <!-- Local MSBuild properties -->
+  <PropertyGroup>
+    <!-- If true, unconditionally hide internals to other assemblies. Default to true. -->
+    <VisibleInternals Condition=" $(VisibleInternals) != 'false' ">true</VisibleInternals>
   </PropertyGroup>
 
   <PropertyGroup Condition=" $(Configuration) == 'Debug' ">

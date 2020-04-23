@@ -4,10 +4,9 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
 
-    <!-- BenchmarkDotNet requires that we specify the lang version -->
+    <!-- BenchmarkDotNet requires that we specify an exact lang version -->
     <LangVersion>8.0</LangVersion>
 
-    <BenchmarkHarness Condition=" $(BenchmarkHarness) != 'true' ">false</BenchmarkHarness>
     <DefineConstants Condition=" $(BenchmarkHarness) == 'true' ">$(DefineConstants);BENCHMARK_HARNESS</DefineConstants>
 
     <!--
