@@ -3,6 +3,9 @@ Changelog for Abc.
 vNEXT
 -----
 
+2020-04-24, version 1.0.0-beta3
+-------------------------------
+
 Changed
 - MaybeComparer<T>.GetHashCode() now throws when "obj" is null.
 - Removed the notnull constraint on the result type of Switch().

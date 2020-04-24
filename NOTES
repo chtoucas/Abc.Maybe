@@ -153,7 +153,7 @@ Pre action, for beta -or- production packages.
 6. Publish package
 
 Post action, for production packages.
-6. Git tag
+6. Git tag (??? before to get the correct tag ???)
 
 Development
 -----------
