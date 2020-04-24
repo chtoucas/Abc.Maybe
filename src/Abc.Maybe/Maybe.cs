@@ -141,6 +141,10 @@ namespace Abc
         public static Maybe<T> SomeOrNone<T>(T? value) where T : class
             => value is null ? Maybe<T>.None : new Maybe<T>(value);
 
+        // Most of the time we think we have to create a "double" maybe because
+        // we want to make it work with another "double". Often, the proper
+        // solution is to Squash()/Flatten() the later.
+
         // Identical to Maybe.Some(Maybe.Some()).
         [Pure]
         public static Maybe<Maybe<T>> Square<T>(T value) where T : struct

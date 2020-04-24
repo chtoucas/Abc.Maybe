@@ -4,8 +4,8 @@
     <!--
       Even if the following props are already set with the right value, we
       override them here to be crystal about what to expect for Retail builds.
-      Retail builds are actually only for Abc.Maybe but if we wish to compile
-      the whole solution, the settings must be set for all projects
+      Retail builds are actually only for Abc.Maybe but, if we wish to compile
+      the whole solution, we must be careful (this is the case w/ HideInternals).
     -->
     <SignAssembly>true</SignAssembly>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
