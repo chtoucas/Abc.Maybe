@@ -66,30 +66,12 @@ namespace Abc
             }
 
             [Fact]
-            public static void Squash_Square_None()
-            {
-                Assert.Equal(Ø, Maybe<Maybe<int?>>.None.Squash());
-                Assert.Equal(NoText, Maybe<Maybe<string?>>.None.Squash());
-                Assert.Equal(NoUri, Maybe<Maybe<Uri?>>.None.Squash());
-                Assert.Equal(AnyT.None, Maybe<Maybe<AnyT?>>.None.Squash());
-            }
-
-            [Fact]
             public static void Squash_Some_ForValueType()
             {
                 // Arrange
                 Maybe<int?> one = One.Select(x => (int?)x);
                 // Act & Assert
                 Assert.Equal(One, one.Squash());
-            }
-
-            [Fact]
-            public static void Squash_Square_Some_ForValueType()
-            {
-                // Arrange
-                Maybe<int?> one = One.Select(x => (int?)x);
-                // Act & Assert
-                Assert.Equal(One, Maybe.Some(one).Squash());
             }
 
             [Fact]
@@ -103,13 +85,33 @@ namespace Abc
             }
 
             [Fact]
+            public static void Squash_Square_None()
+            {
+                Assert.Equal(Ø, Maybe<Maybe<int?>>.None.Squash());
+                Assert.Equal(NoText, Maybe<Maybe<string?>>.None.Squash());
+                Assert.Equal(NoUri, Maybe<Maybe<Uri?>>.None.Squash());
+                Assert.Equal(AnyT.None, Maybe<Maybe<AnyT?>>.None.Squash());
+            }
+
+            [Fact]
+            public static void Squash_Square_Some_ForValueType()
+            {
+                // Arrange
+                Maybe<int?> one = One.Select(x => (int?)x);
+                Maybe<Maybe<int?>> square = Maybe.Some(one);
+                // Act & Assert
+                Assert.Equal(One, square.Squash());
+            }
+
+            [Fact]
             public static void Squash_Square_Some_ForReferenceType()
             {
                 // Arrange
-                Maybe<AnyT> some = AnyT.Some;
-                Maybe<AnyT?> one = some.Select(x => (AnyT?)x);
+                Maybe<AnyT> m = AnyT.Some;
+                Maybe<AnyT?> some = m.Select(x => (AnyT?)x);
+                Maybe<Maybe<AnyT?>> square = Maybe.Some(some);
                 // Act & Assert
-                Assert.Equal(some, Maybe.Some(one).Squash());
+                Assert.Equal(m, square.Squash());
             }
 
             #endregion

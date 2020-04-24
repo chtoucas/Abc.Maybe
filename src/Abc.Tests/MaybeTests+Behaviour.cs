@@ -94,7 +94,8 @@ namespace Abc
         }
 
         // Equality rules of repeated "Some" starting from "None" depends on the
-        // compiler symbol PATCH_EQUALITY.
+        // compiler symbol PATCH_EQUALITY. The good news is that, once flattened,
+        // the equality is uniform whether PATCH_EQUALITY is on or off.
         public static partial class Behaviour
         {
 #if PATCH_EQUALITY
@@ -178,6 +179,57 @@ namespace Abc
                     => Maybe.Some(Maybe.Some(Maybe<T>.None));
             }
 #endif
+
+            [Fact]
+            public static void SomeOfNone_Flattened_EqualsNone_ForValueT()
+            {
+                Assert.Equal(Maybe<Unit>.None, Maybe.Some(Maybe<Unit>.None).Flatten());
+                Assert.Equal(Maybe<int>.None, Maybe.Some(Maybe<int>.None).Flatten());
+                Assert.Equal(Maybe<long>.None, Maybe.Some(Maybe<long>.None).Flatten());
+            }
+
+            [Fact]
+            public static void SomeOfNone_Flattened_EqualsNone_ForValueT_AndNullable()
+            {
+                Assert.Equal(Maybe<Unit?>.None, Maybe.Some(Maybe<Unit?>.None).Flatten());
+                Assert.Equal(Maybe<int?>.None, Maybe.Some(Maybe<int?>.None).Flatten());
+                Assert.Equal(Maybe<long?>.None, Maybe.Some(Maybe<long?>.None).Flatten());
+            }
+
+            [Fact]
+            public static void SomeOfNone_Squashed_EqualsNone_ForValueT_AndNullable()
+            {
+                Assert.Equal(Maybe<Unit>.None, Maybe.Some(Maybe<Unit?>.None).Squash());
+                Assert.Equal(Maybe<int>.None, Maybe.Some(Maybe<int?>.None).Squash());
+                Assert.Equal(Maybe<long>.None, Maybe.Some(Maybe<long?>.None).Squash());
+            }
+
+            [Fact]
+            public static void SomeOfNone_Flattened_EqualsNone_ForReferenceT()
+            {
+                Assert.Equal(Maybe<string>.None, Maybe.Some(Maybe<string>.None).Flatten());
+                Assert.Equal(Maybe<Uri>.None, Maybe.Some(Maybe<Uri>.None).Flatten());
+                Assert.Equal(Maybe<AnyT>.None, Maybe.Some(Maybe<AnyT>.None).Flatten());
+                Assert.Equal(Maybe<object>.None, Maybe.Some(Maybe<object>.None).Flatten());
+            }
+
+            [Fact]
+            public static void SomeOfNone_Flattened_EqualsNone_ForReferenceT_AndNullable()
+            {
+                Assert.Equal(Maybe<string?>.None, Maybe.Some(Maybe<string?>.None).Flatten());
+                Assert.Equal(Maybe<Uri?>.None, Maybe.Some(Maybe<Uri?>.None).Flatten());
+                Assert.Equal(Maybe<AnyT?>.None, Maybe.Some(Maybe<AnyT?>.None).Flatten());
+                Assert.Equal(Maybe<object?>.None, Maybe.Some(Maybe<object?>.None).Flatten());
+            }
+
+            [Fact]
+            public static void SomeOfNone_Squashed_EqualsNone_ForReferenceT_AndNullable()
+            {
+                Assert.Equal(Maybe<string>.None, Maybe.Some(Maybe<string?>.None).Squash());
+                Assert.Equal(Maybe<Uri>.None, Maybe.Some(Maybe<Uri?>.None).Squash());
+                Assert.Equal(Maybe<AnyT>.None, Maybe.Some(Maybe<AnyT?>.None).Squash());
+                Assert.Equal(Maybe<object>.None, Maybe.Some(Maybe<object?>.None).Squash());
+            }
         }
     }
 }
