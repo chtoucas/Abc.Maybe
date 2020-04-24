@@ -9,6 +9,7 @@ Changed
 - Apply attribute EditorBrowsable to Maybe<T>.GetEnumerator() and
   Maybe<T>.TryGetValue().
 - Structural comparison is now possible when the generic type params differ.
+- License changed from BSD-2-Clause to BSD-3-Clause.
 
 Internal Changes
 - Rename project Abc.Future to Abc.Sketches.

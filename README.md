@@ -34,7 +34,7 @@ Abc.Maybe features an Option type for .NET.
 - [Quick Start](#quick-start)
 - [Usage Guidelines](#usage-guidelines)
 - [Changelog](CHANGELOG)
-- [License](LICENSE)
+- [BSD 3-Clause "New" or "Revised" License](LICENSE)
 
 Quick Start
 -----------

@@ -15,7 +15,7 @@
     <Copyright>Copyright (c) 2019 Narvalo.Org</Copyright>
 
     <PackageProjectUrl>https://github.com/chtoucas/Abc.Maybe/</PackageProjectUrl>
-    <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
+    <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
     <PackageReleaseNotes>See CHANGELOG in project root.</PackageReleaseNotes>
 
     <RepositoryType>git</RepositoryType>
