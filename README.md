@@ -52,6 +52,7 @@ Quick Start
   * [Binding](#binding)
   * [Query Expression Pattern](#query-expression-pattern)
   * [Specialized types](#specialized-types)
+  * [Advanced usage](#advanced-usage)
   * [More](#more)
   * [Samples](#samples)
 
@@ -335,7 +336,7 @@ var q = from x in maybe
 
 #### `Maybe<bool>` and 3VL
 
-### Advanced
+### Advanced usage
 
 #### Extensibility
 
@@ -406,6 +407,9 @@ One can _indirectly_ create a maybe for a nullable (value or reference) type
 — maybe I managed to entirely avoid this, but I am not sure —, but all
 static factory methods do not permit it. If you end up having to manipulate for
 say a `Maybe<int?>`, there is a method `Squash()` to convert it to a `Maybe<int>`.
+
+(TODO: _do not use a maybe when we just have a single nullable value type, and
+a if/then is all you need_)
 
 #### API design
 - **DO NOT use `Maybe<T>` as a parameter in public APIs.**

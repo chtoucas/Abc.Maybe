@@ -714,6 +714,10 @@ namespace Abc
             // The only avantage (?) is that
             //   Maybe.SquareXXX() = Maybe.Some(Maybe.SomeXXX())
             // This is a curiosity, DO NOT ENABLE.
+            // (Maybe there is a way to fix the discrepency between equality and
+            // emptiness, provide overloads of the factories Of() and Some()
+            // when T is itself a maybe. I don't think it is worth the trouble
+            // and I am not even sure it would be enough)
             EqualityComparer<T>.Default.Equals(_value, other._value);
 #else
             _isSome
