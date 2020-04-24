@@ -17,21 +17,21 @@ namespace Abc.ComparisonsTests
 
         public sealed class MyItem
         {
-            public int Id;
-            public string Name = String.Empty;
+            public int Id { get; set; }
+            public string Name { get; set; } = String.Empty;
         }
 
         public sealed class MyInfo
         {
-            public int Id;
-            public string Description = String.Empty;
+            public int Id { get; set; }
+            public string Description { get; set; } = String.Empty;
         }
 
         public sealed class MyData
         {
-            public int Id;
-            public string Name = String.Empty;
-            public string Description = String.Empty;
+            public int Id { get; set; }
+            public string Name { get; set; } = String.Empty;
+            public string Description { get; set; } = String.Empty;
         }
     }
 

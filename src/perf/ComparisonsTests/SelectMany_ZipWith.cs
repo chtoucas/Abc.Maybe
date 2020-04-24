@@ -9,15 +9,17 @@ namespace Abc.ComparisonsTests
     [MemoryDiagnoser]
     public partial class SelectMany_ZipWith
     {
-        private static readonly Maybe<MyVal> s_OuterVal = Maybe.Some(new MyVal { Value = 314 });
-        private static readonly Maybe<MyVal> s_InnerVal = Maybe.Some(new MyVal { Value = 271 });
+        private static readonly Maybe<MyVal> s_OuterVal = Maybe.Some(new MyVal(314));
+        private static readonly Maybe<MyVal> s_InnerVal = Maybe.Some(new MyVal(271));
 
-        private static readonly Maybe<MyObj> s_OuterObj = Maybe.SomeOrNone(new MyObj { Value = 314 });
-        private static readonly Maybe<MyObj> s_InnerObj = Maybe.SomeOrNone(new MyObj { Value = 271 });
+        private static readonly Maybe<MyObj> s_OuterObj = Maybe.SomeOrNone(new MyObj(314));
+        private static readonly Maybe<MyObj> s_InnerObj = Maybe.SomeOrNone(new MyObj(271));
 
         public struct MyVal : IEquatable<MyVal>
         {
-            public int Value;
+            public MyVal(int value) => Value = value;
+
+            public int Value { get; }
 
             public static bool operator ==(MyVal left, MyVal right) => left.Value == right.Value;
             public static bool operator !=(MyVal left, MyVal right) => left.Value != right.Value;
@@ -28,7 +30,9 @@ namespace Abc.ComparisonsTests
 
         public sealed class MyObj
         {
-            public int Value;
+            public MyObj(int value) => Value = value;
+
+            public int Value { get; }
         }
     }
 
@@ -38,20 +42,20 @@ namespace Abc.ComparisonsTests
         public Maybe<MyVal> SelectMany_Struct() =>
             from x in s_OuterVal
             from y in s_InnerVal
-            select new MyVal { Value = x.Value + y.Value };
+            select new MyVal(x.Value + y.Value);
 
         [Benchmark(Baseline = true)]
         public Maybe<MyVal> ZipWith_Struct() =>
-            s_OuterVal.ZipWith(s_InnerVal, (x, y) => new MyVal { Value = x.Value + y.Value });
+            s_OuterVal.ZipWith(s_InnerVal, (x, y) => new MyVal(x.Value + y.Value));
 
         [Benchmark]
         public Maybe<MyObj> SelectMany_Class() =>
             from x in s_OuterObj
             from y in s_InnerObj
-            select new MyObj { Value = x.Value + y.Value };
+            select new MyObj(x.Value + y.Value);
 
         [Benchmark]
         public Maybe<MyObj> ZipWith_Class() =>
-            s_OuterObj.ZipWith(s_InnerObj, (x, y) => new MyObj { Value = x.Value + y.Value });
+            s_OuterObj.ZipWith(s_InnerObj, (x, y) => new MyObj(x.Value + y.Value));
     }
 }

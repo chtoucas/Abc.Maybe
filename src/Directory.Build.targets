@@ -30,9 +30,11 @@
       CA1034  Nested types should not be visible
       CA1303  Do not pass literals as localized parameters
       CA1707  Identifiers should not contain underscores
+      CA2007  Consider calling ConfigureAwait on the awaited task
+      CS1591  Missing XML comment for publicly visible type or member 'Type_or_Member'
     -->
     <NoWarn Condition=" $(RelaxWarnings) == 'true' ">$(NoWarn);CA1034;CA1303;CA1707</NoWarn>
-
+    <NoWarn Condition=" $(RelaxAsyncWarnings) == 'true' ">$(NoWarn);CA2007</NoWarn>
     <NoWarn Condition=" $(GenerateDocumentationFile) == 'true' ">$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 

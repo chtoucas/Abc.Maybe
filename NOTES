@@ -56,7 +56,7 @@ Main tasks
 - XML comments with complete examples.
   https://github.com/dotnet/dotnet-api-docs/wiki
   When done, filter out Abc.Maybe in Directory.Build.targets (NoWarn), and add
-  <NoWarn /> in Retail.targets
+  <NoWarn /> for Retail builds?
 - Multitargeting:
   * Target net461? Review !NETSTANDARD2.0 in code.
     https://github.com/dotnet/announcements/issues/31

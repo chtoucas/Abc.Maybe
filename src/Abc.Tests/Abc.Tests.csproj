@@ -5,12 +5,12 @@
     <IsPackable>false</IsPackable>
 
     <!--
-      CA2007    Consider calling ConfigureAwait on the awaited task
       IDE0002   Simplify Member Access
       xUnit1004 Test methods should not be skipped
     -->
     <RelaxWarnings>true</RelaxWarnings>
-    <NoWarn>$(NoWarn);CA2007;IDE0002;xUnit1004</NoWarn>
+    <RelaxAsyncWarnings>true</RelaxAsyncWarnings>
+    <NoWarn>$(NoWarn);IDE0002;xUnit1004</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

@@ -3,11 +3,8 @@
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1;netstandard2.0</TargetFrameworks>
 
-    <!--
-      CA2007  Consider calling ConfigureAwait on the awaited task
-    -->
     <RelaxWarnings>true</RelaxWarnings>
-    <NoWarn>$(NoWarn);CA2007</NoWarn>
+    <RelaxAsyncWarnings>true</RelaxAsyncWarnings>
   </PropertyGroup>
 
   <ItemGroup>

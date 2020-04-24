@@ -49,7 +49,11 @@
     <Error Text="Property MajorVersion is empty." Condition=" $(MajorVersion) == '' " />
     <Error Text="Property MinorVersion is empty." Condition=" $(MinorVersion) == '' " />
     <Error Text="Property PatchVersion is empty." Condition=" $(PatchVersion) == '' " />
+
     <Warning Text="Property Title is empty." Condition=" $(Title) == '' " />
+    <PropertyGroup Condition=" $(Title) == '' ">
+      <Title>$(AssemblyName)</Title>
+    </PropertyGroup>
   </Target>
 
 </Project>
