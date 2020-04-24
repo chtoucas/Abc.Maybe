@@ -4,11 +4,10 @@
     <TargetFrameworks>netcoreapp3.1;netstandard2.0</TargetFrameworks>
 
     <!--
-      CA1034  Nested types should not be visible
-      CA1303  Do not pass literals as localized parameters
       CA2007  Consider calling ConfigureAwait on the awaited task
     -->
-    <NoWarn>$(NoWarn);CA1034;CA1303;CA2007</NoWarn>
+    <RelaxWarnings>true</RelaxWarnings>
+    <NoWarn>$(NoWarn);CA2007</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

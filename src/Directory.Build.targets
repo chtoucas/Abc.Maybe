@@ -1,28 +1,39 @@
 <Project>
 
-  <!--
-    Beware, some things MUST be done rather late (here). For instance, Retail
-    builds set SignAssembly to true only after Directory.Build.props has been
-    loaded.
-  -->
+  <PropertyGroup Condition=" $(Retail) == 'true' ">
+    <!--
+      Even if the following props are already set with the right value, we
+      override them here to be crystal about what to expect for Retail builds.
+      Retail builds are actually only for Abc.Maybe but if we wish to compile
+      the whole solution, the settings must be set for all projects
+    -->
+    <SignAssembly>true</SignAssembly>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <HideInternals>true</HideInternals>
 
-  <PropertyGroup Condition=" $(SignAssembly) == 'true' ">
-    <AssemblyOriginatorKeyFile>$(EngRoot)Abc.snk</AssemblyOriginatorKeyFile>
-    <DelaySign>false</DelaySign>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" $(GenerateDocumentationFile) == 'true' ">
-    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder
+      Condition=" $(DebugType) != 'embedded' ">$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
   <PropertyGroup>
     <DefineConstants Condition=" $(SignAssembly) == 'true' ">$(DefineConstants);SIGNED_ASSEMBLY</DefineConstants>
-    <DefineConstants Condition=" $(VisibleInternals) == 'true' ">$(DefineConstants);INTERNALS_VISIBLE_TO</DefineConstants>
-
+    <DefineConstants Condition=" $(HideInternals) != 'true' ">$(DefineConstants);INTERNALS_VISIBLE_TO</DefineConstants>
     <DefineConstants Condition=" $(PatchEquality) == 'true' ">$(DefineConstants);PATCH_EQUALITY</DefineConstants>
 
     <!--<DefineConstants>$(DefineConstants);PLAIN_LINQ</DefineConstants>-->
     <!--<DefineConstants>$(DefineConstants);PURE_MAYBE</DefineConstants>-->
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!--
+      CA1034  Nested types should not be visible
+      CA1303  Do not pass literals as localized parameters
+      CA1707  Identifiers should not contain underscores
+    -->
+    <NoWarn Condition=" $(RelaxWarnings) == 'true' ">$(NoWarn);CA1034;CA1303;CA1707</NoWarn>
+
+    <NoWarn Condition=" $(GenerateDocumentationFile) == 'true' ">$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,25 +43,27 @@
     </PackageReference>
   </ItemGroup>
 
-  <Target Name="DisplaySettingsBeforeCompile" BeforeTargets="Compile"
+  <Target Name="__DisplaySettings" BeforeTargets="Compile"
           Condition=" $(DisplaySettings) == 'true' and $(TargetFramework) != '' ">
     <PropertyGroup>
       <_MyMessage Condition="  $(SignAssembly) == 'true' ">| will be signed.</_MyMessage>
       <_MyMessage Condition="  $(SignAssembly) != 'true' ">| will NOT be signed.</_MyMessage>
 
+      <_MyMessage Condition="  $(HideInternals) == 'true' ">$(_MyMessage)%0A| will hide its internals.</_MyMessage>
+      <_MyMessage Condition="  $(HideInternals) != 'true' ">$(_MyMessage)%0A| will NOT hide its internals.</_MyMessage>
+
       <_MyMessage Condition="  $(CheckForOverflowUnderflow) == 'true' ">$(_MyMessage)%0A| will use checked arithmetic.</_MyMessage>
       <_MyMessage Condition="  $(CheckForOverflowUnderflow) != 'true' ">$(_MyMessage)%0A| will NOT use checked arithmetic.</_MyMessage>
-
-      <_MyMessage Condition="  $(VisibleInternals) == 'true' ">$(_MyMessage)%0A| will NOT hide its internals.</_MyMessage>
-      <_MyMessage Condition="  $(VisibleInternals) != 'true' ">$(_MyMessage)%0A| will hide its internals.</_MyMessage>
-
-      <!-- Possible values: "full," "pdbonly," "portable", "embedded", and "none" -->
-      <_MyMessage>$(_MyMessage)%0A| will use %24(DebugType) = "$(DebugType)".</_MyMessage>
 
       <_MyMessage Condition="  $(GenerateDocumentationFile) == 'true' ">$(_MyMessage)%0A| will generate its XML documentation.</_MyMessage>
       <_MyMessage Condition="  $(GenerateDocumentationFile) != 'true' ">$(_MyMessage)%0A| will NOT generate its XML documentation.</_MyMessage>
 
       <_MyMessage Condition="  $(PatchEquality) == 'true' ">$(_MyMessage)%0A| will use patched equality.</_MyMessage>
+
+      <!-- Possible values: "full," "pdbonly," "portable", "embedded", and "none" -->
+      <_MyMessage>$(_MyMessage)%0A| %24(DefineConstants) = "$(DefineConstants)"</_MyMessage>
+      <_MyMessage>$(_MyMessage)%0A| %24(DebugType) = "$(DebugType)"</_MyMessage>
+      <_MyMessage>$(_MyMessage)%0A| %24(NoWarn) = "$(NoWarn)"</_MyMessage>
     </PropertyGroup>
 
     <Message Text="+ $(AssemblyName) for $(TargetFramework)%0A$(_MyMessage)" Importance="high" />

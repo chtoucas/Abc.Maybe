@@ -4,18 +4,6 @@
 
   <PropertyGroup>
     <!--
-      Even if the following props are already set with the right value, we
-      override them here to be crystal about what to expect for Retail builds.
-    -->
-    <SignAssembly>true</SignAssembly>
-    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <VisibleInternals>false</VisibleInternals>
-
-    <AllowedOutputExtensionsInPackageBuildOutputFolder
-      Condition=" $(DebugType) != 'embedded' ">$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-
-    <!--
       Versioning.
         AssemblyVersion      = Major.Minor.0.0
         PackageVersion       = Major.Minor.Patch-PreReleaseTag
@@ -34,14 +22,17 @@
     <!-- Assembly version -->
     <AssemblyVersion>$(MajorVersion).$(MinorVersion).0.0</AssemblyVersion>
     <InformationalVersion>$(SemanticVersion)</InformationalVersion>
+  </PropertyGroup>
 
+  <PropertyGroup>
     <!-- The default AssemblyTitle uses AssemblyName, I prefer Title -->
     <AssemblyTitle>$(Title)</AssemblyTitle>
     <Description>$(Title) Built [$([System.DateTime]::UtcNow.ToString("r"))].</Description>
   </PropertyGroup>
 
-  <!-- This target must run very early (before Build is not enough) -->
-  <Target Name="SetAssemblyFileVersion" BeforeTargets="GetAssemblyAttributes">
+  <Target Name="__SetAssemblyFileVersion" BeforeTargets="GetAssemblyAttributes">
+    <!-- This target must run very early (before Build is not enough) -->
+
     <Message Text="Setting assembly file version." Importance="normal" />
 
     <GenerateBuildAndRevisionNumbers>
@@ -58,6 +49,7 @@
     <Error Text="Property MajorVersion is empty." Condition=" $(MajorVersion) == '' " />
     <Error Text="Property MinorVersion is empty." Condition=" $(MinorVersion) == '' " />
     <Error Text="Property PatchVersion is empty." Condition=" $(PatchVersion) == '' " />
+    <Warning Text="Property Title is empty." Condition=" $(Title) == '' " />
   </Target>
 
 </Project>

@@ -1,7 +1,9 @@
 :: Beware, will crash if the packages were not restored before.
 ::
 :: Examples:
-:: > qbuild /p:Property=Value .\src\Abc.Maybe\
+:: > qbuild -c Release
+:: > qbuild /p:Property=Value
+:: > qbuild .\src\Abc.Maybe\
 ::
 :: Standard settings:
 :: > qbuild /p:SignAssembly=true
@@ -10,18 +12,18 @@
 :: > qbuild /p:GenerateDocumentationFile=true   --> always included but can be overriden
 ::                                              (to ensure that the XML comments are well-formed)
 ::
-:: Local settings:
+:: Project-specific options:
 :: > qbuild /p:DisplaySettings=true
 :: > qbuild /p:Retail=true
 :: > qbuild /p:PatchEquality=true
-:: > qbuild /p:VisibleInternals=false
+:: > qbuild /p:HideInternals=true
 
 @echo off
 @setlocal
 
 @pushd %~dp0\..
 
-@call dotnet build -c Release --no-restore /p:GenerateDocumentationFile=true %*
+@call dotnet build --no-restore /p:GenerateDocumentationFile=true %*
 
 @popd
 
