@@ -708,13 +708,12 @@ namespace Abc
             // This does not change the equality when T is not a maybe itself,
             // but it changes the behaviour of a nested empty maybe:
             //   Maybe.Some(Maybe.Some(... (Maybe.Some(Maybe<T>.None))...))
-            // is now empty. Indeed, here Equals() for a nested maybe simply
+            // is still NOT empty (IsNone = false) BUT this time it is equal to
+            // the empty maybe... Indeed, here Equals() for a nested maybe simply
             // reduces to the default equality comparer of T.
             // The only avantage (?) is that
             //   Maybe.SquareXXX() = Maybe.Some(Maybe.SomeXXX())
-            // This is a curiosity, do NOT enable. It would break the contract
-            // for Maybe.Some() which states that it always returns a non-empty
-            // maybe.
+            // This is a curiosity, DO NOT ENABLE.
             EqualityComparer<T>.Default.Equals(_value, other._value);
 #else
             _isSome

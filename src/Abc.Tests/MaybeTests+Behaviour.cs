@@ -10,8 +10,7 @@ namespace Abc
 
     public partial class MaybeTests
     {
-        // Behaviour of repeated "Some" starting from null depends on the
-        // compiler symbol PATCH_EQUALITY.
+        // SquareXXX() compared to Some(SomeXXX()).
         public static partial class Behaviour
         {
             [Fact]
@@ -94,82 +93,93 @@ namespace Abc
 
                 static Maybe<Maybe<T>> __<T>(T x) where T : class => Maybe.Some(Maybe.SomeOrNone(x));
             }
+        }
 
+        // Equality rules of repeated "Some" starting from "None" depends on the
+        // compiler symbol PATCH_EQUALITY.
+        public static partial class Behaviour
+        {
 #if PATCH_EQUALITY
             [Fact]
-            public static void NthPower_ReturnsNone_WithNull_ForValueT0()
+            public static void SomeOfNone_EqualsNone_ForValueT()
             {
-                Assert.None(__<Unit>());
-                //Assert.None(__<int>());
-                //Assert.None(__<long>());
-
-                static Maybe<Maybe<T>> __<T>() where T : struct
-                    => Maybe.Some(Maybe.SomeOrNone((T?)null));
-            }
-#endif
-
-            //[Fact(Skip = "WIP")]
-            //public static void NthPower_ReturnsNone_WithNull_ForValueT()
-            //{
-            //    Assert.None(__<Unit>());
-            //    Assert.None(__<int>());
-            //    Assert.None(__<long>());
-
-            //    static Maybe<Maybe<Maybe<T>>> __<T>() where T : struct
-            //        => Maybe.Some(Maybe.Some(Maybe.SomeOrNone((T?)null)));
-            //}
-
-            //[Fact(Skip = "WIP")]
-            //public static void NthPower_ReturnsNone_WithNull_ForReferenceT()
-            //{
-            //    Assert.None(__<string>());
-            //    Assert.None(__<Uri>());
-            //    Assert.None(__<AnyT>());
-            //    Assert.None(__<object>());
-
-            //    static Maybe<Maybe<Maybe<T>>> __<T>() where T : class
-            //        => Maybe.Some(Maybe.Some(Maybe.SomeOrNone((T?)null)));
-            //}
-
-            [Fact]
-            public static void SomeOfNone_ReturnsSome_ForValueT()
-            {
-                Assert.Some(Maybe.Some(Maybe<Unit>.None));
-                Assert.Some(Maybe.Some(Maybe<int>.None));
-                Assert.Some(Maybe.Some(Maybe<long>.None));
+                Assert.Equal(Maybe<Maybe<Unit>>.None, Maybe.Some(Maybe<Unit>.None));
+                Assert.Equal(Maybe<Maybe<int>>.None, Maybe.Some(Maybe<int>.None));
+                Assert.Equal(Maybe<Maybe<long>>.None, Maybe.Some(Maybe<long>.None));
             }
 
             [Fact]
-            public static void SomeOfNone_ReturnsSome_ForReferenceT()
+            public static void SomeOfNone_EqualsNone_ForReferenceT()
             {
-                Assert.Some(Maybe.Some(Maybe<string>.None));
-                Assert.Some(Maybe.Some(Maybe<Uri>.None));
-                Assert.Some(Maybe.Some(Maybe<AnyT>.None));
-                Assert.Some(Maybe.Some(Maybe<object>.None));
+                Assert.Equal(Maybe<Maybe<string>>.None, Maybe.Some(Maybe<string>.None));
+                Assert.Equal(Maybe<Maybe<Uri>>.None, Maybe.Some(Maybe<Uri>.None));
+                Assert.Equal(Maybe<Maybe<AnyT>>.None, Maybe.Some(Maybe<AnyT>.None));
+                Assert.Equal(Maybe<Maybe<object>>.None, Maybe.Some(Maybe<object>.None));
             }
 
             [Fact]
-            public static void NthPower_ReturnsSome_WithNull_ForValueT()
+            public static void SomeSomeOfNone_EqualsNone_ForValueT()
             {
-                Assert.Some(__<Unit>());
-                Assert.Some(__<int>());
-                Assert.Some(__<long>());
+                Assert.Equal(Maybe<Maybe<Maybe<Unit>>>.None, __<Unit>());
+                Assert.Equal(Maybe<Maybe<Maybe<int>>>.None, __<int>());
+                Assert.Equal(Maybe<Maybe<Maybe<long>>>.None, __<long>());
 
                 static Maybe<Maybe<Maybe<T>>> __<T>() where T : struct
-                    => Maybe.Some(Maybe.Some(Maybe.SomeOrNone((T?)null)));
+                    => Maybe.Some(Maybe.Some(Maybe<T>.None));
             }
 
             [Fact]
-            public static void NthPower_ReturnsSome_WithNull_ForReferenceT()
+            public static void SomeSomeOfNone_EqualsNone_ForReferenceT()
             {
-                Assert.Some(__<string>());
-                Assert.Some(__<Uri>());
-                Assert.Some(__<AnyT>());
-                Assert.Some(__<object>());
+                Assert.Equal(Maybe<Maybe<Maybe<string>>>.None, __<string>());
+                Assert.Equal(Maybe<Maybe<Maybe<Uri>>>.None, __<Uri>());
+                Assert.Equal(Maybe<Maybe<Maybe<AnyT>>>.None, __<AnyT>());
+                Assert.Equal(Maybe<Maybe<Maybe<object>>>.None, __<object>());
 
                 static Maybe<Maybe<Maybe<T>>> __<T>() where T : class
-                    => Maybe.Some(Maybe.Some(Maybe.SomeOrNone((T?)null)));
+                    => Maybe.Some(Maybe.Some(Maybe<T>.None));
             }
+#else
+            [Fact]
+            public static void SomeOfNone_DoesNotEqualNone_ForValueT()
+            {
+                Assert.NotEqual(Maybe<Maybe<Unit>>.None, Maybe.Some(Maybe<Unit>.None));
+                Assert.NotEqual(Maybe<Maybe<int>>.None, Maybe.Some(Maybe<int>.None));
+                Assert.NotEqual(Maybe<Maybe<long>>.None, Maybe.Some(Maybe<long>.None));
+            }
+
+            [Fact]
+            public static void SomeOfNone_DoesNotEqualNone_ForReferenceT()
+            {
+                Assert.NotEqual(Maybe<Maybe<string>>.None, Maybe.Some(Maybe<string>.None));
+                Assert.NotEqual(Maybe<Maybe<Uri>>.None, Maybe.Some(Maybe<Uri>.None));
+                Assert.NotEqual(Maybe<Maybe<AnyT>>.None, Maybe.Some(Maybe<AnyT>.None));
+                Assert.NotEqual(Maybe<Maybe<object>>.None, Maybe.Some(Maybe<object>.None));
+            }
+
+            [Fact]
+            public static void SomeSomeOfNone_DoesNotEqualNone_ForValueT()
+            {
+                Assert.NotEqual(Maybe<Maybe<Maybe<Unit>>>.None, __<Unit>());
+                Assert.NotEqual(Maybe<Maybe<Maybe<int>>>.None, __<int>());
+                Assert.NotEqual(Maybe<Maybe<Maybe<long>>>.None, __<long>());
+
+                static Maybe<Maybe<Maybe<T>>> __<T>() where T : struct
+                    => Maybe.Some(Maybe.Some(Maybe<T>.None));
+            }
+
+            [Fact]
+            public static void SomeSomeOfNone_DoesNotEqualNone_ForReferenceT()
+            {
+                Assert.NotEqual(Maybe<Maybe<Maybe<string>>>.None, __<string>());
+                Assert.NotEqual(Maybe<Maybe<Maybe<Uri>>>.None, __<Uri>());
+                Assert.NotEqual(Maybe<Maybe<Maybe<AnyT>>>.None, __<AnyT>());
+                Assert.NotEqual(Maybe<Maybe<Maybe<object>>>.None, __<object>());
+
+                static Maybe<Maybe<Maybe<T>>> __<T>() where T : class
+                    => Maybe.Some(Maybe.Some(Maybe<T>.None));
+            }
+#endif
         }
     }
 }
