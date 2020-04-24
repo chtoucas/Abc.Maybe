@@ -15,12 +15,12 @@
     -->
     <PreReleaseTag>beta2</PreReleaseTag>
 
-    <Title>A safe yet effective Option Type.</Title>
+    <Title>A Safe Yet Effective Option Type.</Title>
 
     <PackageDescription><![CDATA[
-Provides an Option type, aka a Maybe type, with a rich API and several companion helpers (parsing, LINQ).
+Provides a fully-featured Option type, aka a Maybe type, with several companion helpers (parsing, LINQ).
 
-An Option type, aka a Maybe type, allows to represent objects that are either something (a value or a reference) or nothing. Nullable Reference Types (NRT) do not count since they are not actual .NET types but annotations that are ignored at run-time.
+An Option type allows to represent objects that are either something (a value or a reference) or nothing. Nullable Reference Types (NRT) do not count since they are not actual .NET types but annotations that are ignored at run-time.
 
 A tutorial along with guidelines is available on the project website.
     ]]></PackageDescription>

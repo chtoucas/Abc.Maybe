@@ -3,7 +3,6 @@ Developer Notes.
 Towards version 1.0.0
 ---------------------
 
-- PATCH_EQUALITY actionable via MSBuild?
 - Testing is well underway but there is still a lot to be done.
   * Split tests.
   * More functional tests.
