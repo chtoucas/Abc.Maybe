@@ -28,18 +28,18 @@ namespace Abc
         /// </summary>
         public static void Some<T>(T expected, Maybe<T> maybe)
         {
-            False(maybe.IsNone, "The maybe should not be empty.");
-
 #if INTERNALS_VISIBLE_TO
-            if (maybe.IsSome)
-            {
-                // BONSANG! When IsSome is true, Value is NOT null.
-                Equal(expected, maybe.Value!);
-            }
+            False(maybe.IsNone, "The maybe should not be empty.");
+            // BONSANG! When IsSome is true, Value is NOT null.
+            Equal(expected, maybe.Value!);
 #else
             if (maybe.TryGetValue(out T value))
             {
                 Equal(expected, value);
+            }
+            else
+            {
+                Failure("The maybe should not be empty.");
             }
 #endif
 
@@ -55,18 +55,18 @@ namespace Abc
         /// </summary>
         public static void Some<T>(IEnumerable<T> expected, Maybe<IEnumerable<T>> maybe)
         {
-            False(maybe.IsNone, "The maybe should not be empty.");
-
 #if INTERNALS_VISIBLE_TO
-            if (maybe.IsSome)
-            {
-                // BONSANG! When IsSome is true, Value is NOT null.
-                Equal(expected, maybe.Value!);
-            }
+            False(maybe.IsNone, "The maybe should not be empty.");
+            // BONSANG! When IsSome is true, Value is NOT null.
+            Equal(expected, maybe.Value!);
 #else
             if (maybe.TryGetValue(out IEnumerable<T>? value))
             {
                 Equal(expected, value);
+            }
+            else
+            {
+                Failure("The maybe should not be empty.");
             }
 #endif
         }

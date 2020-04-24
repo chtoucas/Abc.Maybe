@@ -26,7 +26,7 @@ namespace Abc
         /// <summary>
         /// Fails with a user message.
         /// </summary>
-        public static void Fails(string userMessage) => True(false, userMessage);
+        public static void Failure(string userMessage) => True(false, userMessage);
     }
 
     public partial class AssertEx
