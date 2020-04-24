@@ -23,28 +23,6 @@ namespace Abc
                 static Maybe<Maybe<T>> __<T>(T x) where T : struct => Maybe.Some(Maybe.Some(x));
             }
 
-#if PATCH_EQUALITY
-            [Fact]
-            public static void SquareOrNone_ForValueT_WithNull_IsSomeOfSomeOrNone()
-            {
-                Assert.Equal(__<Unit>(), Maybe.SquareOrNone((Unit?)null));
-                Assert.Equal(__<int>(), Maybe.SquareOrNone((int?)null));
-                Assert.Equal(__<long>(), Maybe.SquareOrNone((long?)null));
-
-                static Maybe<Maybe<T>> __<T>() where T : struct => Maybe.Some(Maybe.SomeOrNone((T?)null));
-            }
-#else
-            [Fact]
-            public static void SquareOrNone_ForValueT_WithNull_IsNotSomeOfSomeOrNone()
-            {
-                Assert.NotEqual(__<Unit>(), Maybe.SquareOrNone((Unit?)null));
-                Assert.NotEqual(__<int>(), Maybe.SquareOrNone((int?)null));
-                Assert.NotEqual(__<long>(), Maybe.SquareOrNone((long?)null));
-
-                static Maybe<Maybe<T>> __<T>() where T : struct => Maybe.Some(Maybe.SomeOrNone((T?)null));
-            }
-#endif
-
             [Fact]
             public static void SquareOrNone_ForValueT_WithNotNull_IsSomeOfSomeOrNone()
             {
@@ -54,30 +32,6 @@ namespace Abc
 
                 static Maybe<Maybe<T>> __<T>(T x) where T : struct => Maybe.Some(Maybe.SomeOrNone((T?)x));
             }
-
-#if PATCH_EQUALITY
-            [Fact]
-            public static void SquareOrNone_ForReferenceT_WithNull_IsSomeOfSomeOrNone()
-            {
-                Assert.Equal(__<string>(), Maybe.SquareOrNone((string?)null));
-                Assert.Equal(__<Uri>(), Maybe.SquareOrNone((Uri?)null));
-                Assert.Equal(__<AnyT>(), Maybe.SquareOrNone((AnyT?)null));
-                Assert.Equal(__<object>(), Maybe.SquareOrNone((object?)null));
-
-                static Maybe<Maybe<T>> __<T>() where T : class => Maybe.Some(Maybe.SomeOrNone((T?)null));
-            }
-#else
-            [Fact]
-            public static void SquareOrNone_ForReferenceT_WithNull_IsNotSomeOfSomeOrNone()
-            {
-                Assert.NotEqual(__<string>(), Maybe.SquareOrNone((string?)null));
-                Assert.NotEqual(__<Uri>(), Maybe.SquareOrNone((Uri?)null));
-                Assert.NotEqual(__<AnyT>(), Maybe.SquareOrNone((AnyT?)null));
-                Assert.NotEqual(__<object>(), Maybe.SquareOrNone((object?)null));
-
-                static Maybe<Maybe<T>> __<T>() where T : class => Maybe.Some(Maybe.SomeOrNone((T?)null));
-            }
-#endif
 
             [Fact]
             public static void SquareOrNone_ForReferenceT_WithNotNull_IsSomeOfSomeOrNone()
@@ -93,6 +47,50 @@ namespace Abc
 
                 static Maybe<Maybe<T>> __<T>(T x) where T : class => Maybe.Some(Maybe.SomeOrNone(x));
             }
+
+#if PATCH_EQUALITY
+            [Fact]
+            public static void SquareOrNone_ForValueT_WithNull_IsSomeOfSomeOrNone()
+            {
+                Assert.Equal(__<Unit>(), Maybe.SquareOrNone((Unit?)null));
+                Assert.Equal(__<int>(), Maybe.SquareOrNone((int?)null));
+                Assert.Equal(__<long>(), Maybe.SquareOrNone((long?)null));
+
+                static Maybe<Maybe<T>> __<T>() where T : struct => Maybe.Some(Maybe.SomeOrNone((T?)null));
+            }
+
+            [Fact]
+            public static void SquareOrNone_ForReferenceT_WithNull_IsSomeOfSomeOrNone()
+            {
+                Assert.Equal(__<string>(), Maybe.SquareOrNone((string?)null));
+                Assert.Equal(__<Uri>(), Maybe.SquareOrNone((Uri?)null));
+                Assert.Equal(__<AnyT>(), Maybe.SquareOrNone((AnyT?)null));
+                Assert.Equal(__<object>(), Maybe.SquareOrNone((object?)null));
+
+                static Maybe<Maybe<T>> __<T>() where T : class => Maybe.Some(Maybe.SomeOrNone((T?)null));
+            }
+#else
+            [Fact]
+            public static void SquareOrNone_ForValueT_WithNull_IsNotSomeOfSomeOrNone()
+            {
+                Assert.NotEqual(__<Unit>(), Maybe.SquareOrNone((Unit?)null));
+                Assert.NotEqual(__<int>(), Maybe.SquareOrNone((int?)null));
+                Assert.NotEqual(__<long>(), Maybe.SquareOrNone((long?)null));
+
+                static Maybe<Maybe<T>> __<T>() where T : struct => Maybe.Some(Maybe.SomeOrNone((T?)null));
+            }
+
+            [Fact]
+            public static void SquareOrNone_ForReferenceT_WithNull_IsNotSomeOfSomeOrNone()
+            {
+                Assert.NotEqual(__<string>(), Maybe.SquareOrNone((string?)null));
+                Assert.NotEqual(__<Uri>(), Maybe.SquareOrNone((Uri?)null));
+                Assert.NotEqual(__<AnyT>(), Maybe.SquareOrNone((AnyT?)null));
+                Assert.NotEqual(__<object>(), Maybe.SquareOrNone((object?)null));
+
+                static Maybe<Maybe<T>> __<T>() where T : class => Maybe.Some(Maybe.SomeOrNone((T?)null));
+            }
+#endif
         }
 
         // Equality rules of repeated "Some" starting from "None" depends on the
