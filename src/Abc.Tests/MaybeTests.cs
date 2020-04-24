@@ -30,7 +30,6 @@ namespace Abc
     // - string
     // - Uri
     // - AnyT
-
     public static partial class MaybeTests { }
 
     // Factories.

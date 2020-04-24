@@ -30,7 +30,10 @@ namespace Abc
         {
             internal static readonly Uri Uri = new Uri("http://www.narvalo.org");
         }
+    }
 
+    public partial class MaybeTests
+    {
         [Pure]
         public static Func<Task<Maybe<T>>> ReturnSync_<T>(T result) where T : notnull
             => () => Task.FromResult(Maybe.Of(result));
@@ -72,5 +75,34 @@ namespace Abc
         [Pure] private static Maybe<AnyResult> ReturnSome<T>(T _) => AnyResult.Some;
         [Pure] private static Task<Maybe<AnyResult>> ReturnSomeSync<T>(T _) => Task.FromResult(AnyResult.Some);
         [Pure] private static async Task<Maybe<AnyResult>> ReturnSomeAsync<T>(T _) { await Task.Yield(); return AnyResult.Some; }
+    }
+
+    public partial class MaybeTests
+    {
+        private struct MyItem
+        {
+            public int Id;
+            public string Name;
+        }
+
+        private struct MyInfo
+        {
+            public int Id;
+            public string Description;
+        }
+
+        private struct MyData
+        {
+            public int Id;
+            public string Name;
+            public string Description;
+        }
+
+        private struct MyDataGroup
+        {
+            public int Id;
+            public string Name;
+            public Maybe<MyInfo> Info;
+        }
     }
 }
