@@ -4,6 +4,7 @@
 :: > qbuild -c Release
 :: > qbuild /p:Property=Value
 :: > qbuild .\src\Abc.Maybe\
+:: > qbuild /p:TargetFrameworks=\"netstandard2.0;netstandard2.1;netcoreapp3.1\"
 ::
 :: Standard settings:
 :: > qbuild /p:SignAssembly=true

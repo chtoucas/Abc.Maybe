@@ -63,6 +63,7 @@ Main tasks
 - Multitargeting:
   * Target net461? Review !NETSTANDARD2.0 in code.
     https://github.com/dotnet/announcements/issues/31
+    https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives/preprocessor-if
   * .NET Standard 2.1 & .NET Core 3.1 only. Use System.HashCode.
     Use PlatformNotSupportedException for things that could be supported but
     are not actually.
