@@ -46,7 +46,7 @@ vNEXT
 - Extensions.
 - Async (configurable, enumerable).
 - Roslyn Analyzer:
-  * Of(), Flatten().
+  * Of(), Flatten(). Squash(Maybe<T?>) where T : class
   * SelectMany(), ZipWith(), Bind().
 - Serialization (XML)
 

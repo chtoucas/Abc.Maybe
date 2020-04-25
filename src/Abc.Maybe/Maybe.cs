@@ -64,9 +64,8 @@ namespace Abc
         /// <summary>
         /// Creates a new instance of the <see cref="Maybe{T}"/> struct from the
         /// specified nullable value.
-        /// <para>RECOMMENDATION: for concrete types, <see cref="Some"/>,
-        /// <see cref="SomeOrNone{T}(T?)"/> or <see cref="SomeOrNone{T}(T)"/>
-        /// should be preferred.</para>
+        /// <para>RECOMMENDATION: for concrete types, <c>Some</c> or
+        /// <c>SomeOrNone</c> should be preferred.</para>
         /// </summary>
         // Unconstrained version of SomeOrNone() and Some().
         // F# Workflow: return.
@@ -78,13 +77,12 @@ namespace Abc
         /// <summary>
         /// Removes one level of structure, projecting the bound value into the
         /// outer level.
-        /// <para>RECOMMENDATION: for concrete types,
-        /// <see cref="Squash{T}(in Maybe{Maybe{T?}})"/> should be preferred.
+        /// <para>RECOMMENDATION: for concrete nullable types, <c>Squash</c>
+        /// should be preferred.
         /// </para>
         /// </summary>
         // Unconstrained version of Squash().
         [Pure]
-        [EditorBrowsable(EditorBrowsableState.Advanced)]
         public static Maybe<T> Flatten<T>(this Maybe<Maybe<T>> @this)
             => @this.IsSome ? @this.Value : Maybe<T>.None;
     }
@@ -172,10 +170,18 @@ namespace Abc
             // therefore we can safely access Value.Value.
             => @this.IsSome ? Some(@this.Value!.Value) : Maybe<T>.None;
 
+        // Beware, this method just returns its input.
+        // Instead, the caller could disable nullable warnings locally.
         [Pure]
+        [EditorBrowsable(EditorBrowsableState.Advanced)]
+        // Code size = 2 bytes.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Maybe<T> Squash<T>(this Maybe<T?> @this) where T : class
-            => @this.IsSome && @this.Value != null ? new Maybe<T>(@this.Value)
-                : Maybe<T>.None;
+            // We disable NRT, otherwise we would have to write:
+            //   @this.IsSome ? new Maybe<T>(@this.Value!) : Maybe<T>.None;
+#nullable disable warnings
+            => @this;
+#nullable restore warnings
 
         // Unconstrained version: Flatten().
         [Pure]
@@ -185,7 +191,12 @@ namespace Abc
         // Unconstrained version: Flatten().
         [Pure]
         public static Maybe<T> Squash<T>(this Maybe<Maybe<T?>> @this) where T : class
-            => @this.IsSome ? @this.Value.Squash() : Maybe<T>.None;
+            // We disable nullable warnings, otherwise we would have to write:
+            //   @this.IsSome ? @this.Value.Squash() : Maybe<T>.None;
+            // but Squash() does actually nothing.
+#nullable disable warnings
+            => @this.IsSome ? @this.Value : Maybe<T>.None;
+#nullable restore warnings
     }
 
     // Helpers for Maybe<T> where T is a struct.

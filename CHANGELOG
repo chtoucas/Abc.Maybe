@@ -3,6 +3,10 @@ Changelog for Abc.
 vNEXT
 -----
 
+Changed
+- Simplify Squash(Maybe<T?>) where T : class, and apply attribute Advanced.
+- Remove attribute Advanced from Flatten().
+
 2020-04-24, version 1.0.0-beta3
 -------------------------------
 
