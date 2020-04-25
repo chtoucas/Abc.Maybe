@@ -7,6 +7,10 @@ Changed
 - Simplify Squash(Maybe<T?>) where T : class, and apply attribute Advanced.
 - Remove attribute Advanced from Flatten().
 
+Internal Changes
+- Upgraded packages:
+  * Microsoft.NET.Test.Sdk 16.6.0 -> 16.6.1.
+
 2020-04-24, version 1.0.0-beta3
 -------------------------------
 
