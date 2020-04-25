@@ -38,9 +38,10 @@ Documentation (README)
 vNEXT
 -----
 
-- "Lifted" comparison T w/ Maybe<T>? see also MaybeComparer<T>.
-  IEquatable<T> (T == Maybe<T>), IComparable<T> but a bit missleading?
-  Add overloads w/ IEqualityComparer<T>?
+- Add overloads w/ IEqualityComparer<T> (true structural comparison).
+- "Lifted" comparison T w/ Maybe<T> to handle mixed type, eg Maybe<int?>,
+  Maybe<int>, int? and int. This should be a custom MaybeComparer<T>. Do not
+  implement IEquatable<T> (T == Maybe<T>), IComparable<T> this would be misleading?
 - More May helpers w/ Span<T>.
 - LINQ: optimize, more ops.
   "Monadic" LINQ. Output Maybe<IEnumerable<T>> and LINQ ops.

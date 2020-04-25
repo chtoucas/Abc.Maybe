@@ -73,10 +73,10 @@ namespace Abc
         public static void Nullable_Comparisons_ForNotComparable()
         {
             // Arrange
-            MyNotComparableStruct_? x = new MyNotComparableStruct_ { Value = "XXX" };
-            MyNotComparableStruct_? y = new MyNotComparableStruct_ { Value = "YYY" };
-            MyNotComparableStruct_? nil = null;
-            var cmp = Comparer<MyNotComparableStruct_?>.Default;
+            MyNotComparableStruct? x = new MyNotComparableStruct { Value = "XXX" };
+            MyNotComparableStruct? y = new MyNotComparableStruct { Value = "YYY" };
+            MyNotComparableStruct? nil = null;
+            var cmp = Comparer<MyNotComparableStruct?>.Default;
 
             // Act & Assert
             Assert.Equal(1, cmp.Compare(x, nil));
@@ -91,17 +91,12 @@ namespace Abc
         public static void ValueTuple_Comparisons_ForNotComparable()
         {
             // Arrange
-            var x = ValueTuple.Create(new MyNotComparableStruct_ { Value = "XXX" });
-            var y = ValueTuple.Create(new MyNotComparableStruct_ { Value = "YYY" });
-            var cmp = Comparer<ValueTuple<MyNotComparableStruct_?>>.Default;
+            var x = ValueTuple.Create(new MyNotComparableStruct { Value = "XXX" });
+            var y = ValueTuple.Create(new MyNotComparableStruct { Value = "YYY" });
+            var cmp = Comparer<ValueTuple<MyNotComparableStruct?>>.Default;
             // Act & Assert
             Assert.ThrowsArgexn(() => cmp.Compare(x, x));
             Assert.ThrowsArgexn(() => cmp.Compare(x, y));
-        }
-
-        private struct MyNotComparableStruct_
-        {
-            public string Value;
         }
     }
 }

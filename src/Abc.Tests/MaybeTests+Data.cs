@@ -6,6 +6,7 @@ namespace Abc
     using System.Diagnostics.Contracts;
     using System.Threading.Tasks;
 
+    // Fields.
     public partial class MaybeTests
     {
         private const string Anagram = "chicane";
@@ -32,6 +33,7 @@ namespace Abc
         }
     }
 
+    // Methods.
     public partial class MaybeTests
     {
         [Pure]
@@ -77,8 +79,18 @@ namespace Abc
         [Pure] private static async Task<Maybe<AnyResult>> ReturnSomeAsync<T>(T _) { await Task.Yield(); return AnyResult.Some; }
     }
 
+    // Classes.
     public partial class MaybeTests
     {
+        private class MyBaseClass { }
+
+        private class MyDerivedClass : MyBaseClass { }
+
+        private struct MyNotComparableStruct
+        {
+            public string Value;
+        }
+
         private struct MyItem
         {
             public int Id;

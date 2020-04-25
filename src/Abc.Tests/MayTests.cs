@@ -586,27 +586,27 @@ namespace Abc
         public static void ParseDateTime_WithNullOrWhiteSpace(string input)
         {
             Assert.None(May.ParseDateTime(input));
-            Assert.None(May.ParseDateTime(input, new MyFormatter_(), DateTimeStyles.None));
+            Assert.None(May.ParseDateTime(input, new MyFormatter(), DateTimeStyles.None));
         }
 
         [Fact]
         public static void ParseDateTimeExactly_InvalidArgs()
         {
-            Assert.None(May.ParseDateTimeExactly(null, "d", new MyFormatter_(), DateTimeStyles.None));
-            Assert.None(May.ParseDateTimeExactly(null, "d", new MyFormatter_(), DateTimeStyles.None));
-            Assert.None(May.ParseDateTimeExactly(null, new[] { "d" }, new MyFormatter_(), DateTimeStyles.None));
+            Assert.None(May.ParseDateTimeExactly(null, "d", new MyFormatter(), DateTimeStyles.None));
+            Assert.None(May.ParseDateTimeExactly(null, "d", new MyFormatter(), DateTimeStyles.None));
+            Assert.None(May.ParseDateTimeExactly(null, new[] { "d" }, new MyFormatter(), DateTimeStyles.None));
 
-            Assert.None(May.ParseDateTimeExactly("", "d", new MyFormatter_(), DateTimeStyles.None));
-            Assert.None(May.ParseDateTimeExactly("", new[] { "d" }, new MyFormatter_(), DateTimeStyles.None));
+            Assert.None(May.ParseDateTimeExactly("", "d", new MyFormatter(), DateTimeStyles.None));
+            Assert.None(May.ParseDateTimeExactly("", new[] { "d" }, new MyFormatter(), DateTimeStyles.None));
 
-            Assert.None(May.ParseDateTimeExactly("abc", (string?)null, new MyFormatter_(), DateTimeStyles.None));
-            Assert.None(May.ParseDateTimeExactly("abc", (string[]?)null, new MyFormatter_(), DateTimeStyles.None));
+            Assert.None(May.ParseDateTimeExactly("abc", (string?)null, new MyFormatter(), DateTimeStyles.None));
+            Assert.None(May.ParseDateTimeExactly("abc", (string[]?)null, new MyFormatter(), DateTimeStyles.None));
 
-            Assert.None(May.ParseDateTimeExactly("abc", "", new MyFormatter_(), DateTimeStyles.None));
-            Assert.None(May.ParseDateTimeExactly("abc", Array.Empty<string>(), new MyFormatter_(), DateTimeStyles.None));
-            Assert.None(May.ParseDateTimeExactly("abc", new string?[] { null }, new MyFormatter_(), DateTimeStyles.None));
-            Assert.None(May.ParseDateTimeExactly("abc", new[] { "" }, new MyFormatter_(), DateTimeStyles.None));
-            Assert.None(May.ParseDateTimeExactly("abc", new[] { "" }, new MyFormatter_(), DateTimeStyles.None));
+            Assert.None(May.ParseDateTimeExactly("abc", "", new MyFormatter(), DateTimeStyles.None));
+            Assert.None(May.ParseDateTimeExactly("abc", Array.Empty<string>(), new MyFormatter(), DateTimeStyles.None));
+            Assert.None(May.ParseDateTimeExactly("abc", new string?[] { null }, new MyFormatter(), DateTimeStyles.None));
+            Assert.None(May.ParseDateTimeExactly("abc", new[] { "" }, new MyFormatter(), DateTimeStyles.None));
+            Assert.None(May.ParseDateTimeExactly("abc", new[] { "" }, new MyFormatter(), DateTimeStyles.None));
         }
 
 #pragma warning disable CA1305 // Specify IFormatProvider
@@ -744,7 +744,7 @@ namespace Abc
 
 #pragma warning restore CA1305
 
-        private class MyFormatter_ : IFormatProvider
+        private class MyFormatter : IFormatProvider
         {
             public object? GetFormat(Type? formatType)
             {

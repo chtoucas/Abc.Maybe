@@ -2,8 +2,6 @@
 
 namespace Abc
 {
-    using System;
-
     using Xunit;
 
     using Assert = AssertEx;
