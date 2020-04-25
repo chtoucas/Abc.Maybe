@@ -263,6 +263,17 @@ namespace Abc
             Assert.Some(obj, Maybe.SomeOrNone(obj));
         }
 
+        [Fact]
+        public static void SomeOrNone_ForReferenceT_WithoutNRTs()
+        {
+#nullable disable annotations // CS8600
+            Assert.Equal(Maybe<string>.None, Maybe.SomeOrNone((string)null));
+            Assert.Equal(Maybe<Uri>.None, Maybe.SomeOrNone((Uri)null));
+            Assert.Equal(Maybe<AnyT>.None, Maybe.SomeOrNone((AnyT)null));
+            Assert.Equal(Maybe<object>.None, Maybe.SomeOrNone((object)null));
+#nullable restore annotations
+        }
+
         #endregion
 
         #region Square() & SquareOrNone()
@@ -310,10 +321,10 @@ namespace Abc
         public static void SquareOrNone_ForReferenceT_WithoutNRTs()
         {
 #nullable disable annotations // CS8600
-            Assert.None(Maybe.SquareOrNone((string)null));
-            Assert.None(Maybe.SquareOrNone((Uri)null));
-            Assert.None(Maybe.SquareOrNone((AnyT)null));
-            Assert.None(Maybe.SquareOrNone((object)null));
+            Assert.Equal(Maybe<Maybe<string>>.None, Maybe.SquareOrNone((string)null));
+            Assert.Equal(Maybe<Maybe<Uri>>.None, Maybe.SquareOrNone((Uri)null));
+            Assert.Equal(Maybe<Maybe<AnyT>>.None, Maybe.SquareOrNone((AnyT)null));
+            Assert.Equal(Maybe<Maybe<object>>.None, Maybe.SquareOrNone((object)null));
 #nullable restore annotations
         }
 
