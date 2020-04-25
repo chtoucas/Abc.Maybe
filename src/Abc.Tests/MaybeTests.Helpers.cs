@@ -147,7 +147,7 @@ namespace Abc
             [Fact]
             public static void Squash_None_ForReferenceT_WithoutNRTs()
             {
-#nullable disable annotations
+#nullable disable annotations // CS8620
                 Assert.Equal(Maybe<string>.None, Maybe<string>.None.Squash());
                 Assert.Equal(Maybe<Uri>.None, Maybe<Uri>.None.Squash());
                 Assert.Equal(Maybe<AnyT>.None, Maybe<AnyT>.None.Squash());
@@ -180,7 +180,7 @@ namespace Abc
                 // Arrange
                 Maybe<AnyT> some = AnyT.Some;
                 // Act & Assert
-#nullable disable warnings
+#nullable disable warnings // CS8620
                 Assert.Equal(some, some.Squash());
 #nullable restore warnings
             }
@@ -209,7 +209,7 @@ namespace Abc
             [Fact]
             public static void Squash2_None_ForRerenceType_WithoutNRTs()
             {
-#nullable disable annotations
+#nullable disable annotations // CS8620
                 Assert.Equal(Maybe<string>.None, Maybe<Maybe<string>>.None.Squash());
                 Assert.Equal(Maybe<Uri>.None, Maybe<Maybe<Uri>>.None.Squash());
                 Assert.Equal(Maybe<AnyT>.None, Maybe<Maybe<AnyT>>.None.Squash());
@@ -237,7 +237,7 @@ namespace Abc
             [Fact]
             public static void Squash2_SomeOfNone_ForReferenceT_WithoutNRTs()
             {
-#nullable disable annotations
+#nullable disable annotations // CS8620
                 Assert.Equal(Maybe<string>.None, Maybe.Some(Maybe<string>.None).Squash());
                 Assert.Equal(Maybe<Uri>.None, Maybe.Some(Maybe<Uri>.None).Squash());
                 Assert.Equal(Maybe<AnyT>.None, Maybe.Some(Maybe<AnyT>.None).Squash());
@@ -273,7 +273,7 @@ namespace Abc
                 Maybe<AnyT> some = AnyT.Some;
                 Maybe<Maybe<AnyT>> square = Maybe.Some(some);
                 // Act & Assert
-#nullable disable warnings
+#nullable disable warnings // CS8620
                 Assert.Equal(some, square.Squash());
 #nullable restore warnings
             }

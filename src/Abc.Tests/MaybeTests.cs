@@ -135,12 +135,33 @@ namespace Abc
         }
 
         [Fact]
+        public static void NoneT_ReturnsNone_ForValueT_WithoutNRTs()
+        {
+#nullable disable warnings // CS8714
+            Assert.Equal(Maybe<Unit?>.None, Maybe.None<Unit?>());
+            Assert.Equal(Maybe<int?>.None, Maybe.None<int?>());
+            Assert.Equal(Maybe<long?>.None, Maybe.None<long?>());
+#nullable restore warnings
+        }
+
+        [Fact]
         public static void NoneT_ReturnsNone_ForReferenceT()
         {
             Assert.Equal(Maybe<string>.None, Maybe.None<string>());
             Assert.Equal(Maybe<Uri>.None, Maybe.None<Uri>());
             Assert.Equal(Maybe<AnyT>.None, Maybe.None<AnyT>());
             Assert.Equal(Maybe<object>.None, Maybe.None<object>());
+        }
+
+        [Fact]
+        public static void NoneT_ReturnsNone_ForReferenceT_WithoutNRTs()
+        {
+#nullable disable warnings // CS8620 & CS8714
+            Assert.Equal(Maybe<string>.None, Maybe.None<string?>());
+            Assert.Equal(Maybe<Uri>.None, Maybe.None<Uri?>());
+            Assert.Equal(Maybe<AnyT>.None, Maybe.None<AnyT?>());
+            Assert.Equal(Maybe<object>.None, Maybe.None<object?>());
+#nullable restore warnings
         }
 
         #endregion
@@ -283,6 +304,17 @@ namespace Abc
             var obj = new object();
             Assert.None(Maybe.SquareOrNone((object?)null));
             Assert.Some(Maybe.SomeOrNone(obj), Maybe.SquareOrNone(obj));
+        }
+
+        [Fact]
+        public static void SquareOrNone_ForReferenceT_WithoutNRTs()
+        {
+#nullable disable annotations // CS8600
+            Assert.None(Maybe.SquareOrNone((string)null));
+            Assert.None(Maybe.SquareOrNone((Uri)null));
+            Assert.None(Maybe.SquareOrNone((AnyT)null));
+            Assert.None(Maybe.SquareOrNone((object)null));
+#nullable restore annotations
         }
 
         #endregion
