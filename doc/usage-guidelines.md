@@ -27,7 +27,9 @@ say a `Maybe<int?>`, there is a method `Squash()` to convert it to a `Maybe<int>
 (TODO: _do not use a maybe when we just have a single nullable value type, and
 a if/then is all you need_)
 
-### API design
+API design
+----------
+
 - **DO NOT use `Maybe<T>` as a parameter in public APIs.**
 
 When tempted to do so, we should think harder, most certainly there is a better
@@ -47,14 +49,18 @@ Of course, this does not mean that you should not use this type at all,
 otherwise I would not have written this library. _Maybe_'s should be
 **ephemeral** and mostly confined inside a method.
 
-### Regarding performance
+Regarding performance
+---------------------
+
 - **AVOID using a _maybe_ if the object is expected to be long-lived.** (TODO: _why not?_)
 - **AVOID using a _maybe_ in hot code paths.**
 
 (TODO: _be less categorical, struct could imply a ton of copying, what about LINQ
 (seq of _maybe_'s)?_)
 
-### About the May-Parse pattern
+About the May-Parse pattern
+---------------------------
+
 - **DO use the May-Parse pattern instead of the Try-Parse pattern for reference
   types.**
 - **DO use the prefix _May_ for methods implementing this pattern.**
