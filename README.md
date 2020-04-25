@@ -10,6 +10,7 @@ Abc.Maybe features an Option type for .NET.
 - [Usage Guidelines](doc/usage-guidelines.md)
 - [Changelog](CHANGELOG)
 - [BSD 3-Clause "New" or "Revised" License](LICENSE)
+- [Public API](src/Abc.Maybe/PublicAPI.Shipped.txt)
 
 __Objectives/Features__
 
@@ -22,14 +23,13 @@ __Objectives/Features__
   - [x] Equatable and comparable, both optionally structural.
   - [x] NRT-aware (NRT = Nullable Reference Types).
   - [x] Debugger-friendly.
-  - [ ] Supported frameworks:
-    - [x] .NET Standard 2.0 for recent systems.
-    - [ ] .NET Framework 4.6.1 for older systems.
+  - [x] .NET Standard 2.0 for recent systems.
+  - [ ] .NET Framework 4.6.1 for older systems.
 - [ ] Being well tested.
   - [x] 100% test coverage.
-  - [ ] Functional tests.
+  - [ ] Wide range of functional tests.
 - [ ] Being well documented.
   - [ ] XML comments with integrated examples.
-  - [ ] Quick start (see below).
-  - [ ] Provides guidance (see below).
+  - [x] Quick start.
+  - [ ] Provides guidance.
   - [ ] Samples.
