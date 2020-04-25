@@ -66,6 +66,16 @@ namespace Abc
             }
 
             [Fact]
+            public static void Squash_None_WithoutNRTs()
+            {
+#nullable disable annotations
+                Assert.Equal(NoText, Maybe<string>.None.Squash());
+                Assert.Equal(NoUri, Maybe<Uri>.None.Squash());
+                Assert.Equal(AnyT.None, Maybe<AnyT>.None.Squash());
+#nullable restore annotations
+            }
+
+            [Fact]
             public static void Squash_Some_ForValueType()
             {
                 // Arrange
@@ -85,12 +95,33 @@ namespace Abc
             }
 
             [Fact]
+            public static void Squash_Some_ForReferenceType_WithoutNRTs()
+            {
+                // Arrange
+                Maybe<AnyT> some = AnyT.Some;
+                // Act & Assert
+#nullable disable warnings
+                Assert.Equal(some, some.Squash());
+#nullable restore warnings
+            }
+
+            [Fact]
             public static void Squash_Square_None()
             {
                 Assert.Equal(Ø, Maybe<Maybe<int?>>.None.Squash());
                 Assert.Equal(NoText, Maybe<Maybe<string?>>.None.Squash());
                 Assert.Equal(NoUri, Maybe<Maybe<Uri?>>.None.Squash());
                 Assert.Equal(AnyT.None, Maybe<Maybe<AnyT?>>.None.Squash());
+            }
+
+            [Fact]
+            public static void Squash_Square_None_WithoutNRTs()
+            {
+#nullable disable annotations
+                Assert.Equal(NoText, Maybe<Maybe<string>>.None.Squash());
+                Assert.Equal(NoUri, Maybe<Maybe<Uri>>.None.Squash());
+                Assert.Equal(AnyT.None, Maybe<Maybe<AnyT>>.None.Squash());
+#nullable restore annotations
             }
 
             [Fact]
@@ -112,6 +143,18 @@ namespace Abc
                 Maybe<Maybe<AnyT?>> square = Maybe.Some(some);
                 // Act & Assert
                 Assert.Equal(m, square.Squash());
+            }
+
+            [Fact]
+            public static void Squash_Square_Some_ForReferenceType_WithoutNRTs()
+            {
+                // Arrange
+                Maybe<AnyT> some = AnyT.Some;
+                Maybe<Maybe<AnyT>> square = Maybe.Some(some);
+                // Act & Assert
+#nullable disable warnings
+                Assert.Equal(some, square.Squash());
+#nullable restore warnings
             }
 
             #endregion

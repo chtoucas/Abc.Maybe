@@ -93,6 +93,7 @@ namespace Abc
 #endif
         }
 
+        // Some(...Some(None)...)
         // Equality rules of repeated "Some" starting from "None" depends on the
         // compiler symbol PATCH_EQUALITY. The good news is that, once flattened,
         // the equality is uniform whether PATCH_EQUALITY is on or off.

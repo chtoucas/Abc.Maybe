@@ -70,7 +70,15 @@ namespace Abc
 
             Assert.None(some.ReplaceWith((string)null!));
             Assert.None(Ø.ReplaceWith((string)null!));
+        }
 
+        [Fact]
+        public static void ReplaceWith_WithoutNRTs()
+        {
+            // Arrange
+            var some = Maybe.Unit;
+
+            // Act & Assert
 #nullable disable warnings
             Assert.Some(2, some.ReplaceWith((int?)2));
             Assert.None(Ø.ReplaceWith((int?)2));
