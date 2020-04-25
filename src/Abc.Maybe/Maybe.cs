@@ -139,9 +139,9 @@ namespace Abc
         public static Maybe<T> SomeOrNone<T>(T? value) where T : class
             => value is null ? Maybe<T>.None : new Maybe<T>(value);
 
-        // Most of the time we think we have to create a "double" maybe because
-        // we want to make it work with another "double". Often, the proper
-        // solution is to Squash()/Flatten() the later.
+        // Most of the time we believe that we have to create a "double" maybe
+        // it's because we want to make it work with another "double", whereas
+        // the proper solution is to Squash()/Flatten() the later.
 
         // Identical to Maybe.Some(Maybe.Some()).
         [Pure]
@@ -149,13 +149,13 @@ namespace Abc
             => new Maybe<Maybe<T>>(new Maybe<T>(value));
 
         // Beware, not identical to Maybe.Some(Maybe.SomeOrNone()).
-        // It only matches when value is not null.
+        // They only match when value is NOT null.
         [Pure]
         public static Maybe<Maybe<T>> SquareOrNone<T>(T? value) where T : struct
             => value.HasValue ? new Maybe<Maybe<T>>(new Maybe<T>(value.Value)) : Maybe<Maybe<T>>.None;
 
         // Beware, not identical to Maybe.Some(Maybe.SomeOrNone()).
-        // It only matches when value is not null.
+        // They only match when value is NOT null.
         [Pure]
         public static Maybe<Maybe<T>> SquareOrNone<T>(T? value) where T : class
             => value is null ? Maybe<Maybe<T>>.None : new Maybe<Maybe<T>>(new Maybe<T>(value));
