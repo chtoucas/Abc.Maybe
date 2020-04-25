@@ -78,7 +78,7 @@ namespace Abc
         /// Removes one level of structure, projecting the bound value into the
         /// outer level.
         /// <para>RECOMMENDATION: for concrete nullable types, <c>Squash()</c>
-        /// should be preferred.
+        /// is in general more appropriate.
         /// </para>
         /// </summary>
         // Unconstrained version of Squash().
@@ -94,8 +94,8 @@ namespace Abc
         /// Obtains an instance of the empty <see cref="Maybe{T}" />.
         /// </summary>
         /// <remarks>
-        /// To obtain the empty maybe for an unconstrained type, use
-        /// <see cref="Maybe{T}.None"/> instead.
+        /// To obtain the empty maybe for an unconstrained generic type paramater,
+        /// use <see cref="Maybe{T}.None"/> instead.
         /// </remarks>
         [Pure]
         // Code size = 6 bytes.
@@ -118,7 +118,7 @@ namespace Abc
         /// specified nullable value.
         /// </summary>
         /// <remarks>
-        /// To create a maybe for an unconstrained type, use
+        /// To create a maybe for an unconstrained generic type parameter, use
         /// <see cref="Of{T}(T)"/> instead.
         /// </remarks>
         [Pure]
@@ -132,7 +132,7 @@ namespace Abc
         /// specified nullable value.
         /// </summary>
         /// <remarks>
-        /// To create a maybe for an unconstrained type, use
+        /// To create a maybe for an unconstrained generic type parameter, use
         /// <see cref="Of{T}(T)"/> instead.
         /// </remarks>
         [Pure]

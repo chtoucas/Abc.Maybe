@@ -88,6 +88,7 @@ namespace Abc
         public DefaultMaybeComparer() { }
 
         [Pure]
+        // Code size = 56 bytes, way to high (> 32 bytes).
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals(Maybe<T> x, Maybe<T> y) =>
             // BONSANG! When IsSome is true, Value is NOT null.
@@ -95,6 +96,7 @@ namespace Abc
                 : !y.IsSome;
 
         [Pure]
+        // Code size = 29 bytes.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode(Maybe<T> obj) =>
             // BONSANG! When IsSome is true, Value is NOT null.
@@ -103,6 +105,7 @@ namespace Abc
         // A total order for maybe's. The convention is that the empty maybe is
         // strictly less than any other maybe.
         [Pure]
+        // Code size = 58 bytes, way to high (> 32 bytes).
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int Compare(Maybe<T> x, Maybe<T> y) =>
             // BONSANG! When IsSome is true, Value is NOT null.
@@ -126,6 +129,7 @@ namespace Abc
         public StructuralMaybeComparer() { }
 
         [Pure]
+        // Code size = 66 bytes, way to high (> 32 bytes).
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals(Maybe<T> x, Maybe<T> y) =>
             x.IsSome
@@ -133,12 +137,14 @@ namespace Abc
                 : !y.IsSome;
 
         [Pure]
+        // Code size = 34 bytes.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode(Maybe<T> obj) =>
             // BONSANG! When IsSome is true, Value is NOT null.
             obj.IsSome ? StructuralComparisons.StructuralEqualityComparer.GetHashCode(obj.Value!) : 0;
 
         [Pure]
+        // Code size = 68 bytes, way to high (> 32 bytes).
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int Compare(Maybe<T> x, Maybe<T> y) =>
             x.IsSome
