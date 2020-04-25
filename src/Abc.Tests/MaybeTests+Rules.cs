@@ -37,8 +37,8 @@ namespace Abc
             [Fact]
             public static void Functor_SecondLaw()
             {
-                Func<int, long> g = x => 2L * x;
-                Func<long, string> f = x => $"{x}";
+                static long g(int x) => 2L * x;
+                static string f(long x) => $"{x}";
 
                 Assert.Equal(
                     Ø.Select(x => f(g(x))),
@@ -100,9 +100,9 @@ namespace Abc
             [Fact]
             public static void Bind_LeftZero()
             {
-                Func<int, Maybe<int>> f = x => Maybe.Some(2 * x);
+                Assert.Equal(NONE, NONE.Bind(__));
 
-                Assert.Equal(NONE, NONE.Bind(f));
+                static Maybe<int> __(int x) => Maybe.Some(2 * x);
             }
         }
 

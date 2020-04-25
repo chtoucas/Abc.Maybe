@@ -4,7 +4,12 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
 
+    <!--
+      IDE0039   Use local function
+      IDE1006   Naming rule violation: These words must begin with upper case characters
+    -->
     <RelaxWarnings>true</RelaxWarnings>
+    <NoWarn>$(NoWarn);IDE0039;IDE1006</NoWarn>
 
     <DefineConstants>$(DefineConstants);STRICT_HASKELL</DefineConstants>
     <!--<DefineConstants>$(DefineConstants);MONADS_VIA_MAP_MULTIPLY</DefineConstants>-->
