@@ -3,10 +3,11 @@ Developer Notes.
 Towards version 1.0.0
 ---------------------
 
+Currently, the only thing blocking us for a 1.0.0 release is proper testing of
+equality and ordering comparisons.
 - Testing is well underway but there is still a lot to be done.
   * Split tests.
   * More functional tests.
-  * Square() and Flatten() or Squash().
   * Expand comparison tests (order and equality).
     See NONGENERIC_MAYBE
     Structural comparisons w/ structural types.
@@ -172,6 +173,12 @@ Changes to the default editor config (does not affect the compilation).
 - IDE0039 - csharp_style_pattern_local_over_anonymous_function
 - IDE0060 - dotnet_code_quality_unused_parameters, (Remove unused parameter) covered by CA1801.
 https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-language-conventions?view=vs-2019
+
+From time to time, we should review our usage of
+- #pragma warning disable
+- #nullable disable
+- SuppressMessage
+- BONSANG! null-forgiving ("damnit") operator
 
 Testing.
 - Do not hesitate to test the obvious and to write redundant tests.

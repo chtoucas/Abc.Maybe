@@ -64,8 +64,8 @@ namespace Abc
         /// <summary>
         /// Creates a new instance of the <see cref="Maybe{T}"/> struct from the
         /// specified nullable value.
-        /// <para>RECOMMENDATION: for concrete types, <c>Some</c> or
-        /// <c>SomeOrNone</c> should be preferred.</para>
+        /// <para>RECOMMENDATION: for concrete types, <c>Some()</c> or
+        /// <c>SomeOrNone()</c> should be preferred.</para>
         /// </summary>
         // Unconstrained version of SomeOrNone() and Some().
         // F# Workflow: return.
@@ -77,7 +77,7 @@ namespace Abc
         /// <summary>
         /// Removes one level of structure, projecting the bound value into the
         /// outer level.
-        /// <para>RECOMMENDATION: for concrete nullable types, <c>Squash</c>
+        /// <para>RECOMMENDATION: for concrete nullable types, <c>Squash()</c>
         /// should be preferred.
         /// </para>
         /// </summary>

@@ -1,12 +1,13 @@
 ﻿// See LICENSE in the project root for license information.
 
 using System;
-using System.Collections;
+//using System.Collections;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Contracts;
+//using System.Diagnostics.Contracts;
 
-using Anexn = System.ArgumentNullException;
+//using Anexn = System.ArgumentNullException;
 
+// FIXME: AnyStructural.
 internal sealed class AnyStructural //: IStructuralEquatable
 {
     private static readonly AnagramEqualityComparer s_Comparer =

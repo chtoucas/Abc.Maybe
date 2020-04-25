@@ -715,7 +715,9 @@ namespace Abc
             //   Maybe.SquareXXX() = Maybe.Some(Maybe.SomeXXX())
             // This is a curiosity, DO NOT ENABLE. It would break the contract
             // for Maybe.Some() which states that it always returns a non-empty
-            // maybe.
+            // maybe. It would also be inconsistent to have at the same time
+            // maybe.IsNone != true and maybe == None.
+            //
             // Maybe there is a way to fix the discrepency between equality and
             // emptiness, provide overloads of the factories Of() and Some()
             // when T is itself a maybe. I don't think it is worth the trouble
