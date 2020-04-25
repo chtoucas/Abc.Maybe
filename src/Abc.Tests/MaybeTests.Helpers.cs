@@ -10,73 +10,153 @@ namespace Abc
 
     public partial class MaybeTests
     {
-        // Normalization: Flatten(), Squash().
+        // Normalization: Flatten().
+        // Here, we really want to see the return type (because of NRTs),
+        // therefore we don't use Assert.None() or Assert.Some().
         public static partial class MaybeHelper
         {
-            #region Flatten()
+            [Fact]
+            public static void Flatten_None_ForValueT()
+            {
+                Assert.Equal(Maybe<Unit>.None, Maybe<Maybe<Unit>>.None.Flatten());
+                Assert.Equal(Maybe<int>.None, Maybe<Maybe<int>>.None.Flatten());
+                Assert.Equal(Maybe<long>.None, Maybe<Maybe<long>>.None.Flatten());
+            }
 
             [Fact]
-            public static void Flatten_None()
+            public static void Flatten_None_ForValueT_AndNullable()
             {
-                Assert.Equal(Ø, Maybe<Maybe<int>>.None.Flatten());
-                Assert.Equal(NoText, Maybe<Maybe<string>>.None.Flatten());
-                Assert.Equal(NoUri, Maybe<Maybe<Uri>>.None.Flatten());
-                Assert.Equal(AnyT.None, Maybe<Maybe<AnyT>>.None.Flatten());
-
+                Assert.Equal(Maybe<Unit?>.None, Maybe<Maybe<Unit?>>.None.Flatten());
                 Assert.Equal(Maybe<int?>.None, Maybe<Maybe<int?>>.None.Flatten());
+                Assert.Equal(Maybe<long?>.None, Maybe<Maybe<long?>>.None.Flatten());
+            }
+
+            [Fact]
+            public static void Flatten_None_ForReferenceT()
+            {
+                Assert.Equal(Maybe<string>.None, Maybe<Maybe<string>>.None.Flatten());
+                Assert.Equal(Maybe<Uri>.None, Maybe<Maybe<Uri>>.None.Flatten());
+                Assert.Equal(Maybe<AnyT>.None, Maybe<Maybe<AnyT>>.None.Flatten());
+                Assert.Equal(Maybe<object>.None, Maybe<Maybe<object>>.None.Flatten());
+            }
+
+            [Fact]
+            public static void Flatten_None_ForReferenceT_AndNullable()
+            {
                 Assert.Equal(Maybe<string?>.None, Maybe<Maybe<string?>>.None.Flatten());
                 Assert.Equal(Maybe<Uri?>.None, Maybe<Maybe<Uri?>>.None.Flatten());
                 Assert.Equal(Maybe<AnyT?>.None, Maybe<Maybe<AnyT?>>.None.Flatten());
+                Assert.Equal(Maybe<object?>.None, Maybe<Maybe<object?>>.None.Flatten());
             }
 
             [Fact]
-            public static void Flatten_SomeOfNone()
+            public static void Flatten_SomeOfNone_ForValueT()
             {
-                Assert.Equal(Ø, Maybe.Some(Ø).Flatten());
-                Assert.Equal(NoText, Maybe.Some(NoText).Flatten());
-                Assert.Equal(NoUri, Maybe.Some(NoUri).Flatten());
-                Assert.Equal(AnyT.None, Maybe.Some(AnyT.None).Flatten());
+                Assert.Equal(Maybe<Unit>.None, Maybe.Some(Maybe<Unit>.None).Flatten());
+                Assert.Equal(Maybe<int>.None, Maybe.Some(Maybe<int>.None).Flatten());
+                Assert.Equal(Maybe<long>.None, Maybe.Some(Maybe<long>.None).Flatten());
             }
 
             [Fact]
-            public static void Flatten_SomeOfSome()
+            public static void Flatten_SomeOfNone_ForValueT_AndNullable()
             {
-                Assert.Equal(One, Maybe.Some(One).Flatten());
-                Assert.Equal(SomeText, Maybe.Some(SomeText).Flatten());
-                Assert.Equal(SomeUri, Maybe.Some(SomeUri).Flatten());
+                Assert.Equal(Maybe<Unit?>.None, Maybe.Some(Maybe<Unit?>.None).Flatten());
+                Assert.Equal(Maybe<int?>.None, Maybe.Some(Maybe<int?>.None).Flatten());
+                Assert.Equal(Maybe<long?>.None, Maybe.Some(Maybe<long?>.None).Flatten());
+            }
 
+            [Fact]
+            public static void Flatten_SomeOfNone_ForReferenceT()
+            {
+                Assert.Equal(Maybe<string>.None, Maybe.Some(Maybe<string>.None).Flatten());
+                Assert.Equal(Maybe<Uri>.None, Maybe.Some(Maybe<Uri>.None).Flatten());
+                Assert.Equal(Maybe<AnyT>.None, Maybe.Some(Maybe<AnyT>.None).Flatten());
+                Assert.Equal(Maybe<object>.None, Maybe.Some(Maybe<object>.None).Flatten());
+            }
+
+            [Fact]
+            public static void Flatten_SomeOfNone_ForReferenceT_AndNullable()
+            {
+                Assert.Equal(Maybe<string?>.None, Maybe.Some(Maybe<string?>.None).Flatten());
+                Assert.Equal(Maybe<Uri?>.None, Maybe.Some(Maybe<Uri?>.None).Flatten());
+                Assert.Equal(Maybe<AnyT?>.None, Maybe.Some(Maybe<AnyT?>.None).Flatten());
+                Assert.Equal(Maybe<object?>.None, Maybe.Some(Maybe<object?>.None).Flatten());
+            }
+
+            [Fact]
+            public static void Flatten_SomeOfSome_ForValueT()
+            {
+                // Arrange
+                Maybe<Maybe<int>> square = Maybe.Some(One);
+                // Act & Assert
+                Assert.Equal(One, square.Flatten());
+            }
+
+            [Fact]
+            public static void Flatten_SomeOfSome_ForValueT_AndNullable()
+            {
+                // Arrange
+                Maybe<int?> one = One.Select(x => (int?)x);
+                Maybe<Maybe<int?>> square = Maybe.Some(one);
+                // Act & Assert
+                Assert.Equal(one, square.Flatten());
+            }
+
+            [Fact]
+            public static void Flatten_SomeOfSome_ForReferenceT()
+            {
                 Maybe<AnyT> some = AnyT.Some;
                 Assert.Equal(some, Maybe.Some(some).Flatten());
-
-                Maybe<int?> one = One.Select(x => (int?)x);
-                Assert.Equal(one, Maybe.Some(one).Flatten());
             }
 
-            #endregion
+            [Fact]
+            public static void Flatten_SomeOfSome_ForReferenceT_AndNullable()
+            {
+                // Arrange
+                Maybe<AnyT?> some = AnyT.Some.Select(x => (AnyT?)x);
+                Maybe<Maybe<AnyT?>> square = Maybe.Some(some);
+                // Act & Assert
+                Assert.Equal(some, square.Flatten());
+            }
+        }
 
+        // Normalization: Squash().
+        // Here, we really want to see the return type (because of NRTs),
+        // therefore we don't use Assert.None() or Assert.Some().
+        public static partial class MaybeHelper
+        {
             #region Squash()
 
             [Fact]
-            public static void Squash_None()
+            public static void Squash_None_ForValueT()
             {
-                Assert.Equal(Ø, Maybe<int?>.None.Squash());
-                Assert.Equal(NoText, Maybe<string?>.None.Squash());
-                Assert.Equal(NoUri, Maybe<Uri?>.None.Squash());
-                Assert.Equal(AnyT.None, Maybe<AnyT?>.None.Squash());
+                Assert.Equal(Maybe<Unit>.None, Maybe<Unit?>.None.Squash());
+                Assert.Equal(Maybe<int>.None, Maybe<int?>.None.Squash());
+                Assert.Equal(Maybe<long>.None, Maybe<long?>.None.Squash());
             }
 
             [Fact]
-            public static void Squash_None_WithoutNRTs()
+            public static void Squash_None_ForReferenceT()
+            {
+                Assert.Equal(Maybe<string>.None, Maybe<string?>.None.Squash());
+                Assert.Equal(Maybe<Uri>.None, Maybe<Uri?>.None.Squash());
+                Assert.Equal(Maybe<AnyT>.None, Maybe<AnyT?>.None.Squash());
+                Assert.Equal(Maybe<object>.None, Maybe<object?>.None.Squash());
+            }
+
+            [Fact]
+            public static void Squash_None_ForReferenceT_WithoutNRTs()
             {
 #nullable disable annotations
-                Assert.Equal(NoText, Maybe<string>.None.Squash());
-                Assert.Equal(NoUri, Maybe<Uri>.None.Squash());
-                Assert.Equal(AnyT.None, Maybe<AnyT>.None.Squash());
+                Assert.Equal(Maybe<string>.None, Maybe<string>.None.Squash());
+                Assert.Equal(Maybe<Uri>.None, Maybe<Uri>.None.Squash());
+                Assert.Equal(Maybe<AnyT>.None, Maybe<AnyT>.None.Squash());
+                Assert.Equal(Maybe<object>.None, Maybe<object>.None.Squash());
 #nullable restore annotations
             }
 
             [Fact]
-            public static void Squash_Some_ForValueType()
+            public static void Squash_Some_ForValueT()
             {
                 // Arrange
                 Maybe<int?> one = One.Select(x => (int?)x);
@@ -85,17 +165,17 @@ namespace Abc
             }
 
             [Fact]
-            public static void Squash_Some_ForReferenceType()
+            public static void Squash_Some_ForReferenceT()
             {
                 // Arrange
-                Maybe<AnyT> some = AnyT.Some;
-                Maybe<AnyT?> one = some.Select(x => (AnyT?)x);
+                Maybe<AnyT> m = AnyT.Some;
+                Maybe<AnyT?> some = m.Select(x => (AnyT?)x);
                 // Act & Assert
-                Assert.Equal(some, one.Squash());
+                Assert.Equal(m, some.Squash());
             }
 
             [Fact]
-            public static void Squash_Some_ForReferenceType_WithoutNRTs()
+            public static void Squash_Some_ForReferenceT_WithoutNRTs()
             {
                 // Arrange
                 Maybe<AnyT> some = AnyT.Some;
@@ -105,27 +185,68 @@ namespace Abc
 #nullable restore warnings
             }
 
+            #endregion
+
+            #region Squash(square)
+
             [Fact]
-            public static void Squash_Square_None()
+            public static void Squash2_None_ForValueT()
             {
-                Assert.Equal(Ø, Maybe<Maybe<int?>>.None.Squash());
-                Assert.Equal(NoText, Maybe<Maybe<string?>>.None.Squash());
-                Assert.Equal(NoUri, Maybe<Maybe<Uri?>>.None.Squash());
-                Assert.Equal(AnyT.None, Maybe<Maybe<AnyT?>>.None.Squash());
+                Assert.Equal(Maybe<Unit>.None, Maybe<Maybe<Unit?>>.None.Squash());
+                Assert.Equal(Maybe<int>.None, Maybe<Maybe<int?>>.None.Squash());
+                Assert.Equal(Maybe<long>.None, Maybe<Maybe<long?>>.None.Squash());
             }
 
             [Fact]
-            public static void Squash_Square_None_WithoutNRTs()
+            public static void Squash2_None_ForRerenceType()
+            {
+                Assert.Equal(Maybe<string>.None, Maybe<Maybe<string?>>.None.Squash());
+                Assert.Equal(Maybe<Uri>.None, Maybe<Maybe<Uri?>>.None.Squash());
+                Assert.Equal(Maybe<AnyT>.None, Maybe<Maybe<AnyT?>>.None.Squash());
+                Assert.Equal(Maybe<object>.None, Maybe<Maybe<object?>>.None.Squash());
+            }
+
+            [Fact]
+            public static void Squash2_None_ForRerenceType_WithoutNRTs()
             {
 #nullable disable annotations
-                Assert.Equal(NoText, Maybe<Maybe<string>>.None.Squash());
-                Assert.Equal(NoUri, Maybe<Maybe<Uri>>.None.Squash());
-                Assert.Equal(AnyT.None, Maybe<Maybe<AnyT>>.None.Squash());
+                Assert.Equal(Maybe<string>.None, Maybe<Maybe<string>>.None.Squash());
+                Assert.Equal(Maybe<Uri>.None, Maybe<Maybe<Uri>>.None.Squash());
+                Assert.Equal(Maybe<AnyT>.None, Maybe<Maybe<AnyT>>.None.Squash());
+                Assert.Equal(Maybe<object>.None, Maybe<Maybe<object>>.None.Squash());
 #nullable restore annotations
             }
 
             [Fact]
-            public static void Squash_Square_Some_ForValueType()
+            public static void Squash2_SomeOfNone_ForValueT()
+            {
+                Assert.Equal(Maybe<Unit>.None, Maybe.Some(Maybe<Unit?>.None).Squash());
+                Assert.Equal(Maybe<int>.None, Maybe.Some(Maybe<int?>.None).Squash());
+                Assert.Equal(Maybe<long>.None, Maybe.Some(Maybe<long?>.None).Squash());
+            }
+
+            [Fact]
+            public static void Squash2_SomeOfNone_ForReferenceT()
+            {
+                Assert.Equal(Maybe<string>.None, Maybe.Some(Maybe<string?>.None).Squash());
+                Assert.Equal(Maybe<Uri>.None, Maybe.Some(Maybe<Uri?>.None).Squash());
+                Assert.Equal(Maybe<AnyT>.None, Maybe.Some(Maybe<AnyT?>.None).Squash());
+                Assert.Equal(Maybe<object>.None, Maybe.Some(Maybe<object?>.None).Squash());
+            }
+
+            [Fact]
+            public static void Squash2_SomeOfNone_ForReferenceT_WithoutNRTs()
+            {
+#nullable disable annotations
+                Assert.Equal(Maybe<string>.None, Maybe.Some(Maybe<string>.None).Squash());
+                Assert.Equal(Maybe<Uri>.None, Maybe.Some(Maybe<Uri>.None).Squash());
+                Assert.Equal(Maybe<AnyT>.None, Maybe.Some(Maybe<AnyT>.None).Squash());
+                Assert.Equal(Maybe<object>.None, Maybe.Some(Maybe<object>.None).Squash());
+#nullable restore annotations
+            }
+
+            [Fact]
+            public static void Squash2_SomeOfSome_ForValueT()
             {
                 // Arrange
                 Maybe<int?> one = One.Select(x => (int?)x);
@@ -135,7 +256,7 @@ namespace Abc
             }
 
             [Fact]
-            public static void Squash_Square_Some_ForReferenceType()
+            public static void Squash2_SomeOfSome_ForReferenceT()
             {
                 // Arrange
                 Maybe<AnyT> m = AnyT.Some;
@@ -146,7 +267,7 @@ namespace Abc
             }
 
             [Fact]
-            public static void Squash_Square_Some_ForReferenceType_WithoutNRTs()
+            public static void Squash2_SomeOfSome_ForReferenceT_WithoutNRTs()
             {
                 // Arrange
                 Maybe<AnyT> some = AnyT.Some;
