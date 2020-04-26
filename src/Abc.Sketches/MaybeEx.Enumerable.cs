@@ -41,10 +41,39 @@ namespace Abc
         [Pure]
         public static Maybe<IEnumerable<T>> Collect<T>(IEnumerable<Maybe<T>> source)
         {
+#if !NETFRAMEWORK
             return source.Aggregate(
                 Maybe.EmptyEnumerable<T>(),
                 (x, y) => x.ZipWith(y, Enumerable.Append));
+#else
+            return source.Aggregate(
+                Maybe.EmptyEnumerable<T>(),
+                (x, y) => x.ZipWith(y, Append));
+#endif
         }
+
+#if NETFRAMEWORK
+        // Only available starting from .NET Framework 4.7.1.
+        // Remember that, here, NETFRAMEWORK actually means NET461.
+        private static IEnumerable<TSource> Append<TSource>(
+            IEnumerable<TSource> source,
+            TSource element)
+        {
+            if (source is null) { throw new Anexn(nameof(source)); }
+
+            return iterator();
+
+            IEnumerable<TSource> iterator()
+            {
+                foreach (var item in source)
+                {
+                    yield return item;
+                }
+
+                yield return element;
+            }
+        }
+#endif
 
         // Aggregation: monadic sum.
         // For Maybe<T>, it amounts to returning the first non-empty item, or

@@ -35,6 +35,22 @@ Documentation (README)
   https://devblogs.microsoft.com/dotnet/embracing-nullable-reference-types/
 - https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets
 
+- Multitargeting: target net461.
+  * Review NETFRAMEWORK
+  * Use
+      <DebugType Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">full</DebugType>
+    https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives/preprocessor-if
+  * Scripts:
+    - .\eng\qbuild.cmd .\src\Abc.Tests\ fails
+    - test qtest.cmd?
+    - Update pack.ps1
+    - TargetFrameworks/TargetFramework -> exe projects.
+  * Use the same PublicAPI.XXX.txt for .NET Standard 2.1 & .NET Core 3.1?
+    https://github.com/dotnet/roslyn-analyzers/blob/master/src/PublicApiAnalyzers/PublicApiAnalyzers.Help.md
+  * Disable warning NU1701?
+    https://docs.microsoft.com/en-us/dotnet/core/porting/third-party-deps#net-framework-compatibility-mode
+  * https://github.com/dotnet/announcements/issues/31
+  * (next) Add #nullable enable at the top of each PublicAPI.*.txt file.
 
 vNEXT
 -----
@@ -60,16 +76,7 @@ Main tasks
   https://github.com/dotnet/dotnet-api-docs/wiki
   When done, filter out Abc.Maybe in Directory.Build.targets (NoWarn), and add
   <NoWarn /> for Retail builds?
-- Multitargeting:
-  * Target net461? Review !NETSTANDARD2.0 in code.
-    https://github.com/dotnet/announcements/issues/31
-    https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives/preprocessor-if
-  * .NET Standard 2.1 & .NET Core 3.1 only. Use System.HashCode.
-    Use PlatformNotSupportedException for things that could be supported but
-    are not actually.
-  * How to handle PublicAPI.XXX.txt?
-    https://github.com/dotnet/roslyn-analyzers/blob/master/src/PublicApiAnalyzers/PublicApiAnalyzers.Help.md
-- Localised messages.
+- Localise user messages (ExceptionFactory)?
 
 Other tasks
 - Naming tests: explain rules in this doc and fix the tests themselves if necessary.
@@ -158,7 +165,32 @@ Pre action, for beta -or- production packages.
 6. Publish package
 
 Post action, for production packages.
-6. Git tag (??? before to get the correct tag ???)
+6. Git tag (??? before, to get the correct tag ???)
+
+Multi-targeting
+---------------
+
+Supported frameworks.
+- .NET Framework 4.6.1 (NETFRAMEWORK)
+  We use NETFRAMEWORK, not NET461, since this is the only .NET Framework version
+  we intend to enable during build.
+- .NET Standard 2.0    (NETSTANDARD2_0)
+- .NET Standard 2.1
+- .NET Core 3.1
+Inside VS, we only use .NET Standard 2.0 and .NET Core 3.1 (this one is added so
+that we benefit from full NRT-analysis).
+We should have only two kinds of conditional compilations:
+- NETSTANDARD2_0 || NETFRAMEWORK
+- NETFRAMEWORK
+
+- The only diff between .NET Standard 2.0 & .NET Framework 4.6.1 should be the
+  absence of ValueTuple.
+- .NET Standard 2.1 & .NET Core 3.1 should have the same API.
+  * Use System.HashCode.
+- Use PlatformNotSupportedException for things that could be supported but
+  are not actually.
+
+https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/cross-platform-targeting
 
 Development
 -----------

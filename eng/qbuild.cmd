@@ -1,17 +1,16 @@
-:: Beware, will crash if the packages were not restored before.
+:: Build the solution for all supported frameworks.
+:: Ensure that the XML comments are well-formed too.
 ::
 :: Examples:
 :: > qbuild -c Release
 :: > qbuild /p:Property=Value
 :: > qbuild .\src\Abc.Maybe\
-:: > qbuild /p:TargetFrameworks=\"netstandard2.0;netstandard2.1;netcoreapp3.1\"
 ::
 :: Standard settings:
 :: > qbuild /p:SignAssembly=true
 :: > qbuild /p:CheckForOverflowUnderflow=false
 :: > qbuild /p:DebugType=embedded
 :: > qbuild /p:GenerateDocumentationFile=true   --> always included but can be overriden
-::                                              (to ensure that the XML comments are well-formed)
 ::
 :: Project-specific options:
 :: > qbuild /p:DisplaySettings=true
@@ -24,7 +23,9 @@
 
 @pushd %~dp0\..
 
-@call dotnet build --no-restore /p:GenerateDocumentationFile=true %*
+@call dotnet build ^
+  /p:TargetFrameworks=\"net461;netstandard2.0;netstandard2.1;netcoreapp3.1\" ^
+  /p:GenerateDocumentationFile=true %*
 
 @popd
 

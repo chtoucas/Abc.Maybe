@@ -14,7 +14,10 @@ namespace Abc
     /// <para><see cref="Unit"/> is an immutable struct.</para>
     /// </summary>
     [Serializable]
-    public readonly struct Unit : IEquatable<Unit>, IEquatable<ValueTuple>
+    public readonly struct Unit : IEquatable<Unit>
+#if !NETFRAMEWORK
+        , IEquatable<ValueTuple>
+#endif
     {
         /// <summary>
         /// Represents the singleton instance of the <see cref="Unit"/> struct.
@@ -33,6 +36,7 @@ namespace Abc
         /// </summary>
         public static bool operator ==(Unit left, Unit right) => true;
 
+#if !NETFRAMEWORK
         /// <summary>
         /// Always returns true.
         /// </summary>
@@ -42,12 +46,14 @@ namespace Abc
         /// Always returns true.
         /// </summary>
         public static bool operator ==(ValueTuple left, Unit right) => true;
+#endif
 
         /// <summary>
         /// Always returns false.
         /// </summary>
         public static bool operator !=(Unit left, Unit right) => false;
 
+#if !NETFRAMEWORK
         /// <summary>
         /// Always returns false.
         /// </summary>
@@ -57,6 +63,7 @@ namespace Abc
         /// Always returns false.
         /// </summary>
         public static bool operator !=(ValueTuple left, Unit right) => false;
+#endif
 
         /// <summary>
         /// Always returns true.
@@ -64,6 +71,7 @@ namespace Abc
         [Pure]
         public bool Equals(Unit other) => true;
 
+#if !NETFRAMEWORK
         /// <summary>
         /// Always returns true.
         /// </summary>
@@ -73,6 +81,11 @@ namespace Abc
         /// <inheritdoc />
         [Pure]
         public override bool Equals(object? obj) => obj is Unit || obj is ValueTuple;
+#else
+        /// <inheritdoc />
+        [Pure]
+        public override bool Equals(object? obj) => obj is Unit;
+#endif
 
         /// <inheritdoc />
         [Pure]

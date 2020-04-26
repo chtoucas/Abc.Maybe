@@ -3,6 +3,9 @@ Changelog for Abc.
 vNEXT
 -----
 
+Added
+- Support for .NET Framework 4.6.1.
+
 Changed
 - Simplify Squash(Maybe<T?>) where T : class, and apply attribute Advanced.
 - Remove attribute Advanced from Flatten().

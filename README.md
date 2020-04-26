@@ -24,7 +24,7 @@ __Objectives/Features__
   - [x] NRT-aware (NRT = Nullable Reference Types).
   - [x] Debugger-friendly.
   - [x] .NET Standard 2.0 for recent systems.
-  - [ ] .NET Framework 4.6.1 for older systems.
+  - [x] .NET Framework 4.6.1 for older systems.
 - [ ] Being well tested.
   - [x] 100% test coverage.
   - [ ] Wide range of functional tests.

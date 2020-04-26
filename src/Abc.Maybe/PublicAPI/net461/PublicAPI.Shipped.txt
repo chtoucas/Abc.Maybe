@@ -1,0 +1,155 @@
+﻿Abc.Linq.Qperators
+Abc.May
+Abc.May.May() -> void
+Abc.Maybe
+Abc.Maybe<T>
+Abc.Maybe<T>.AndThen<TResult>(Abc.Maybe<TResult> other) -> Abc.Maybe<TResult>
+Abc.Maybe<T>.Bind<TResult>(System.Func<T, Abc.Maybe<TResult>> binder) -> Abc.Maybe<TResult>
+Abc.Maybe<T>.BindAsync<TResult>(System.Func<T, System.Threading.Tasks.Task<Abc.Maybe<TResult>>> binder) -> System.Threading.Tasks.Task<Abc.Maybe<TResult>>
+Abc.Maybe<T>.CompareTo(Abc.Maybe<T> other) -> int
+Abc.Maybe<T>.Contains(T value) -> bool
+Abc.Maybe<T>.Contains(T value, System.Collections.Generic.IEqualityComparer<T> comparer) -> bool
+Abc.Maybe<T>.Do(System.Action<T> onSome, System.Action onNone) -> void
+Abc.Maybe<T>.Equals(Abc.Maybe<T> other) -> bool
+Abc.Maybe<T>.GetEnumerator() -> System.Collections.Generic.IEnumerator<T>
+Abc.Maybe<T>.IsNone.get -> bool
+Abc.Maybe<T>.Join<TInner, TKey, TResult>(Abc.Maybe<TInner> inner, System.Func<T, TKey> outerKeySelector, System.Func<TInner, TKey> innerKeySelector, System.Func<T, TInner, TResult> resultSelector) -> Abc.Maybe<TResult>
+Abc.Maybe<T>.Join<TInner, TKey, TResult>(Abc.Maybe<TInner> inner, System.Func<T, TKey> outerKeySelector, System.Func<TInner, TKey> innerKeySelector, System.Func<T, TInner, TResult> resultSelector, System.Collections.Generic.IEqualityComparer<TKey> comparer) -> Abc.Maybe<TResult>
+Abc.Maybe<T>.OnSome(System.Action<T> action) -> void
+Abc.Maybe<T>.OrElse(Abc.Maybe<T> other) -> Abc.Maybe<T>
+Abc.Maybe<T>.OrElseAsync(System.Func<System.Threading.Tasks.Task<Abc.Maybe<T>>> other) -> System.Threading.Tasks.Task<Abc.Maybe<T>>
+Abc.Maybe<T>.Select<TResult>(System.Func<T, TResult> selector) -> Abc.Maybe<TResult>
+Abc.Maybe<T>.SelectAsync<TResult>(System.Func<T, System.Threading.Tasks.Task<TResult>> selector) -> System.Threading.Tasks.Task<Abc.Maybe<TResult>>
+Abc.Maybe<T>.SelectMany<TMiddle, TResult>(System.Func<T, Abc.Maybe<TMiddle>> selector, System.Func<T, TMiddle, TResult> resultSelector) -> Abc.Maybe<TResult>
+Abc.Maybe<T>.Switch<TResult>(System.Func<T, TResult> caseSome, System.Func<TResult> caseNone) -> TResult
+Abc.Maybe<T>.Switch<TResult>(System.Func<T, TResult> caseSome, TResult caseNone) -> TResult
+Abc.Maybe<T>.ToEnumerable() -> System.Collections.Generic.IEnumerable<T>
+Abc.Maybe<T>.TryGetValue(out T value) -> bool
+Abc.Maybe<T>.ValueOrDefault() -> T
+Abc.Maybe<T>.ValueOrElse(System.Func<T> valueFactory) -> T
+Abc.Maybe<T>.ValueOrElse(T other) -> T
+Abc.Maybe<T>.ValueOrThrow() -> T
+Abc.Maybe<T>.ValueOrThrow(System.Exception exception) -> T
+Abc.Maybe<T>.When(bool condition, System.Action<T> onSome, System.Action onNone) -> void
+Abc.Maybe<T>.Where(System.Func<T, bool> predicate) -> Abc.Maybe<T>
+Abc.Maybe<T>.XorElse(Abc.Maybe<T> other) -> Abc.Maybe<T>
+Abc.Maybe<T>.Yield() -> System.Collections.Generic.IEnumerable<T>
+Abc.Maybe<T>.Yield(int count) -> System.Collections.Generic.IEnumerable<T>
+Abc.Maybe<T>.ZipWith<TOther, TResult>(Abc.Maybe<TOther> other, System.Func<T, TOther, TResult> zipper) -> Abc.Maybe<TResult>
+Abc.MaybeComparer<T>
+Abc.MaybeComparer<T>.MaybeComparer() -> void
+Abc.Unit
+Abc.Unit.Equals(Abc.Unit other) -> bool
+Abc.Unit.Unit() -> void
+abstract Abc.MaybeComparer<T>.Compare(Abc.Maybe<T> x, Abc.Maybe<T> y) -> int
+abstract Abc.MaybeComparer<T>.Equals(Abc.Maybe<T> x, Abc.Maybe<T> y) -> bool
+abstract Abc.MaybeComparer<T>.GetHashCode(Abc.Maybe<T> obj) -> int
+override Abc.Maybe<T>.Equals(object obj) -> bool
+override Abc.Maybe<T>.GetHashCode() -> int
+override Abc.Maybe<T>.ToString() -> string
+override Abc.Unit.Equals(object obj) -> bool
+override Abc.Unit.GetHashCode() -> int
+override Abc.Unit.ToString() -> string
+static Abc.Linq.Qperators.ElementAtOrNone<TSource>(this System.Collections.Generic.IEnumerable<TSource> source, int index) -> Abc.Maybe<TSource>
+static Abc.Linq.Qperators.FirstOrNone<TSource>(this System.Collections.Generic.IEnumerable<TSource> source) -> Abc.Maybe<TSource>
+static Abc.Linq.Qperators.FirstOrNone<TSource>(this System.Collections.Generic.IEnumerable<TSource> source, System.Func<TSource, bool> predicate) -> Abc.Maybe<TSource>
+static Abc.Linq.Qperators.LastOrNone<TSource>(this System.Collections.Generic.IEnumerable<TSource> source) -> Abc.Maybe<TSource>
+static Abc.Linq.Qperators.LastOrNone<TSource>(this System.Collections.Generic.IEnumerable<TSource> source, System.Func<TSource, bool> predicate) -> Abc.Maybe<TSource>
+static Abc.Linq.Qperators.SelectAny<TSource, TResult>(this System.Collections.Generic.IEnumerable<TSource> source, System.Func<TSource, Abc.Maybe<TResult>> selector) -> System.Collections.Generic.IEnumerable<TResult>
+static Abc.Linq.Qperators.SingleOrNone<TSource>(this System.Collections.Generic.IEnumerable<TSource> source) -> Abc.Maybe<TSource>
+static Abc.Linq.Qperators.SingleOrNone<TSource>(this System.Collections.Generic.IEnumerable<TSource> source, System.Func<TSource, bool> predicate) -> Abc.Maybe<TSource>
+static Abc.Linq.Qperators.WhereAny<TSource>(this System.Collections.Generic.IEnumerable<TSource> source, System.Func<TSource, Abc.Maybe<bool>> predicate) -> System.Collections.Generic.IEnumerable<TSource>
+static Abc.May.CreateUri(string uriString, System.UriKind uriKind) -> Abc.Maybe<System.Uri>
+static Abc.May.CreateUri(System.Uri baseUri, string relativeUri) -> Abc.Maybe<System.Uri>
+static Abc.May.CreateUri(System.Uri baseUri, System.Uri relativeUri) -> Abc.Maybe<System.Uri>
+static Abc.May.ParseBoolean(string value) -> Abc.Maybe<bool>
+static Abc.May.ParseByte(string value) -> Abc.Maybe<byte>
+static Abc.May.ParseByte(string value, System.Globalization.NumberStyles style, System.IFormatProvider provider) -> Abc.Maybe<byte>
+static Abc.May.ParseDateTime(string value) -> Abc.Maybe<System.DateTime>
+static Abc.May.ParseDateTime(string value, System.IFormatProvider provider, System.Globalization.DateTimeStyles style) -> Abc.Maybe<System.DateTime>
+static Abc.May.ParseDateTimeExactly(string value, string format, System.IFormatProvider provider, System.Globalization.DateTimeStyles style) -> Abc.Maybe<System.DateTime>
+static Abc.May.ParseDateTimeExactly(string value, string[] formats, System.IFormatProvider provider, System.Globalization.DateTimeStyles style) -> Abc.Maybe<System.DateTime>
+static Abc.May.ParseDecimal(string value) -> Abc.Maybe<decimal>
+static Abc.May.ParseDecimal(string value, System.Globalization.NumberStyles style, System.IFormatProvider provider) -> Abc.Maybe<decimal>
+static Abc.May.ParseDouble(string value) -> Abc.Maybe<double>
+static Abc.May.ParseDouble(string value, System.Globalization.NumberStyles style, System.IFormatProvider provider) -> Abc.Maybe<double>
+static Abc.May.ParseEnum<TEnum>(string value) -> Abc.Maybe<TEnum>
+static Abc.May.ParseEnum<TEnum>(string value, bool ignoreCase) -> Abc.Maybe<TEnum>
+static Abc.May.ParseInt16(string value) -> Abc.Maybe<short>
+static Abc.May.ParseInt16(string value, System.Globalization.NumberStyles style, System.IFormatProvider provider) -> Abc.Maybe<short>
+static Abc.May.ParseInt32(string value) -> Abc.Maybe<int>
+static Abc.May.ParseInt32(string value, System.Globalization.NumberStyles style, System.IFormatProvider provider) -> Abc.Maybe<int>
+static Abc.May.ParseInt64(string value) -> Abc.Maybe<long>
+static Abc.May.ParseInt64(string value, System.Globalization.NumberStyles style, System.IFormatProvider provider) -> Abc.Maybe<long>
+static Abc.May.ParseSByte(string value) -> Abc.Maybe<sbyte>
+static Abc.May.ParseSByte(string value, System.Globalization.NumberStyles style, System.IFormatProvider provider) -> Abc.Maybe<sbyte>
+static Abc.May.ParseSingle(string value) -> Abc.Maybe<float>
+static Abc.May.ParseSingle(string value, System.Globalization.NumberStyles style, System.IFormatProvider provider) -> Abc.Maybe<float>
+static Abc.May.ParseUInt16(string value) -> Abc.Maybe<ushort>
+static Abc.May.ParseUInt16(string value, System.Globalization.NumberStyles style, System.IFormatProvider provider) -> Abc.Maybe<ushort>
+static Abc.May.ParseUInt32(string value) -> Abc.Maybe<uint>
+static Abc.May.ParseUInt32(string value, System.Globalization.NumberStyles style, System.IFormatProvider provider) -> Abc.Maybe<uint>
+static Abc.May.ParseUInt64(string value) -> Abc.Maybe<ulong>
+static Abc.May.ParseUInt64(string value, System.Globalization.NumberStyles style, System.IFormatProvider provider) -> Abc.Maybe<ulong>
+static Abc.Maybe.And(this in Abc.Maybe<bool> this, Abc.Maybe<bool> other) -> Abc.Maybe<bool>
+static Abc.Maybe.Apply<T1, T2, T3, T4, T5, TResult>(this Abc.Maybe<System.Func<T1, T2, T3, T4, T5, TResult>> this, Abc.Maybe<T1> first, Abc.Maybe<T2> second, Abc.Maybe<T3> third, Abc.Maybe<T4> fourth, Abc.Maybe<T5> fifth) -> Abc.Maybe<TResult>
+static Abc.Maybe.Apply<T1, T2, T3, T4, TResult>(this Abc.Maybe<System.Func<T1, T2, T3, T4, TResult>> this, Abc.Maybe<T1> first, Abc.Maybe<T2> second, Abc.Maybe<T3> third, Abc.Maybe<T4> fourth) -> Abc.Maybe<TResult>
+static Abc.Maybe.Apply<T1, T2, T3, TResult>(this Abc.Maybe<System.Func<T1, T2, T3, TResult>> this, Abc.Maybe<T1> first, Abc.Maybe<T2> second, Abc.Maybe<T3> third) -> Abc.Maybe<TResult>
+static Abc.Maybe.Apply<T1, T2, TResult>(this Abc.Maybe<System.Func<T1, T2, TResult>> this, Abc.Maybe<T1> first, Abc.Maybe<T2> second) -> Abc.Maybe<TResult>
+static Abc.Maybe.Apply<TSource, TResult>(this Abc.Maybe<System.Func<TSource, TResult>> this, Abc.Maybe<TSource> maybe) -> Abc.Maybe<TResult>
+static Abc.Maybe.CollectAny<T>(System.Collections.Generic.IEnumerable<Abc.Maybe<T>> source) -> System.Collections.Generic.IEnumerable<T>
+static Abc.Maybe.Compose<TSource, TMiddle, TResult>(this System.Func<TSource, Abc.Maybe<TMiddle>> this, System.Func<TMiddle, Abc.Maybe<TResult>> other, TSource value) -> Abc.Maybe<TResult>
+static Abc.Maybe.ComposeBack<TSource, TMiddle, TResult>(this System.Func<TMiddle, Abc.Maybe<TResult>> this, System.Func<TSource, Abc.Maybe<TMiddle>> other, TSource value) -> Abc.Maybe<TResult>
+static Abc.Maybe.EmptyEnumerable<T>() -> Abc.Maybe<System.Collections.Generic.IEnumerable<T>>
+static Abc.Maybe.Flatten<T>(this Abc.Maybe<Abc.Maybe<T>> this) -> Abc.Maybe<T>
+static Abc.Maybe.Guard(bool condition) -> Abc.Maybe<Abc.Unit>
+static Abc.Maybe.Invoke<T1, T2, T3, T4, T5, TResult>(this Abc.Maybe<System.Func<T1, T2, T3, T4, T5, TResult>> this, T1 first, T2 second, T3 third, T4 fourth, T5 fifth) -> Abc.Maybe<TResult>
+static Abc.Maybe.Invoke<T1, T2, T3, T4, TResult>(this Abc.Maybe<System.Func<T1, T2, T3, T4, TResult>> this, T1 first, T2 second, T3 third, T4 fourth) -> Abc.Maybe<TResult>
+static Abc.Maybe.Invoke<T1, T2, T3, TResult>(this Abc.Maybe<System.Func<T1, T2, T3, TResult>> this, T1 first, T2 second, T3 third) -> Abc.Maybe<TResult>
+static Abc.Maybe.Invoke<T1, T2, TResult>(this Abc.Maybe<System.Func<T1, T2, TResult>> this, T1 first, T2 second) -> Abc.Maybe<TResult>
+static Abc.Maybe.Invoke<TSource, TResult>(this Abc.Maybe<System.Func<TSource, TResult>> this, TSource value) -> Abc.Maybe<TResult>
+static Abc.Maybe.Invoke<TSource, TResult>(this System.Func<TSource, Abc.Maybe<TResult>> this, Abc.Maybe<TSource> maybe) -> Abc.Maybe<TResult>
+static Abc.Maybe.Lift<T1, T2, T3, T4, T5, TResult>(this System.Func<T1, T2, T3, T4, T5, TResult> this, Abc.Maybe<T1> first, Abc.Maybe<T2> second, Abc.Maybe<T3> third, Abc.Maybe<T4> fourth, Abc.Maybe<T5> fifth) -> Abc.Maybe<TResult>
+static Abc.Maybe.Lift<T1, T2, T3, T4, TResult>(this System.Func<T1, T2, T3, T4, TResult> this, Abc.Maybe<T1> first, Abc.Maybe<T2> second, Abc.Maybe<T3> third, Abc.Maybe<T4> fourth) -> Abc.Maybe<TResult>
+static Abc.Maybe.Lift<T1, T2, T3, TResult>(this System.Func<T1, T2, T3, TResult> this, Abc.Maybe<T1> first, Abc.Maybe<T2> second, Abc.Maybe<T3> third) -> Abc.Maybe<TResult>
+static Abc.Maybe.Lift<T1, T2, TResult>(this System.Func<T1, T2, TResult> this, Abc.Maybe<T1> first, Abc.Maybe<T2> second) -> Abc.Maybe<TResult>
+static Abc.Maybe.Lift<TSource, TResult>(this System.Func<TSource, TResult> this, Abc.Maybe<TSource> maybe) -> Abc.Maybe<TResult>
+static Abc.Maybe.Negate(this in Abc.Maybe<bool> this) -> Abc.Maybe<bool>
+static Abc.Maybe.None<T>() -> Abc.Maybe<T>
+static Abc.Maybe.Of<T>(T value) -> Abc.Maybe<T>
+static Abc.Maybe.Or(this in Abc.Maybe<bool> this, Abc.Maybe<bool> other) -> Abc.Maybe<bool>
+static Abc.Maybe.Some<T>(T value) -> Abc.Maybe<T>
+static Abc.Maybe.SomeOrNone<T>(T value) -> Abc.Maybe<T>
+static Abc.Maybe.SomeOrNone<T>(T? value) -> Abc.Maybe<T>
+static Abc.Maybe.Square<T>(T value) -> Abc.Maybe<Abc.Maybe<T>>
+static Abc.Maybe.SquareOrNone<T>(T value) -> Abc.Maybe<Abc.Maybe<T>>
+static Abc.Maybe.SquareOrNone<T>(T? value) -> Abc.Maybe<Abc.Maybe<T>>
+static Abc.Maybe.Squash<T>(this Abc.Maybe<Abc.Maybe<T>> this) -> Abc.Maybe<T>
+static Abc.Maybe.Squash<T>(this Abc.Maybe<T> this) -> Abc.Maybe<T>
+static Abc.Maybe.Squash<T>(this in Abc.Maybe<Abc.Maybe<T?>> this) -> Abc.Maybe<T>
+static Abc.Maybe.Squash<T>(this in Abc.Maybe<T?> this) -> Abc.Maybe<T>
+static Abc.Maybe.ToNullable<T>(this in Abc.Maybe<T?> this) -> T?
+static Abc.Maybe.ToNullable<T>(this in Abc.Maybe<T> this) -> T?
+static Abc.Maybe.Use<TDisposable, TResult>(this Abc.Maybe<TDisposable> this, System.Func<TDisposable, Abc.Maybe<TResult>> binder) -> Abc.Maybe<TResult>
+static Abc.Maybe.Use<TDisposable, TResult>(this Abc.Maybe<TDisposable> this, System.Func<TDisposable, TResult> selector) -> Abc.Maybe<TResult>
+static Abc.Maybe<T>.explicit operator T(Abc.Maybe<T> value) -> T
+static Abc.Maybe<T>.operator !=(Abc.Maybe<T> left, Abc.Maybe<T> right) -> bool
+static Abc.Maybe<T>.operator &(Abc.Maybe<T> left, Abc.Maybe<T> right) -> Abc.Maybe<T>
+static Abc.Maybe<T>.operator ^(Abc.Maybe<T> left, Abc.Maybe<T> right) -> Abc.Maybe<T>
+static Abc.Maybe<T>.operator |(Abc.Maybe<T> left, Abc.Maybe<T> right) -> Abc.Maybe<T>
+static Abc.Maybe<T>.operator <(Abc.Maybe<T> left, Abc.Maybe<T> right) -> bool
+static Abc.Maybe<T>.operator <=(Abc.Maybe<T> left, Abc.Maybe<T> right) -> bool
+static Abc.Maybe<T>.operator ==(Abc.Maybe<T> left, Abc.Maybe<T> right) -> bool
+static Abc.Maybe<T>.operator >(Abc.Maybe<T> left, Abc.Maybe<T> right) -> bool
+static Abc.Maybe<T>.operator >=(Abc.Maybe<T> left, Abc.Maybe<T> right) -> bool
+static Abc.MaybeComparer<T>.Default.get -> Abc.MaybeComparer<T>
+static Abc.MaybeComparer<T>.Structural.get -> Abc.MaybeComparer<T>
+static Abc.Unit.operator !=(Abc.Unit left, Abc.Unit right) -> bool
+static Abc.Unit.operator ==(Abc.Unit left, Abc.Unit right) -> bool
+static readonly Abc.Maybe.False -> Abc.Maybe<bool>
+static readonly Abc.Maybe.True -> Abc.Maybe<bool>
+static readonly Abc.Maybe.Unit -> Abc.Maybe<Abc.Unit>
+static readonly Abc.Maybe.Unknown -> Abc.Maybe<bool>
+static readonly Abc.Maybe.Zero -> Abc.Maybe<Abc.Unit>
+static readonly Abc.Maybe<T>.None -> Abc.Maybe<T>
+static readonly Abc.Unit.Default -> Abc.Unit
