@@ -15,7 +15,7 @@ namespace Abc
     /// </summary>
     [Serializable]
     public readonly struct Unit : IEquatable<Unit>
-#if !(NETSTANDARD2_0 || NETFRAMEWORK) // ValueTuple
+#if MAX_API // ValueTuple
         , IEquatable<ValueTuple>
 #endif
     {
@@ -41,7 +41,7 @@ namespace Abc
         /// </summary>
         public static bool operator !=(Unit left, Unit right) => false;
 
-#if !(NETSTANDARD2_0 || NETFRAMEWORK) // ValueTuple
+#if MAX_API // ValueTuple
         /// <summary>
         /// Always returns true.
         /// </summary>
@@ -69,7 +69,7 @@ namespace Abc
         [Pure]
         public bool Equals(Unit other) => true;
 
-#if !(NETSTANDARD2_0 || NETFRAMEWORK) // ValueTuple
+#if MAX_API // ValueTuple
         /// <summary>
         /// Always returns true.
         /// </summary>

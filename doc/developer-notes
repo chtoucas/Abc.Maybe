@@ -120,11 +120,6 @@ We only handle two special cases:
       The result is null w/ .NET Standard or .NET Core.
     - DateTime parsing.
 
-Three projects (test, perf & play, in short the exe) may add dependencies,
-currently we have:
-- System.ValueTuple        .NET 4.6.1
-- Microsoft.Bcl.HashCode   .NET 4.6.1 & .NET Standard 2.0
-
 Minimal supported platforms
 - .NET Standard     2.0         (2.0, 2.1)
 - .NET Core         2.0         (3.1)

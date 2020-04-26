@@ -4,9 +4,6 @@
     <TargetFramework>$(MaxApiPlatform)</TargetFramework>
     <IsPackable>false</IsPackable>
 
-    <RequiresValueTuple>true</RequiresValueTuple>
-    <RequiresHashCode>true</RequiresHashCode>
-
     <!--
       IDE0002   Simplify Member Access
       xUnit1004 Test methods should not be skipped
@@ -30,11 +27,16 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
     <PackageReference Include="OpenCover" Version="4.7.922" />
     <PackageReference Include="ReportGenerator" Version="4.5.6" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup Condition=" $(TargetFrameworkIdentifier) == '.NETFramework' or $(TargetFramework) == 'netstandard2.0' ">
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup>

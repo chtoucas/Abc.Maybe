@@ -23,6 +23,9 @@
     <DefineConstants Condition=" $(HideInternals) != 'true' ">$(DefineConstants);INTERNALS_VISIBLE_TO</DefineConstants>
     <DefineConstants Condition=" $(PatchEquality) == 'true' ">$(DefineConstants);PATCH_EQUALITY</DefineConstants>
 
+    <DefineConstants Condition="  $(TargetFramework) == $(MaxApiStandard) or $(TargetFramework) == $(MaxApiPlatform) "><!--
+      -->$(DefineConstants);MAX_API</DefineConstants>
+
     <!--<DefineConstants>$(DefineConstants);PLAIN_LINQ</DefineConstants>-->
     <!--<DefineConstants>$(DefineConstants);PURE_MAYBE</DefineConstants>-->
   </PropertyGroup>
@@ -45,15 +48,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup Condition=" $(RequiresValueTuple) == 'true' ">
-    <PackageReference Include="System.ValueTuple" Version="4.5.0"
-                      Condition=" $(TargetFrameworkIdentifier) == '.NETFramework' " />
-  </ItemGroup>
-  <ItemGroup Condition=" $(RequiresHashCode) == 'true' ">
-    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0"
-                      Condition=" $(TargetFrameworkIdentifier) == '.NETFramework' or $(TargetFramework) == 'netstandard2.0' " />
   </ItemGroup>
 
   <Target Name="__DisplaySettings" BeforeTargets="Compile"

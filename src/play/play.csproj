@@ -4,8 +4,6 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>$(MaxApiPlatform)</TargetFramework>
 
-    <RequiresValueTuple>true</RequiresValueTuple>
-
     <!--
       IDE0039   Use local function
       IDE1006   Naming rule violation: These words must begin with upper case characters
@@ -17,6 +15,10 @@
     <!--<DefineConstants>$(DefineConstants);MONADS_VIA_MAP_MULTIPLY</DefineConstants>-->
     <!--<DefineConstants>$(DefineConstants);COMONADS_VIA_MAP_COMULTIPLY</DefineConstants>-->
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Update="play.ini">
