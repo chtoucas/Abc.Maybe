@@ -47,11 +47,11 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup Condition=" $(RequiresValueTuplePackage) == 'true' ">
+  <ItemGroup Condition=" $(RequiresValueTuple) == 'true' ">
     <PackageReference Include="System.ValueTuple" Version="4.5.0"
                       Condition=" $(TargetFrameworkIdentifier) == '.NETFramework' " />
   </ItemGroup>
-  <ItemGroup Condition=" $(RequiresHashCodePackage) == 'true' ">
+  <ItemGroup Condition=" $(RequiresHashCode) == 'true' ">
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0"
                       Condition=" $(TargetFrameworkIdentifier) == '.NETFramework' or $(TargetFramework) == 'netstandard2.0' " />
   </ItemGroup>

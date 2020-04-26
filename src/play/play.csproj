@@ -4,7 +4,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>$(MaxApiPlatform)</TargetFramework>
 
-    <RequiresValueTuplePackage>true</RequiresValueTuplePackage>
+    <RequiresValueTuple>true</RequiresValueTuple>
 
     <!--
       IDE0039   Use local function

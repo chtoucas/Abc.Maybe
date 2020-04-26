@@ -4,8 +4,8 @@
     <TargetFramework>$(MaxApiPlatform)</TargetFramework>
     <IsPackable>false</IsPackable>
 
-    <RequiresValueTuplePackage>true</RequiresValueTuplePackage>
-    <RequiresHashCodePackage>true</RequiresHashCodePackage>
+    <RequiresValueTuple>true</RequiresValueTuple>
+    <RequiresHashCode>true</RequiresHashCode>
 
     <!--
       IDE0002   Simplify Member Access
