@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		eng\qbuild.cmd = eng\qbuild.cmd
 		eng\qperf.cmd = eng\qperf.cmd
 		eng\qtest.cmd = eng\qtest.cmd
+		eng\reset.ps1 = eng\reset.ps1
 		eng\Retail.targets = eng\Retail.targets
 		eng\Retail.tasks = eng\Retail.tasks
 	EndProjectSection

@@ -122,6 +122,7 @@ function Confirm-Yes {
         $answer = (Read-Host $Question, '[y/N]')
 
         if ($answer -eq "" -or $answer -eq "n") {
+            Say "  Discarding on your request."
             return $false
         }
         elseif ($answer -eq "y") {
@@ -142,7 +143,7 @@ function Confirm-Continue {
         $answer = (Read-Host $Question, "[y/N]")
 
         if ($answer -eq "" -or $answer -eq "n") {
-            Say "`tStopping on your request."
+            Say "  Stopping on your request."
             exit 0
         }
         elseif ($answer -eq "y") {

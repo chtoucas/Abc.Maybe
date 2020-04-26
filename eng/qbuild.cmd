@@ -2,7 +2,7 @@
 :: Ensure that the XML comments are well-formed too.
 ::
 :: Examples:
-:: > qbuild -c Release
+:: > qbuild -c Release                          --> default = Debug
 :: > qbuild /p:Property=Value
 :: > qbuild .\src\Abc.Maybe\
 ::
@@ -23,9 +23,12 @@
 
 @pushd %~dp0\..
 
+:: Remarks:
+:: - GenerateDocumentationFile can be overriden
+:: - TargetFrameworks can NOT be overriden
 @call dotnet build ^
-  /p:TargetFrameworks=\"net461;netstandard2.0;netstandard2.1;netcoreapp3.1\" ^
-  /p:GenerateDocumentationFile=true %*
+  /p:GenerateDocumentationFile=true %* ^
+  /p:TargetFrameworks=\"net461;netstandard2.0;netstandard2.1;netcoreapp3.1\"
 
 @popd
 

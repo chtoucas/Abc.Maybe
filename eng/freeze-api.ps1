@@ -45,13 +45,13 @@ function Update-PublicAPI([string] $dir) {
         }
     }
 
-    Say "`tWriting PublicAPI.Shipped.txt."
+    Say "  Writing PublicAPI.Shipped.txt."
     $shipped `
         | Sort-Object `
         | ?{ -not $removed.Contains($_) } `
         | Out-File $shippedPath -Encoding UTF8
 
-    Say "`tWriting PublicAPI.Unshipped.txt."
+    Say "  Writing PublicAPI.Unshipped.txt."
     "" | Out-File $unshippedPath -Encoding UTF8
 }
 

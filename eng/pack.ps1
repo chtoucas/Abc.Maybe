@@ -125,7 +125,7 @@ function Invoke-Pack {
         Carp "A package with the same version ($version) already exists."
         Confirm-Continue "Do you wish to proceed anyway?"
 
-        Say "`tThe old package file will be removed now."
+        Say "  The old package file will be removed now."
         Remove-Item $pkg
     }
 
@@ -150,7 +150,7 @@ function Invoke-Pack {
     # Safe packing?
     if ($Safe) {
         if (Confirm-Yes "Hard clean?") {
-            Say "`tDeleting 'bin' and 'obj' directories."
+            Say "  Deleting 'bin' and 'obj' directories."
 
             Remove-BinAndObj $SRC_DIR
         }
