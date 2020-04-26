@@ -106,10 +106,12 @@ namespace Abc.Linq
             var source = Enumerable.Empty<T>();
             var expected = Maybe<T>.None;
 
-          // FIXME: test fails w/ .NET 4.6.1.
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK // Enumerable.Empty
             Assert.Null(source as IList<T>);
+#else
+            Assert.Empty(source as IList<T>);
 #endif
+
             Assert.Equal(expected, source.RunOnce().LastOrNone());
         }
 
