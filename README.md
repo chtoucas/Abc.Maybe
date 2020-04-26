@@ -19,7 +19,7 @@ __Objectives/Features__
   - [x] Curated API largely inspired by Haskell's Maybe.
   - [x] Extensible.
   - [x] Incurring no significant overhead when used wisely.
-- [ ] Being a good citizen of the .NET ecosystem.
+- [x] Being a good citizen of the .NET ecosystem.
   - [x] Equatable and comparable, both optionally structural.
   - [x] NRT-aware (NRT = Nullable Reference Types).
   - [x] Debugger-friendly.

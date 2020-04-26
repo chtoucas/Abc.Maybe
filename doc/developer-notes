@@ -39,24 +39,20 @@ Documentation (README)
   * Default to .NET Standard 2.1 in project files.
   * We use TargetFrameworkIdentifier and NETFRAMEWORK instead of TargetFramework
     and NET461, is it such a good idea?
-  * Build warning NU1701 when running plain qbuild.
+  * Build warning NU1701, seems to depend on the way we restored the packages
+    (see qbuild & qtest). Do we need --framework?
     https://docs.microsoft.com/en-us/dotnet/core/porting/third-party-deps#net-framework-compatibility-mode
-  * Testing seem to depend on the way we restored the packages (see qtest).
-    Do we need --framework?
-    https://xunit.net/docs/why-no-netstandard
-    https://xunit.net/docs/getting-started/netcore/cmdline
     https://docs.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files
   * Packaging:
       <DebugType Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">full</DebugType>
     https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives/preprocessor-if
   * Scripts:
-    - pack.ps1, add net461, run test w/ net461 too
-    - qtest.cmd (restore or not?)
-    - freeze-api.ps1
-    - qbuild.cmd fails with the following args
+    - qbuild "fails" with the following args
       * -c Release
       * .\src\Abc.Tests\
-    - qperf.cmd?
+    - qtest (restore or not?)
+    - pack, add net461, run test w/ net461 too
+    - qperf?
   * Use the same PublicAPI.XXX.txt for .NET Standard 2.1 & .NET Core 3.1?
     https://github.com/dotnet/roslyn-analyzers/blob/master/src/PublicApiAnalyzers/PublicApiAnalyzers.Help.md
   * https://github.com/dotnet/announcements/issues/31
