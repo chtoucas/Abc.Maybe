@@ -41,6 +41,10 @@ Documentation (README)
     and NET461, is it such a good idea?
   * Build warning NU1701, seems to depend on the way we restored the packages
     (see qbuild & qtest). Do we need --framework?
+    OK I think the "problem" is with TargetFramework with/without "s"
+    => Abc.Tests still only targets .NET Core 3.1 even if we specify
+    TargetFrameworks (with an s) from the command-line.
+    Still qbuild /p/TargetFramework= displays the warning
     https://docs.microsoft.com/en-us/dotnet/core/porting/third-party-deps#net-framework-compatibility-mode
     https://docs.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files
   * Packaging:
