@@ -7,6 +7,34 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <!--
+      The first listed framework is the one used by the VS editor.
+      Full NRT-analysis requires .NET Core 3.0 or above, .NET Standard does
+      not include the nullable annotations (version 2.1 defines the nullable
+      attributes but don't use them if I understand things correctly).
+      We use the version 3.1 instead of 3.0 because the former is LTS and the
+      latter is already EOL.
+      For libraries, use
+        <TargetFrameworks>$(MaxApiPlatform);$(MinApiStandard)</TargetFrameworks>
+      otherwise, use
+        <TargetFramework>$(MaxApiPlatform)</TargetFramework>
+    -->
+    <MinApiPlatform>net461</MinApiPlatform>
+    <MaxApiPlatform>netcoreapp3.1</MaxApiPlatform>
+
+    <MinApiStandard>netstandard2.0</MinApiStandard>
+    <MaxApiStandard>netstandard2.1</MaxApiStandard>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Project-specific options, default = false -->
+    <DisplaySettings Condition=" $(DisplaySettings) != 'true' ">false</DisplaySettings>
+    <Retail Condition=" $(Retail) != 'true' ">false</Retail>
+    <PatchEquality Condition=" $(PatchEquality) != 'true' ">false</PatchEquality>
+    <HideInternals Condition=" $(HideInternals) != 'true' ">false</HideInternals>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <!-- Package metadata & assembly info -->
 
     <Authors>Chtoucas</Authors>
