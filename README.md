@@ -10,7 +10,6 @@ Abc.Maybe features an Option type for .NET.
 - [Usage Guidelines](doc/usage-guidelines.md)
 - [Changelog](CHANGELOG)
 - [BSD 3-Clause "New" or "Revised" License](LICENSE)
-- [Public API](src/Abc.Maybe/PublicAPI.Shipped.txt)
 
 __Objectives/Features__
 
