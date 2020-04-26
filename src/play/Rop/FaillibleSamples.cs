@@ -65,7 +65,7 @@ namespace Abc
             ExceptionDispatchInfo.Capture(ex).Throw();
         }
 
-#if !NETFRAMEWORK // Nullable attributes (DoesNotReturn)
+#if !(NETSTANDARD2_0 || NETFRAMEWORK) // Nullable attributes (DoesNotReturn)
         [DoesNotReturn]
         public static TResult Rethrow<TResult>(Exception ex)
         {

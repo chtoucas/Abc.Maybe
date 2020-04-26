@@ -51,7 +51,7 @@ namespace Abc.Tests
             Assert.False(unit.Equals(null));
             Assert.False(unit.Equals(new object()));
 
-#if !NETFRAMEWORK // ValueTuple
+#if !(NETSTANDARD2_0 || NETFRAMEWORK) // ValueTuple
             // Arrange
             var tupl = new ValueTuple();
 

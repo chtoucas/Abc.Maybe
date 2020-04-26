@@ -32,7 +32,7 @@ namespace Abc
             public Faillible<TOther> WithGenericType<TOther>()
                 => new Faillible<TOther>.Exceptional(InnerException);
 
-#if !NETFRAMEWORK // Nullable attributes (DoesNotReturn)
+#if !(NETSTANDARD2_0 || NETFRAMEWORK) // Nullable attributes (DoesNotReturn)
             [DoesNotReturn]
             public override T ValueOrRethrow()
             {
