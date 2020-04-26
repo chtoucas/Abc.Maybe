@@ -1,7 +1,16 @@
 :: Quickly run the test suite.
-:: Beware, will crash if the packages were not restored before.
+:: Beware, will crash if the packages were not correctly restored before
+:: (correctly because we seem to have a problem since we enabled .NET 4.6.1).
+::
+:: Multi-targeting at once does not yet work:
+:: > qtest /p:TargetFrameworks=\"net461%2cnetcoreapp3.1\"   <-- %2c is ; for MSBuild
+:: What we can do:
+:: - Test for netcoreapp3.1, nothing special, this is the default target.
+:: - Test for net461
+:: > qtest /p:TargetFramework=net461
 ::
 :: Examples:
+:: > qtest --no-restore
 :: > qtest --filter Category=XXXX
 :: > qtest --filter Priority!=XXX -v q
 
@@ -10,7 +19,7 @@
 
 @pushd %~dp0\..
 
-@call dotnet test .\src\Abc.Tests\ %* -c Release --no-restore
+@call dotnet test .\src\Abc.Tests\ %* -c Release
 
 @popd
 

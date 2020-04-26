@@ -37,14 +37,20 @@ Documentation (README)
 
 - Multitargeting: target net461.
   * Default to .NET Standard 2.1 in project files.
-  * Testing no longer works.
+  * We use TargetFrameworkIdentifier and NETFRAMEWORK instead of TargetFramework
+    and NET461, is it such a good idea?
+  * We have three tests failing w/ .NET 4.6.1.
+  * Testing seem to depend on the way we restored the packages (see qtest).
+    Do we need --framework?
+    https://xunit.net/docs/why-no-netstandard
+    https://xunit.net/docs/getting-started/netcore/cmdline
     https://docs.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files
-  * Use
+  * Packaging:
       <DebugType Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">full</DebugType>
     https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives/preprocessor-if
   * Scripts:
     - reset.ps1/pack.ps1 add net461
-    - pack.ps1, run test w/ net461
+    - pack.ps1, run test w/ net461 too
     - qtest.cmd (restore or not?)
     - freeze-api.ps1
     - qbuild.cmd fails with the following args
