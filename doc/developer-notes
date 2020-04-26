@@ -37,17 +37,20 @@ Documentation (README)
 
 - Multitargeting: target net461.
   * Default to .NET Standard 2.1 in project files.
+  * Testing no longer works.
+    https://docs.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files
   * Use
       <DebugType Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">full</DebugType>
     https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives/preprocessor-if
   * Scripts:
-    - test freeze-api.ps1
+    - reset.ps1/pack.ps1 add net461
+    - pack.ps1, run test w/ net461
+    - qtest.cmd (restore or not?)
+    - freeze-api.ps1
     - qbuild.cmd fails with the following args
       * -c Release
       * .\src\Abc.Tests\
     - TargetFrameworks/TargetFramework -> exe projects (test/perf).
-    - test qtest.cmd?
-    - Update pack.ps1
   * Use the same PublicAPI.XXX.txt for .NET Standard 2.1 & .NET Core 3.1?
     https://github.com/dotnet/roslyn-analyzers/blob/master/src/PublicApiAnalyzers/PublicApiAnalyzers.Help.md
   * Disable warning NU1701?
@@ -205,6 +208,15 @@ We only handle two special cases:
     Only available starting from .NET Framework 4.7.1.
   * ValueTuple (disabled)
     Only available starting from .NET Framework 4.7.
+  * String.GetHashCode(StringComparison)
+
+We could have added a dependency on System.ValueTuple (Nuget), but I prefer not to.
+I do not want to add any dependency to our NuGet package.
+
+Three projects (test, perf & play) may add dependencies for a particular
+framework, currently we have:
+- System.ValueTuple
+- Microsoft.Bcl.HashCode
 
 https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/cross-platform-targeting
 
