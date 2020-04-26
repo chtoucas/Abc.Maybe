@@ -34,29 +34,38 @@ namespace Abc.Tests
             // Arrange
             var unit = new Unit();
             var same = new Unit();
-            var tupl = new ValueTuple();
 
             // Act & Assert
             Assert.True(unit == same);
             Assert.True(same == unit);
-            Assert.True(unit == tupl);
-            Assert.True(tupl == unit);
 
             Assert.False(unit != same);
             Assert.False(same != unit);
-            Assert.False(unit != tupl);
-            Assert.False(tupl != unit);
 
             Assert.True(unit.Equals(unit));
             Assert.True(unit.Equals(same));
             Assert.True(same.Equals(unit));
-            Assert.True(unit.Equals(tupl));
 
             Assert.True(unit.Equals((object)unit));
             Assert.True(unit.Equals((object)same));
-            Assert.True(unit.Equals((object)tupl));
             Assert.False(unit.Equals(null));
             Assert.False(unit.Equals(new object()));
+
+#if !NETFRAMEWORK // ValueTuple
+            // Arrange
+            var tupl = new ValueTuple();
+
+            // Act & Assert
+            Assert.True(unit == tupl);
+            Assert.True(tupl == unit);
+
+            Assert.False(unit != tupl);
+            Assert.False(tupl != unit);
+
+            Assert.True(unit.Equals(tupl));
+
+            Assert.True(unit.Equals((object)tupl));
+#endif
         }
 
         [Fact]

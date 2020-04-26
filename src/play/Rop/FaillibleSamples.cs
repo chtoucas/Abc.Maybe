@@ -5,6 +5,7 @@
 namespace Abc
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
     using System.Runtime.ExceptionServices;
 
@@ -64,13 +65,23 @@ namespace Abc
             ExceptionDispatchInfo.Capture(ex).Throw();
         }
 
-        [Pure]
+#if !NETFRAMEWORK // Nullable attributes (DoesNotReturn)
+        [DoesNotReturn]
         public static TResult Rethrow<TResult>(Exception ex)
         {
             Require.NotNull(ex, nameof(ex));
             ExceptionDispatchInfo.Capture(ex).Throw();
             return default;
         }
+#else
+        public static TResult Rethrow<TResult>(Exception ex)
+        {
+            Require.NotNull(ex, nameof(ex));
+            ExceptionDispatchInfo.Capture(ex).Throw();
+            // BONSANG! .NET Framework.
+            return default!;
+        }
+#endif
 
 #pragma warning disable CA1031 // Do not catch general exception types
 

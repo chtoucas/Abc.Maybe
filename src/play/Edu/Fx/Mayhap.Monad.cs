@@ -92,7 +92,11 @@ namespace Abc.Edu.Fx
             static Mayhap<IEnumerable<T>> __collectAny<T>(IEnumerable<Mayhap<T>> source)
             {
                 var seed = MayhapEnumerable_<T>.Empty;
+#if !NETFRAMEWORK // Enumerable.Append
                 return source.Aggregate(seed, (x, y) => x.ZipWith(y, Enumerable.Append));
+#else
+                return source.Aggregate(seed, (x, y) => x.ZipWith(y, EnumerableX.Append));
+#endif
             }
         }
 

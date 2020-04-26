@@ -163,7 +163,9 @@ namespace Abc
             Assert.Equal(1.GetHashCode(), One.GetHashCode());
             Assert.Equal(2.GetHashCode(), Two.GetHashCode());
             Assert.Equal(2L.GetHashCode(), TwoL.GetHashCode());
+#if !NETFRAMEWORK // GetHashCode(StringComparison)
             Assert.Equal(MyText.GetHashCode(StringComparison.Ordinal), SomeText.GetHashCode());
+#endif
             Assert.Equal(MyUri.GetHashCode(), SomeUri.GetHashCode());
 
             var anyT = AnyT.New();

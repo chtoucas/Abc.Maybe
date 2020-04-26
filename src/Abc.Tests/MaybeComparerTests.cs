@@ -248,7 +248,6 @@ namespace Abc
             // Arrange
             var icmp = MaybeComparer<int>.Default;
             var lcmp = MaybeComparer<long>.Default;
-            var scmp = MaybeComparer<string>.Default;
             var ucmp = MaybeComparer<Uri>.Default;
             string text = "text";
             var someText = Maybe.SomeOrNone(text);
@@ -258,8 +257,12 @@ namespace Abc
             Assert.Equal(1.GetHashCode(), icmp.GetHashCode(Maybe.Some(1)));
             Assert.Equal(2.GetHashCode(), icmp.GetHashCode(Maybe.Some(2)));
             Assert.Equal(2L.GetHashCode(), lcmp.GetHashCode(Maybe.Some(2L)));
-            Assert.Equal(text.GetHashCode(StringComparison.Ordinal), scmp.GetHashCode(someText));
             Assert.Equal(uri.GetHashCode(), ucmp.GetHashCode(someUri));
+
+#if !NETFRAMEWORK // GetHashCode(StringComparison)
+            var scmp = MaybeComparer<string>.Default;
+            Assert.Equal(text.GetHashCode(StringComparison.Ordinal), scmp.GetHashCode(someText));
+#endif
         }
 
         [Fact]
@@ -286,7 +289,6 @@ namespace Abc
             // Arrange
             IEqualityComparer icmp = MaybeComparer<int>.Default;
             IEqualityComparer lcmp = MaybeComparer<long>.Default;
-            IEqualityComparer scmp = MaybeComparer<string>.Default;
             IEqualityComparer ucmp = MaybeComparer<Uri>.Default;
             string text = "text";
             var someText = Maybe.SomeOrNone(text);
@@ -296,8 +298,12 @@ namespace Abc
             Assert.Equal(1.GetHashCode(), icmp.GetHashCode(Maybe.Some(1)));
             Assert.Equal(2.GetHashCode(), icmp.GetHashCode(Maybe.Some(2)));
             Assert.Equal(2L.GetHashCode(), lcmp.GetHashCode(Maybe.Some(2L)));
-            Assert.Equal(text.GetHashCode(StringComparison.Ordinal), scmp.GetHashCode(someText));
             Assert.Equal(uri.GetHashCode(), ucmp.GetHashCode(someUri));
+
+#if !NETFRAMEWORK // GetHashCode(StringComparison)
+            IEqualityComparer scmp = MaybeComparer<string>.Default;
+            Assert.Equal(text.GetHashCode(StringComparison.Ordinal), scmp.GetHashCode(someText));
+#endif
         }
     }
 
@@ -430,7 +436,6 @@ namespace Abc
             // Arrange
             var icmp = MaybeComparer<int>.Structural;
             var lcmp = MaybeComparer<long>.Structural;
-            var scmp = MaybeComparer<string>.Structural;
             var ucmp = MaybeComparer<Uri>.Structural;
             string text = "text";
             var someText = Maybe.SomeOrNone(text);
@@ -440,8 +445,12 @@ namespace Abc
             Assert.Equal(1.GetHashCode(), icmp.GetHashCode(Maybe.Some(1)));
             Assert.Equal(2.GetHashCode(), icmp.GetHashCode(Maybe.Some(2)));
             Assert.Equal(2L.GetHashCode(), lcmp.GetHashCode(Maybe.Some(2L)));
-            Assert.Equal(text.GetHashCode(StringComparison.Ordinal), scmp.GetHashCode(someText));
             Assert.Equal(uri.GetHashCode(), ucmp.GetHashCode(someUri));
+
+#if !NETFRAMEWORK // GetHashCode(StringComparison)
+            var scmp = MaybeComparer<string>.Structural;
+            Assert.Equal(text.GetHashCode(StringComparison.Ordinal), scmp.GetHashCode(someText));
+#endif
         }
     }
 }

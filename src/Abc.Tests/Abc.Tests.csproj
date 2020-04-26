@@ -19,6 +19,11 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild" Version="2.8.1">
       <PrivateAssets>all</PrivateAssets>
