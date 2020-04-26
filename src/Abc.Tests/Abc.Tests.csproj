@@ -1,8 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>$(MaxApiPlatform)</TargetFramework>
     <IsPackable>false</IsPackable>
+
+    <RequiresValueTuplePackage>true</RequiresValueTuplePackage>
+    <RequiresHashCodePackage>true</RequiresHashCodePackage>
 
     <!--
       IDE0002   Simplify Member Access
@@ -17,11 +20,6 @@
     <None Update="xunit.runner.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup>

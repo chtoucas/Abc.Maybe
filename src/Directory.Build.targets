@@ -13,7 +13,9 @@
     <HideInternals>true</HideInternals>
 
     <AllowedOutputExtensionsInPackageBuildOutputFolder
-      Condition=" $(DebugType) != 'embedded' ">$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+      Condition=" $(DebugType) != 'embedded' "><!--
+      -->$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb<!--
+      --></AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -43,6 +45,15 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup Condition=" $(RequiresValueTuplePackage) == 'true' ">
+    <PackageReference Include="System.ValueTuple" Version="4.5.0"
+                      Condition=" $(TargetFrameworkIdentifier) == '.NETFramework' " />
+  </ItemGroup>
+  <ItemGroup Condition=" $(RequiresHashCodePackage) == 'true' ">
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0"
+                      Condition=" $(TargetFrameworkIdentifier) == '.NETFramework' or $(TargetFramework) == 'netstandard2.0' " />
   </ItemGroup>
 
   <Target Name="__DisplaySettings" BeforeTargets="Compile"

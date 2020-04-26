@@ -1,15 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!--
-      The first listed framework is the one used by the VS editor.
-      Full NRT-analysis requires .NET Core 3.0 or above, .NET Standard does
-      not include the nullable annotations (version 2.1 defines the nullable
-      attributes but don't use them if I understand things correctly).
-      We use the version 3.1 instead of 3.0 because the former is LTS and the
-      latter is already EOL.
-    -->
-    <TargetFrameworks>netcoreapp3.1;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>$(MaxApiPlatform);$(MinApiStandard)</TargetFrameworks>
   </PropertyGroup>
 
   <Import Project="$(EngRoot)$(AssemblyName).props" Condition=" $(Retail) == 'true' " />
@@ -20,11 +12,11 @@
     <WarningsNotAsErrors>$(WarningsNotAsErrors);CS1591</WarningsNotAsErrors>
   </PropertyGroup>
 
-  <ItemGroup Condition=" $(TargetFramework) == 'netstandard2.1' or $(TargetFramework) == 'netcoreapp3.1' ">
+  <ItemGroup Condition=" $(TargetFramework) == $(MaxApiStandard) or $(TargetFramework) == $(MaxApiPlatform) ">
     <AdditionalFiles Include="PublicAPI\Max\PublicAPI.Shipped.txt" />
     <AdditionalFiles Include="PublicAPI\Max\PublicAPI.Unshipped.txt" />
   </ItemGroup>
-  <ItemGroup Condition=" $(TargetFramework) == 'netstandard2.0' or $(TargetFramework) == 'net461' ">
+  <ItemGroup Condition=" $(TargetFramework) == $(MinApiStandard) or $(TargetFramework) == $(MinApiPlatform) ">
     <AdditionalFiles Include="PublicAPI\Min\PublicAPI.Shipped.txt" />
     <AdditionalFiles Include="PublicAPI\Min\PublicAPI.Unshipped.txt" />
   </ItemGroup>
