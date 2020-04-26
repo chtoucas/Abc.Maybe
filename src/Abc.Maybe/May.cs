@@ -429,7 +429,7 @@ namespace Abc
         /// base and relative string instances.
         /// </summary>
         [Pure]
-#if NETFRAMEWORK
+#if NETFRAMEWORK // SuppressMessage
         [SuppressMessage("Usage", "CA2234:Pass system uri objects instead of strings", Justification = "Uri creation")]
 #endif
         public static Maybe<Uri> CreateUri(Uri? baseUri, string? relativeUri)

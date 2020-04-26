@@ -15,7 +15,7 @@ namespace Abc
     /// </summary>
     [Serializable]
     public readonly struct Unit : IEquatable<Unit>
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK // ValueTuple
         , IEquatable<ValueTuple>
 #endif
     {
@@ -36,7 +36,12 @@ namespace Abc
         /// </summary>
         public static bool operator ==(Unit left, Unit right) => true;
 
-#if !NETFRAMEWORK
+        /// <summary>
+        /// Always returns false.
+        /// </summary>
+        public static bool operator !=(Unit left, Unit right) => false;
+
+#if !NETFRAMEWORK // ValueTuple
         /// <summary>
         /// Always returns true.
         /// </summary>
@@ -46,14 +51,7 @@ namespace Abc
         /// Always returns true.
         /// </summary>
         public static bool operator ==(ValueTuple left, Unit right) => true;
-#endif
 
-        /// <summary>
-        /// Always returns false.
-        /// </summary>
-        public static bool operator !=(Unit left, Unit right) => false;
-
-#if !NETFRAMEWORK
         /// <summary>
         /// Always returns false.
         /// </summary>
@@ -71,7 +69,7 @@ namespace Abc
         [Pure]
         public bool Equals(Unit other) => true;
 
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK // ValueTuple
         /// <summary>
         /// Always returns true.
         /// </summary>

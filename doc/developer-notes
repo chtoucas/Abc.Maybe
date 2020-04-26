@@ -36,15 +36,18 @@ Documentation (README)
 - https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets
 
 - Multitargeting: target net461.
-  * Review NETFRAMEWORK
+  * Default to .NET Standard 2.1 in project files.
   * Use
       <DebugType Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">full</DebugType>
     https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives/preprocessor-if
   * Scripts:
-    - .\eng\qbuild.cmd .\src\Abc.Tests\ fails
+    - test freeze-api.ps1
+    - qbuild.cmd fails with the following args
+      * -c Release
+      * .\src\Abc.Tests\
+    - TargetFrameworks/TargetFramework -> exe projects (test/perf).
     - test qtest.cmd?
     - Update pack.ps1
-    - TargetFrameworks/TargetFramework -> exe projects.
   * Use the same PublicAPI.XXX.txt for .NET Standard 2.1 & .NET Core 3.1?
     https://github.com/dotnet/roslyn-analyzers/blob/master/src/PublicApiAnalyzers/PublicApiAnalyzers.Help.md
   * Disable warning NU1701?
@@ -179,9 +182,12 @@ Supported frameworks.
 - .NET Core 3.1
 Inside VS, we only use .NET Standard 2.0 and .NET Core 3.1 (this one is added so
 that we benefit from full NRT-analysis).
-We should have only two kinds of conditional compilations:
-- NETSTANDARD2_0 || NETFRAMEWORK
-- NETFRAMEWORK
+
+IMPORTANT, after adding or removing a framework, we must update
+- the project files
+- qbuild.cmd
+- reset.ps1
+- pack.ps1
 
 - The only diff between .NET Standard 2.0 & .NET Framework 4.6.1 should be the
   absence of ValueTuple.
@@ -189,6 +195,16 @@ We should have only two kinds of conditional compilations:
   * Use System.HashCode.
 - Use PlatformNotSupportedException for things that could be supported but
   are not actually.
+
+We only handle two special cases:
+- NETSTANDARD2_0 || NETFRAMEWORK
+  * Nullable attributes (added)
+  * Span<> (disabled)
+- NETFRAMEWORK
+  * Enumerable.Append (added)
+    Only available starting from .NET Framework 4.7.1.
+  * ValueTuple (disabled)
+    Only available starting from .NET Framework 4.7.
 
 https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/cross-platform-targeting
 
@@ -216,12 +232,14 @@ From time to time, we should review our usage of
 - SuppressMessage
 - BONSANG! null-forgiving ("damnit") operator
 
-Local tools.
-- qtest.cmd, quickly run the test suite.
-- qperf.cmd, quickly run the perf tool.
-- eng\cover.ps1, code coverage script (Coverlet or OpenCover).
-- eng\pack.ps1, packing script.
-- eng\freeze-api.ps1, update public API files.
+Local tools (in eng).
+- qtest.cmd, run the test suite.
+- qperf.cmd, run the perf tool.
+- qbuild.cmd, build project/solution for all supported frameworks.
+- dump-test-suite.cmd, dump the test suite.
+- cover.ps1, code coverage script (Coverlet or OpenCover).
+- pack.ps1, packing script.
+- freeze-api.ps1, update public API files.
 
 Useful tools.
 - NuGet Package Explorer

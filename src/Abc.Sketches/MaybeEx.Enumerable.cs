@@ -41,7 +41,7 @@ namespace Abc
         [Pure]
         public static Maybe<IEnumerable<T>> Collect<T>(IEnumerable<Maybe<T>> source)
         {
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK // Enumerable.Append
             return source.Aggregate(
                 Maybe.EmptyEnumerable<T>(),
                 (x, y) => x.ZipWith(y, Enumerable.Append));
@@ -52,18 +52,16 @@ namespace Abc
 #endif
         }
 
-#if NETFRAMEWORK
-        // Only available starting from .NET Framework 4.7.1.
-        // Remember that, here, NETFRAMEWORK actually means NET461.
+#if NETFRAMEWORK // Enumerable.Append
         private static IEnumerable<TSource> Append<TSource>(
             IEnumerable<TSource> source,
             TSource element)
         {
             if (source is null) { throw new Anexn(nameof(source)); }
 
-            return iterator();
+            return __();
 
-            IEnumerable<TSource> iterator()
+            IEnumerable<TSource> __()
             {
                 foreach (var item in source)
                 {

@@ -53,7 +53,7 @@ namespace Abc
     // Parsers for simple value types.
     public partial class MayEx
     {
-#if !(NETSTANDARD2_0 || NETFRAMEWORK)
+#if !(NETSTANDARD2_0 || NETFRAMEWORK) // Span
         [Pure]
         public static Maybe<bool> ParseBoolean(ReadOnlySpan<char> span)
         {
@@ -241,7 +241,7 @@ namespace Abc
     // Parsers for value types that are not simple types.
     public partial class MayEx
     {
-#if !(NETSTANDARD2_0 || NETFRAMEWORK)
+#if !(NETSTANDARD2_0 || NETFRAMEWORK) // Span
         [Pure]
         public static Maybe<object> ParseEnum(Type enumType, string? value)
             => Enum.TryParse(enumType, value, out object? result)
