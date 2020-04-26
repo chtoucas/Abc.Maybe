@@ -39,7 +39,8 @@ Documentation (README)
   * Default to .NET Standard 2.1 in project files.
   * We use TargetFrameworkIdentifier and NETFRAMEWORK instead of TargetFramework
     and NET461, is it such a good idea?
-  * We have three tests failing w/ .NET 4.6.1.
+  * Build warning NU1701 when running plain qbuild.
+    https://docs.microsoft.com/en-us/dotnet/core/porting/third-party-deps#net-framework-compatibility-mode
   * Testing seem to depend on the way we restored the packages (see qtest).
     Do we need --framework?
     https://xunit.net/docs/why-no-netstandard
@@ -49,20 +50,18 @@ Documentation (README)
       <DebugType Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">full</DebugType>
     https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives/preprocessor-if
   * Scripts:
-    - reset.ps1/pack.ps1 add net461
-    - pack.ps1, run test w/ net461 too
+    - pack.ps1, add net461, run test w/ net461 too
     - qtest.cmd (restore or not?)
     - freeze-api.ps1
     - qbuild.cmd fails with the following args
       * -c Release
       * .\src\Abc.Tests\
-    - TargetFrameworks/TargetFramework -> exe projects (test/perf).
+    - qperf.cmd?
   * Use the same PublicAPI.XXX.txt for .NET Standard 2.1 & .NET Core 3.1?
     https://github.com/dotnet/roslyn-analyzers/blob/master/src/PublicApiAnalyzers/PublicApiAnalyzers.Help.md
-  * Disable warning NU1701?
-    https://docs.microsoft.com/en-us/dotnet/core/porting/third-party-deps#net-framework-compatibility-mode
   * https://github.com/dotnet/announcements/issues/31
   * (next) Add #nullable enable at the top of each PublicAPI.*.txt file.
+  * code coverage?
 
 vNEXT
 -----
@@ -210,11 +209,16 @@ We only handle two special cases:
   * Nullable attributes (added)
   * Span<> (disabled)
 - NETFRAMEWORK
-  * Enumerable.Append (added)
-    Only available starting from .NET Framework 4.7.1.
   * ValueTuple (disabled)
     Only available starting from .NET Framework 4.7.
-  * String.GetHashCode(StringComparison)
+  * Enumerable.Append and Enumerable.Prepend (added)
+    Only available starting from .NET Framework 4.7.1.
+  * Code Analysis warnings.
+  * Test project:
+    - String.GetHashCode(StringComparison) does not exist.
+    - Enumerable.Empty<T>() is empty when cast to IList<T>.
+      The result is null w/ .NET Standard or .NET Core.
+    - DateTime parsing.
 
 We could have added a dependency on System.ValueTuple (Nuget), but I prefer not to.
 I do not want to add any dependency to our NuGet package.
