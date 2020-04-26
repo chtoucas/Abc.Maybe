@@ -22,8 +22,7 @@ __Objectives/Features__
   - [x] Equatable and comparable, both optionally structural.
   - [x] NRT-aware (NRT = Nullable Reference Types).
   - [x] Debugger-friendly.
-  - [x] .NET Standard 2.0 for recent systems.
-  - [x] .NET Framework 4.6.1 for older systems.
+  - [x] .NET Standard 2.0+, and the legacy .NET Framework 4.6.1.
 - [ ] Being well tested.
   - [x] 100% test coverage.
   - [ ] Wide range of functional tests.
