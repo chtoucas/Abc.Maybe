@@ -84,6 +84,7 @@ IMPORTANT, after adding or removing a framework, we must update
 - the project files, Directory.Build.props
   don't forget PublicAPI within Abc.Maybe.csproj
 - qbuild.cmd
+- qtest.cmd
 - reset.ps1
 - pack.ps1
 

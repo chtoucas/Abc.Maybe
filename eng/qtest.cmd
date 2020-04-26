@@ -3,7 +3,7 @@
 :: (correctly because we seem to have a problem since we enabled .NET 4.6.1).
 ::
 :: Multi-targeting at once does not yet work:
-:: > qtest /p:TargetFrameworks=\"net461%2cnetcoreapp3.1\"   <-- %2c is ; for MSBuild
+:: > qtest /p:TargetFrameworks=\"netcoreapp3.1%2cnet461\"   <-- %2c is ; for MSBuild
 :: What we can do:
 :: - Test for netcoreapp3.1, nothing special, this is the default target.
 :: - Test for net461

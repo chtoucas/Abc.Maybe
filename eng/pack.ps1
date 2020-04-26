@@ -95,13 +95,17 @@ function Invoke-Clean {
 }
 
 function Invoke-Test {
-    SAY-LOUD "Testing."
+    SAY-LOUD "Testing w/ netcoreapp3.1."
 
-    # SignAssembly is not necessary but I want to check that InternalsVisibleTo
-    # works as expected.
-    & dotnet test -c $CONFIGURATION -v minimal --nologo -p:SignAssembly=true
+    & dotnet test -c $CONFIGURATION -v minimal --nologo
 
-    Assert-CmdSuccess -ErrMessage "Test task failed."
+    Assert-CmdSuccess -ErrMessage "Test task failed when targeting netcoreapp3.1."
+
+    SAY-LOUD "Testing w/ net461."
+
+    & dotnet test -c $CONFIGURATION -v minimal --nologo /p:TargetFramework=net461
+
+    Assert-CmdSuccess -ErrMessage "Test task failed when targeting net461."
 }
 
 function Invoke-Pack {
@@ -162,7 +166,7 @@ function Invoke-Pack {
     & dotnet pack $proj -c $CONFIGURATION --nologo `
         --output $PKG_OUTDIR `
         -p:DisplaySettings=true `
-        -p:TargetFrameworks='\"netstandard2.0;netstandard2.1;netcoreapp3.1\"' `
+        -p:TargetFrameworks='\"netstandard2.1;netstandard2.0;netcoreapp3.1;net461\"' `
         -p:Retail=true `
         -p:RepositoryCommit=$commit `
         -p:RepositoryBranch=$branch `

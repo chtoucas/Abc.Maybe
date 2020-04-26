@@ -34,7 +34,7 @@ try {
         Say "  Restoring packages."
 
         & dotnet restore `
-            -p:TargetFrameworks='\"net461;netstandard2.0;netstandard2.1;netcoreapp3.1\"'
+            -p:TargetFrameworks='\"netstandard2.1;netstandard2.0;netcoreapp3.1;net461\"'
     }
 }
 catch {

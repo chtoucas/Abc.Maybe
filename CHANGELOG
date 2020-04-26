@@ -11,6 +11,9 @@ Changed
 - Remove attribute Advanced from Flatten().
 
 Internal Changes
+- Define two API profiles:
+  Minimal .NET Standard 2.0 / .NET Framework 4.6.1
+  Maximal .NET Standard 2.1 / .NET Core 3.1
 - Upgraded packages:
   * Microsoft.NET.Test.Sdk 16.6.0 -> 16.6.1.
 
