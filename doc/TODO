@@ -53,8 +53,7 @@ Documentation (README)
     - qtest (restore or not?)
     - pack, add net461, run test w/ net461 too
     - qperf?
-  * Use the same PublicAPI.XXX.txt for .NET Standard 2.1 & .NET Core 3.1?
-    https://github.com/dotnet/roslyn-analyzers/blob/master/src/PublicApiAnalyzers/PublicApiAnalyzers.Help.md
+  * PublicAPI.XXX.txt, improve what we currently do in Abc.Maybe.csproj.
   * https://github.com/dotnet/announcements/issues/31
   * (next) Add #nullable enable at the top of each PublicAPI.*.txt file.
   * code coverage?

@@ -81,17 +81,26 @@ Inside VS, we only use .NET Standard 2.0 and .NET Core 3.1 (this one is added so
 that we benefit from full NRT-analysis).
 
 IMPORTANT, after adding or removing a framework, we must update
-- the project files
+- the project files (don't forget PublicAPI within Abc.Maybe.csproj)
 - qbuild.cmd
 - reset.ps1
 - pack.ps1
 
-API differences.
-- .NET Core 3.1 & .NET Standard 2.1 should have the same API.
-- The only diff between .NET Standard 2.0 & .NET Framework 4.6.1 should be the
-  absence of ValueTuple.
-- Use PlatformNotSupportedException for things that could be supported but
-  are not actually.
+API differences. We try to minimize them by defining only two "profiles":
+- Maximal API for .NET Standard 2.1 & .NET Core 3.1.
+- Minimal API for .NET Standard 2.0 & .NET Framework 4.6.1.
+The Maximal API is a superset of Minimal one.
+
+If there are for say things we could do w/ .NET Standard 2.1 but not w/ .NET Core
+3.1, we have two cases:
+- use PlatformNotSupportedException for things that could be supported within in
+  a given profile but are not actually.
+- simply do not do it if it can't be done, eg when a type would appear in the
+  signature of a method only exists in one of the two platforms. This is
+  actually what we do with Unit and the Min profile, we could support
+  IEquatable<ValueTuple> but we don't because of ValueTuple.
+  I could have added a dependency on System.ValueTuple (NuGet), but I prefer
+  not to. I really do not want to add any dependency to our NuGet package.
 
 We only handle two special cases:
 - NETSTANDARD2_0 || NETFRAMEWORK
@@ -108,9 +117,6 @@ We only handle two special cases:
     - Enumerable.Empty<T>() is empty when cast to IList<T>.
       The result is null w/ .NET Standard or .NET Core.
     - DateTime parsing.
-
-We could have added a dependency on System.ValueTuple (NuGet), but I prefer not
-to. I really do not want to add any dependency to our NuGet package.
 
 Three projects (test, perf & play) may add dependencies for a particular
 framework, currently we have:
