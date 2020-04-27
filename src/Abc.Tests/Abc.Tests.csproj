@@ -11,6 +11,12 @@
     <RelaxWarnings>true</RelaxWarnings>
     <RelaxAsyncWarnings>true</RelaxAsyncWarnings>
     <NoWarn>$(NoWarn);IDE0002;xUnit1004</NoWarn>
+
+    <!--
+      MSBuild (or NuGet?) is not meant to work when we specify both
+      TargetFramework and TargetFrameworks (see the "s").
+    -->
+    <NoWarn Condition=" $(TargetFrameworks) != '' ">$(NoWarn);NU1701</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

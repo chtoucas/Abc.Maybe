@@ -20,24 +20,14 @@ equality and ordering comparisons.
 Multitargeting: target net461/netstandard1.0.
 - We use TargetFrameworkIdentifier ('.NETFramework') and NETFRAMEWORK instead
   of TargetFramework and NET461, is it such a good idea?
-- Build warning NU1701, seems to depend on the way we restored the packages
-  (see qbuild & qtest). Do we need --framework?
-  OK I think the "problem" is with TargetFramework with/without "s"
-  => Abc.Tests still only targets .NET Core 3.1 even if we specify
-  TargetFrameworks (with an s) from the command-line.
-  Still qbuild /p/TargetFramework= displays the warning
-  https://docs.microsoft.com/en-us/dotnet/core/porting/third-party-deps#net-framework-compatibility-mode
-  https://docs.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files
 - Packaging: net461 -> no full pdb...
   https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives/preprocessor-if
-- Scripts:
-  - qbuild "fails" with the following args
-    * -c Release
-    * .\src\Abc.Tests\
-  - qperf?
 - https://github.com/dotnet/announcements/issues/31
 - (next) Add #nullable enable at the top of each PublicAPI.*.txt file.
 - code coverage?
+- Build warning NU1701 (should be OK now)
+  https://docs.microsoft.com/en-us/dotnet/core/porting/third-party-deps#net-framework-compatibility-mode
+  https://docs.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files
 
 Documentation (README)
 - A bit of marketing, compare to other option types.

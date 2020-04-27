@@ -26,7 +26,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <!-- Solution-specific options, default = false -->
+    <!-- Local options, all default to false -->
     <DisplaySettings Condition=" $(DisplaySettings) != 'true' ">false</DisplaySettings>
     <PatchEquality Condition=" $(PatchEquality) != 'true' ">false</PatchEquality>
     <HideInternals Condition=" $(HideInternals) != 'true' ">false</HideInternals>
