@@ -51,7 +51,7 @@ namespace Abc.Tests
             Assert.False(unit.Equals(null));
             Assert.False(unit.Equals(new object()));
 
-#if MAX_API // ValueTuple
+#if API_PROFILE_21 // ValueTuple
             // Arrange
             var tupl = new ValueTuple();
 

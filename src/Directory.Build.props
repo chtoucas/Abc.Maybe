@@ -15,15 +15,14 @@
       We use the version 3.1 instead of 3.0 because the former is LTS and the
       latter is already EOL.
       For libraries, use
-        <TargetFrameworks>$(MaxApiPlatform);$(MinApiStandard)</TargetFrameworks>
+        <TargetFrameworks>$(MaxApiPlatform);netstandard2.0</TargetFrameworks>
       otherwise, use
         <TargetFramework>$(MaxApiPlatform)</TargetFramework>
+      If/when we create an API depending on a new .NET standard, MaxApiPlatform
+      should be the last available platform supporting it We can also update
+      MaxApiPlatform just to benefit from the last improvements it could bring.
     -->
-    <MinApiPlatform>net461</MinApiPlatform>
     <MaxApiPlatform>netcoreapp3.1</MaxApiPlatform>
-
-    <MinApiStandard>netstandard2.0</MinApiStandard>
-    <MaxApiStandard>netstandard2.1</MaxApiStandard>
   </PropertyGroup>
 
   <PropertyGroup>

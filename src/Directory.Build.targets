@@ -23,8 +23,8 @@
     <DefineConstants Condition=" $(HideInternals) != 'true' ">$(DefineConstants);INTERNALS_VISIBLE_TO</DefineConstants>
     <DefineConstants Condition=" $(PatchEquality) == 'true' ">$(DefineConstants);PATCH_EQUALITY</DefineConstants>
 
-    <DefineConstants Condition="  $(TargetFramework) == $(MaxApiStandard) or $(TargetFramework) == $(MaxApiPlatform) "><!--
-      -->$(DefineConstants);MAX_API</DefineConstants>
+    <DefineConstants Condition=" $(TargetFramework) == 'netstandard2.1' ">$(DefineConstants);API_PROFILE_21</DefineConstants>
+    <DefineConstants Condition=" $(TargetFramework) == $(MaxApiPlatform) ">$(DefineConstants);API_PROFILE_21</DefineConstants>
 
     <!--<DefineConstants>$(DefineConstants);PLAIN_LINQ</DefineConstants>-->
     <!--<DefineConstants>$(DefineConstants);PURE_MAYBE</DefineConstants>-->
