@@ -16,6 +16,9 @@
     <!--<DefineConstants>$(DefineConstants);COMONADS_VIA_MAP_COMULTIPLY</DefineConstants>-->
   </PropertyGroup>
 
+  <!--
+    System.ValueTuple   .NET 4.6.1
+  -->
   <ItemGroup>
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
