@@ -15,8 +15,8 @@ The NuGet package targets:
 - .NET Standard 2.1.
 - .NET Standard 2.0.
 - .NET Framework 4.6.1.
-and offers basic support for:
-- .NET Standard 1.0 (__WARNING__ provided as is, untested).
+
+and offers basic support for .NET Standard 1.0 (_provided as is, untested_).
 
 The public API is not the same for all targets. We currently define two profiles:
 - Profile 2.0 for
