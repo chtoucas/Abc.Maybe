@@ -29,13 +29,6 @@ try {
 
         Remove-BinAndObj $SRC_DIR
     }
-
-    if ($Force -or (Confirm-Yes "Restore packages?")) {
-        Say "  Restoring packages."
-
-        & dotnet restore `
-            -p:TargetFrameworks='\"netstandard2.1;netstandard2.0;netcoreapp3.1;net461\"'
-    }
 }
 catch {
     Croak ("An unexpected error occured: {0}." -f $_.Exception.Message) `
