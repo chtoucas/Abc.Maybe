@@ -1,0 +1,39 @@
+<Project>
+
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+
+    <RelaxWarnings>true</RelaxWarnings>
+    <RelaxAsyncWarnings>true</RelaxAsyncWarnings>
+    <NoWarn>$(NoWarn);IDE0002;xUnit1004</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <HideInternals>true</HideInternals>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)NullableAttribute.cs" />
+    <Compile Include="..\..\Abc.Sketches\**\*.cs" />
+    <Compile Include="..\..\Abc.Testing\**\*.cs" Exclude="..\..\Abc.Sketches\**\AssemblyInfo.cs" />
+    <Compile Include="..\..\Abc.Tests\**\*.cs" Exclude="..\..\Abc.Tests\**\AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Abc.Maybe" Version="1.0.0-beta4" />
+  </ItemGroup>
+
+  <!--
+    Requirements:
+      System.ValueTuple       .NETFramework 4.5   / .NETCoreApp 2.0 / .NETStandard 1.0
+      Microsoft.Bcl.HashCode  .NETFramework 4.6.1 / .NETCoreApp 2.1
+      Xunit runner
+  -->
+  <ItemGroup>
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+  </ItemGroup>
+
+</Project>
