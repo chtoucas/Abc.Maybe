@@ -18,6 +18,7 @@
 ::   /p:TargetFramework=
 ::
 :: Examples:
+:: > qtest --no-restore                         --> Be careful w/ this one
 :: > qbuild -c Release                          --> default = Debug
 :: > qbuild /p:Property=Value
 :: > qbuild .\src\Abc.Maybe\
