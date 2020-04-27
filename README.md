@@ -11,6 +11,21 @@ Abc.Maybe features an Option type for .NET.
 - [Changelog](CHANGELOG)
 - [BSD 3-Clause "New" or "Revised" License](LICENSE)
 
+The NuGet package targets:
+- .NET Standard 2.1.
+- .NET Standard 2.0.
+- .NET Framework 4.6.1.
+and offers basic support for:
+- .NET Standard 1.0 (__WARNING__ provided as is, untested).
+
+The public API is not the same for all targets. We currently define two profiles:
+- Profile 2.0 for
+  * .NET Standard 2.0.
+  * .NET Framework 4.6.1.
+  * .NET Standard 1.0.
+- Profile 2.1, a superset of the profile 2.0, for
+  * .NET Standard 2.1.
+
 __Objectives/Features__
 
 - [x] Being safe yet effective.
@@ -22,7 +37,7 @@ __Objectives/Features__
   - [x] Equatable and comparable, both optionally structural.
   - [x] NRT-aware (NRT = Nullable Reference Types).
   - [x] Debugger-friendly.
-  - [x] .NET Standard 2.0+, and the legacy .NET Framework 4.6.1.
+  - [x] .NET Standard 2.0, and the legacy .NET Framework 4.6.1.
 - [ ] Being well tested.
   - [x] 100% test coverage.
   - [ ] Wide range of functional tests.
