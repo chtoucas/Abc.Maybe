@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>$(MaxApiPlatform);$(MinApiStandard)</TargetFrameworks>
+    <TargetFrameworks>$(MaxApiPlatform);netstandard2.0</TargetFrameworks>
   </PropertyGroup>
 
   <Import Project="$(EngRoot)$(AssemblyName).props" Condition=" $(Retail) == 'true' " />
@@ -12,13 +12,14 @@
     <WarningsNotAsErrors>$(WarningsNotAsErrors);CS1591</WarningsNotAsErrors>
   </PropertyGroup>
 
-  <ItemGroup Condition=" $(TargetFramework) == $(MaxApiStandard) or $(TargetFramework) == $(MaxApiPlatform) ">
-    <AdditionalFiles Include="PublicAPI\Max\PublicAPI.Shipped.txt" />
-    <AdditionalFiles Include="PublicAPI\Max\PublicAPI.Unshipped.txt" />
+  <!-- Only enable for .NET Standard, no platform like net461 or netcoreapp3.1 -->
+  <ItemGroup Condition=" $(TargetFramework) == 'netstandard2.0' ">
+    <AdditionalFiles Include="PublicAPI\netstandard2.0\PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include="PublicAPI\netstandard2.0\PublicAPI.Unshipped.txt" />
   </ItemGroup>
-  <ItemGroup Condition=" $(TargetFramework) == $(MinApiStandard) or $(TargetFramework) == $(MinApiPlatform) ">
-    <AdditionalFiles Include="PublicAPI\Min\PublicAPI.Shipped.txt" />
-    <AdditionalFiles Include="PublicAPI\Min\PublicAPI.Unshipped.txt" />
+  <ItemGroup Condition=" $(TargetFramework) == 'netstandard2.1' ">
+    <AdditionalFiles Include="PublicAPI\netstandard2.1\PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include="PublicAPI\netstandard2.1\PublicAPI.Unshipped.txt" />
   </ItemGroup>
 
   <ItemGroup>
