@@ -48,7 +48,6 @@ function Write-Usage {
 Create a NuGet package for Abc.Maybe
 
 Usage: pack.ps1 [switches]
-  -c|-Clean    soft clean the solution before anything else.
   -n|-NoTest   do NOT run the test suite.
   -f|-Force    force packing even when there are uncommited changes.
   -s|-Safe     hard clean the solution before creating the package.
