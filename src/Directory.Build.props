@@ -26,11 +26,22 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <!-- Project-specific options, default = false -->
+    <!-- Solution-specific options, default = false -->
     <DisplaySettings Condition=" $(DisplaySettings) != 'true' ">false</DisplaySettings>
-    <Retail Condition=" $(Retail) != 'true' ">false</Retail>
     <PatchEquality Condition=" $(PatchEquality) != 'true' ">false</PatchEquality>
     <HideInternals Condition=" $(HideInternals) != 'true' ">false</HideInternals>
+    <!-- Meta-option -->
+    <Retail Condition=" $(Retail) != 'true' ">false</Retail>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" $(Retail) == 'true' ">
+    <!--
+      Weird bug in MSBuild, I have to set this twice, here and in Directory.Build.targets.
+      https://github.com/Microsoft/msbuild/issues/2754
+    -->
+    <!--<DebugType Condition=" $(TargetFrameworkIdentifier) == '.NETFramework' ">full</DebugType>
+    <DebugType Condition=" $(TargetFrameworkIdentifier) != '.NETFramework' ">embedded</DebugType>-->
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <PropertyGroup>
