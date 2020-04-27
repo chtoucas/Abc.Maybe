@@ -1,6 +1,10 @@
 ﻿// See LICENSE.dotnet in the project root for license information.
 
-#if (NETSTANDARD2_0 || NETFRAMEWORK) // Nullable attributes
+#if (NETSTANDARD1_6 || NETSTANDARD1_5 || NETSTANDARD1_4 || NETSTANDARD1_3 || NETSTANDARD1_2 || NETSTANDARD1_1 || NETSTANDARD1_0)
+#define NETSTANDARD1_x
+#endif
+
+#if (NETSTANDARD2_0 || NETSTANDARD1_x || NETFRAMEWORK) // Nullable attributes
 #define INTERNAL_NULLABLE_ATTRIBUTES
 
 namespace System.Diagnostics.CodeAnalysis
