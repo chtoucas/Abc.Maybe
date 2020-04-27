@@ -16,9 +16,9 @@
 
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)NullableAttribute.cs" />
-    <Compile Include="..\..\Abc.Sketches\**\*.cs" />
-    <Compile Include="..\..\Abc.Testing\**\*.cs" Exclude="..\..\Abc.Sketches\**\AssemblyInfo.cs" />
-    <Compile Include="..\..\Abc.Tests\**\*.cs" Exclude="..\..\Abc.Tests\**\AssemblyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\Abc.Sketches\**\*.cs" Exclude="$(MSBuildThisFileDirectory)..\Abc.Sketches\**\AssemblyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\Abc.Testing\**\*.cs" Exclude="$(MSBuildThisFileDirectory)..\Abc.Testing\**\AssemblyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\Abc.Tests\**\*.cs" />
   </ItemGroup>
 
   <ItemGroup>
