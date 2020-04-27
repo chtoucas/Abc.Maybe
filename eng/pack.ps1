@@ -4,9 +4,6 @@
 .SYNOPSIS
 Create a NuGet package.
 
-.PARAMETER Clean
-Clean the solution before anything else.
-
 .PARAMETER NoTest
 Do NOT run the test suite.
 
@@ -25,12 +22,11 @@ PS>pack.ps1 -n -f
 Fast packing, no test, maybe obsolete git infos.
 
 .EXAMPLE
-PS>pack.ps1 -c -s
-Clean & safe packing.
+PS>pack.ps1 -s
+Safe packing.
 #>
 [CmdletBinding()]
 param(
-    [Alias("c")] [switch] $Clean,
     [Alias("n")] [switch] $NoTest,
     [Alias("f")] [switch] $Force,
     [Alias("s")] [switch] $Safe,
@@ -86,25 +82,15 @@ function Get-PackageVersion {
     "$major.$minor.$patch-$prere"
 }
 
-function Invoke-Clean {
-    SAY-LOUD "Cleaning."
-
-    & dotnet clean -c $CONFIGURATION -v minimal --nologo
-
-    Assert-CmdSuccess -ErrMessage "Clean task failed."
-}
-
 function Invoke-Test {
-    SAY-LOUD "Testing w/ netcoreapp3.1."
+    SAY-LOUD "Testing."
 
     & dotnet test -c $CONFIGURATION -v minimal --nologo
+    Assert-CmdSuccess -ErrMessage "Test task failed."
 
-    Assert-CmdSuccess -ErrMessage "Test task failed when targeting netcoreapp3.1."
-
-    SAY-LOUD "Testing w/ net461."
+    SAY-LOUD "Testing (net461)."
 
     & dotnet test -c $CONFIGURATION -v minimal --nologo /p:TargetFramework=net461
-
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting net461."
 }
 
@@ -161,16 +147,13 @@ function Invoke-Pack {
     }
 
     # Do NOT use --no-restore or --no-build (option Safe removes everything).
-    # NB: netstandard2.1 is not currently enabled within the proj file.
-    # Remove DebugType to use plain pdb's.
     & dotnet pack $proj -c $CONFIGURATION --nologo `
         --output $PKG_OUTDIR `
         -p:DisplaySettings=true `
-        -p:TargetFrameworks='\"netstandard2.1;netstandard2.0;netcoreapp3.1;net461\"' `
+        -p:TargetFrameworks='\"netstandard2.1;netstandard2.0;netstandard1.0;net461\"' `
         -p:Retail=true `
         -p:RepositoryCommit=$commit `
-        -p:RepositoryBranch=$branch `
-        -p:DebugType=embedded
+        -p:RepositoryBranch=$branch
 
     Assert-CmdSuccess -ErrMessage "Pack task failed."
 
@@ -190,7 +173,6 @@ try {
 
     pushd $ROOT_DIR
 
-    if ($Clean) { Invoke-Clean }
     if (-not $NoTest) { Invoke-Test }
 
     Invoke-Pack "Abc.Maybe" -Force:$Force.IsPresent
