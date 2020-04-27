@@ -3,6 +3,9 @@ Changelog for Abc.
 vNEXT
 -----
 
+2020-04-27, version 1.0.0-beta4
+-------------------------------
+
 Added
 - Support for .NET Framework 4.6.1.
 - Support for .NET Standard 1.0, but only for Abc.Maybe (completely untested).

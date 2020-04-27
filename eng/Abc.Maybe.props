@@ -13,7 +13,7 @@
       package (see pack.ps1). In the future, we might use it to publish packages
       to myget.
     -->
-    <PreReleaseTag>beta3</PreReleaseTag>
+    <PreReleaseTag>beta4</PreReleaseTag>
 
     <Title>A Safe Yet Effective Option Type.</Title>
 
