@@ -13,7 +13,7 @@
 :: > qbuild /p:DebugType=embedded
 :: > qbuild /p:GenerateDocumentationFile=true   --> always included but can be overriden
 ::
-:: Project-specific options: see Directory.Build.props
+:: Solution-specific options: see Directory.Build.props
 :: > qbuild /p:DisplaySettings=true
 :: > qbuild /p:Retail=true
 :: > qbuild /p:PatchEquality=true
@@ -24,16 +24,25 @@
 
 @pushd %~dp0\..
 
+:: Package restore: we MUST always include netcoreapp3.1 (MaxApiPlatform).
+@set fmks="netcoreapp3.1;netstandard2.1;netstandard2.0;net461"
+
+@call dotnet restore %* /p:TargetFrameworks=\"%fmks%"
+
 :: Remarks:
 :: - GenerateDocumentationFile can be overriden
 :: - TargetFrameworks can NOT be overriden
 ::   BUT one can use TargetFramework (no "s") to target a specific framework
-::   Useful when we want to build projects like Abc.Tests, play or perf.
-@call dotnet build ^
+::   Useful when we want to build projects like Abc.Tests, play or perf for a
+::   specific platform.
+::   Targeting a single exe project, eg .\src\play
+::   - Without TargetFramework, build only MaxApiPlatform.
+::   - With    TargetFramework, build only TargetFramework.
+@call dotnet build --no-restore ^
   /p:GenerateDocumentationFile=true ^
   /p:SignAssembly=true ^
   %* ^
-  /p:TargetFrameworks=\"netstandard2.1;netstandard2.0;netcoreapp3.1;net461\"
+  /p:TargetFrameworks=\"%fmks%\"
 
 @popd
 
