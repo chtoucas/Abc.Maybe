@@ -22,9 +22,9 @@ and offers basic support for .NET Standard 1.0 (_provided as is, untested_).
 
 The public API is not the same for all targets. We currently define two profiles,
 the scheme is rather simple,
-- Profile 2.0 is for .NET Standard 2.0 and the legacy systems (.NET Framework
-  4.6.1 and .NET Standard 1.0)
-- Profile 2.1, a superset of the profile 2.0, is for .NET Standard 2.1.
+- **Profile 2.0** is for **.NET Standard 2.0** and the legacy systems (.NET
+  Framework 4.6.1 and .NET Standard 1.0).
+- **Profile 2.1**, a superset of the profile 2.0, is for **.NET Standard 2.1**.
 
 __Objectives/Features__
 
