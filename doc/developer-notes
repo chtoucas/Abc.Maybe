@@ -90,7 +90,6 @@ IMPORTANT, after adding or removing a framework, we must update
 - Directory.Build.targets (DefineConstants)
 - Abc.Maybe.csproj (PublicAPI)
 - qbuild.cmd
-- qtest.cmd
 - pack.ps1
 
 API differences. We try to minimize them by defining only two "profiles" that
@@ -105,11 +104,11 @@ See https://github.com/dotnet/standard
 
 If there are for say things we could do w/ .NET Standard 2.1 but not w/ .NET Core
 3.1, we have two cases:
-- use PlatformNotSupportedException for things that could be supported within in
+- Use PlatformNotSupportedException for things that could be supported within in
   a given profile but are not actually.
-- simply do not do it if it can't be done, eg when a type would appear in the
+- Simply do not do it if it can't be done, eg when a type would appear in the
   signature of a method only exists in one of the two platforms. This is
-  actually what we do with Unit and the Min profile, we could support
+  actually what we do with Unit and the profile 2.0, we could support
   IEquatable<ValueTuple> but we don't because of ValueTuple.
   I could have added a dependency on System.ValueTuple (NuGet), but I prefer
   not to. I really do not want to add any dependency to our NuGet package.
