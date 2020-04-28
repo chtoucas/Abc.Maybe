@@ -165,13 +165,15 @@ From time to time, we should review our usage of
 - BONSANG! null-forgiving ("damnit") operator
 
 Local tools (in eng).
-- qtest.cmd, run the test suite.
-- qperf.cmd, run the perf tool.
-- qbuild.cmd, build project/solution for all supported frameworks.
-- dump-test-suite.cmd, dump the test suite.
-- cover.ps1, code coverage script (Coverlet or OpenCover).
-- pack.ps1, packing script.
-- freeze-api.ps1, update public API files.
+- qtest.cmd             run the test suite.
+- qperf.cmd             run the perf tool.
+- qbuild.cmd            build project/solution for all supported frameworks.
+- dump-test-suite.cmd   dump the test suite.
+- reset.ps1             delete 'bin' and 'obj' directories.
+- cover.ps1             code coverage (Coverlet or OpenCover).
+- freeze-api.ps1        update public API files.
+- pack.ps1              packing script.
+- post-check.ps1        test legacy platforms.
 
 Useful tools.
 - NuGet Package Explorer
