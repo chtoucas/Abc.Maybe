@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <__NETFrameworks>net452;net462;net472</__NETFrameworks>
+    <__NETCoreApps>netcoreapp2.0;netcoreapp2.1;netcoreapp2.2;netcoreapp3.0</__NETCoreApps>
+
+    <TargetFrameworks>$(__NETFrameworks);$(__NETCoreApps)</TargetFrameworks>
+  </PropertyGroup>
+
+</Project>
