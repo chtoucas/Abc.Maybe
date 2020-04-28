@@ -7,7 +7,7 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)..\Abc.Sketches\**\*.cs" Exclude="$(MSBuildThisFileDirectory)..\Abc.Sketches\**\AssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)..\Abc.Testing\**\*.cs" Exclude="$(MSBuildThisFileDirectory)..\Abc.Testing\**\AssemblyInfo.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)..\Abc.Tests\**\*.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)..\Abc.Tests\**\*.cs" Exclude="$(MSBuildThisFileDirectory)..\Abc.Tests\**\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup Condition=" $(AssemblyName) == 'NETCOREAPP2_0' ">
     <Compile Include="$(MSBuildThisFileDirectory)NullableAttribute.cs" />
@@ -18,10 +18,10 @@
 
   <!--
     Requirements:
-      System.ValueTuple         .NETFramework 4.5   / .NETCoreApp 2.0 / .NETStandard 1.0
-      Microsoft.Bcl.HashCode    .NETFramework 4.6.1 / .NETCoreApp 2.1
-      xunit.runner.visualstudio
-      xunit.runner.console
+      System.ValueTuple         NETFramework 4.5   / NETCoreApp 2.0 / NETStandard 1.0
+      Microsoft.Bcl.HashCode    NETFramework 4.6.1 / NETCoreApp 2.1
+      xunit.runner.visualstudio                      NETCoreApp 1.0
+      xunit.runner.console      (independent)
   -->
   <ItemGroup>
     <PackageReference Include="Abc.Maybe" Version="1.0.0-beta4" />
