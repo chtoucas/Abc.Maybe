@@ -20,8 +20,8 @@ The NuGet package offers full support for:
 
 The public API is not the same for all targets. We currently define two profiles,
 the schema is rather simple,
-- **Profile 2.1**, a superset of the profile 2.0, is for **.NET Standard 2.1**.
-- **Profile 2.0** is for **.NET Standard 2.0** and the legacy systems.
+- _Profile 2.1_, a superset of the profile 2.0, is for .NET Standard 2.1.
+- _Profile 2.0_ is for .NET Standard 2.0 and the legacy systems.
 
 ### Testing
 
