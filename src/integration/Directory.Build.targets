@@ -1,22 +1,13 @@
 <Project>
 
-  <PropertyGroup Condition=" $(AssemblyName) == 'NETCOREAPP2_0' ">
-    <NetCoreApp2x>true</NetCoreApp2x>
-  </PropertyGroup>
-  <PropertyGroup Condition=" $(AssemblyName) == 'NETCOREAPP2_1' ">
-    <NetCoreApp2x>true</NetCoreApp2x>
-  </PropertyGroup>
-  <PropertyGroup Condition=" $(AssemblyName) == 'NETCOREAPP2_2' ">
-    <NetCoreApp2x>true</NetCoreApp2x>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" $(NetCoreApp2x) == 'true' ">
+  <PropertyGroup Condition=" $(AssemblyName.StartsWith('NETCOREAPP2_')) ">
     <DefineConstants>$(DefineConstants);NETCOREAPP2_x</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" $(AssemblyName) == 'NET45' ">
-    <DefineConstants>$(DefineConstants);NETFRAMEWORK;NET45</DefineConstants>
+  <PropertyGroup Condition=" $(AssemblyName.StartsWith('NET45')) ">
+    <DefineConstants>$(DefineConstants);NETFRAMEWORK;$(AssemblyName)</DefineConstants>
   </PropertyGroup>
 
+  <!-- Source files -->
   <PropertyGroup>
     <SourceDirectory>$(MSBuildThisFileDirectory)..\</SourceDirectory>
     <FilesToExclude>$(SourceDirectory)**\AssemblyInfo.cs</FilesToExclude>
@@ -28,31 +19,27 @@
     <Compile Include="$(SourceDirectory)Abc.Testing\**\*.cs" Exclude="$(FilesToExclude)" />
     <Compile Include="$(SourceDirectory)Abc.Tests\**\*.cs" Exclude="$(FilesToExclude)" />
   </ItemGroup>
-  <ItemGroup Condition=" $(NetCoreApp2x) == 'true' ">
+
+  <!-- Shims for legacy platforms -->
+  <ItemGroup Condition=" $(AssemblyName.StartsWith('NETCOREAPP2_')) ">
     <Compile Include="$(MSBuildThisFileDirectory)NullableAttribute.cs" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0" />
   </ItemGroup>
-  <ItemGroup Condition=" $(AssemblyName) == 'NET45' ">
+  <ItemGroup Condition=" $(AssemblyName.StartsWith('NET45')) ">
     <Compile Include="$(MSBuildThisFileDirectory)HashCode.cs" />
   </ItemGroup>
 
-  <!--
-    All targets:
-      System.ValueTuple         .NET Core 2.0 / .NET Framework 4.5   / .NET Standard 1.0
-      xunit
-    .NET Core targets:
-      Microsoft.Bcl.HashCode    .NET Core 2.1 / .NET Framework 4.6.1 / .NET Standard 2.0
-
-    We use xunit.runner.visualstudio for .NET Core 1.0+
-    and xunit.runner.console for NET45.
-  -->
+  <!-- Core dependencies -->
   <ItemGroup>
     <PackageReference Include="Abc.Maybe" Version="1.0.0-beta4" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
   </ItemGroup>
-  <ItemGroup Condition=" $(NetCoreApp2x) == 'true' ">
-    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0" />
-  </ItemGroup>
+
+  <!--
+    We can use xunit.runner.visualstudio for .NET Core 1.0+ and .NET Framework 4.5.2+,
+    but for .NET Framework < 4.5.2 we must revert to xunit.runner.console.
+  -->
   <ItemGroup Condition=" $(AssemblyName) != 'NET45' ">
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
       <PrivateAssets>all</PrivateAssets>

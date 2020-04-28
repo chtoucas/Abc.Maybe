@@ -146,6 +146,11 @@ try {
         Invoke-Test "netcoreapp2.0"
     }
 
+    if ($Yes -or (Confirm-Yes "Test harness for net452?")) {
+        Invoke-Test "net452"
+    }
+
+    # .NET Framework 4.5, we must handled differently.
     if ($Yes -or (Confirm-Yes "Test harness for net45?")) {
         SAY-LOUD "Testing (net45)."
 
