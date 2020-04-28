@@ -11,7 +11,7 @@ Abc.Maybe features an Option type for .NET.
 - [Changelog](CHANGELOG)
 - [BSD 3-Clause "New" or "Revised" License](LICENSE)
 
-__NuGet package__
+## NuGet package
 
 The NuGet package offers full support for:
 - .NET Standard 2.0 / 2.1.
@@ -26,7 +26,7 @@ the scheme is rather simple,
   Framework 4.6.1 and .NET Standard 1.0).
 - **Profile 2.1**, a superset of the profile 2.0, is for **.NET Standard 2.1**.
 
-__Testing__
+### Testing
 
 We primarily run tests against the following targets:
 - .NET Core 3.1.
@@ -39,7 +39,7 @@ We also check that everything is fine with
 but only after we push a package upstream, and it is not done automatically,
 which means that it may take some time before I discover (and fix) a failing test.
 
-__Objectives/Features__
+## Objectives/Features
 
 - [x] Being safe yet effective.
   - [x] Immutable.
