@@ -9,7 +9,7 @@ Do not ask for confirmation.
 #>
 [CmdletBinding()]
 param(
-    [Alias("f")] [switch] $Force
+    [Alias("y")] [switch] $Yes
 )
 
 Set-StrictMode -Version Latest
@@ -24,7 +24,7 @@ try {
 
     pushd $ROOT_DIR
 
-    if ($Force -or (Confirm-Yes "Hard clean?")) {
+    if ($Yes -or (Confirm-Yes "Hard clean?")) {
         Say "  Deleting 'bin' and 'obj' directories."
 
         Remove-BinAndObj $SRC_DIR

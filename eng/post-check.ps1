@@ -4,7 +4,7 @@
 .SYNOPSIS
 Test harness for net45, netcoreapp2.x and netcoreapp3.0.
 
-.PARAMETER Force
+.PARAMETER Yes
 Do not ask for confirmation.
 
 .PARAMETER Safe
@@ -16,7 +16,7 @@ Directory.Build.targets), but we never know.
 #>
 [CmdletBinding()]
 param(
-    [Alias("f")] [switch] $Force,
+    [Alias("y")] [switch] $Yes,
     [Alias("c")] [switch] $Safe,
     [Alias("h")] [switch] $Help
 )
@@ -36,7 +36,7 @@ function Write-Usage {
 Test harness for Abc.Maybe
 
 Usage: pack.ps1 [switches].
-  -f|-Force    do not ask for confirmation before running any test harness.
+  -f|-Yes    do not ask for confirmation before running any test harness.
   -s|-Safe     hard clean the solution before anything else.
   -h|-Help     print this help and exit.
 
@@ -91,19 +91,19 @@ function Find-XunitRunner {
     $exe
 }
 
-function Test-NetCore {
+function Invoke-Test {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
-        [string] $version
+        [string] $framework
     )
 
-    $proj = $version.Replace(".", "_").ToUpper()
+    $proj = $framework.Replace(".", "_").ToUpper()
 
-    SAY-LOUD "Testing ($version)."
+    SAY-LOUD "Testing ($framework)."
 
-    & dotnet test .\$proj\ -c $CONFIGURATION
-    Assert-CmdSuccess -ErrMessage "Test task failed when targeting netcoreapp2.0."
+    & dotnet test .\$proj\$proj.csproj -c $CONFIGURATION -f $framework
+    Assert-CmdSuccess -ErrMessage "Test task failed when targeting $framework."
 }
 
 ################################################################################
@@ -130,23 +130,23 @@ try {
         }
     }
 
-    if ($Force -or (Confirm-Yes "Test harness for netcoreapp3.0?")) {
-        Test-NetCore "netcoreapp3.0"
+    if ($Yes -or (Confirm-Yes "Test harness for netcoreapp3.0?")) {
+        Invoke-Test "netcoreapp3.0"
     }
 
-    if ($Force -or (Confirm-Yes "Test harness for netcoreapp2.2?")) {
-        Test-NetCore "netcoreapp2.2"
+    if ($Yes -or (Confirm-Yes "Test harness for netcoreapp2.2?")) {
+        Invoke-Test "netcoreapp2.2"
     }
 
-    if ($Force -or (Confirm-Yes "Test harness for netcoreapp2.1?")) {
-        Test-NetCore "netcoreapp2.1"
+    if ($Yes -or (Confirm-Yes "Test harness for netcoreapp2.1?")) {
+        Invoke-Test "netcoreapp2.1"
     }
 
-    if ($Force -or (Confirm-Yes "Test harness for netcoreapp2.0?")) {
-        Test-NetCore "netcoreapp2.0"
+    if ($Yes -or (Confirm-Yes "Test harness for netcoreapp2.0?")) {
+        Invoke-Test "netcoreapp2.0"
     }
 
-    if ($Force -or (Confirm-Yes "Test harness for net45?")) {
+    if ($Yes -or (Confirm-Yes "Test harness for net45?")) {
         SAY-LOUD "Testing (net45)."
 
         # https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2019
