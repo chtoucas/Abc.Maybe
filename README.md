@@ -26,6 +26,8 @@ the scheme is rather simple,
   Framework 4.6.1 and .NET Standard 1.0).
 - **Profile 2.1**, a superset of the profile 2.0, is for **.NET Standard 2.1**.
 
+__Testing__
+
 We primarily run tests against the following targets:
 - .NET Core 3.1.
 - .NET Framework 4.6.1.
