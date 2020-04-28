@@ -603,7 +603,7 @@ namespace Abc
             Assert.None(May.ParseDateTimeExactly("abc", (string[]?)null, new MyFormatter(), DateTimeStyles.None));
 
             Assert.None(May.ParseDateTimeExactly("abc", "", new MyFormatter(), DateTimeStyles.None));
-            Assert.None(May.ParseDateTimeExactly("abc", Array.Empty<string>(), new MyFormatter(), DateTimeStyles.None));
+            Assert.None(May.ParseDateTimeExactly("abc", ArrayEx.Empty<string>(), new MyFormatter(), DateTimeStyles.None));
             Assert.None(May.ParseDateTimeExactly("abc", new string?[] { null }, new MyFormatter(), DateTimeStyles.None));
             Assert.None(May.ParseDateTimeExactly("abc", new[] { "" }, new MyFormatter(), DateTimeStyles.None));
             Assert.None(May.ParseDateTimeExactly("abc", new[] { "" }, new MyFormatter(), DateTimeStyles.None));

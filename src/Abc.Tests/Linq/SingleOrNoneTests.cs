@@ -54,7 +54,7 @@ namespace Abc.Linq
         [Fact(DisplayName = "EmptyIList")]
         public static void SingleOrNone3()
         {
-            string[] source = Array.Empty<string>();
+            string[] source = ArrayEx.Empty<string>();
             var expected = Maybe<string>.None;
 
             Assert.Equal(expected, source.SingleOrNone());
@@ -110,7 +110,7 @@ namespace Abc.Linq
         [Fact(DisplayName = "EmptySourceWithPredicate")]
         public static void SingleOrNone9()
         {
-            int[] source = Array.Empty<int>();
+            int[] source = ArrayEx.Empty<int>();
             var expected = Maybe<int>.None;
 
             Assert.Equal(expected, source.SingleOrNone(i => i % 2 == 0));

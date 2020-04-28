@@ -57,7 +57,7 @@ namespace Abc.Linq
 
         private static void FirstOrNone3Impl<T>()
         {
-            T[] source = Array.Empty<T>();
+            T[] source = ArrayEx.Empty<T>();
             var expected = Maybe<T>.None;
 
             Assert.IsAssignableFrom<IList<T>>(source);
@@ -149,7 +149,7 @@ namespace Abc.Linq
         [Fact(DisplayName = "EmptySource")]
         public static void FirstOrNone10()
         {
-            string[] source = Array.Empty<string>();
+            string[] source = ArrayEx.Empty<string>();
             var expected = Maybe<string>.None;
 
             Assert.Equal(expected, source.FirstOrNone(x => true));

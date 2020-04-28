@@ -24,7 +24,7 @@ namespace Abc.Linq
                 yield return new object[] { NumberRangeGuaranteedNotCollectionType(-4, 10), 3, Maybe.Some(-1) };
 
                 yield return new object[] { new int[] { 1, 2, 3, 4 }, 4, Maybe<int>.None };
-                yield return new object[] { Array.Empty<int>(), 0, Maybe<int>.None };
+                yield return new object[] { ArrayEx.Empty<int>(), 0, Maybe<int>.None };
                 yield return new object[] { new int[] { -4 }, 0, Maybe.Some(-4) };
                 yield return new object[] { new int[] { 9, 8, 0, -5, 10 }, 4, Maybe.Some(10) };
 

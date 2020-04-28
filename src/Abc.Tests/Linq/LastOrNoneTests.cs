@@ -55,7 +55,7 @@ namespace Abc.Linq
 
         private static void LastOrNone3Impl<T>()
         {
-            T[] source = Array.Empty<T>();
+            T[] source = ArrayEx.Empty<T>();
             var expected = Maybe<T>.None;
 
             Assert.IsAssignableFrom<IList<T>>(source);
@@ -147,7 +147,7 @@ namespace Abc.Linq
         [Fact(DisplayName = "EmptyIListSource")]
         public static void LastOrNone10()
         {
-            string[] source = Array.Empty<string>();
+            string[] source = ArrayEx.Empty<string>();
 
             Assert.Equal(Maybe<string>.None, source.LastOrNone(x => true));
             Assert.Equal(Maybe<string>.None, source.LastOrNone(x => false));
