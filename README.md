@@ -30,9 +30,11 @@ the scheme is rather simple,
 We primarily run tests against the following targets:
 - .NET Core 3.1.
 - .NET Framework 4.6.1.
+
 We also check that everything is fine with
 - .NET Core 2.0.
 - .NET Framework 4.5.
+
 but only after we push a package upstream, and it is not done automatically,
 which means that it may take some time before I discover (and fix) a failing test.
 
