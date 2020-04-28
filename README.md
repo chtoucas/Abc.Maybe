@@ -32,7 +32,7 @@ We primarily run tests against the following targets:
 
 We also check that everything is fine with
 - .NET Core 2.0 / 2.1 / 2.2 / 3.0.
-- .NET Framework 4.5 / 4.5.2.
+- .NET Framework 4.5 / 4.5.2 / 4.6.2 / 4.7.2.
 
 but only after we push a package upstream, and it is not done automatically,
 which means that it may take some time before I discover (and fix) a failing test.

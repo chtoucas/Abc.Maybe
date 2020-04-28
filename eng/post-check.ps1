@@ -2,7 +2,8 @@
 
 <#
 .SYNOPSIS
-Test harness for net45, netcoreapp2.x and netcoreapp3.0.
+Test harness for net45x, net46x, net47x, net48, netcoreapp2.x and netcoreapp3.0.
+WARNING: the matching SDK must be installed locally.
 
 .PARAMETER Yes
 Do not ask for confirmation.
@@ -146,11 +147,25 @@ try {
         Invoke-Test "netcoreapp2.0"
     }
 
+    if ($Yes -or (Confirm-Yes "Test harness for net48?")) {
+        Invoke-Test "net48"
+    }
+
+    if ($Yes -or (Confirm-Yes "Test harness for net472?")) {
+        Invoke-Test "net472"
+    }
+
+    if ($Yes -or (Confirm-Yes "Test harness for net462?")) {
+        Invoke-Test "net462"
+    }
+
     if ($Yes -or (Confirm-Yes "Test harness for net452?")) {
         Invoke-Test "net452"
     }
 
-    # .NET Framework 4.5, we must handled differently.
+    # .NET Framework 4.5 must handled differently.
+    # Since it's no longer officialy supported by Microsoft, we can remove it
+    # if it ever becomes too much of a burden.
     if ($Yes -or (Confirm-Yes "Test harness for net45?")) {
         SAY-LOUD "Testing (net45)."
 

@@ -3,7 +3,8 @@
   <PropertyGroup Condition=" $(AssemblyName.StartsWith('NETCOREAPP2_')) ">
     <DefineConstants>$(DefineConstants);NETCOREAPP2_x</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" $(AssemblyName.StartsWith('NET45')) ">
+  <PropertyGroup Condition=" $(AssemblyName) == 'NET45' ">
+    <!-- Old style project file, we must manually set these symbols -->
     <DefineConstants>$(DefineConstants);NETFRAMEWORK;$(AssemblyName)</DefineConstants>
   </PropertyGroup>
 
@@ -25,7 +26,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)NullableAttribute.cs" />
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0" />
   </ItemGroup>
-  <ItemGroup Condition=" $(AssemblyName.StartsWith('NET45')) ">
+  <ItemGroup Condition=" $(AssemblyName.StartsWith('NET4')) ">
+    <!-- Might not be necessary for .NET 4.8 -->
     <Compile Include="$(MSBuildThisFileDirectory)HashCode.cs" />
   </ItemGroup>
 

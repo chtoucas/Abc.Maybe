@@ -1,4 +1,6 @@
-﻿using System;
+﻿// See LICENSE.dotnet in the project root for license information.
+
+using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
