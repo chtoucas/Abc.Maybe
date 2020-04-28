@@ -10,6 +10,9 @@ Do not ask for confirmation.
 .PARAMETER Safe
 Hard clean the solution before creating the package by removing the 'bin' and
 'obj' directories.
+It's necessary when there are "dangling" cs files created during a previous
+build. Now, it's no longer a problem (we explicitely exclude 'bin' and 'obj' in
+Directory.Build.targets), but we never know.
 #>
 [CmdletBinding()]
 param(
@@ -113,13 +116,11 @@ try {
     }
 
     if ($Force -or (Confirm-Yes "Test harness for net45?")) {
-        SAY-LOUD "Building (net45)."
+        SAY-LOUD "Testing (net45)."
 
         # https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2019
         & $msbuild .\NET45\NET45.csproj -v:minimal /t:"Restore;Build" -property:Configuration=$CONFIGURATION
         Assert-CmdSuccess -ErrMessage "Build task failed when targeting net45."
-
-        SAY-LOUD "Testing (net45)."
 
         & $xunit .\NET45\bin\$CONFIGURATION\NET45.dll
         Assert-CmdSuccess -ErrMessage "Test task failed when targeting net45."

@@ -15,7 +15,7 @@ equality and ordering comparisons.
     https://stackoverflow.com/questions/4968580/why-arent-istructuralequatable-and-istructuralcomparable-generic
   * Maybe<Func<>>
   * delegates that return null.
-- Check published packages (upgrade, debugging experience). See repos Abc.
+- Check published packages (upgrade, debugging experience).
 
 Multitargeting: target net461/netstandard1.0.
 - We use TargetFrameworkIdentifier ('.NETFramework') and NETFRAMEWORK instead

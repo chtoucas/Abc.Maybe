@@ -1,13 +1,21 @@
 <Project>
 
+  <PropertyGroup>
+    <SourceDirectory>$(MSBuildThisFileDirectory)..\</SourceDirectory>
+
+    <FilesToExclude>$(SourceDirectory)**\AssemblyInfo.cs</FilesToExclude>
+    <FilesToExclude>$(FilesToExclude);$(SourceDirectory)**\bin\**\*.*</FilesToExclude>
+    <FilesToExclude>$(FilesToExclude);$(SourceDirectory)**\obj\**\*.*</FilesToExclude>
+  </PropertyGroup>
+
   <PropertyGroup Condition=" $(AssemblyName) == 'NET45' ">
     <DefineConstants>$(DefineConstants);NETFRAMEWORK;NET45</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)..\Abc.Sketches\**\*.cs" Exclude="$(MSBuildThisFileDirectory)..\Abc.Sketches\**\AssemblyInfo.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)..\Abc.Testing\**\*.cs" Exclude="$(MSBuildThisFileDirectory)..\Abc.Testing\**\AssemblyInfo.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)..\Abc.Tests\**\*.cs" Exclude="$(MSBuildThisFileDirectory)..\Abc.Tests\**\AssemblyInfo.cs" />
+    <Compile Include="$(SourceDirectory)Abc.Sketches\**\*.cs" Exclude="$(FilesToExclude)" />
+    <Compile Include="$(SourceDirectory)Abc.Testing\**\*.cs" Exclude="$(FilesToExclude)" />
+    <Compile Include="$(SourceDirectory)Abc.Tests\**\*.cs" Exclude="$(FilesToExclude)" />
   </ItemGroup>
   <ItemGroup Condition=" $(AssemblyName) == 'NETCOREAPP2_0' ">
     <Compile Include="$(MSBuildThisFileDirectory)NullableAttribute.cs" />
@@ -17,10 +25,13 @@
   </ItemGroup>
 
   <!--
-    Requirements:
+    All targets:
       System.ValueTuple         .NET Core 2.0 / .NET Framework 4.5   / .NET Standard 1.0
+      xunit
+    NETCOREAPP2_0
       Microsoft.Bcl.HashCode    .NET Core 2.1 / .NET Framework 4.6.1 / .NET Standard 2.0
       xunit.runner.visualstudio .NET Core 1.0
+    NET45
       xunit.runner.console      (independent)
   -->
   <ItemGroup>
