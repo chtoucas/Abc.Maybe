@@ -130,6 +130,22 @@ try {
         }
     }
 
+    if ($Force -or (Confirm-Yes "Test harness for netcoreapp3.0?")) {
+        Test-NetCore "netcoreapp3.0"
+    }
+
+    if ($Force -or (Confirm-Yes "Test harness for netcoreapp2.2?")) {
+        Test-NetCore "netcoreapp2.2"
+    }
+
+    if ($Force -or (Confirm-Yes "Test harness for netcoreapp2.1?")) {
+        Test-NetCore "netcoreapp2.1"
+    }
+
+    if ($Force -or (Confirm-Yes "Test harness for netcoreapp2.0?")) {
+        Test-NetCore "netcoreapp2.0"
+    }
+
     if ($Force -or (Confirm-Yes "Test harness for net45?")) {
         SAY-LOUD "Testing (net45)."
 
@@ -139,22 +155,6 @@ try {
 
         & $xunit .\NET45\bin\$CONFIGURATION\NET45.dll
         Assert-CmdSuccess -ErrMessage "Test task failed when targeting net45."
-    }
-
-    if ($Force -or (Confirm-Yes "Test harness for netcoreapp2.0?")) {
-        Test-NetCore "netcoreapp2.0"
-    }
-
-    if ($Force -or (Confirm-Yes "Test harness for netcoreapp2.1?")) {
-        Test-NetCore "netcoreapp2.1"
-    }
-
-    if ($Force -or (Confirm-Yes "Test harness for netcoreapp2.2?")) {
-        Test-NetCore "netcoreapp2.2"
-    }
-
-    if ($Force -or (Confirm-Yes "Test harness for netcoreapp3.0?")) {
-        Test-NetCore "netcoreapp3.0"
     }
 }
 catch {

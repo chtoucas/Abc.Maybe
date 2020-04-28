@@ -4,22 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4B926891-DAB0-4792-AB7B-E1A0C001843A}"
-	ProjectSection(SolutionItems) = preProject
-		eng\Abc.Maybe.props = eng\Abc.Maybe.props
-		eng\abc.ps1 = eng\abc.ps1
-		eng\cover.ps1 = eng\cover.ps1
-		src\Directory.Build.props = src\Directory.Build.props
-		src\Directory.Build.targets = src\Directory.Build.targets
-		eng\dump-test-suite.cmd = eng\dump-test-suite.cmd
-		eng\freeze-api.ps1 = eng\freeze-api.ps1
-		eng\pack.ps1 = eng\pack.ps1
-		eng\qbuild.cmd = eng\qbuild.cmd
-		eng\qperf.cmd = eng\qperf.cmd
-		eng\qtest.cmd = eng\qtest.cmd
-		eng\reset.ps1 = eng\reset.ps1
-		eng\Retail.targets = eng\Retail.targets
-		eng\Retail.tasks = eng\Retail.tasks
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abc.Tests", "src\Abc.Tests\Abc.Tests.csproj", "{97EEB1BB-E86D-4BA2-B9EA-FABF10631507}"
 EndProject
@@ -32,6 +16,29 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "perf", "src\perf\perf.csproj", "{12530C57-F625-4348-A431-C3913518390A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abc.Sketches", "src\Abc.Sketches\Abc.Sketches.csproj", "{E0903B97-BC55-44F7-8243-C8B50769E919}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D158B7E6-CFFB-40FF-B775-6E6995648EFC}"
+	ProjectSection(SolutionItems) = preProject
+		src\Directory.Build.props = src\Directory.Build.props
+		src\Directory.Build.targets = src\Directory.Build.targets
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eng", "eng", "{6D957FE8-23D0-4985-A91C-F1CC399AA453}"
+	ProjectSection(SolutionItems) = preProject
+		eng\Abc.Maybe.props = eng\Abc.Maybe.props
+		eng\abc.ps1 = eng\abc.ps1
+		eng\cover.ps1 = eng\cover.ps1
+		eng\dump-test-suite.cmd = eng\dump-test-suite.cmd
+		eng\freeze-api.ps1 = eng\freeze-api.ps1
+		eng\pack.ps1 = eng\pack.ps1
+		eng\post-check.ps1 = eng\post-check.ps1
+		eng\qbuild.cmd = eng\qbuild.cmd
+		eng\qperf.cmd = eng\qperf.cmd
+		eng\qtest.cmd = eng\qtest.cmd
+		eng\reset.ps1 = eng\reset.ps1
+		eng\Retail.targets = eng\Retail.targets
+		eng\Retail.tasks = eng\Retail.tasks
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,6 +73,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D158B7E6-CFFB-40FF-B775-6E6995648EFC} = {4B926891-DAB0-4792-AB7B-E1A0C001843A}
+		{6D957FE8-23D0-4985-A91C-F1CC399AA453} = {4B926891-DAB0-4792-AB7B-E1A0C001843A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1739E5AC-504C-40F8-968B-64F1F620D3C3}
