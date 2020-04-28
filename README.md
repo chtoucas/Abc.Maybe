@@ -21,7 +21,8 @@ The NuGet package offers full support for:
 
 The public API is not the same for all targets. We currently define two profiles,
 - _API Profile 2.1_ is for .NET Standard 2.1.
-- _API Profile 2.0_ is for .NET Standard 2.0 and the legacy systems (either platform or standard).
+- _API Profile 2.0_ is for .NET Standard 2.0 and the legacy systems (either
+  platform or standard).
 
 Of course, API Profile 2.1 is a superset of 2.0.
 
@@ -33,7 +34,7 @@ We primarily run tests against the following targets:
 
 We also check that everything is fine with
 - .NET Core 2.0 / 2.1 / 2.2 / 3.0.
-- .NET Framework 4.5 / 4.5.2 / 4.6.2 / 4.7.2.
+- .NET Framework 4.5 / 4.5.2 / 4.6 / 4.6.1 / 4.6.2 / 4.7.2.
 
 but only after we push a package upstream, and it is not done automatically,
 which means that it may take some time before I discover (and fix) a failing test.

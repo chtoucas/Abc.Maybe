@@ -2,8 +2,14 @@
 
 <#
 .SYNOPSIS
-Test harness for net45x, net46x, net47x, net48, netcoreapp2.x and netcoreapp3.0.
+Test harness for net(4,5,6,7,8)x and netcoreapp(2,3).x.
 WARNING: the matching SDK must be installed locally.
+
+.PARAMETER Target
+Specify a single platform to be tested.
+
+.PARAMETER Deep
+Test ALL frameworks (SLOW), not just the last major versions.
 
 .PARAMETER Yes
 Do not ask for confirmation.
@@ -18,9 +24,9 @@ Directory.Build.targets), but we never know.
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $false, Position = 0)]
-    #[ValidateSet("net45","net452","net462","net472","netcoreapp2.0","netcoreapp2.1","netcoreapp2.2","netcoreapp3.0")]
     [string] $Target = "*",
 
+    [Alias("d")] [switch] $Deep,
     [Alias("y")] [switch] $Yes,
     [Alias("c")] [switch] $Safe,
     [Alias("h")] [switch] $Help
@@ -42,6 +48,7 @@ Test harness for Abc.Maybe
 
 Usage: pack.ps1 [switches].
   -t|-Target   specify a single platform to be tested.
+  -d|-Deep     test ALL frameworks (SLOW), not just the last major versions.
   -y|-Yes      do not ask for confirmation before running any test harness.
   -s|-Safe     hard clean the solution before anything else.
   -h|-Help     print this help and exit.
@@ -124,14 +131,25 @@ function Invoke-Test {
 
     SAY-LOUD "Testing ($framework)."
 
-    & dotnet test .\NETSdk\NETSdk.csproj -c $CONFIGURATION /p:TargetFramework=$framework
+    & dotnet test .\NETSdk\NETSdk.csproj -c $CONFIGURATION -f $framework /p:__Deep=true
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting $framework."
 }
 
 function Invoke-TestAll {
+    [CmdletBinding()]
+    param(
+        [switch] $Deep
+    )
+
     SAY-LOUD "Testing for all platforms."
 
-    & dotnet test .\NETSdk\NETSdk.csproj -c $CONFIGURATION
+    if ($Deep) {
+        & dotnet test .\NETSdk\NETSdk.csproj -c $CONFIGURATION /p:__Deep=true
+    }
+    else {
+        & dotnet test .\NETSdk\NETSdk.csproj -c $CONFIGURATION
+    }
+
     Assert-CmdSuccess -ErrMessage "Test task failed."
 }
 
@@ -156,28 +174,29 @@ try {
     }
 
     if ($Target -eq "*") {
-        if ($Yes -or (Confirm-Yes "Test all platforms at once?")) {
-            Invoke-TestAll
-            Invoke-TestNET45
+        if ($Yes -or (Confirm-Yes "Test all platforms at once (SLOW)?")) {
+            Carp "May fail if the matching SDK is not installed locally."
+            if ($Deep) {
+                Carp "Targets currently disabled (because I don't have them): net47, net471 and net48."
+            }
+            Invoke-TestAll -Deep:$Deep.IsPresent
+            if ($Deep) {
+                Invoke-TestNET45
+            }
         }
         else {
+            # Last major versions only.
             $frameworks = `
                 "net452",
                 "net462",
                 "net472",
-                "netcoreapp2.0",
-                "netcoreapp2.1",
                 "netcoreapp2.2",
-                "netcoreapp3.0"
+                "netcoreapp3.1"
 
             foreach ($framework in $frameworks) {
                 if ($Yes -or (Confirm-Yes "Test harness for ${framework}?")) {
                     Invoke-Test $framework
                 }
-            }
-
-            if ($Yes -or (Confirm-Yes "Test harness for net45?")) {
-                Invoke-TestNET45
             }
         }
     }
