@@ -1,42 +1,33 @@
 <Project>
 
-  <PropertyGroup>
-    <!--
-    <DefineConstants Condition=" $(TargetFramework) == 'netstandard2.1' ">$(DefineConstants);API_PROFILE_21</DefineConstants>
-    <DefineConstants Condition=" $(TargetFramework) == $(MaxApiPlatform) ">$(DefineConstants);API_PROFILE_21</DefineConstants>
-    -->
-  </PropertyGroup>
-
   <PropertyGroup Condition=" $(AssemblyName) == 'NET45' ">
-    <DefineConstants>$(DefineConstants);NETFRAMEWORK</DefineConstants>
+    <DefineConstants>$(DefineConstants);NETFRAMEWORK;NET45</DefineConstants>
   </PropertyGroup>
-
-  <ItemGroup Condition=" $(AssemblyName) == 'NETCOREAPP2_0' ">
-    <Compile Include="$(MSBuildThisFileDirectory)NullableAttribute.cs" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" $(AssemblyName) == 'NET45' ">
-    <Compile Include="$(MSBuildThisFileDirectory)HashCode.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)..\Abc.Sketches\**\*.cs" Exclude="$(MSBuildThisFileDirectory)..\Abc.Sketches\**\AssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)..\Abc.Testing\**\*.cs" Exclude="$(MSBuildThisFileDirectory)..\Abc.Testing\**\AssemblyInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)..\Abc.Tests\**\*.cs" />
   </ItemGroup>
+  <ItemGroup Condition=" $(AssemblyName) == 'NETCOREAPP2_0' ">
+    <Compile Include="$(MSBuildThisFileDirectory)NullableAttribute.cs" />
+  </ItemGroup>
+  <ItemGroup Condition=" $(AssemblyName) == 'NET45' ">
+    <Compile Include="$(MSBuildThisFileDirectory)HashCode.cs" />
+  </ItemGroup>
 
   <!--
     Requirements:
-      System.ValueTuple       .NETFramework 4.5   / .NETCoreApp 2.0 / .NETStandard 1.0
-      Microsoft.Bcl.HashCode  .NETFramework 4.6.1 / .NETCoreApp 2.1
-      Xunit runner
+      System.ValueTuple         .NETFramework 4.5   / .NETCoreApp 2.0 / .NETStandard 1.0
+      Microsoft.Bcl.HashCode    .NETFramework 4.6.1 / .NETCoreApp 2.1
+      xunit.runner.visualstudio
+      xunit.runner.console
   -->
   <ItemGroup>
     <PackageReference Include="Abc.Maybe" Version="1.0.0-beta4" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
   </ItemGroup>
-
   <ItemGroup Condition=" $(AssemblyName) == 'NETCOREAPP2_0' ">
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
@@ -44,7 +35,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
   <ItemGroup Condition=" $(AssemblyName) == 'NET45' ">
     <PackageReference Include="xunit.runner.console">
       <Version>2.4.1</Version>
