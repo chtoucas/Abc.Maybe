@@ -23,7 +23,7 @@ The public API is not the same for all targets. We currently define two profiles
 - _API Profile 2.1_ is for .NET Standard 2.1.
 - _API Profile 2.0_ is for .NET Standard 2.0 and the legacy systems (either platform or standard).
 
-Of course, API Profile 2.1 is a superset of 2.0. The difference is currently really tiny.
+Of course, API Profile 2.1 is a superset of 2.0.
 
 ### Testing
 
