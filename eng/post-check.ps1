@@ -17,6 +17,10 @@ Directory.Build.targets), but we never know.
 #>
 [CmdletBinding()]
 param(
+    [Parameter(Mandatory = $false, Position = 0)]
+    #[ValidateSet("net45","net452","net462","net472","netcoreapp2.0","netcoreapp2.1","netcoreapp2.2","netcoreapp3.0")]
+    [string] $Target = "*",
+
     [Alias("y")] [switch] $Yes,
     [Alias("c")] [switch] $Safe,
     [Alias("h")] [switch] $Help
@@ -37,7 +41,8 @@ function Write-Usage {
 Test harness for Abc.Maybe
 
 Usage: pack.ps1 [switches].
-  -f|-Yes    do not ask for confirmation before running any test harness.
+  -t|-Target   specify a single platform to be tested.
+  -y|-Yes      do not ask for confirmation before running any test harness.
   -s|-Safe     hard clean the solution before anything else.
   -h|-Help     print this help and exit.
 
@@ -92,6 +97,24 @@ function Find-XunitRunner {
     $exe
 }
 
+# .NET Framework 4.5 must handled separately.
+# Since it's no longer officialy supported by Microsoft, we can remove it
+# if it ever becomes too much of a burden.
+function Invoke-TestNET45 {
+    SAY-LOUD "Testing (net45)."
+
+    $vswhere = Find-VsWhere
+    $msbuild = Find-MSBuild $vswhere
+    $xunit   = Find-XunitRunner
+
+    # https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2019
+    & $msbuild .\NET45\NET45.csproj -v:minimal /t:"Restore;Build" -property:Configuration=$CONFIGURATION
+    Assert-CmdSuccess -ErrMessage "Build task failed when targeting net45."
+
+    & $xunit .\NET45\bin\$CONFIGURATION\NET45.dll
+    Assert-CmdSuccess -ErrMessage "Test task failed when targeting net45."
+}
+
 function Invoke-Test {
     [CmdletBinding()]
     param(
@@ -99,12 +122,17 @@ function Invoke-Test {
         [string] $framework
     )
 
-    $proj = $framework.Replace(".", "_").ToUpper()
-
     SAY-LOUD "Testing ($framework)."
 
-    & dotnet test .\$proj\$proj.csproj -c $CONFIGURATION -f $framework
+    & dotnet test .\NETSdk\NETSdk.csproj -c $CONFIGURATION /p:TargetFramework=$framework
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting $framework."
+}
+
+function Invoke-TestAll {
+    SAY-LOUD "Testing for all platforms."
+
+    & dotnet test .\NETSdk\NETSdk.csproj -c $CONFIGURATION
+    Assert-CmdSuccess -ErrMessage "Test task failed."
 }
 
 ################################################################################
@@ -119,10 +147,6 @@ try {
 
     pushd (Join-Path $ROOT_DIR "src\integration")
 
-    $vswhere = Find-VsWhere
-    $msbuild = Find-MSBuild $vswhere
-    $xunit   = Find-XunitRunner
-
     if ($Safe) {
         if (Confirm-Yes "Hard clean?") {
             Say "  Deleting 'bin' and 'obj' directories."
@@ -131,50 +155,39 @@ try {
         }
     }
 
-    if ($Yes -or (Confirm-Yes "Test harness for netcoreapp3.0?")) {
-        Invoke-Test "netcoreapp3.0"
+    if ($Target -eq "*") {
+        if ($Yes -or (Confirm-Yes "Test all platforms at once?")) {
+            Invoke-TestAll
+            Invoke-TestNET45
+        }
+        else {
+            $frameworks = `
+                "net452",
+                "net462",
+                "net472",
+                "netcoreapp2.0",
+                "netcoreapp2.1",
+                "netcoreapp2.2",
+                "netcoreapp3.0"
+
+            foreach ($framework in $frameworks) {
+                if ($Yes -or (Confirm-Yes "Test harness for ${framework}?")) {
+                    Invoke-Test $framework
+                }
+            }
+
+            if ($Yes -or (Confirm-Yes "Test harness for net45?")) {
+                Invoke-TestNET45
+            }
+        }
     }
-
-    if ($Yes -or (Confirm-Yes "Test harness for netcoreapp2.2?")) {
-        Invoke-Test "netcoreapp2.2"
-    }
-
-    if ($Yes -or (Confirm-Yes "Test harness for netcoreapp2.1?")) {
-        Invoke-Test "netcoreapp2.1"
-    }
-
-    if ($Yes -or (Confirm-Yes "Test harness for netcoreapp2.0?")) {
-        Invoke-Test "netcoreapp2.0"
-    }
-
-    if ($Yes -or (Confirm-Yes "Test harness for net48?")) {
-        Invoke-Test "net48"
-    }
-
-    if ($Yes -or (Confirm-Yes "Test harness for net472?")) {
-        Invoke-Test "net472"
-    }
-
-    if ($Yes -or (Confirm-Yes "Test harness for net462?")) {
-        Invoke-Test "net462"
-    }
-
-    if ($Yes -or (Confirm-Yes "Test harness for net452?")) {
-        Invoke-Test "net452"
-    }
-
-    # .NET Framework 4.5 must handled differently.
-    # Since it's no longer officialy supported by Microsoft, we can remove it
-    # if it ever becomes too much of a burden.
-    if ($Yes -or (Confirm-Yes "Test harness for net45?")) {
-        SAY-LOUD "Testing (net45)."
-
-        # https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2019
-        & $msbuild .\NET45\NET45.csproj -v:minimal /t:"Restore;Build" -property:Configuration=$CONFIGURATION
-        Assert-CmdSuccess -ErrMessage "Build task failed when targeting net45."
-
-        & $xunit .\NET45\bin\$CONFIGURATION\NET45.dll
-        Assert-CmdSuccess -ErrMessage "Test task failed when targeting net45."
+    else {
+        if ($Target -eq "net45") {
+            Invoke-TestNET45
+        }
+        else {
+            Invoke-Test $Target
+        }
     }
 }
 catch {
