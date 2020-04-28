@@ -2,7 +2,7 @@
 
 <#
 .SYNOPSIS
-Test harness for net45 and netcoreapp2.0.
+Test harness for net45, netcoreapp2.x and netcoreapp3.0.
 
 .PARAMETER Force
 Do not ask for confirmation.
@@ -91,6 +91,21 @@ function Find-XunitRunner {
     $exe
 }
 
+function Test-NetCore {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [string] $version
+    )
+
+    $proj = $version.Replace(".", "_").ToUpper()
+
+    SAY-LOUD "Testing ($version)."
+
+    & dotnet test .\$proj\ -c $CONFIGURATION
+    Assert-CmdSuccess -ErrMessage "Test task failed when targeting netcoreapp2.0."
+}
+
 ################################################################################
 
 if ($Help) {
@@ -127,10 +142,19 @@ try {
     }
 
     if ($Force -or (Confirm-Yes "Test harness for netcoreapp2.0?")) {
-        SAY-LOUD "Testing (netcoreapp2.0)."
+        Test-NetCore "netcoreapp2.0"
+    }
 
-        & dotnet test .\NETCOREAPP2_0\ -c $CONFIGURATION
-        Assert-CmdSuccess -ErrMessage "Test task failed when targeting netcoreapp2.0."
+    if ($Force -or (Confirm-Yes "Test harness for netcoreapp2.1?")) {
+        Test-NetCore "netcoreapp2.1"
+    }
+
+    if ($Force -or (Confirm-Yes "Test harness for netcoreapp2.2?")) {
+        Test-NetCore "netcoreapp2.2"
+    }
+
+    if ($Force -or (Confirm-Yes "Test harness for netcoreapp3.0?")) {
+        Test-NetCore "netcoreapp3.0"
     }
 }
 catch {

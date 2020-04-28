@@ -14,8 +14,7 @@ Abc.Maybe features an Option type for .NET.
 __NuGet package__
 
 The NuGet package offers full support for:
-- .NET Standard 2.1.
-- .NET Standard 2.0.
+- .NET Standard 2.0 / 2.1.
 - .NET Framework 4.6.1.
 
 and basic support for .NET Standard 1.0, _provided as is_ (we do test it but see
@@ -32,7 +31,7 @@ We primarily run tests against the following targets:
 - .NET Framework 4.6.1.
 
 We also check that everything is fine with
-- .NET Core 2.0.
+- .NET Core 2.0 / 2.1 / 2.2 / 3.0.
 - .NET Framework 4.5.
 
 but only after we push a package upstream, and it is not done automatically,

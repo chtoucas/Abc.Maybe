@@ -1,23 +1,34 @@
 <Project>
 
-  <PropertyGroup>
-    <SourceDirectory>$(MSBuildThisFileDirectory)..\</SourceDirectory>
-
-    <FilesToExclude>$(SourceDirectory)**\AssemblyInfo.cs</FilesToExclude>
-    <FilesToExclude>$(FilesToExclude);$(SourceDirectory)**\bin\**\*.*</FilesToExclude>
-    <FilesToExclude>$(FilesToExclude);$(SourceDirectory)**\obj\**\*.*</FilesToExclude>
+  <PropertyGroup Condition=" $(AssemblyName) == 'NETCOREAPP2_0' ">
+    <NetCoreApp2x>true</NetCoreApp2x>
+  </PropertyGroup>
+  <PropertyGroup Condition=" $(AssemblyName) == 'NETCOREAPP2_1' ">
+    <NetCoreApp2x>true</NetCoreApp2x>
+  </PropertyGroup>
+  <PropertyGroup Condition=" $(AssemblyName) == 'NETCOREAPP2_2' ">
+    <NetCoreApp2x>true</NetCoreApp2x>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" $(NetCoreApp2x) == 'true' ">
+    <DefineConstants>$(DefineConstants);NETCOREAPP2_x</DefineConstants>
+  </PropertyGroup>
   <PropertyGroup Condition=" $(AssemblyName) == 'NET45' ">
     <DefineConstants>$(DefineConstants);NETFRAMEWORK;NET45</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <SourceDirectory>$(MSBuildThisFileDirectory)..\</SourceDirectory>
+    <FilesToExclude>$(SourceDirectory)**\AssemblyInfo.cs</FilesToExclude>
+    <FilesToExclude>$(FilesToExclude);$(SourceDirectory)**\bin\**\*.*</FilesToExclude>
+    <FilesToExclude>$(FilesToExclude);$(SourceDirectory)**\obj\**\*.*</FilesToExclude>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(SourceDirectory)Abc.Sketches\**\*.cs" Exclude="$(FilesToExclude)" />
     <Compile Include="$(SourceDirectory)Abc.Testing\**\*.cs" Exclude="$(FilesToExclude)" />
     <Compile Include="$(SourceDirectory)Abc.Tests\**\*.cs" Exclude="$(FilesToExclude)" />
   </ItemGroup>
-  <ItemGroup Condition=" $(AssemblyName) == 'NETCOREAPP2_0' ">
+  <ItemGroup Condition=" $(NetCoreApp2x) == 'true' ">
     <Compile Include="$(MSBuildThisFileDirectory)NullableAttribute.cs" />
   </ItemGroup>
   <ItemGroup Condition=" $(AssemblyName) == 'NET45' ">
@@ -28,19 +39,21 @@
     All targets:
       System.ValueTuple         .NET Core 2.0 / .NET Framework 4.5   / .NET Standard 1.0
       xunit
-    NETCOREAPP2_0
+    .NET Core targets:
       Microsoft.Bcl.HashCode    .NET Core 2.1 / .NET Framework 4.6.1 / .NET Standard 2.0
-      xunit.runner.visualstudio .NET Core 1.0
-    NET45
-      xunit.runner.console      (independent)
+
+    We use xunit.runner.visualstudio for .NET Core 1.0+
+    and xunit.runner.console for NET45.
   -->
   <ItemGroup>
     <PackageReference Include="Abc.Maybe" Version="1.0.0-beta4" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
   </ItemGroup>
-  <ItemGroup Condition=" $(AssemblyName) == 'NETCOREAPP2_0' ">
+  <ItemGroup Condition=" $(NetCoreApp2x) == 'true' ">
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0" />
+  </ItemGroup>
+  <ItemGroup Condition=" $(AssemblyName) != 'NET45' ">
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
