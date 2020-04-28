@@ -18,9 +18,9 @@
 
   <!--
     Requirements:
-      System.ValueTuple         NETFramework 4.5   / NETCoreApp 2.0 / NETStandard 1.0
-      Microsoft.Bcl.HashCode    NETFramework 4.6.1 / NETCoreApp 2.1
-      xunit.runner.visualstudio                      NETCoreApp 1.0
+      System.ValueTuple         .NET Core 2.0 / .NET Framework 4.5   / .NET Standard 1.0
+      Microsoft.Bcl.HashCode    .NET Core 2.1 / .NET Framework 4.6.1 /
+      xunit.runner.visualstudio .NET Core 1.0
       xunit.runner.console      (independent)
   -->
   <ItemGroup>

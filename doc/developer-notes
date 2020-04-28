@@ -69,8 +69,10 @@ Pre action, for beta -or- production packages.
 5. Run script eng\pack.ps1 -s
 6. Publish package
 
-Post action, for production packages.
-6. Git tag (??? before, to get the correct tag ???)
+Post actions.
+a. Update the version of Abc.Maybe in src\integration\Directory.Build.targets,
+   then run eng\post-check.ps1
+b. For production packages, git tag (??? before, to get the correct tag ???)
 
 Multi-targeting
 ---------------
@@ -129,19 +131,10 @@ We only handle two special cases:
       The result is null w/ .NET Standard or .NET Core.
     - DateTime parsing.
 
-Minimal supported platforms
-- .NET Standard     2.0         (2.0, 2.1)
-- .NET Core         2.0         (3.1)
-- .NET Framework    4.6.1       (4.6.1)
-- Mono              5.4
-- Xamarin.iOS       10.14
-- Xamarin.Mac       3.8
-- Xamarin.Android   8.0
-- UWP               10.0.16299
-- Unity             2018.1
-Between parenthesis we give the versions we explicitly ship with the NuGet
-package. For instance, we have full support for .NET Core 2.0-3.0 "indirectly"
-via .NET Standard 2.0, and directly for .NET Core 3.1.
+Explicitly supported standards/platforms, those we ship with the NuGet package.
+- .NET Standard     2.0, 2.1
+- .NET Framework    4.6.1
+We also include support for .NET Standard 1.0 but it is only tested afterwards.
 See https://docs.microsoft.com/en-us/dotnet/standard/net-standard
 or https://dotnet.microsoft.com/platform/dotnet-standard
 

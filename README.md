@@ -13,18 +13,28 @@ Abc.Maybe features an Option type for .NET.
 
 __NuGet package__
 
-The NuGet package targets:
+The NuGet package offers full support for:
 - .NET Standard 2.1.
 - .NET Standard 2.0.
 - .NET Framework 4.6.1.
 
-and offers basic support for .NET Standard 1.0 (_provided as is, untested_).
+and basic support for .NET Standard 1.0, _provided as is_ (we do test it but see
+caveats below).
 
 The public API is not the same for all targets. We currently define two profiles,
 the scheme is rather simple,
 - **Profile 2.0** is for **.NET Standard 2.0** and the legacy systems (.NET
   Framework 4.6.1 and .NET Standard 1.0).
 - **Profile 2.1**, a superset of the profile 2.0, is for **.NET Standard 2.1**.
+
+We primarily run tests against the following targets:
+- .NET Core 3.1.
+- .NET Framework 4.6.1.
+We also check that everything is fine with
+- .NET Core 2.0.
+- .NET Framework 4.5.
+but only after we push a package upstream, and it is not done automatically,
+which means that it may take some time before I discover (and fix) a failing test.
 
 __Objectives/Features__
 
