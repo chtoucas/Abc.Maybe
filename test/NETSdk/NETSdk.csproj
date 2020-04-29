@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!--
-    Prerequesite: .NET Framework Developer Pack or Targeting Pack for all versions...
+    Prerequesite: .NET Framework Developer Pack or Targeting Pack.
     The Targeting Pack should be sufficient.
     https://docs.microsoft.com/en-us/dotnet/framework/install/guide-for-developers
     https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/how-to-determine-which-versions-are-installed

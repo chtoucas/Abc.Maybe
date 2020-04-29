@@ -3,14 +3,14 @@
 <#
 .SYNOPSIS
 Test harness for net(4,5,6,7,8)x and netcoreapp(2,3).x.
-WARNING: the matching SDK must be installed locally.
+Matching .NET Framework Developer Packs or Targeting Packs must be installed locally.
 
 .PARAMETER Framework
 Specify a single framework to be tested.
 
 .PARAMETER Runtime
 The target runtime to test for.
-Ignored when targetting "net45" and "net451".
+Ignored by targets "net45" or "net451".
 
 For instance, runtime can be "win10-x64" or "win10-x86".
 See https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
@@ -23,17 +23,10 @@ Ignored if you answer "no" when asked to confirm to test all platforms.
 .PARAMETER ClassicOnly
 When Max is also specified, only test for .NET Framework.
 Ignored if -Framework is also specified.
-Ignored if you answer "no" when asked to confirm to test all platforms.
 
 .PARAMETER CoreOnly
 When Max is also specified, only test for .NET Core.
 Ignored if -Framework is also specified.
-Ignored if you answer "no" when asked to confirm to test all platforms.
-
-.PARAMETER Silent
-Fail silently if a required .NET SDK Kit is not installed locally.
-Ignored if -Max is also specified and you answer "yes" when asked to confirm to
-test all platforms.
 
 .PARAMETER Yes
 Do not ask for confirmation.
@@ -76,7 +69,6 @@ param(
                  [switch] $Max,
                  [switch] $ClassicOnly,
                  [switch] $CoreOnly,
-                 [switch] $Silent,
     [Alias("y")] [switch] $Yes,
     [Alias("c")] [switch] $Safe,
     [Alias("h")] [switch] $Help
@@ -100,7 +92,6 @@ Usage: pack.ps1 [switches].
     |-Max           test ALL frameworks (SLOW), not just the last major versions.
     |-ClassicOnly   when Max is also specified, only test for .NET Framework.
     |-CoreOnly      when Max is also specified, only test for .NET Core.
-    |-Silent        fail silently if a required .NET SDK Kit is not installed locally.
   -y|-Yes           do not ask for confirmation before running any test harness.
   -s|-Safe          hard clean the solution before anything else.
   -h|-Help          print this help and exit.
@@ -198,9 +189,7 @@ function Invoke-Test {
         [string] $framework,
 
         [Parameter(Mandatory = $false, Position = 1)]
-        [string] $runtime,
-
-        [switch] $Silent
+        [string] $runtime
     )
 
     SAY-LOUD "Testing ($framework)."
@@ -212,16 +201,44 @@ function Invoke-Test {
         $arg = ""
     }
 
-    if ($Silent) {
-        Carp "Will fail silently if a required .NET SDK Kit is not installed locally."
-
-        & dotnet test .\NETSdk\NETSdk.csproj -f $framework $arg /p:__Max=true
-    }
-    else {
-        & dotnet test .\NETSdk\NETSdk.csproj $arg /p:TargetFramework=$framework /p:__Max=true
-    }
+    & dotnet test .\NETSdk\NETSdk.csproj -f $framework $arg /p:__Max=true
+    #& dotnet test .\NETSdk\NETSdk.csproj $arg /p:TargetFramework=$framework /p:__Max=true
 
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting $framework."
+}
+
+# Interactive mode, last major versions only.
+function Invoke-TestMajor {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $false, Position = 0)]
+        [string] $runtime,
+
+        [switch] $ClassicOnly,
+        [switch] $CoreOnly
+    )
+
+    if ($runtime) {
+        $arg = "--runtime:$runtime"
+    }
+    else {
+        $arg = ""
+    }
+
+    if (-not $CoreOnly) {
+        foreach ($fmk in $MajorClassic) {
+            if ($Yes -or (Confirm-Yes "Test harness for ${fmk}?")) {
+                Invoke-Test $fmk -Runtime $runtime
+            }
+        }
+    }
+    if (-not $ClassicOnly) {
+        foreach ($fmk in $MajorCore) {
+            if ($Yes -or (Confirm-Yes "Test harness for ${fmk}?")) {
+                Invoke-Test $fmk -Runtime $runtime
+            }
+        }
+    }
 }
 
 function Invoke-TestAll {
@@ -253,7 +270,12 @@ function Invoke-TestAll {
         /p:__ClassicOnly=$__classicOnly `
         /p:__CoreOnly=$__coreOnly
 
-    Assert-CmdSuccess -ErrMessage "Test task failed."
+    Assert-CmdSuccess -ErrMessage "Test ALL task failed."
+
+    if ($Max -and (-not $CoreOnly)) {
+        Invoke-TestLegacy "net45"
+        Invoke-TestLegacy "net451"
+    }
 }
 
 ################################################################################
@@ -262,6 +284,16 @@ if ($Help) {
     Write-Usage
     exit 0
 }
+
+# Last major versions only
+$MajorClassic = `
+    "net452",
+    "net462",
+    "net472",
+    "net48"
+$MajorCore = `
+    "netcoreapp2.2",
+    "netcoreapp3.1"
 
 try {
     Approve-RepositoryRoot
@@ -278,36 +310,21 @@ try {
         }
     }
 
+    Carp "May fail (MSB3644) if a required .NET SDK Kit is not installed locally."
+
     if ($Framework -eq "*") {
         if ($Yes -or (Confirm-Yes "Test all platforms at once (SLOW)?")) {
-            Carp "Will fail (MSB3644) if a required .NET SDK Kit is not installed locally."
-
             Invoke-TestAll `
                 -Runtime $Runtime `
                 -Max:$Max.IsPresent `
                 -CoreOnly:$CoreOnly.IsPresent `
                 -ClassicOnly:$ClassicOnly.IsPresent
-
-            if ($Max -and (-not $CoreOnly)) {
-                Invoke-TestLegacy "net45"
-                Invoke-TestLegacy "net451"
-            }
         }
         else {
-            # Last major versions only.
-            $frameworks = `
-                "net452",
-                "net462",
-                "net472",
-                "net48",
-                "netcoreapp2.2",
-                "netcoreapp3.1"
-
-            foreach ($fmk in $frameworks) {
-                if ($Yes -or (Confirm-Yes "Test harness for ${fmk}?")) {
-                    Invoke-Test $fmk -Runtime $Runtime -Silent:$Silent.IsPresent
-                }
-            }
+            Invoke-TestMajor `
+                -Runtime $Runtime `
+                -CoreOnly:$CoreOnly.IsPresent `
+                -ClassicOnly:$ClassicOnly.IsPresent
         }
     }
     else {
@@ -318,7 +335,7 @@ try {
             Invoke-TestLegacy "net451"
         }
         else {
-            Invoke-Test $Framework -Runtime $Runtime -Silent:$Silent.IsPresent
+            Invoke-Test $Framework -Runtime $Runtime
         }
     }
 }
