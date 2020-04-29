@@ -1,4 +1,5 @@
-﻿Abc.Linq.Qperators
+﻿#nullable enable
+Abc.Linq.Qperators
 Abc.May
 Abc.May.May() -> void
 Abc.Maybe

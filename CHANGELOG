@@ -8,6 +8,11 @@ Internal Changes
   - .NET Core, version >= 2.0.
   - .NET Framework, version >= 4.5.
 
+Internal Changes
+- Upgraded packages:
+  * Microsoft.CodeAnalysis.FxCopAnalyzers 2.9.8 -> 3.0.0.
+  * Microsoft.CodeAnalysis.PublicApiAnalyzers 2.9.8 -> 3.0.0.
+
 2020-04-27, version 1.0.0-beta4
 -------------------------------
 

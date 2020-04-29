@@ -16,6 +16,7 @@ equality and ordering comparisons.
   * Maybe<Func<>>
   * delegates that return null.
 - Check published packages (upgrade, debugging experience).
+- Add #nullable enable at the top of each PublicAPI.*.txt file.
 
 Multitargeting: target net461/netstandard1.0.
 - We use TargetFrameworkIdentifier ('.NETFramework') and NETFRAMEWORK instead
@@ -23,7 +24,6 @@ Multitargeting: target net461/netstandard1.0.
 - Packaging: net461 -> no full pdb...
   https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives/preprocessor-if
 - https://github.com/dotnet/announcements/issues/31
-- (next) Add #nullable enable at the top of each PublicAPI.*.txt file.
 - code coverage?
 - Build warning NU1701 (should be OK now)
   https://docs.microsoft.com/en-us/dotnet/core/porting/third-party-deps#net-framework-compatibility-mode

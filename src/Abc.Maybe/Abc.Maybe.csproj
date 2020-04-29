@@ -2,6 +2,12 @@
 
   <PropertyGroup>
     <TargetFrameworks>$(MaxApiPlatform);netstandard2.0</TargetFrameworks>
+
+    <!--
+      FIXME: RS0036, RS0037 and RS0041
+      https://github.com/dotnet/roslyn-analyzers/blob/master/src/PublicApiAnalyzers/Microsoft.CodeAnalysis.PublicApiAnalyzers.md
+    -->
+    <NoWarn>$(NoWarn);RS0036</NoWarn>
   </PropertyGroup>
 
   <Import Project="$(EngRoot)$(AssemblyName).props" Condition=" $(Retail) == 'true' " />
@@ -28,7 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="2.9.8">
+    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
