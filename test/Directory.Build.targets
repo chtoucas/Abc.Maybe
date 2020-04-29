@@ -42,9 +42,8 @@
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0" Condition=" $(HashCodeShim) != 'true' " />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
-  <!-- xunit.runner.console is for .NET Framework 4.5/4.5.1; otherwise we use xunit.runner.visualstudio. -->
-    <PackageReference Include="xunit.runner.console">
-      <Version>2.4.1</Version>
+    <!-- xunit.runner.console is for .NET Framework 4.5/4.5.1; otherwise we use xunit.runner.visualstudio. -->
+    <PackageReference Include="xunit.runner.console" Version="2.4.1">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

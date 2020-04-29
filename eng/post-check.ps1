@@ -201,8 +201,8 @@ function Invoke-Test {
         $arg = ""
     }
 
-    & dotnet test .\NETSdk\NETSdk.csproj -f $framework $arg /p:__Max=true
-    #& dotnet test .\NETSdk\NETSdk.csproj $arg /p:TargetFramework=$framework /p:__Max=true
+    & dotnet test .\NETSdk\NETSdk.csproj -f $framework $arg /p:__Max=true --nologo
+    #& dotnet test .\NETSdk\NETSdk.csproj $arg /p:TargetFramework=$framework /p:__Max=true --nologo
 
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting $framework."
 }
@@ -265,7 +265,7 @@ function Invoke-TestAll {
     if ($ClassicOnly) { $__classicOnly = "true" } else { $__classicOnly = "false" }
     if ($CoreOnly) { $__coreOnly = "true" } else { $__coreOnly = "false" }
 
-    & dotnet test .\NETSdk\NETSdk.csproj $arg `
+    & dotnet test .\NETSdk\NETSdk.csproj --nologo $arg `
         /p:__Max=$__max `
         /p:__ClassicOnly=$__classicOnly `
         /p:__CoreOnly=$__coreOnly

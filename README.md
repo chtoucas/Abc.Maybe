@@ -36,7 +36,7 @@ We also check that everything is fine with
 - .NET Core, all versions from 2.0 to 3.0.
 - .NET Framework, all versions from 4.5 to 4.8.
 
-but only after we push a package upstream, and it is not done automatically,
+but only after we push a new package upstream, and it is not done automatically,
 which means that it may take some time before I discover (and fix) a failing test.
 
 ## Objectives/Features
