@@ -2,6 +2,8 @@
 
   <!--
     Unlisted SDKs: net47, net471 and net48.
+    https://docs.microsoft.com/en-us/dotnet/framework/install/guide-for-developers
+    https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/how-to-determine-which-versions-are-installed
     https://docs.microsoft.com/en-us/dotnet/standard/net-standard
     https://dotnet.microsoft.com/platform/dotnet-standard
   -->
