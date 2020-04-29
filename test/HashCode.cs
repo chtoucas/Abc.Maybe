@@ -1,4 +1,4 @@
-﻿// See LICENSE.txt in the project root for license information.
+﻿// See LICENSE in the project root for license information.
 
 using System;
 using System.Diagnostics.Contracts;

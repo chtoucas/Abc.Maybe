@@ -9,23 +9,18 @@
     <Product>Abécédaire Library</Product>
     <Copyright>Copyright (c) 2019 Narvalo.Org</Copyright>
 
+    <Configuration>Release</Configuration>
     <RootNamespace>Abc</RootNamespace>
     <LangVersion>latest</LangVersion>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DebugType>none</DebugType>
 
     <DefineConstants>$(DefineConstants);TRACE;CONTRACTS_FULL</DefineConstants>
 
     <VersionPrefix>1.0.0</VersionPrefix>
     <VersionSuffix>DUMMY</VersionSuffix>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" $(Configuration) == 'Debug' ">
-    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <TreatSpecificWarningsAsErrors />
   </PropertyGroup>
 
 </Project>

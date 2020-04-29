@@ -33,8 +33,8 @@ We primarily run tests against the following targets:
 - .NET Framework 4.6.1.
 
 We also check that everything is fine with
-- .NET Core 2.0-3.0.
-- .NET Framework 4.5-4.6.2 / 4.7.2.
+- .NET Core, all versions from 2.0 to 3.0.
+- .NET Framework, all versions from 4.5 to 4.6.2, and 4.7.2.
 
 but only after we push a package upstream, and it is not done automatically,
 which means that it may take some time before I discover (and fix) a failing test.

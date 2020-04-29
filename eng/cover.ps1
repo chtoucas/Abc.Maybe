@@ -44,8 +44,8 @@ Run OpenCover, do NOT build human-readable reports and badges.
 [CmdletBinding()]
 param(
     [Alias("x")] [switch] $OpenCover,
-    [switch] $NoReport,
-    [switch] $ReportOnly,
+                 [switch] $NoReport,
+                 [switch] $ReportOnly,
     [Alias("h")] [switch] $Help
 )
 

@@ -13,7 +13,7 @@
     <HideInternals>true</HideInternals>
 
     <!--
-      Valid values for DebugType are "full," "pdbonly," "portable", "embedded", and "none."
+      Valid values for DebugType are "full," "pdbonly," "portable", "embedded", and "none".
       See https://docs.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-properties?view=vs-2019
     -->
     <!--

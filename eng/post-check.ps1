@@ -55,8 +55,6 @@ $ErrorActionPreference = "Stop"
 
 . (Join-Path $PSScriptRoot "abc.ps1")
 
-New-Variable -Name "CONFIGURATION" -Value "Release" -Scope Script -Option Constant
-
 ################################################################################
 
 function Write-Usage {
@@ -65,7 +63,7 @@ function Write-Usage {
 Test harness for Abc.Maybe
 
 Usage: pack.ps1 [switches].
-  -t|-Target   specify a single platform to be tested.
+  -t|-Target   specify a single target to be tested.
     |-Max      test ALL frameworks (SLOW), not just the last major versions.
   -y|-Yes      do not ask for confirmation before running any test harness.
   -s|-Safe     hard clean the solution before anything else.
@@ -128,48 +126,43 @@ function Find-XunitRunner {
     $exe
 }
 
-function Invoke-TestNET45 {
-    SAY-LOUD "Testing (net45)."
-
-    $vswhere = Find-VsWhere
-    $msbuild = Find-MSBuild $vswhere
-    $xunit   = Find-XunitRunner
-
-    # https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2019
-    & $msbuild .\NET45\NET45.csproj -v:minimal /t:"Restore;Build" -property:Configuration=$CONFIGURATION
-    Assert-CmdSuccess -ErrMessage "Build task failed when targeting net45."
-
-    & $xunit .\NET45\bin\$CONFIGURATION\NET45.dll
-    Assert-CmdSuccess -ErrMessage "Test task failed when targeting net45."
-}
-
-function Invoke-TestNET451 {
-    SAY-LOUD "Testing (net451)."
-
-    $vswhere = Find-VsWhere
-    $msbuild = Find-MSBuild $vswhere
-    $xunit   = Find-XunitRunner
-
-    # https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2019
-    & $msbuild .\NET451\NET451.csproj -v:minimal /t:"Restore;Build" -property:Configuration=$CONFIGURATION
-    Assert-CmdSuccess -ErrMessage "Build task failed when targeting net451."
-
-    & $xunit .\NET451\bin\$CONFIGURATION\NET451.dll
-    Assert-CmdSuccess -ErrMessage "Test task failed when targeting net451."
-}
-
 ################################################################################
 
-function Invoke-Test {
+function Invoke-TestLegacy {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateNotNullOrEmpty()]
         [string] $framework
     )
 
     SAY-LOUD "Testing ($framework)."
 
-    & dotnet test .\NETSdk\NETSdk.csproj -c $CONFIGURATION -f $framework /p:__Max=true
+    $vswhere = Find-VsWhere
+    $msbuild = Find-MSBuild $vswhere
+    $xunit   = Find-XunitRunner
+
+    $proj = $framework.ToUpper()
+
+    # https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2019
+    & $msbuild .\$proj\$proj.csproj -v:minimal /t:"Restore;Build"
+    Assert-CmdSuccess -ErrMessage "Build task failed when targeting $framework."
+
+    & $xunit .\$proj\bin\Release\$proj.dll
+    Assert-CmdSuccess -ErrMessage "Test task failed when targeting $framework."
+}
+
+function Invoke-Test {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [string] $framework
+    )
+
+    SAY-LOUD "Testing ($framework)."
+
+    & dotnet test .\NETSdk\NETSdk.csproj -f $framework /p:__Max=true
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting $framework."
 }
 
@@ -182,10 +175,10 @@ function Invoke-TestAll {
     SAY-LOUD "Testing for all platforms."
 
     if ($Max) {
-        & dotnet test .\NETSdk\NETSdk.csproj -c $CONFIGURATION /p:__Max=true
+        & dotnet test .\NETSdk\NETSdk.csproj /p:__Max=true
     }
     else {
-        & dotnet test .\NETSdk\NETSdk.csproj -c $CONFIGURATION
+        & dotnet test .\NETSdk\NETSdk.csproj
     }
 
     Assert-CmdSuccess -ErrMessage "Test task failed."
@@ -217,12 +210,12 @@ try {
         if ($Yes -or (Confirm-Yes "Test all platforms at once (SLOW)?")) {
             Carp "May fail if the matching SDK is not installed locally."
             if ($Max) {
-                Carp "Targets currently disabled (because I don't have them): net47, net471 and net48."
+                Carp "Targets currently disabled (I didn't install them): net47, net471 and net48."
             }
             Invoke-TestAll -Max:$Max.IsPresent
             if ($Max) {
-                Invoke-TestNET45
-                Invoke-TestNET451
+                Invoke-TestLegacy "net45"
+                Invoke-TestLegacy "net451"
             }
         }
         else {
@@ -243,10 +236,10 @@ try {
     }
     else {
         if ($Target -eq "net45") {
-            Invoke-TestNET45
+            Invoke-TestLegacy "net45"
         }
         elseif ($Target -eq "net451") {
-            Invoke-TestNET451
+            Invoke-TestLegacy "net451"
         }
         else {
             Invoke-Test $Target
