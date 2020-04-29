@@ -1,19 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <!-- Missing SDKs: net47, net471 and net48 -->
+  <!--
+    Unlisted SDKs: net47, net471 and net48.
+    https://docs.microsoft.com/en-us/dotnet/standard/net-standard
+    https://dotnet.microsoft.com/platform/dotnet-standard
+  -->
 
   <PropertyGroup Condition=" $(__Max) == 'true' ">
-    <__NETFrameworks>net452;net46;net461;net462;net472</__NETFrameworks>
-    <__NETCoreApps>netcoreapp2.0;netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netcoreapp3.1</__NETCoreApps>
+    <__NETClassics Condition=" $(__CoreOnly) != 'true' ">net452;net46;net461;net462;net472</__NETClassics>
+    <__NETCoreApps Condition=" $(__ClassicOnly) != 'true' ">netcoreapp2.0;netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netcoreapp3.1</__NETCoreApps>
   </PropertyGroup>
 
   <PropertyGroup Condition=" $(__Max) != 'true' ">
-    <__NETFrameworks>net452;net462;net472</__NETFrameworks>
-    <__NETCoreApps>netcoreapp2.2;netcoreapp3.1</__NETCoreApps>
+    <__NETClassics Condition=" $(__CoreOnly) != 'true' ">net452;net462;net472</__NETClassics>
+    <__NETCoreApps Condition=" $(__ClassicOnly) != 'true' ">netcoreapp2.2;netcoreapp3.1</__NETCoreApps>
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFrameworks>$(__NETFrameworks);$(__NETCoreApps)</TargetFrameworks>
+    <TargetFrameworks>$(__NETClassics);$(__NETCoreApps)</TargetFrameworks>
   </PropertyGroup>
 
 </Project>

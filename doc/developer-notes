@@ -131,13 +131,8 @@ We only handle two special cases:
       The result is null w/ .NET Standard or .NET Core.
     - DateTime parsing.
 
-Explicitly supported standards/platforms, those we ship with the NuGet package.
-- .NET Standard     2.0, 2.1
-- .NET Framework    4.6.1
-We also include support for .NET Standard 1.0 but it is only tested afterwards.
-See https://docs.microsoft.com/en-us/dotnet/standard/net-standard
-or https://dotnet.microsoft.com/platform/dotnet-standard
-
+https://docs.microsoft.com/en-us/dotnet/standard/net-standard
+https://dotnet.microsoft.com/platform/dotnet-standard
 https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/cross-platform-targeting
 
 Development
