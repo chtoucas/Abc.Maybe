@@ -1,20 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!--
-    Unlisted SDKs: net47, net471 and net48.
+    Prerequesite: .NET Framework Developer Pack or Targeting Pack for all versions...
+    The Targeting Pack should be sufficient.
     https://docs.microsoft.com/en-us/dotnet/framework/install/guide-for-developers
     https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/how-to-determine-which-versions-are-installed
-    https://docs.microsoft.com/en-us/dotnet/standard/net-standard
-    https://dotnet.microsoft.com/platform/dotnet-standard
   -->
 
   <PropertyGroup Condition=" $(__Max) == 'true' ">
-    <__NETClassicTargets Condition=" $(__CoreOnly) != 'true' ">net452;net46;net461;net462;net472</__NETClassicTargets>
+    <__NETClassicTargets Condition=" $(__CoreOnly) != 'true' ">net452;net46;net461;net462;net47;net471;net472;net48</__NETClassicTargets>
     <__NETCoreTargets Condition=" $(__ClassicOnly) != 'true' ">netcoreapp2.0;netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netcoreapp3.1</__NETCoreTargets>
   </PropertyGroup>
 
   <PropertyGroup Condition=" $(__Max) != 'true' ">
-    <__NETClassicTargets Condition=" $(__CoreOnly) != 'true' ">net452;net462;net472</__NETClassicTargets>
+    <__NETClassicTargets Condition=" $(__CoreOnly) != 'true' ">net452;net462;net472;net48</__NETClassicTargets>
     <__NETCoreTargets Condition=" $(__ClassicOnly) != 'true' ">netcoreapp2.2;netcoreapp3.1</__NETCoreTargets>
   </PropertyGroup>
 

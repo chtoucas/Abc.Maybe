@@ -11,17 +11,22 @@ Specify a single platform to be tested.
 .PARAMETER Max
 Test ALL frameworks (SLOW), not just the last major versions.
 Ignored if -Target is also specified.
-Ignored if you answer "no" when asked to confirm.
+Ignored if you answer "no" when asked to confirm to test all platforms.
 
 .PARAMETER ClassicOnly
 When Max is also specified, only test for .NET Framework.
 Ignored if -Target is also specified.
-Ignored if you answer "no" when asked to confirm.
+Ignored if you answer "no" when asked to confirm to test all platforms.
 
 .PARAMETER CoreOnly
 When Max is also specified, only test for .NET Core.
 Ignored if -Target is also specified.
-Ignored if you answer "no" when asked to confirm.
+Ignored if you answer "no" when asked to confirm to test all platforms.
+
+.PARAMETER Silent
+Fail silently if a required .NET SDK Kit is not installed locally.
+Ignored if -Max is also specified and you answer "yes" when asked to confirm to
+test all platforms.
 
 .PARAMETER Yes
 Do not ask for confirmation.
@@ -42,8 +47,8 @@ PS>post-check.ps1 net452
 Test harness for a specific version (-t is not mandatory).
 
 .EXAMPLE
-PS>post-check.ps1
-Test harness for ALL major versions.
+PS>post-check.ps1 -y
+Test harness for ALL major versions; do NOT ask for confirmation.
 
 .EXAMPLE
 PS>post-check.ps1 -Max
@@ -61,6 +66,7 @@ param(
                  [switch] $Max,
                  [switch] $ClassicOnly,
                  [switch] $CoreOnly,
+                 [switch] $Silent,
     [Alias("y")] [switch] $Yes,
     [Alias("c")] [switch] $Safe,
     [Alias("h")] [switch] $Help
@@ -83,6 +89,7 @@ Usage: pack.ps1 [switches].
     |-Max           test ALL frameworks (SLOW), not just the last major versions.
     |-ClassicOnly   when Max is also specified, only test for .NET Framework.
     |-CoreOnly      when Max is also specified, only test for .NET Core.
+    |-Silent        fail silently if a required .NET SDK Kit is not installed locally.
   -y|-Yes           do not ask for confirmation before running any test harness.
   -s|-Safe          hard clean the solution before anything else.
   -h|-Help          print this help and exit.
@@ -146,35 +153,6 @@ function Find-XunitRunner {
     $exe
 }
 
-# Minimum version.
-# .NET Framework 4.5 	  378389
-# .NET Framework 4.5.1 	378675
-# .NET Framework 4.5.2 	379893
-# .NET Framework 4.6 	  393295
-# .NET Framework 4.6.1 	394254
-# .NET Framework 4.6.2 	394802
-# .NET Framework 4.7 	  460798
-# .NET Framework 4.7.1 	461308
-# .NET Framework 4.7.2 	461808
-# .NET Framework 4.8 	  528040
-# (Get-ItemProperty "HKLM:SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full").Release -ge 394802
-# https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/how-to-determine-which-versions-are-installed
-function Find-LatestVisualStudio {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
-        [string] $vswhere
-    )
-
-    $path = & $vswhere -latest -property installationPath
-
-    if (-not $path) {
-        Croak "Could not find Visual Studio."
-    }
-
-    $path
-}
-
 ################################################################################
 
 function Invoke-TestLegacy {
@@ -206,12 +184,21 @@ function Invoke-Test {
     param(
         [Parameter(Mandatory = $true, Position = 0)]
         [ValidateNotNullOrEmpty()]
-        [string] $framework
+        [string] $framework,
+        [switch] $Silent
     )
 
     SAY-LOUD "Testing ($framework)."
 
-    & dotnet test .\NETSdk\NETSdk.csproj -f $framework /p:__Max=true
+    if ($Silent) {
+        Carp "Will fail silently if a required .NET SDK Kit is not installed locally."
+
+        & dotnet test .\NETSdk\NETSdk.csproj -f $framework /p:__Max=true
+    }
+    else {
+        & dotnet test .\NETSdk\NETSdk.csproj /p:TargetFramework=$framework /p:__Max=true
+    }
+
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting $framework."
 }
 
@@ -263,10 +250,6 @@ try {
         if ($Yes -or (Confirm-Yes "Test all platforms at once (SLOW)?")) {
             Carp "Will fail (MSB3644) if a required .NET SDK Kit is not installed locally."
 
-            if ($Max -and (-not $CoreOnly)) {
-                Carp "Targets currently disabled (I didn't install them): net47, net471 and net48."
-            }
-
             Invoke-TestAll `
                 -Max:$Max.IsPresent `
                 -CoreOnly:$CoreOnly.IsPresent `
@@ -278,26 +261,23 @@ try {
             }
         }
         else {
-            Carp "Will fail silently if a required .NET SDK is not installed locally."
-
             # Last major versions only.
             $frameworks = `
                 "net452",
                 "net462",
                 "net472",
+                "net48",
                 "netcoreapp2.2",
                 "netcoreapp3.1"
 
             foreach ($framework in $frameworks) {
                 if ($Yes -or (Confirm-Yes "Test harness for ${framework}?")) {
-                    Invoke-Test $framework
+                    Invoke-Test $framework -Silent:$Silent.IsPresent
                 }
             }
         }
     }
     else {
-        Carp "Will fail silently if a required .NET SDK is not installed locally."
-
         if ($Target -eq "net45") {
             Invoke-TestLegacy "net45"
         }
@@ -305,7 +285,7 @@ try {
             Invoke-TestLegacy "net451"
         }
         else {
-            Invoke-Test $Target
+            Invoke-Test $Target -Silent:$Silent.IsPresent
         }
     }
 }
