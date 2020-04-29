@@ -27,9 +27,8 @@
     <Compile Include="$(SourceRoot)Abc.Tests\**\*.cs" Exclude="$(FilesToExclude)" />
   </ItemGroup>
 
-  <!-- Shims for legacy platforms -->
+  <!-- HashCode shims for legacy platforms -->
   <ItemGroup Condition=" $(TargetFramework.StartsWith('netcoreapp2.')) ">
-    <Compile Include="$(MSBuildThisFileDirectory)NullableAttribute.cs" />
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0" />
   </ItemGroup>
   <ItemGroup Condition=" $(TargetFramework.StartsWith('net4')) ">
