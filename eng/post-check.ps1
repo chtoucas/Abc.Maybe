@@ -203,7 +203,6 @@ function Invoke-Test {
     }
 
     & dotnet test .\NETSdk\NETSdk.csproj -f $framework $arg /p:__Max=true --nologo -v q
-    #& dotnet test .\NETSdk\NETSdk.csproj $arg /p:TargetFramework=$framework /p:__Max=true --nologo -v q
 
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting $framework."
 }

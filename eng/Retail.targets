@@ -28,8 +28,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <!-- The default AssemblyTitle uses AssemblyName, I prefer Title -->
-    <AssemblyTitle>$(Title)</AssemblyTitle>
+    <!-- NB: the default AssemblyTitle uses AssemblyName not Title -->
     <Description>$(Title) Built [$([System.DateTime]::UtcNow.ToString("r"))].</Description>
   </PropertyGroup>
 
