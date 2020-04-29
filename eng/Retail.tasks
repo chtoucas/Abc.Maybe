@@ -44,9 +44,8 @@
       <RevisionNumber ParameterType="System.UInt16" Output="true" />
     </ParameterGroup>
     <Task>
-      <Using Namespace="System"/>
-      <Code Type="Fragment" Language="cs">
-        <![CDATA[
+      <Using Namespace="System" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
 var start = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
 var now = DateTime.UtcNow;
@@ -59,9 +58,35 @@ var seconds = (now - mid).TotalSeconds;
 
 BuildNumber = (ushort)(halfDays - 1);
 RevisionNumber = (ushort)seconds;
-        ]]>
-      </Code>
+      ]]></Code>
     </Task>
   </UsingTask>
+
+  <UsingTask TaskName="GenerateBuildStamp"
+             TaskFactory="RoslynCodeTaskFactory"
+             AssemblyFile="$(CodeTaskFactoryAssemblyFile)">
+    <ParameterGroup>
+      <BuildNumber ParameterType="System.UInt16" Output="false" />
+      <RevisionNumber ParameterType="System.UInt16" Output="false" />
+      <BuildStamp ParameterType="System.String" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.Globalization" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+// BuildNumber + "0...0" + RevisionNumber.
+var stamp = BuildNumber.ToString(CultureInfo.InvariantCulture);
+
+var revisionString = RevisionNumber.ToString(CultureInfo.InvariantCulture);
+
+for (int i = 0; i < 5 - revisionString.Length; i++) { stamp += "0"; }
+
+stamp += revisionString;
+
+BuildStamp = stamp;
+      ]]></Code>
+    </Task>
+  </UsingTask>
+
 
 </Project>
