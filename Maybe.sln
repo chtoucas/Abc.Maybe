@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D158B7E6-CFF
 	ProjectSection(SolutionItems) = preProject
 		src\Directory.Build.props = src\Directory.Build.props
 		src\Directory.Build.targets = src\Directory.Build.targets
+		src\MissingAttributes.cs = src\MissingAttributes.cs
+		src\NullableAttributes.cs = src\NullableAttributes.cs
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eng", "eng", "{6D957FE8-23D0-4985-A91C-F1CC399AA453}"
@@ -45,7 +47,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{73C72FF8-F
 		test\AssemblyInfo.cs = test\AssemblyInfo.cs
 		test\Directory.Build.props = test\Directory.Build.props
 		test\Directory.Build.targets = test\Directory.Build.targets
-		test\HashCode.cs = test\HashCode.cs
+		test\HashCode.Shim.cs = test\HashCode.Shim.cs
 		test\NET45\NET45.csproj = test\NET45\NET45.csproj
 		test\NET451\NET451.csproj = test\NET451\NET451.csproj
 		test\NETSdk\NETSdk.csproj = test\NETSdk\NETSdk.csproj

@@ -1,6 +1,7 @@
 <Project>
 
   <PropertyGroup>
+    <SourceRoot>$(MSBuildThisFileDirectory)</SourceRoot>
     <EngRoot>$(MSBuildThisFileDirectory)..\eng\</EngRoot>
 
     <AssemblyOriginatorKeyFile>$(EngRoot)Abc.snk</AssemblyOriginatorKeyFile>

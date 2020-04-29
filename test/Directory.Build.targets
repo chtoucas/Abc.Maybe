@@ -22,21 +22,22 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
+    <Compile Include="$(SourceRoot)NullableAttributes.cs" />
     <Compile Include="$(SourceRoot)Abc.Sketches\**\*.cs" Exclude="$(FilesToExclude)" />
     <Compile Include="$(SourceRoot)Abc.Testing\**\*.cs" Exclude="$(FilesToExclude)" />
     <Compile Include="$(SourceRoot)Abc.Tests\**\*.cs" Exclude="$(FilesToExclude)" />
   </ItemGroup>
 
-  <!-- HashCode shim for legacy platforms -->
+  <!-- System.HashCode shim for legacy platforms -->
   <PropertyGroup>
     <HashCodeShim Condition=" $(TargetFramework.StartsWith('net45')) ">true</HashCodeShim>
     <HashCodeShim Condition=" $(TargetFramework) == 'net46' ">true</HashCodeShim>
   </PropertyGroup>
   <ItemGroup Condition=" $(HashCodeShim) == 'true' ">
-    <Compile Include="$(MSBuildThisFileDirectory)HashCode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HashCode.Shim.cs" />
   </ItemGroup>
 
-  <!-- Core dependencies -->
+  <!-- Dependencies -->
   <ItemGroup>
     <PackageReference Include="Abc.Maybe" Version="1.0.0-beta4" />
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0" Condition=" $(HashCodeShim) != 'true' " />
