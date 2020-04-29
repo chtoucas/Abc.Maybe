@@ -3,6 +3,8 @@
   <!--
     Prerequesite: .NET Framework Developer Pack or Targeting Pack.
     The Targeting Pack should be sufficient.
+    A very simple way to see what works and what does not,
+    just compile this project with /p:__Max=true.
     https://docs.microsoft.com/en-us/dotnet/framework/install/guide-for-developers
     https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/how-to-determine-which-versions-are-installed
   -->
