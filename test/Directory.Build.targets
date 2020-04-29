@@ -1,10 +1,15 @@
 <Project>
 
+  <!-- Old style project file, we must manually set a few things -->
   <PropertyGroup Condition=" $(AssemblyName) == 'NET45' ">
-    <!-- Old style project file, we must manually set a few things -->
     <TargetFramework>net45</TargetFramework>
     <DefineConstants>$(DefineConstants);NETFRAMEWORK;$(AssemblyName)</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition=" $(AssemblyName) == 'NET451' ">
+    <TargetFramework>net451</TargetFramework>
+    <DefineConstants>$(DefineConstants);NETFRAMEWORK;$(AssemblyName)</DefineConstants>
+  </PropertyGroup>
+
   <PropertyGroup Condition=" $(TargetFramework.StartsWith('netcoreapp2.')) ">
     <DefineConstants>$(DefineConstants);NETCOREAPP2_x</DefineConstants>
   </PropertyGroup>
@@ -41,15 +46,15 @@
 
   <!--
     We can use xunit.runner.visualstudio for .NET Core 1.0+ and .NET Framework 4.5.2+,
-    but for .NET Framework 4.5 (and 4.5.1) we must revert to xunit.runner.console.
+    but for .NET Framework 4.5/4.5.1 we must revert to xunit.runner.console.
   -->
-  <ItemGroup Condition=" $(TargetFramework) != 'net45' ">
+  <ItemGroup Condition=" $(TargetFramework) != 'net45' and $(TargetFramework) != 'net451' ">
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup Condition=" $(TargetFramework) == 'net45' ">
+  <ItemGroup Condition=" $(TargetFramework) == 'net45' or $(TargetFramework) == 'net451' ">
     <PackageReference Include="xunit.runner.console">
       <Version>2.4.1</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

@@ -74,6 +74,12 @@ Usage: pack.ps1 [switches].
 "@
 }
 
+################################################################################
+
+# .NET Framework 4.5/4.5.1 must be handled separately.
+# Since it's no longer officialy supported by Microsoft, we can remove them
+# if it ever becomes too much of a burden.
+
 function Find-VsWhere {
     Write-Verbose "Finding the vswhere command."
 
@@ -122,9 +128,6 @@ function Find-XunitRunner {
     $exe
 }
 
-# .NET Framework 4.5 must handled separately.
-# Since it's no longer officialy supported by Microsoft, we can remove it
-# if it ever becomes too much of a burden.
 function Invoke-TestNET45 {
     SAY-LOUD "Testing (net45)."
 
@@ -139,6 +142,23 @@ function Invoke-TestNET45 {
     & $xunit .\NET45\bin\$CONFIGURATION\NET45.dll
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting net45."
 }
+
+function Invoke-TestNET451 {
+    SAY-LOUD "Testing (net451)."
+
+    $vswhere = Find-VsWhere
+    $msbuild = Find-MSBuild $vswhere
+    $xunit   = Find-XunitRunner
+
+    # https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2019
+    & $msbuild .\NET451\NET451.csproj -v:minimal /t:"Restore;Build" -property:Configuration=$CONFIGURATION
+    Assert-CmdSuccess -ErrMessage "Build task failed when targeting net451."
+
+    & $xunit .\NET451\bin\$CONFIGURATION\NET451.dll
+    Assert-CmdSuccess -ErrMessage "Test task failed when targeting net451."
+}
+
+################################################################################
 
 function Invoke-Test {
     [CmdletBinding()]
@@ -181,13 +201,15 @@ if ($Help) {
 try {
     Approve-RepositoryRoot
 
-    pushd (Join-Path $ROOT_DIR "test")
+    $testdir = Join-Path $ROOT_DIR "test" -Resolve
+
+    pushd $testdir
 
     if ($Safe) {
         if (Confirm-Yes "Hard clean?") {
             Say "  Deleting 'bin' and 'obj' directories."
 
-            Remove-BinAndObj $SRC_DIR
+            Remove-BinAndObj $testdir
         }
     }
 
@@ -200,6 +222,7 @@ try {
             Invoke-TestAll -Max:$Max.IsPresent
             if ($Max) {
                 Invoke-TestNET45
+                Invoke-TestNET451
             }
         }
         else {
@@ -221,6 +244,9 @@ try {
     else {
         if ($Target -eq "net45") {
             Invoke-TestNET45
+        }
+        elseif ($Target -eq "net451") {
+            Invoke-TestNET451
         }
         else {
             Invoke-Test $Target

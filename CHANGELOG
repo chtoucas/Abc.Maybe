@@ -5,8 +5,8 @@ vNEXT
 
 Internal Changes
 - Enable (postponed) testing with
-  - .NET Core all versions >= 2.0.
-  - .NET Framework versions 4.5 and >= 4.5.2.
+  - .NET Core, version >= 2.0.
+  - .NET Framework, version >= 4.5.
 
 2020-04-27, version 1.0.0-beta4
 -------------------------------
