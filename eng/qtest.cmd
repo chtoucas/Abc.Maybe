@@ -6,6 +6,9 @@
 :: - Test for the default target.
 :: - Test for net461
 :: > qtest /p:TargetFramework=net461
+:: but we CANNOT write:
+:: > qtest -f net461
+:: because net461 is not listed in the supported framework within the project file.
 ::
 :: Examples:
 :: > qtest --no-restore

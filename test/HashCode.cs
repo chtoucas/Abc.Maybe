@@ -4,8 +4,7 @@ using System;
 using System.Diagnostics.Contracts;
 
 /// <summary>
-/// Provides helper methods to combine hash codes.
-/// <para>This class cannot be inherited.</para>
+/// Shim for System.HashCode.
 /// </summary>
 internal static class HashCode
 {
@@ -52,8 +51,4 @@ internal static class HashCode
         => Combine(
             Combine(value1.GetHashCode(), value2.GetHashCode()),
             Combine(value3.GetHashCode(), value4.GetHashCode()));
-
-    [Pure]
-    public static int Combine<TEnum>(int h, TEnum value) where TEnum : Enum
-        => Combine(h, value.GetHashCode());
 }
