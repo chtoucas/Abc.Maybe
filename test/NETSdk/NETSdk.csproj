@@ -7,17 +7,17 @@
   -->
 
   <PropertyGroup Condition=" $(__Max) == 'true' ">
-    <__NETClassics Condition=" $(__CoreOnly) != 'true' ">net452;net46;net461;net462;net472</__NETClassics>
-    <__NETCoreApps Condition=" $(__ClassicOnly) != 'true' ">netcoreapp2.0;netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netcoreapp3.1</__NETCoreApps>
+    <__NETClassicTargets Condition=" $(__CoreOnly) != 'true' ">net452;net46;net461;net462;net472</__NETClassicTargets>
+    <__NETCoreTargets Condition=" $(__ClassicOnly) != 'true' ">netcoreapp2.0;netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netcoreapp3.1</__NETCoreTargets>
   </PropertyGroup>
 
   <PropertyGroup Condition=" $(__Max) != 'true' ">
-    <__NETClassics Condition=" $(__CoreOnly) != 'true' ">net452;net462;net472</__NETClassics>
-    <__NETCoreApps Condition=" $(__ClassicOnly) != 'true' ">netcoreapp2.2;netcoreapp3.1</__NETCoreApps>
+    <__NETClassicTargets Condition=" $(__CoreOnly) != 'true' ">net452;net462;net472</__NETClassicTargets>
+    <__NETCoreTargets Condition=" $(__ClassicOnly) != 'true' ">netcoreapp2.2;netcoreapp3.1</__NETCoreTargets>
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFrameworks>$(__NETClassics);$(__NETCoreApps)</TargetFrameworks>
+    <TargetFrameworks>$(__NETClassicTargets);$(__NETCoreTargets)</TargetFrameworks>
   </PropertyGroup>
 
 </Project>

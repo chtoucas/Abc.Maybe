@@ -261,7 +261,7 @@ try {
 
     if ($Target -eq "*") {
         if ($Yes -or (Confirm-Yes "Test all platforms at once (SLOW)?")) {
-            Carp "Will fail if a required .NET SDK is not installed locally."
+            Carp "Will fail (MSB3644) if a required .NET SDK is not installed locally."
 
             if ($Max -and (-not $CoreOnly)) {
                 Carp "Targets currently disabled (I didn't install them): net47, net471 and net48."
@@ -284,7 +284,6 @@ try {
             $frameworks = `
                 "net452",
                 "net462",
-                "net47",
                 "net472",
                 "netcoreapp2.2",
                 "netcoreapp3.1"
