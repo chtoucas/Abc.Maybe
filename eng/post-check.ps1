@@ -303,9 +303,9 @@ try {
                 "netcoreapp2.2",
                 "netcoreapp3.1"
 
-            foreach ($framework in $frameworks) {
-                if ($Yes -or (Confirm-Yes "Test harness for ${framework}?")) {
-                    Invoke-Test $framework -Silent:$Silent.IsPresent -Runtime $Runtime
+            foreach ($fmk in $frameworks) {
+                if ($Yes -or (Confirm-Yes "Test harness for ${fmk}?")) {
+                    Invoke-Test $fmk -Runtime $Runtime -Silent:$Silent.IsPresent
                 }
             }
         }

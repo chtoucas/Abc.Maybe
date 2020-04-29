@@ -1,0 +1,7 @@
+See eng\post-check.ps1.
+
+Of course, one can still use the dotnet command-line directly:
+> dotnet build NETSdk
+> dotnet test NETSdk -f net48
+
+Beware, it won't work with the projects NET45 and NET451.
