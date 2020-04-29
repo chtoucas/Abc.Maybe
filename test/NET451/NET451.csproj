@@ -7,8 +7,6 @@
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
 
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <Platform>AnyCPU</Platform>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <Optimize>true</Optimize>

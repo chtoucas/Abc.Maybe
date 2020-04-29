@@ -5,22 +5,29 @@
 Test harness for net(4,5,6,7,8)x and netcoreapp(2,3).x.
 WARNING: the matching SDK must be installed locally.
 
-.PARAMETER Target
-Specify a single platform to be tested.
+.PARAMETER Framework
+Specify a single framework to be tested.
+
+.PARAMETER Runtime
+The target runtime to test for.
+Ignored when targetting "net45" and "net451".
+
+For instance, runtime can be "win10-x64" or "win10-x86".
+See https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
 
 .PARAMETER Max
 Test ALL frameworks (SLOW), not just the last major versions.
-Ignored if -Target is also specified.
+Ignored if -Framework is also specified.
 Ignored if you answer "no" when asked to confirm to test all platforms.
 
 .PARAMETER ClassicOnly
 When Max is also specified, only test for .NET Framework.
-Ignored if -Target is also specified.
+Ignored if -Framework is also specified.
 Ignored if you answer "no" when asked to confirm to test all platforms.
 
 .PARAMETER CoreOnly
 When Max is also specified, only test for .NET Core.
-Ignored if -Target is also specified.
+Ignored if -Framework is also specified.
 Ignored if you answer "no" when asked to confirm to test all platforms.
 
 .PARAMETER Silent
@@ -39,12 +46,12 @@ build. Now, it's no longer a problem (we explicitely exclude 'bin' and 'obj' in
 Directory.Build.targets), but we never know.
 
 .EXAMPLE
-PS>post-check.ps1 -t netcoreapp2.2
+PS>post-check.ps1 -Framework netcoreapp2.2
 Test harness for a specific version.
 
 .EXAMPLE
 PS>post-check.ps1 net452
-Test harness for a specific version (-t is not mandatory).
+Test harness for a specific version (-Framework is not mandatory).
 
 .EXAMPLE
 PS>post-check.ps1 -y
@@ -61,7 +68,10 @@ Test harness for ALL .NET Framework versions, minor ones too.
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $false, Position = 0)]
-    [string] $Target = "*",
+    [string] $Framework = "*",
+
+    [Parameter(Mandatory = $false, Position = 1)]
+    [string] $Runtime = "",
 
                  [switch] $Max,
                  [switch] $ClassicOnly,
@@ -85,7 +95,8 @@ function Write-Usage {
 Test harness for Abc.Maybe
 
 Usage: pack.ps1 [switches].
-  -t|-Target        specify a single target to be tested.
+    |-Framework     specify a single framework to be tested.
+    |-Runtime       specifiy a target runtime to test for.
     |-Max           test ALL frameworks (SLOW), not just the last major versions.
     |-ClassicOnly   when Max is also specified, only test for .NET Framework.
     |-CoreOnly      when Max is also specified, only test for .NET Core.
@@ -185,18 +196,29 @@ function Invoke-Test {
         [Parameter(Mandatory = $true, Position = 0)]
         [ValidateNotNullOrEmpty()]
         [string] $framework,
+
+        [Parameter(Mandatory = $false, Position = 1)]
+        [string] $runtime,
+
         [switch] $Silent
     )
 
     SAY-LOUD "Testing ($framework)."
 
+    if ($runtime) {
+        $arg = "--runtime:$runtime"
+    }
+    else {
+        $arg = ""
+    }
+
     if ($Silent) {
         Carp "Will fail silently if a required .NET SDK Kit is not installed locally."
 
-        & dotnet test .\NETSdk\NETSdk.csproj -f $framework /p:__Max=true
+        & dotnet test .\NETSdk\NETSdk.csproj -f $framework $arg /p:__Max=true
     }
     else {
-        & dotnet test .\NETSdk\NETSdk.csproj /p:TargetFramework=$framework /p:__Max=true
+        & dotnet test .\NETSdk\NETSdk.csproj $arg /p:TargetFramework=$framework /p:__Max=true
     }
 
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting $framework."
@@ -205,6 +227,9 @@ function Invoke-Test {
 function Invoke-TestAll {
     [CmdletBinding()]
     param(
+        [Parameter(Mandatory = $false, Position = 0)]
+        [string] $runtime,
+
         [switch] $Max,
         [switch] $ClassicOnly,
         [switch] $CoreOnly
@@ -212,11 +237,18 @@ function Invoke-TestAll {
 
     SAY-LOUD "Testing for all platforms."
 
+    if ($runtime) {
+        $arg = "--runtime:$runtime"
+    }
+    else {
+        $arg = ""
+    }
+
     if ($Max) { $__max = "true" } else { $__max = "false" }
     if ($ClassicOnly) { $__classicOnly = "true" } else { $__classicOnly = "false" }
     if ($CoreOnly) { $__coreOnly = "true" } else { $__coreOnly = "false" }
 
-    & dotnet test .\NETSdk\NETSdk.csproj `
+    & dotnet test .\NETSdk\NETSdk.csproj $arg `
         /p:__Max=$__max `
         /p:__ClassicOnly=$__classicOnly `
         /p:__CoreOnly=$__coreOnly
@@ -246,11 +278,12 @@ try {
         }
     }
 
-    if ($Target -eq "*") {
+    if ($Framework -eq "*") {
         if ($Yes -or (Confirm-Yes "Test all platforms at once (SLOW)?")) {
             Carp "Will fail (MSB3644) if a required .NET SDK Kit is not installed locally."
 
             Invoke-TestAll `
+                -Runtime $Runtime `
                 -Max:$Max.IsPresent `
                 -CoreOnly:$CoreOnly.IsPresent `
                 -ClassicOnly:$ClassicOnly.IsPresent
@@ -272,20 +305,20 @@ try {
 
             foreach ($framework in $frameworks) {
                 if ($Yes -or (Confirm-Yes "Test harness for ${framework}?")) {
-                    Invoke-Test $framework -Silent:$Silent.IsPresent
+                    Invoke-Test $framework -Silent:$Silent.IsPresent -Runtime $Runtime
                 }
             }
         }
     }
     else {
-        if ($Target -eq "net45") {
+        if ($Framework -eq "net45") {
             Invoke-TestLegacy "net45"
         }
-        elseif ($Target -eq "net451") {
+        elseif ($Framework -eq "net451") {
             Invoke-TestLegacy "net451"
         }
         else {
-            Invoke-Test $Target -Silent:$Silent.IsPresent
+            Invoke-Test $Framework -Runtime $Runtime -Silent:$Silent.IsPresent
         }
     }
 }

@@ -10,6 +10,7 @@
     <Copyright>Copyright (c) 2019 Narvalo.Org</Copyright>
 
     <Configuration>Release</Configuration>
+    <Platform Condition=" $(Platform) == '' ">AnyCPU</Platform>
     <RootNamespace>Abc</RootNamespace>
     <LangVersion>latest</LangVersion>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
