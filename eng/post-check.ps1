@@ -3,7 +3,8 @@
 <#
 .SYNOPSIS
 Test harness for net(4,5,6,7,8)x and netcoreapp(2,3).x.
-Matching .NET Framework Developer Packs or Targeting Packs must be installed locally.
+Matching .NET Framework Developer Packs or Targeting Packs must be installed
+locally. The script will fail with error MSB3644 if it is not the case.
 
 .PARAMETER Framework
 Specify a single framework to be tested.
@@ -309,8 +310,6 @@ try {
             Remove-BinAndObj $testdir
         }
     }
-
-    Carp "Will fail (MSB3644) if a required .NET SDK Kit is not installed locally."
 
     if ($Framework -eq "*") {
         if ($Yes -or (Confirm-Yes "Test all platforms at once (SLOW)?")) {
