@@ -11,15 +11,15 @@
 
   <!-- Source files -->
   <PropertyGroup>
-    <SourceDirectory>$(MSBuildThisFileDirectory)..\</SourceDirectory>
-    <FilesToExclude>$(SourceDirectory)**\AssemblyInfo.cs</FilesToExclude>
-    <FilesToExclude>$(FilesToExclude);$(SourceDirectory)**\bin\**\*.*</FilesToExclude>
-    <FilesToExclude>$(FilesToExclude);$(SourceDirectory)**\obj\**\*.*</FilesToExclude>
+    <FilesToExclude>$(SourceRoot)**\AssemblyInfo.cs</FilesToExclude>
+    <FilesToExclude>$(FilesToExclude);$(SourceRoot)**\bin\**\*.*</FilesToExclude>
+    <FilesToExclude>$(FilesToExclude);$(SourceRoot)**\obj\**\*.*</FilesToExclude>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(SourceDirectory)Abc.Sketches\**\*.cs" Exclude="$(FilesToExclude)" />
-    <Compile Include="$(SourceDirectory)Abc.Testing\**\*.cs" Exclude="$(FilesToExclude)" />
-    <Compile Include="$(SourceDirectory)Abc.Tests\**\*.cs" Exclude="$(FilesToExclude)" />
+    <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
+    <Compile Include="$(SourceRoot)Abc.Sketches\**\*.cs" Exclude="$(FilesToExclude)" />
+    <Compile Include="$(SourceRoot)Abc.Testing\**\*.cs" Exclude="$(FilesToExclude)" />
+    <Compile Include="$(SourceRoot)Abc.Tests\**\*.cs" Exclude="$(FilesToExclude)" />
   </ItemGroup>
 
   <!-- Shims for legacy platforms -->

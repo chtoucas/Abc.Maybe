@@ -8,7 +8,7 @@ WARNING: the matching SDK must be installed locally.
 .PARAMETER Target
 Specify a single platform to be tested.
 
-.PARAMETER Deep
+.PARAMETER Max
 Test ALL frameworks (SLOW), not just the last major versions.
 
 .PARAMETER Yes
@@ -20,13 +20,31 @@ Hard clean the solution before creating the package by removing the 'bin' and
 It's necessary when there are "dangling" cs files created during a previous
 build. Now, it's no longer a problem (we explicitely exclude 'bin' and 'obj' in
 Directory.Build.targets), but we never know.
+
+.EXAMPLE
+PS>post-check.ps1 net452
+PS>post-check.ps1 -t net452
+Test harness for .NET Framework 4.5.2.
+
+.EXAMPLE
+PS>post-check.ps1 -t netcoreapp2.2
+Test harness for .NET Core 2.2.
+
+.EXAMPLE
+PS>post-check.ps1
+Test harness for ALL major versions.
+
+.EXAMPLE
+PS>post-check.ps1 -Max
+Test harness for ALL versions, minor ones too.
+
 #>
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $false, Position = 0)]
     [string] $Target = "*",
 
-    [Alias("d")] [switch] $Deep,
+                 [switch] $Max,
     [Alias("y")] [switch] $Yes,
     [Alias("c")] [switch] $Safe,
     [Alias("h")] [switch] $Help
@@ -48,7 +66,7 @@ Test harness for Abc.Maybe
 
 Usage: pack.ps1 [switches].
   -t|-Target   specify a single platform to be tested.
-  -d|-Deep     test ALL frameworks (SLOW), not just the last major versions.
+    |-Max      test ALL frameworks (SLOW), not just the last major versions.
   -y|-Yes      do not ask for confirmation before running any test harness.
   -s|-Safe     hard clean the solution before anything else.
   -h|-Help     print this help and exit.
@@ -131,20 +149,20 @@ function Invoke-Test {
 
     SAY-LOUD "Testing ($framework)."
 
-    & dotnet test .\NETSdk\NETSdk.csproj -c $CONFIGURATION -f $framework /p:__Deep=true
+    & dotnet test .\NETSdk\NETSdk.csproj -c $CONFIGURATION -f $framework /p:__Max=true
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting $framework."
 }
 
 function Invoke-TestAll {
     [CmdletBinding()]
     param(
-        [switch] $Deep
+        [switch] $Max
     )
 
     SAY-LOUD "Testing for all platforms."
 
-    if ($Deep) {
-        & dotnet test .\NETSdk\NETSdk.csproj -c $CONFIGURATION /p:__Deep=true
+    if ($Max) {
+        & dotnet test .\NETSdk\NETSdk.csproj -c $CONFIGURATION /p:__Max=true
     }
     else {
         & dotnet test .\NETSdk\NETSdk.csproj -c $CONFIGURATION
@@ -163,7 +181,7 @@ if ($Help) {
 try {
     Approve-RepositoryRoot
 
-    pushd (Join-Path $ROOT_DIR "src\integration")
+    pushd (Join-Path $ROOT_DIR "test")
 
     if ($Safe) {
         if (Confirm-Yes "Hard clean?") {
@@ -176,11 +194,11 @@ try {
     if ($Target -eq "*") {
         if ($Yes -or (Confirm-Yes "Test all platforms at once (SLOW)?")) {
             Carp "May fail if the matching SDK is not installed locally."
-            if ($Deep) {
+            if ($Max) {
                 Carp "Targets currently disabled (because I don't have them): net47, net471 and net48."
             }
-            Invoke-TestAll -Deep:$Deep.IsPresent
-            if ($Deep) {
+            Invoke-TestAll -Max:$Max.IsPresent
+            if ($Max) {
                 Invoke-TestNET45
             }
         }
