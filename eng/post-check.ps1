@@ -157,7 +157,7 @@ function Find-XunitRunner {
 
 ################################################################################
 
-function Invoke-TestLegacy {
+function Invoke-TestOldStyle {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, Position = 0)]
@@ -273,8 +273,8 @@ function Invoke-TestAll {
     Assert-CmdSuccess -ErrMessage "Test ALL task failed."
 
     if ($Max -and (-not $CoreOnly)) {
-        Invoke-TestLegacy "net45"
-        Invoke-TestLegacy "net451"
+        Invoke-TestOldStyle "net45"
+        Invoke-TestOldStyle "net451"
     }
 }
 
@@ -310,7 +310,7 @@ try {
         }
     }
 
-    Carp "May fail (MSB3644) if a required .NET SDK Kit is not installed locally."
+    Carp "Will fail (MSB3644) if a required .NET SDK Kit is not installed locally."
 
     if ($Framework -eq "*") {
         if ($Yes -or (Confirm-Yes "Test all platforms at once (SLOW)?")) {
@@ -329,10 +329,10 @@ try {
     }
     else {
         if ($Framework -eq "net45") {
-            Invoke-TestLegacy "net45"
+            Invoke-TestOldStyle "net45"
         }
         elseif ($Framework -eq "net451") {
-            Invoke-TestLegacy "net451"
+            Invoke-TestOldStyle "net451"
         }
         else {
             Invoke-Test $Framework -Runtime $Runtime

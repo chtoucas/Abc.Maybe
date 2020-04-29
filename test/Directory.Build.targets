@@ -1,13 +1,13 @@
 <Project>
 
-  <!-- Old style project file, we must manually set a few things -->
-  <PropertyGroup Condition=" $(AssemblyName) == 'NET45' ">
+  <!-- Old style project files, we must set a few things manually -->
+  <PropertyGroup Condition=" $(TargetFrameworkVersion) == 'v4.5' ">
     <TargetFramework>net45</TargetFramework>
-    <DefineConstants>$(DefineConstants);NETFRAMEWORK;$(AssemblyName)</DefineConstants>
+    <DefineConstants>$(DefineConstants);NETFRAMEWORK;NET45</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" $(AssemblyName) == 'NET451' ">
+  <PropertyGroup Condition=" $(TargetFrameworkVersion) == 'v4.5.1' ">
     <TargetFramework>net451</TargetFramework>
-    <DefineConstants>$(DefineConstants);NETFRAMEWORK;$(AssemblyName)</DefineConstants>
+    <DefineConstants>$(DefineConstants);NETFRAMEWORK;NET451</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition=" $(TargetFramework.StartsWith('netcoreapp2.')) ">
@@ -33,8 +33,11 @@
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0" />
   </ItemGroup>
   <ItemGroup Condition=" $(TargetFramework.StartsWith('net4')) ">
+    <Compile Include="$(MSBuildThisFileDirectory)HashCode.cs"
+        Condition=" $(TargetFramework) == 'net452' or $(TargetFramework) == 'net46' " />
     <!-- Might not be necessary for .NET 4.8 -->
-    <Compile Include="$(MSBuildThisFileDirectory)HashCode.cs" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0"
+        Condition=" $(TargetFramework) != 'net452' and $(TargetFramework) != 'net46' " />
   </ItemGroup>
 
   <!-- Core dependencies -->
