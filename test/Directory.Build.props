@@ -17,11 +17,7 @@
     <DefineConstants>$(DefineConstants);TRACE;CONTRACTS_FULL</DefineConstants>
 
     <RootNamespace>Abc</RootNamespace>
-    <Company>Narvalo.Org</Company>
-    <Product>Abécédaire Library</Product>
-    <Copyright>Copyright (c) 2019 Narvalo.Org</Copyright>
-    <VersionPrefix>1.0.0</VersionPrefix>
-    <VersionSuffix>DUMMY</VersionSuffix>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
 </Project>

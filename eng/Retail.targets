@@ -9,6 +9,9 @@
         PackageVersion       = Major.Minor.Patch-PreReleaseTag
         InformationalVersion = Major.Minor.Patch-PreReleaseTag+BuildMetadata
         FileVersion          = Major.Minor.BuildNumber.RevisionNumber
+
+        MSBuild task:
+        https://github.com/dotnet/sdk/blob/master/src/Tasks/Microsoft.NET.Build.Tasks/targets/Microsoft.NET.GenerateAssemblyInfo.targets
       -->
     <!-- We use the abbreviated git commit hash (first seven chars) -->
     <BuildMetadata Condition=" $(RepositoryCommit) != '' ">$(RepositoryCommit.Substring(0, 7))</BuildMetadata>

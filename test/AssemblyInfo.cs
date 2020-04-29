@@ -8,10 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: CLSCompliant(false)]
 [assembly: ComVisible(false)]
 
-#if (NET45 || NET451)
-[assembly: AssemblyTitle("")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyTitle("Abc.Tests")]
+[assembly: AssemblyDescription("Test library for Abc.Maybe.")]
+[assembly: AssemblyConfiguration("Release")]
 [assembly: AssemblyCompany("Narvalo.Org")]
 [assembly: AssemblyProduct("Abécédaire Library")]
 [assembly: AssemblyCopyright("Copyright (c) 2019 Narvalo.Org")]
@@ -21,4 +20,3 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: AssemblyInformationalVersion("1.0.0-DUMMY")]
-#endif
