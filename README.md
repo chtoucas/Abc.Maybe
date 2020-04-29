@@ -37,7 +37,10 @@ We also check that everything is fine with
 - .NET Framework, all versions from 4.5 to 4.8.
 
 but only after we push a new package upstream, and it is not done automatically,
-which means that it may take some time before I discover (and fix) a failing test.
+which means that it may take some time before a failing test is discovered (and
+fixed). Everything should work with .NET Core 1.0/1.1 too, but keep in mind that
+I never bothered to port the test suite to these platforms, and I do not intend
+to.
 
 ## Objectives/Features
 

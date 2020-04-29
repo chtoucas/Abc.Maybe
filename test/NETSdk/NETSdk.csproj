@@ -7,6 +7,15 @@
     just compile this project with /p:__Max=true.
     https://docs.microsoft.com/en-us/dotnet/framework/install/guide-for-developers
     https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/how-to-determine-which-versions-are-installed
+
+    Versions.
+    .NET Framework.
+      When __Max is not true, we only list the last minor version of each major version.
+      https://support.microsoft.com/en-us/help/17455/lifecycle-faq-net-framework
+    .NET Core.
+      When __Max is not true, we only list the LTS versions.
+      https://dotnet.microsoft.com/platform/support/policy/dotnet-core
+      https://github.com/dotnet/core/blob/master/microsoft-support.md
   -->
 
   <PropertyGroup Condition=" $(__Max) == 'true' ">
@@ -16,7 +25,7 @@
 
   <PropertyGroup Condition=" $(__Max) != 'true' ">
     <__NETClassicTargets Condition=" $(__CoreOnly) != 'true' ">net452;net462;net472;net48</__NETClassicTargets>
-    <__NETCoreTargets Condition=" $(__ClassicOnly) != 'true' ">netcoreapp2.2;netcoreapp3.1</__NETCoreTargets>
+    <__NETCoreTargets Condition=" $(__ClassicOnly) != 'true' ">netcoreapp2.1;netcoreapp3.1</__NETCoreTargets>
   </PropertyGroup>
 
   <PropertyGroup>

@@ -202,13 +202,13 @@ function Invoke-Test {
         $arg = ""
     }
 
-    & dotnet test .\NETSdk\NETSdk.csproj -f $framework $arg /p:__Max=true --nologo
-    #& dotnet test .\NETSdk\NETSdk.csproj $arg /p:TargetFramework=$framework /p:__Max=true --nologo
+    & dotnet test .\NETSdk\NETSdk.csproj -f $framework $arg /p:__Max=true --nologo -v q
+    #& dotnet test .\NETSdk\NETSdk.csproj $arg /p:TargetFramework=$framework /p:__Max=true --nologo -v q
 
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting $framework."
 }
 
-# Interactive mode, last major versions only.
+# Interactive mode, last minor version of each major version.
 function Invoke-TestMajor {
     [CmdletBinding()]
     param(
@@ -228,14 +228,14 @@ function Invoke-TestMajor {
 
     if (-not $CoreOnly) {
         foreach ($fmk in $MajorClassic) {
-            if ($Yes -or (Confirm-Yes "Test harness for ${fmk}?")) {
+            if (Confirm-Yes "Test harness for ${fmk}?") {
                 Invoke-Test $fmk -Runtime $runtime
             }
         }
     }
     if (-not $ClassicOnly) {
         foreach ($fmk in $MajorCore) {
-            if ($Yes -or (Confirm-Yes "Test harness for ${fmk}?")) {
+            if (Confirm-Yes "Test harness for ${fmk}?") {
                 Invoke-Test $fmk -Runtime $runtime
             }
         }
@@ -266,7 +266,7 @@ function Invoke-TestAll {
     if ($ClassicOnly) { $__classicOnly = "true" } else { $__classicOnly = "false" }
     if ($CoreOnly) { $__coreOnly = "true" } else { $__coreOnly = "false" }
 
-    & dotnet test .\NETSdk\NETSdk.csproj --nologo $arg `
+    & dotnet test .\NETSdk\NETSdk.csproj --nologo -v q $arg `
         /p:__Max=$__max `
         /p:__ClassicOnly=$__classicOnly `
         /p:__CoreOnly=$__coreOnly
@@ -286,13 +286,13 @@ if ($Help) {
     exit 0
 }
 
-# Last major versions only
+# Last minor version of each major version.
 $MajorClassic = `
     "net452",
     "net462",
     "net472",
     "net48"
-$MajorCore = `
+$MajorCore =`
     "netcoreapp2.2",
     "netcoreapp3.1"
 
