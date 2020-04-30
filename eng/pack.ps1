@@ -203,7 +203,6 @@ function Invoke-Pack {
         -p:TargetFrameworks='\"netstandard2.1;netstandard2.0;netstandard1.0;net461\"' `
         -p:BuildNumber=$buildNumber `
         -p:RevisionNumber=$revisionNumber `
-        -p:SerialNumber=$serialNumber `
         -p:RepositoryCommit=$commit `
         -p:RepositoryBranch=$branch `
         -p:Retail=true

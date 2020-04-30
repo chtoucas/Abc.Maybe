@@ -1,24 +1,23 @@
-<Project InitialTargets="__CheckRetailTargets">
+<Project>
+
+  <Import Project="$(MSBuildThisFileDirectory)$(AssemblyName).props" />
+
+  <PropertyGroup>
+    <BuildNumber Condition=" $(BuildNumber) == '' ">$(PatchVersion)</BuildNumber>
+    <RevisionNumber Condition=" $(RevisionNumber) == '' ">0</RevisionNumber>
+    <Title Condition=" $(Title) == '' ">$(AssemblyName)</Title>
+  </PropertyGroup>
 
   <PropertyGroup>
     <!--
-      Versioning.
-        PackageVersion       = Major.Minor.Patch-PreRelease
-
-        AssemblyVersion      = Major.Minor.0.0
-        FileVersion          = Major.Minor.Build.Revision
-        InformationalVersion = Major.Minor.Patch-PreRelease+AbbrGitCommitHash
-
-        MSBuild tasks:
-        https://github.com/dotnet/sdk/blob/master/src/Tasks/Microsoft.NET.Build.Tasks/targets/Microsoft.NET.DefaultAssemblyInfo.targets
-        https://github.com/dotnet/sdk/blob/master/src/Tasks/Microsoft.NET.Build.Tasks/targets/Microsoft.NET.GenerateAssemblyInfo.targets
+      -  Microsoft.NET.DefaultAssemblyInfo.targets
+      -  Microsoft.NET.GenerateAssemblyInfo.targets
+      https://github.com/dotnet/sdk/blob/master/src/Tasks/Microsoft.NET.Build.Tasks/targets/
     -->
 
-    <!-- Package version -->
     <VersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</VersionPrefix>
     <VersionSuffix>$(PreReleaseTag)</VersionSuffix>
 
-    <!-- Assembly version -->
     <AssemblyVersion>$(MajorVersion).$(MinorVersion).0.0</AssemblyVersion>
     <FileVersion>$(MajorVersion).$(MinorVersion).$(BuildNumber).$(RevisionNumber)</FileVersion>
 
@@ -26,26 +25,9 @@
     <InformationalVersion>$(MajorVersion).$(MinorVersion).$(PatchVersion)</InformationalVersion>
     <InformationalVersion Condition=" $(PreReleaseTag) != '' ">$(InformationalVersion)-$(PreReleaseTag)</InformationalVersion>
     <InformationalVersion Condition=" $(RepositoryCommit) != '' ">$(InformationalVersion)+$(RepositoryCommit.Substring(0, 7))</InformationalVersion>
-  </PropertyGroup>
 
-  <PropertyGroup>
     <!-- NB: the default AssemblyTitle uses AssemblyName not Title -->
     <Description>$(Title) Built [$([System.DateTime]::UtcNow.ToString("r"))].</Description>
   </PropertyGroup>
-
-  <Target Name="__CheckRetailTargets">
-    <Error Text="Property MajorVersion is empty." Condition=" $(MajorVersion) == '' " />
-    <Error Text="Property MinorVersion is empty." Condition=" $(MinorVersion) == '' " />
-    <Error Text="Property PatchVersion is empty." Condition=" $(PatchVersion) == '' " />
-
-    <Error Text="Property BuildNumber is empty." Condition=" $(BuildNumber) == '' " />
-    <Error Text="Property RevisionNumber is empty." Condition=" $(RevisionNumber) == '' " />
-    <Error Text="Property SerialNumber is empty." Condition=" $(SerialNumber) == '' " />
-
-    <Warning Text="Property Title is empty." Condition=" $(Title) == '' " />
-    <PropertyGroup Condition=" $(Title) == '' ">
-      <Title>$(AssemblyName)</Title>
-    </PropertyGroup>
-  </Target>
 
 </Project>

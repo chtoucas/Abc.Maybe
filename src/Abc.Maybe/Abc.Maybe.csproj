@@ -4,7 +4,6 @@
     <TargetFrameworks>$(MaxApiPlatform);netstandard2.0</TargetFrameworks>
   </PropertyGroup>
 
-  <Import Project="$(EngRoot)$(AssemblyName).props" Condition=" $(Retail) == 'true' " />
   <Import Project="$(EngRoot)Retail.props" Condition=" $(Retail) == 'true' " />
 
   <PropertyGroup Condition=" $(Configuration) == 'Release' ">
@@ -12,7 +11,7 @@
     <WarningsNotAsErrors>$(WarningsNotAsErrors);CS1591</WarningsNotAsErrors>
   </PropertyGroup>
 
-  <!-- Only meaningful for .NET Standard, we still need to include MaxApiPlatform for VS -->
+  <!-- Define the public API for .NET Standard 2.0/2.1 and MaxApiPlatform -->
   <ItemGroup Condition=" $(TargetFramework) == 'netstandard2.0' ">
     <AdditionalFiles Include="PublicAPI\netstandard2.0\PublicAPI.Shipped.txt" />
     <AdditionalFiles Include="PublicAPI\netstandard2.0\PublicAPI.Unshipped.txt" />
