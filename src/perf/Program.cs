@@ -95,7 +95,7 @@ namespace Abc
         {
             private const ConsoleColor DefaultColor = ConsoleColor.Gray;
 
-            private static readonly Dictionary<LogKind, ConsoleColor> s_ColorScheme
+            private static readonly Dictionary<LogKind, ConsoleColor> s_ColorSchema
                 = new Dictionary<LogKind, ConsoleColor>
                 {
                     { LogKind.Default, ConsoleColor.Gray },
@@ -139,8 +139,8 @@ namespace Abc
 
                 try
                 {
-                    var color = s_ColorScheme.ContainsKey(logKind)
-                        ? s_ColorScheme[logKind]
+                    var color = s_ColorSchema.ContainsKey(logKind)
+                        ? s_ColorSchema[logKind]
                         : DefaultColor;
 
                     if (color != colorBefore

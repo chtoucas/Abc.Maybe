@@ -16,7 +16,6 @@ equality and ordering comparisons.
   * Maybe<Func<>>
   * delegates that return null.
 - Check published packages (upgrade, debugging experience).
-- Add #nullable enable at the top of each PublicAPI.*.txt file.
 
 Multitargeting: target net461/netstandard1.0.
 - We use TargetFrameworkIdentifier ('.NETFramework') and NETFRAMEWORK instead

@@ -24,12 +24,16 @@ Verbose mode. Display settings used to compile each DLL.
 Print help.
 
 .EXAMPLE
+PS>pack.ps1
+Create an EDGE package.
+
+.EXAMPLE
 PS>pack.ps1 -n -f -r
-Fast packing, no test, maybe obsolete git infos.
+Fast packing, retail mode, no test, maybe obsolete git infos.
 
 .EXAMPLE
 PS>pack.ps1 -s -r
-Safe packing.
+Safe packing, retail mode.
 #>
 [CmdletBinding()]
 param(

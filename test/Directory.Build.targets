@@ -31,14 +31,14 @@
 
   <!-- Microsoft.Bcl.HashCode is not compatible w/ .NET Framework <= 4.6 -->
   <PropertyGroup>
-    <HashCodeShim Condition=" $(TargetFramework.StartsWith('net45')) ">true</HashCodeShim>
-    <HashCodeShim Condition=" $(TargetFramework) == 'net46' ">true</HashCodeShim>
+    <HashCodePkg Condition=" $(TargetFramework.StartsWith('net45')) ">false</HashCodePkg>
+    <HashCodePkg Condition=" $(TargetFramework) == 'net46' ">false</HashCodePkg>
   </PropertyGroup>
 
   <!-- Dependencies -->
   <ItemGroup>
     <PackageReference Include="Abc.Maybe" Version="1.0.0-beta4" />
-    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0" Condition=" $(HashCodeShim) != 'true' " />
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0" Condition=" $(HashCodePkg) != 'false' " />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <!-- xunit.runner.console is for .NET Framework 4.5/4.5.1; otherwise we use xunit.runner.visualstudio. -->
