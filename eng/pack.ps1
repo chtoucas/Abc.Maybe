@@ -37,6 +37,7 @@ param(
     [Alias("n")] [switch] $NoTest,
     [Alias("f")] [switch] $Force,
     [Alias("s")] [switch] $Safe,
+    [Alias("v")] [switch] $MyVerbose,
     [Alias("h")] [switch] $Help
 )
 
@@ -55,11 +56,12 @@ function Write-Usage {
 Create a NuGet package for Abc.Maybe
 
 Usage: pack.ps1 [switches]
-    |-Retail   build Retail packages.
-  -n|-NoTest   do NOT run the test suite.
-  -f|-Force    force packing even when there are uncommited changes.
-  -s|-Safe     hard clean the solution before creating the package.
-  -h|-Help     print this help and exit.
+    |-Retail      build Retail packages.
+  -n|-NoTest      do NOT run the test suite.
+  -f|-Force       force packing even when there are uncommited changes.
+  -s|-Safe        hard clean the solution before creating the package.
+  -v|-MyVerbose   display settings used to compile each DLL.
+  -h|-Help        print this help and exit.
 
 "@
 }
@@ -115,54 +117,6 @@ function Invoke-Test {
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting net461."
 }
 
-# EDGE packages are built like Retail packages but we override the VersionSuffix.
-function Invoke-PackEDGE {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $projectName
-    )
-
-    SAY-LOUD "Packing EDGE."
-
-    $proj = Join-Path $SRC_DIR $projectName -Resolve
-
-    # Get build info.
-    $uids = Get-UniqIds
-    $buildNumber    = $uids[0]
-    $revisionNumber = $uids[1]
-    $serialNumber   = $uids[2]
-
-    $suffix = "EDGE$serialNumber"
-
-    # Find commit hash and branch.
-    $commit = ""
-    $branch = ""
-    $git = Find-GitExe
-    if ($git -ne $null) {
-        Approve-GitStatus $git | Out-Null
-        $commit = Get-GitCommitHash $git
-        $branch = Get-GitBranch $git
-        if ($commit -eq "") { Carp "The commit hash will be empty." }
-        if ($branch -eq "") { Carp "The branch name will be empty." }
-    }
-
-    & dotnet pack $proj -c $CONFIGURATION --nologo `
-        --output $PKG_EDGE_OUTDIR `
-        --version-suffix $suffix `
-        -p:TargetFrameworks='\"netstandard2.1;netstandard2.0;netstandard1.0;net461\"' `
-        -p:BuildNumber=$buildNumber `
-        -p:RevisionNumber=$revisionNumber `
-        -p:SerialNumber=$serialNumber `
-        -p:RepositoryCommit=$commit `
-        -p:RepositoryBranch=$branch `
-        -p:Retail=true `
-        -p:EDGE=true
-
-    Assert-CmdSuccess -ErrMessage "Pack EDGE task failed."
-}
-
 function Invoke-Pack {
     [CmdletBinding()]
     param(
@@ -170,22 +124,28 @@ function Invoke-Pack {
         [ValidateNotNullOrEmpty()]
         [string] $projectName,
 
-        [switch] $force
+        [switch] $retail,
+        [switch] $force,
+        [switch] $safe,
+        [switch] $myVerbose
     )
 
     SAY-LOUD "Packing."
 
     $version = Get-PackageVersion $projectName
-
     $proj = Join-Path $SRC_DIR $projectName -Resolve
-    $pkg = Join-Path $PKG_OUTDIR "$projectName.$version.nupkg"
 
-    if (Test-Path $pkg) {
-        Carp "A package with the same version ($version) already exists."
-        Confirm-Continue "Do you wish to proceed anyway?"
+    # Check dandling package file.
+    if ($retail) {
+        $pkg = Join-Path $PKG_OUTDIR "$projectName.$version.nupkg"
 
-        Say "  The old package file will be removed now."
-        Remove-Item $pkg
+        if (Test-Path $pkg) {
+            Carp "A package with the same version ($version) already exists."
+            Confirm-Continue "Do you wish to proceed anyway?"
+
+            Say "  The old package file will be removed now."
+            Remove-Item $pkg
+        }
     }
 
     # Get build info.
@@ -213,7 +173,7 @@ function Invoke-Pack {
     }
 
     # Safe packing?
-    if ($Safe) {
+    if ($safe) {
         if (Confirm-Yes "Hard clean?") {
             Say "  Deleting 'bin' and 'obj' directories."
 
@@ -221,10 +181,22 @@ function Invoke-Pack {
         }
     }
 
+    if ($retail) {
+        $output = $PKG_OUTDIR
+        $args = ""
+    }
+    else {
+        # For EDGE packages, we use a custom VersionSuffix.
+        $output = $PKG_EDGE_OUTDIR
+        $args = "--version-suffix:EDGE$serialNumber"
+    }
+    if ($myVerbose) {
+        $args = $args, "-p:DisplaySettings=true"
+    }
+
     # Do NOT use --no-restore or --no-build (option Safe removes everything).
-    & dotnet pack $proj -c $CONFIGURATION --nologo `
-        --output $PKG_OUTDIR `
-        -p:DisplaySettings=true `
+    & dotnet pack $proj -c $CONFIGURATION --nologo $args `
+        --output $output `
         -p:TargetFrameworks='\"netstandard2.1;netstandard2.0;netstandard1.0;net461\"' `
         -p:BuildNumber=$buildNumber `
         -p:RevisionNumber=$revisionNumber `
@@ -235,8 +207,10 @@ function Invoke-Pack {
 
     Assert-CmdSuccess -ErrMessage "Pack task failed."
 
-    Chirp "To publish the package:"
-    Chirp "> dotnet nuget push $pkg -s https://www.nuget.org/ -k MYKEY"
+    if ($retail) {
+        Chirp "To publish the package:"
+        Chirp "> dotnet nuget push $pkg -s https://www.nuget.org/ -k MYKEY"
+    }
 }
 
 ################################################################################
@@ -251,13 +225,17 @@ try {
 
     pushd $ROOT_DIR
 
-    if ($Retail) {
-        if (-not $NoTest) { Invoke-Test }
+    if ($Retail -and (-not $NoTest)) { Invoke-Test }
 
-        Invoke-Pack "Abc.Maybe" -Force:$Force.IsPresent
+    if ($Retail) {
+        Invoke-Pack "Abc.Maybe" -Retail `
+            -Force:$Force.IsPresent `
+            -Safe:$Safe.IsPresent `
+            -MyVerbose:$MyVerbose.IsPresent
     }
     else {
-        Invoke-PackEDGE "Abc.Maybe"
+        # We use force to discard warnings about empty git infos.
+        Invoke-Pack "Abc.Maybe" -Force -MyVerbose:$MyVerbose.IsPresent
     }
 }
 catch {
