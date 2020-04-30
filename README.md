@@ -50,10 +50,11 @@ to.
   - [x] Extensible.
   - [x] Incurring no significant overhead when used wisely.
 - [x] Being a good citizen of the .NET ecosystem.
+  - [x] .NET Standard 2.0, and the legacy .NET Framework 4.6.1.
   - [x] Equatable and comparable, both optionally structural.
   - [x] NRT-aware (NRT = Nullable Reference Types).
   - [x] Debugger-friendly.
-  - [x] .NET Standard 2.0, and the legacy .NET Framework 4.6.1.
+  - [x] Strong named assembly.
 - [ ] Being well tested.
   - [x] 100% test coverage.
   - [ ] Wide range of functional tests.
