@@ -7,6 +7,7 @@ xunit.trx
 __/coverlet
 __/opencover
 __/packages
+__/packages-edge
 
 # User-specific files
 *.rsuser

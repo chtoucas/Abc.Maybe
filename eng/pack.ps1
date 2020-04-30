@@ -4,15 +4,21 @@
 .SYNOPSIS
 Create a NuGet package.
 
+.PARAMETER Retail
+Build Retail packages.
+
 .PARAMETER NoTest
 Do NOT run the test suite.
+Retail option only.
 
 .PARAMETER Force
 Force packing even when there are uncommited changes.
+Retail option only.
 
 .PARAMETER Safe
 Hard clean the solution before creating the package by removing the 'bin' and
 'obj' directories. Normally, it should not be necessary.
+Retail option only.
 
 .PARAMETER Help
 Print help.
@@ -27,6 +33,7 @@ Safe packing.
 #>
 [CmdletBinding()]
 param(
+                 [switch] $Retail,
     [Alias("n")] [switch] $NoTest,
     [Alias("f")] [switch] $Force,
     [Alias("s")] [switch] $Safe,
@@ -48,6 +55,7 @@ function Write-Usage {
 Create a NuGet package for Abc.Maybe
 
 Usage: pack.ps1 [switches]
+    |-Retail   build Retail packages.
   -n|-NoTest   do NOT run the test suite.
   -f|-Force    force packing even when there are uncommited changes.
   -s|-Safe     hard clean the solution before creating the package.
@@ -61,10 +69,10 @@ function Get-PackageVersion {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $ProjectName
+        [string] $projectName
     )
 
-    $proj = Join-Path $ENG_DIR "$ProjectName.props" -Resolve
+    $proj = Join-Path $ENG_DIR "$projectName.props" -Resolve
 
     $xml = [Xml] (Get-Content $proj)
     $node = (Select-Xml -Xml $xml -XPath "//Project/PropertyGroup/MajorVersion/..").Node
@@ -93,22 +101,45 @@ function Invoke-Test {
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting net461."
 }
 
+# TODO: WIP
+function Invoke-PackEDGE {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $projectName
+    )
+
+    SAY-LOUD "Packing EDGE."
+
+    $proj = Join-Path $SRC_DIR $projectName -Resolve
+
+    & dotnet pack $proj -c $CONFIGURATION --nologo `
+        --output $PKG_EDGE_OUTDIR `
+        -p:DisplaySettings=true `
+        -p:TargetFrameworks=netstandard2.0 `
+        -p:Retail=true `
+        -p:EDGE=true
+
+    Assert-CmdSuccess -ErrMessage "Pack EDGE task failed."
+}
+
 function Invoke-Pack {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $ProjectName,
+        [string] $projectName,
 
-        [switch] $Force
+        [switch] $force
     )
 
     SAY-LOUD "Packing."
 
-    $version = Get-PackageVersion $ProjectName
+    $version = Get-PackageVersion $projectName
 
-    $proj = Join-Path $SRC_DIR $ProjectName -Resolve
-    $pkg = Join-Path $PKG_OUTDIR "$ProjectName.$version.nupkg"
+    $proj = Join-Path $SRC_DIR $projectName -Resolve
+    $pkg = Join-Path $PKG_OUTDIR "$projectName.$version.nupkg"
 
     if (Test-Path $pkg) {
         Carp "A package with the same version ($version) already exists."
@@ -126,9 +157,9 @@ function Invoke-Pack {
         Confirm-Continue "Continue even without any git metadata?"
     }
     else {
-        # Keep Approve-GitStatus before $Force: we always want to see a warning
+        # Keep Approve-GitStatus before $force: we always want to see a warning
         # when there are uncommited changes.
-        if ((Approve-GitStatus $git) -or $Force) {
+        if ((Approve-GitStatus $git) -or $force) {
             $commit = Get-GitCommitHash $git
             $branch = Get-GitBranch $git
         }
@@ -172,9 +203,14 @@ try {
 
     pushd $ROOT_DIR
 
-    if (-not $NoTest) { Invoke-Test }
+    if ($Retail) {
+        if (-not $NoTest) { Invoke-Test }
 
-    Invoke-Pack "Abc.Maybe" -Force:$Force.IsPresent
+        Invoke-Pack "Abc.Maybe" -Force:$Force.IsPresent
+    }
+    else {
+        Invoke-PackEDGE "Abc.Maybe"
+    }
 }
 catch {
     Croak ("An unexpected error occured: {0}." -f $_.Exception.Message) `

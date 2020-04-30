@@ -27,9 +27,12 @@ $ErrorActionPreference = "Stop"
 (Join-Path $ROOT_DIR "src" -Resolve) `
     | New-Variable -Name "SRC_DIR" -Scope Script -Option Constant
 
-# Packages output directory (no -Resolve, it might not exist yet).
+# Packages directories (no -Resolve, it might not exist yet).
 (Join-Path $ARTIFACTS_DIR "packages") `
     | New-Variable -Name "PKG_OUTDIR" -Scope Script -Option Constant
+
+(Join-Path $ARTIFACTS_DIR "packages-edge") `
+    | New-Variable -Name "PKG_EDGE_OUTDIR" -Scope Script -Option Constant
 
 function Approve-RepositoryRoot {
     if (-not [System.IO.Path]::IsPathRooted($ROOT_DIR)) {

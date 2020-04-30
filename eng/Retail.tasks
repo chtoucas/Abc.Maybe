@@ -62,28 +62,28 @@ RevisionNumber = (ushort)seconds;
     </Task>
   </UsingTask>
 
-  <UsingTask TaskName="GenerateBuildStamp"
+  <UsingTask TaskName="GenerateSerialNumber"
              TaskFactory="RoslynCodeTaskFactory"
              AssemblyFile="$(CodeTaskFactoryAssemblyFile)">
     <ParameterGroup>
       <BuildNumber ParameterType="System.UInt16" Output="false" />
       <RevisionNumber ParameterType="System.UInt16" Output="false" />
-      <BuildStamp ParameterType="System.String" Output="true" />
+      <SerialNumber ParameterType="System.String" Output="true" />
     </ParameterGroup>
     <Task>
       <Using Namespace="System" />
       <Using Namespace="System.Globalization" />
       <Code Type="Fragment" Language="cs"><![CDATA[
 // BuildNumber + "0...0" + RevisionNumber.
-var stamp = BuildNumber.ToString(CultureInfo.InvariantCulture);
+var sn = BuildNumber.ToString(CultureInfo.InvariantCulture);
 
 var revisionString = RevisionNumber.ToString(CultureInfo.InvariantCulture);
 
-for (int i = 0; i < 5 - revisionString.Length; i++) { stamp += "0"; }
+for (int i = 0; i < 5 - revisionString.Length; i++) { sn += "0"; }
 
-stamp += revisionString;
+sn += revisionString;
 
-BuildStamp = stamp;
+SerialNumber = sn;
       ]]></Code>
     </Task>
   </UsingTask>

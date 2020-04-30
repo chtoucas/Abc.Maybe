@@ -20,11 +20,11 @@
       Weird bug in MSBuild, I have to set this twice, here and in Directory.Build.props.
       See https://github.com/Microsoft/msbuild/issues/2754
     -->
-    <!--<DebugType Condition=" $(TargetFrameworkIdentifier) == '.NETFramework' ">full</DebugType>
-    <DebugType Condition=" $(TargetFrameworkIdentifier) != '.NETFramework' ">embedded</DebugType>-->
     <DebugType>embedded</DebugType>
+    <!--<DebugType Condition=" $(TargetFrameworkIdentifier) == '.NETFramework' ">full</DebugType>
+    <DebugType Condition=" $(TargetFrameworkIdentifier) != '.NETFramework' ">embedded</DebugType>
     <AllowedOutputExtensionsInPackageBuildOutputFolder
-      Condition=" $(DebugType) != 'embedded' ">$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+      Condition=" $(DebugType) != 'embedded' ">$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>-->
   </PropertyGroup>
 
   <PropertyGroup>

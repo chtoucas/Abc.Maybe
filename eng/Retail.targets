@@ -42,8 +42,17 @@
       <Output TaskParameter="RevisionNumber" PropertyName="_RevisionNumber"/>
     </GenerateBuildAndRevisionNumbers>
 
+    <GenerateSerialNumber BuildNumber="$(_BuildNumber)" RevisionNumber="$(_RevisionNumber)">
+      <Output TaskParameter="SerialNumber" PropertyName="_SerialNumber"/>
+    </GenerateSerialNumber>
+
     <PropertyGroup>
       <FileVersion>$(MajorVersion).$(MinorVersion).$(_BuildNumber).$(_RevisionNumber)</FileVersion>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" $(EDGE) == 'true' ">
+      <VersionSuffix>$(VersionSuffix).$(_SerialNumber)</VersionSuffix>
+      <InformationalVersion>$(InformationalVersion)+EDGE$(_SerialNumber)</InformationalVersion>
     </PropertyGroup>
   </Target>
 
