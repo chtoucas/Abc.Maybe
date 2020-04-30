@@ -1,0 +1,3 @@
+﻿#nullable enable
+Tmp.Class1
+static Tmp.Class1.Hello() -> string!

@@ -53,6 +53,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{73C72FF8-F
 		test\NETSdk\NETSdk.csproj = test\NETSdk\NETSdk.csproj
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tmp", "src\Tmp\Tmp.csproj", "{91C0E41F-5599-4FEB-9D1A-380CCD66FDC3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{E0903B97-BC55-44F7-8243-C8B50769E919}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0903B97-BC55-44F7-8243-C8B50769E919}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0903B97-BC55-44F7-8243-C8B50769E919}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91C0E41F-5599-4FEB-9D1A-380CCD66FDC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91C0E41F-5599-4FEB-9D1A-380CCD66FDC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91C0E41F-5599-4FEB-9D1A-380CCD66FDC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91C0E41F-5599-4FEB-9D1A-380CCD66FDC3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
