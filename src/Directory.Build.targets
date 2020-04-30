@@ -15,16 +15,17 @@
     <!--
       Valid values for DebugType are "full," "pdbonly," "portable", "embedded", and "none".
       See https://docs.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-properties?view=vs-2019
-    -->
-    <!--
+
       Weird bug in MSBuild, I have to set this twice, here and in Directory.Build.props.
       See https://github.com/Microsoft/msbuild/issues/2754
     -->
     <DebugType>embedded</DebugType>
-    <!--<DebugType Condition=" $(TargetFrameworkIdentifier) == '.NETFramework' ">full</DebugType>
+    <!--
+    <DebugType Condition=" $(TargetFrameworkIdentifier) == '.NETFramework' ">full</DebugType>
     <DebugType Condition=" $(TargetFrameworkIdentifier) != '.NETFramework' ">embedded</DebugType>
     <AllowedOutputExtensionsInPackageBuildOutputFolder
-      Condition=" $(DebugType) != 'embedded' ">$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>-->
+      Condition=" $(DebugType) != 'embedded' ">$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    -->
   </PropertyGroup>
 
   <PropertyGroup>
