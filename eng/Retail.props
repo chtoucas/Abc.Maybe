@@ -1,35 +1,28 @@
-<Project TreatAsLocalProperty="PackageVersion;InformationalVersion"
-         InitialTargets="__CheckRetailTargets">
+<Project InitialTargets="__CheckRetailTargets">
 
   <PropertyGroup>
     <!--
       Versioning.
-        PackageVersion       = Major.Minor.Patch-(PreReleaseTag or EDGE.SerialNumber)
+        PackageVersion       = Major.Minor.Patch-PreRelease
 
         AssemblyVersion      = Major.Minor.0.0
         FileVersion          = Major.Minor.Build.Revision
-        InformationalVersion = Major.Minor.Patch-PreReleaseTag+ShortCommitHash
+        InformationalVersion = Major.Minor.Patch-PreRelease+AbbrGitCommitHash
 
-        MSBuild task:
+        MSBuild tasks:
         https://github.com/dotnet/sdk/blob/master/src/Tasks/Microsoft.NET.Build.Tasks/targets/Microsoft.NET.DefaultAssemblyInfo.targets
         https://github.com/dotnet/sdk/blob/master/src/Tasks/Microsoft.NET.Build.Tasks/targets/Microsoft.NET.GenerateAssemblyInfo.targets
     -->
 
-    <NoWarn Condition=" $(EDGE) == 'true' ">$(NoWarn);NU5105</NoWarn>
-
     <!-- Package version -->
     <VersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</VersionPrefix>
-    <VersionSuffix Condition=" $(EDGE) != 'true' ">$(PreReleaseTag)</VersionSuffix>
-    <VersionSuffix Condition=" $(EDGE) == 'true' ">EDGE.$(SerialNumber)</VersionSuffix>
+    <VersionSuffix>$(PreReleaseTag)</VersionSuffix>
 
     <!-- Assembly version -->
     <AssemblyVersion>$(MajorVersion).$(MinorVersion).0.0</AssemblyVersion>
     <FileVersion>$(MajorVersion).$(MinorVersion).$(BuildNumber).$(RevisionNumber)</FileVersion>
 
-    <!--
-      Informational version = semantic version.
-      We use the abbreviated git commit hash (first seven chars).
-    -->
+    <!-- Informational version = semantic version -->
     <InformationalVersion>$(MajorVersion).$(MinorVersion).$(PatchVersion)</InformationalVersion>
     <InformationalVersion Condition=" $(PreReleaseTag) != '' ">$(InformationalVersion)-$(PreReleaseTag)</InformationalVersion>
     <InformationalVersion Condition=" $(RepositoryCommit) != '' ">$(InformationalVersion)+$(RepositoryCommit.Substring(0, 7))</InformationalVersion>

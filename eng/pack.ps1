@@ -115,7 +115,7 @@ function Invoke-Test {
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting net461."
 }
 
-# TODO: WIP, add all targets
+# EDGE packages are built like Retail packages but we override the VersionSuffix.
 function Invoke-PackEDGE {
     [CmdletBinding()]
     param(
@@ -134,6 +134,8 @@ function Invoke-PackEDGE {
     $revisionNumber = $uids[1]
     $serialNumber   = $uids[2]
 
+    $suffix = "EDGE$serialNumber"
+
     # Find commit hash and branch.
     $commit = ""
     $branch = ""
@@ -148,8 +150,8 @@ function Invoke-PackEDGE {
 
     & dotnet pack $proj -c $CONFIGURATION --nologo `
         --output $PKG_EDGE_OUTDIR `
-        -p:DisplaySettings=true `
-        -p:TargetFrameworks=netstandard2.0 `
+        --version-suffix $suffix `
+        -p:TargetFrameworks='\"netstandard2.1;netstandard2.0;netstandard1.0;net461\"' `
         -p:BuildNumber=$buildNumber `
         -p:RevisionNumber=$revisionNumber `
         -p:SerialNumber=$serialNumber `
@@ -159,8 +161,6 @@ function Invoke-PackEDGE {
         -p:EDGE=true
 
     Assert-CmdSuccess -ErrMessage "Pack EDGE task failed."
-
-    Chirp "The package is here: $PKG_EDGE_OUTDIR."
 }
 
 function Invoke-Pack {

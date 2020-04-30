@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <Import Project="$(EngRoot)$(AssemblyName).props" Condition=" $(Retail) == 'true' " />
-  <Import Project="$(EngRoot)Retail.targets" Condition=" $(Retail) == 'true' " />
+  <Import Project="$(EngRoot)Retail.props" Condition=" $(Retail) == 'true' " />
 
   <PropertyGroup Condition=" $(Configuration) == 'Release' ">
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -24,6 +24,10 @@
     <AdditionalFiles Include="PublicAPI\netstandard2.0\PublicAPI.Unshipped.txt" />
   </ItemGroup>
   <ItemGroup Condition=" $(TargetFramework) == 'netstandard2.1' ">
+    <AdditionalFiles Include="PublicAPI\netstandard2.1\PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include="PublicAPI\netstandard2.1\PublicAPI.Unshipped.txt" />
+  </ItemGroup>
+  <ItemGroup Condition=" $(TargetFramework) == '$(MaxApiPlatform)' ">
     <AdditionalFiles Include="PublicAPI\netstandard2.1\PublicAPI.Shipped.txt" />
     <AdditionalFiles Include="PublicAPI\netstandard2.1\PublicAPI.Unshipped.txt" />
   </ItemGroup>
