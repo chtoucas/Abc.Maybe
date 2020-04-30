@@ -1,5 +1,7 @@
 ﻿// See LICENSE in the project root for license information.
 
+// For explanations, see Retail.tasks.
+
 open System
 open System.Globalization
 

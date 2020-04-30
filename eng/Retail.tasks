@@ -1,5 +1,7 @@
 <Project>
 
+  <!-- No longer in use -->
+
   <PropertyGroup>
     <CodeTaskFactoryAssemblyFile>$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll</CodeTaskFactoryAssemblyFile>
   </PropertyGroup>

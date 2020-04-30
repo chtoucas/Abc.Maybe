@@ -9,12 +9,6 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <!--
-      -  Microsoft.NET.DefaultAssemblyInfo.targets
-      -  Microsoft.NET.GenerateAssemblyInfo.targets
-      https://github.com/dotnet/sdk/blob/master/src/Tasks/Microsoft.NET.Build.Tasks/targets/
-    -->
-
     <VersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</VersionPrefix>
     <VersionSuffix>$(PreReleaseTag)</VersionSuffix>
 
