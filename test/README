@@ -1,12 +1,13 @@
 README
 ------
 
-The actual test project is not here but in src and is called Abc.Tests.
+The actual test project is not here but in "src" and is called Abc.Tests.
 
-Projects here are meant to work with eng\post-check.ps1.
+Projects here are meant to work with "eng\post-check.ps1".
 
 Of course, one can still use the dotnet command-line directly:
 > dotnet build NETSdk
+> dotnet build NETSdk /p:__Max=true
 > dotnet test NETSdk -f net48
 Beware, this won't work with the projects NET45 and NET451 which use pre-SDK
 project files.

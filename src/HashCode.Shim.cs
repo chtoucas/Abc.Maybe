@@ -1,5 +1,7 @@
 ﻿// See LICENSE in the project root for license information.
 
+#if (NET45 || NET451 || NET452 || NET46) // System.HashCode
+
 using System;
 using System.Diagnostics.Contracts;
 
@@ -52,3 +54,5 @@ internal static class HashCode
             Combine(value1.GetHashCode(), value2.GetHashCode()),
             Combine(value3.GetHashCode(), value4.GetHashCode()));
 }
+
+#endif

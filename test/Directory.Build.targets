@@ -22,20 +22,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
+    <Compile Include="$(SourceRoot)HashCode.Shim.cs" />
     <Compile Include="$(SourceRoot)NullableAttributes.cs" />
     <Compile Include="$(SourceRoot)Abc.Sketches\**\*.cs" Exclude="$(FilesToExclude)" />
     <Compile Include="$(SourceRoot)Abc.Testing\**\*.cs" Exclude="$(FilesToExclude)" />
     <Compile Include="$(SourceRoot)Abc.Tests\**\*.cs" Exclude="$(FilesToExclude)" />
   </ItemGroup>
 
-  <!-- System.HashCode shim for legacy platforms -->
+  <!-- Microsoft.Bcl.HashCode is not compatible w/ .NET Framework <= 4.6 -->
   <PropertyGroup>
     <HashCodeShim Condition=" $(TargetFramework.StartsWith('net45')) ">true</HashCodeShim>
     <HashCodeShim Condition=" $(TargetFramework) == 'net46' ">true</HashCodeShim>
   </PropertyGroup>
-  <ItemGroup Condition=" $(HashCodeShim) == 'true' ">
-    <Compile Include="$(MSBuildThisFileDirectory)HashCode.Shim.cs" />
-  </ItemGroup>
 
   <!-- Dependencies -->
   <ItemGroup>
