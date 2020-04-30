@@ -27,6 +27,10 @@ $ErrorActionPreference = "Stop"
 (Join-Path $ROOT_DIR "src" -Resolve) `
     | New-Variable -Name "SRC_DIR" -Scope Script -Option Constant
 
+# Test directory.
+(Join-Path $ROOT_DIR "test") `
+    | New-Variable -Name "TEST_OUTDIR" -Scope Script -Option Constant
+
 # Packages directories (no -Resolve, it might not exist yet).
 (Join-Path $ARTIFACTS_DIR "packages") `
     | New-Variable -Name "PKG_OUTDIR" -Scope Script -Option Constant

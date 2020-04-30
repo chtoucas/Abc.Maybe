@@ -8,27 +8,27 @@ Create a NuGet package.
 Build Retail packages.
 
 .PARAMETER NoTest
-Do NOT run the test suite.
-Retail option only.
+Do NOT run the test suite. Retail option only.
 
 .PARAMETER Force
 Force packing even when there are uncommited changes.
-Retail option only.
 
 .PARAMETER Safe
 Hard clean the solution before creating the package by removing the 'bin' and
-'obj' directories. Normally, it should not be necessary.
-Retail option only.
+'obj' directories.
+
+.PARAMETER MyVerbose
+Verbose mode. Display settings used to compile each DLL.
 
 .PARAMETER Help
 Print help.
 
 .EXAMPLE
-PS>pack.ps1 -n -f
+PS>pack.ps1 -n -f -r
 Fast packing, no test, maybe obsolete git infos.
 
 .EXAMPLE
-PS>pack.ps1 -s
+PS>pack.ps1 -s -r
 Safe packing.
 #>
 [CmdletBinding()]
@@ -93,7 +93,7 @@ function Get-PackageVersion {
     "$major.$minor.$patch-$prere"
 }
 
-function Get-UniqIds {
+function Generate-Uids {
     $vswhere = Find-VsWhere
     $vspath = & $vswhere -legacy -latest -property installationPath
     $fsi = "$vspath\Common7\IDE\CommonExtensions\Microsoft\FSharp\fsi.exe"
@@ -175,8 +175,8 @@ function Invoke-Pack {
         }
     }
 
-    # Arguments.
-    $uids = Get-UniqIds
+    # Arguments for dotnet.exe.
+    $uids = Generate-Uids
     $buildNumber    = $uids[0]
     $revisionNumber = $uids[1]
     $serialNumber   = $uids[2]
@@ -190,6 +190,7 @@ function Invoke-Pack {
         $output = $PKG_EDGE_OUTDIR
         $args = "--version-suffix:EDGE$serialNumber"
     }
+
     if ($myVerbose) {
         $args = $args, "-p:DisplaySettings=true"
     }
@@ -198,8 +199,7 @@ function Invoke-Pack {
 
     # The command at last.
     # Do NOT use --no-restore or --no-build (option Safe removes everything).
-    & dotnet pack $proj -c $CONFIGURATION --nologo $args `
-        --output $output `
+    & dotnet pack $proj -c $CONFIGURATION --nologo $args --output $output `
         -p:TargetFrameworks='\"netstandard2.1;netstandard2.0;netstandard1.0;net461\"' `
         -p:BuildNumber=$buildNumber `
         -p:RevisionNumber=$revisionNumber `
@@ -229,16 +229,11 @@ try {
 
     if ($Retail -and (-not $NoTest)) { Invoke-Test }
 
-    if ($Retail) {
-        Invoke-Pack "Abc.Maybe" -Retail `
-            -Force:$Force.IsPresent `
-            -Safe:$Safe.IsPresent `
-            -MyVerbose:$MyVerbose.IsPresent
-    }
-    else {
-        # We use force to discard warnings about empty git infos.
-        Invoke-Pack "Abc.Maybe" -Force -MyVerbose:$MyVerbose.IsPresent
-    }
+    Invoke-Pack "Abc.Maybe" `
+        -Retail:$Retail.IsPresent `
+        -Force:$Force.IsPresent `
+        -Safe:$Safe.IsPresent `
+        -MyVerbose:$MyVerbose.IsPresent
 }
 catch {
     Croak ("An unexpected error occured: {0}." -f $_.Exception.Message) `

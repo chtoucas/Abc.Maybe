@@ -1,43 +1,16 @@
 <Project>
 
-  <!-- No longer in use -->
+  <!--
+    Obsolete.
+    We were using it to set PackageVersion for edge packages but MSBuild makes
+    it too difficult to override global properties.
+    We keep it as it describes the schema we used until 2020-04-30.
+   -->
 
   <PropertyGroup>
     <CodeTaskFactoryAssemblyFile>$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll</CodeTaskFactoryAssemblyFile>
   </PropertyGroup>
 
-  <!--
-    The algorithm used by .NET to auto-increment the assembly version is as
-    follows:
-    - The default build number increments daily.
-    - The default revision number is the number of seconds since midnight local
-      time (without taking into account time zone adjustments for daylight
-      saving time), divided by 2.
-
-    Remarks:
-    - This feature is only available to AssemblyVersion, not to
-      AssemblyFileVersion.
-    - During the same day, two builds may end up with the same assembly version.
-    - Build and revision numbers must be less than or equal to 65534
-      (UInt16.MaxValue - 1).
-
-    Here we implement a slighty different algorithm:
-    - We use it for AssemblyFileVersion not for AssemblyVersion.
-    - Use UTC time.
-    - The build number is the number of half-days since 2020-01-01 00:00:00
-      (minus one to start at zero).
-    - The revision number is the number of seconds since midnight in the morning
-      and since midday in the afternoon.
-
-    This way, there is less chance of getting the same numbers during a single
-    day on the same build machine. The scheme will break in approximately 89
-    years...
-
-    Worth reminding, if we used a scheme that simply incremented the build
-    numbers, we would generate a lot of unecessary holes in the sequence. Indeed
-    due to incremental batching a build might not do anything. That's a good
-    reason to use an algorithm depending only on the date and the time.
-  -->
   <UsingTask TaskName="GenerateBuildAndRevisionNumbers"
              TaskFactory="RoslynCodeTaskFactory"
              AssemblyFile="$(CodeTaskFactoryAssemblyFile)">
@@ -47,46 +20,22 @@
     </ParameterGroup>
     <Task>
       <Using Namespace="System" />
-      <Code Type="Fragment" Language="cs"><![CDATA[
-var start = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+var orig = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
 var now = DateTime.UtcNow;
-bool isMorning = now.Hour < 12;
+var am  = now.Hour < 12;
 
-var mid = new DateTime(now.Year, now.Month, now.Day, isMorning ? 0 : 12, 0, 0, DateTimeKind.Utc);
+var mon = new DateTime(now.Year, now.Month, now.Day, am ? 0 : 12, 0, 0, DateTimeKind.Utc);
 
-var halfDays = 2 * (now - start).Days - (isMorning ? 1 : 0);
-var seconds = (now - mid).TotalSeconds;
+var halfdays = 2 * (now - orig).Days - (am ? 1 : 0);
+var seconds  = (now - mon).TotalSeconds;
 
-BuildNumber = (ushort)(halfDays - 1);
+BuildNumber    = (ushort)(halfdays - 1);
 RevisionNumber = (ushort)seconds;
-      ]]></Code>
-    </Task>
-  </UsingTask>
-
-  <UsingTask TaskName="GenerateSerialNumber"
-             TaskFactory="RoslynCodeTaskFactory"
-             AssemblyFile="$(CodeTaskFactoryAssemblyFile)">
-    <ParameterGroup>
-      <BuildNumber ParameterType="System.UInt16" Output="false" />
-      <RevisionNumber ParameterType="System.UInt16" Output="false" />
-      <SerialNumber ParameterType="System.String" Output="true" />
-    </ParameterGroup>
-    <Task>
-      <Using Namespace="System" />
-      <Using Namespace="System.Globalization" />
-      <Code Type="Fragment" Language="cs"><![CDATA[
-// BuildNumber + "0...0" + RevisionNumber.
-var sn = BuildNumber.ToString(CultureInfo.InvariantCulture);
-
-var revisionString = RevisionNumber.ToString(CultureInfo.InvariantCulture);
-
-for (int i = 0; i < 5 - revisionString.Length; i++) { sn += "0"; }
-
-sn += revisionString;
-
-SerialNumber = sn;
-      ]]></Code>
+      ]]>
+      </Code>
     </Task>
   </UsingTask>
 

@@ -64,13 +64,13 @@ Pre action, for beta -or- production packages.
 
 1. New version in eng\Abc.Maybe.props
 2. Update CHANGELOG
-3. Run script eng\pack.ps1 -n -f
+3. Run script eng\pack.ps1 -n -f -r
 4. Git commit
-5. Run script eng\pack.ps1 -s
+5. Run script eng\pack.ps1 -s -r
 6. Publish package
 
 Post actions.
-a. Update the version of Abc.Maybe in src\integration\Directory.Build.targets,
+a. Update the version of Abc.Maybe in test\Directory.Build.targets,
    then run eng\post-check.ps1
 b. For production packages, git tag (??? before, to get the correct tag ???)
 
