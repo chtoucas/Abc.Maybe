@@ -285,3 +285,43 @@ function Get-GitBranch {
 
 #endregion
 ################################################################################
+#region VS-related functions.
+
+# & 'C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe' -?
+# https://aka.ms/vs/workloads for a list of workload (-requires)
+function Find-VsWhere {
+    Write-Verbose "Finding the vswhere command."
+
+    $vswhere = Get-Command "vswhere.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
+
+    if ($vswhere -ne $null) {
+        return $vswhere.Path
+    }
+
+    $path = "${ENV:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+    if (Test-Path $path) {
+        return $path
+    }
+    else {
+        Croak "Could not find vswhere."
+    }
+}
+
+function Find-MSBuild {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [string] $vswhere
+    )
+
+    $exe = & $vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe | select-object -first 1
+
+    if (-not $exe) {
+        Croak "Could not find MSBuild."
+    }
+
+    $exe
+}
+
+#endregion
+################################################################################
