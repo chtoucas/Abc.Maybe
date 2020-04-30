@@ -160,13 +160,13 @@ function Invoke-Test {
     SAY-LOUD "Testing ($framework)."
 
     if ($runtime) {
-        $arg = "--runtime:$runtime"
+        $args = "--runtime:$runtime"
     }
     else {
-        $arg = ""
+        $args = ""
     }
 
-    & dotnet test .\NETSdk\NETSdk.csproj -f $framework $arg /p:__Max=true --nologo -v q
+    & dotnet test .\NETSdk\NETSdk.csproj -f $framework $args /p:__Max=true --nologo -v q
 
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting $framework."
 }
@@ -181,13 +181,6 @@ function Invoke-TestMajor {
         [switch] $ClassicOnly,
         [switch] $CoreOnly
     )
-
-    if ($runtime) {
-        $arg = "--runtime:$runtime"
-    }
-    else {
-        $arg = ""
-    }
 
     if (-not $CoreOnly) {
         foreach ($fmk in $MajorClassic) {
@@ -219,17 +212,17 @@ function Invoke-TestAll {
     SAY-LOUD "Testing for all platforms."
 
     if ($runtime) {
-        $arg = "--runtime:$runtime"
+        $args = "--runtime:$runtime"
     }
     else {
-        $arg = ""
+        $args = ""
     }
 
     if ($Max) { $__max = "true" } else { $__max = "false" }
     if ($ClassicOnly) { $__classicOnly = "true" } else { $__classicOnly = "false" }
     if ($CoreOnly) { $__coreOnly = "true" } else { $__coreOnly = "false" }
 
-    & dotnet test .\NETSdk\NETSdk.csproj --nologo -v q $arg `
+    & dotnet test .\NETSdk\NETSdk.csproj --nologo -v q $args `
         /p:__Max=$__max `
         /p:__ClassicOnly=$__classicOnly `
         /p:__CoreOnly=$__coreOnly

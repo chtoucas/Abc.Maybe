@@ -132,11 +132,11 @@ function Invoke-Pack {
 
     SAY-LOUD "Packing."
 
-    $version = Get-PackageVersion $projectName
-    $proj = Join-Path $SRC_DIR $projectName -Resolve
-
     # Check dandling package file.
+    # In fact, we don't need to check if $retail is true, EDGE packages files
+    # have a timestamped name.
     if ($retail) {
+        $version = Get-PackageVersion $projectName
         $pkg = Join-Path $PKG_OUTDIR "$projectName.$version.nupkg"
 
         if (Test-Path $pkg) {
@@ -147,12 +147,6 @@ function Invoke-Pack {
             Remove-Item $pkg
         }
     }
-
-    # Get build info.
-    $uids = Get-UniqIds
-    $buildNumber    = $uids[0]
-    $revisionNumber = $uids[1]
-    $serialNumber   = $uids[2]
 
     # Find commit hash and branch.
     $commit = ""
@@ -181,6 +175,12 @@ function Invoke-Pack {
         }
     }
 
+    # Arguments.
+    $uids = Get-UniqIds
+    $buildNumber    = $uids[0]
+    $revisionNumber = $uids[1]
+    $serialNumber   = $uids[2]
+
     if ($retail) {
         $output = $PKG_OUTDIR
         $args = ""
@@ -194,6 +194,9 @@ function Invoke-Pack {
         $args = $args, "-p:DisplaySettings=true"
     }
 
+    $proj = Join-Path $SRC_DIR $projectName -Resolve
+
+    # The command at last.
     # Do NOT use --no-restore or --no-build (option Safe removes everything).
     & dotnet pack $proj -c $CONFIGURATION --nologo $args `
         --output $output `
