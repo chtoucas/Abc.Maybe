@@ -2,12 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>$(MaxApiPlatform);netstandard2.0</TargetFrameworks>
-
-    <!--
-      FIXME: RS0036, RS0037 and RS0041
-      https://github.com/dotnet/roslyn-analyzers/blob/master/src/PublicApiAnalyzers/Microsoft.CodeAnalysis.PublicApiAnalyzers.md
-    -->
-    <NoWarn>$(NoWarn);RS0036</NoWarn>
   </PropertyGroup>
 
   <Import Project="$(EngRoot)$(AssemblyName).props" Condition=" $(Retail) == 'true' " />
@@ -18,16 +12,12 @@
     <WarningsNotAsErrors>$(WarningsNotAsErrors);CS1591</WarningsNotAsErrors>
   </PropertyGroup>
 
-  <!-- Only enable for .NET Standard, no platform like net461 or netcoreapp3.1 -->
+  <!-- Only meaningful for .NET Standard, we still need to include MaxApiPlatform for VS -->
   <ItemGroup Condition=" $(TargetFramework) == 'netstandard2.0' ">
     <AdditionalFiles Include="PublicAPI\netstandard2.0\PublicAPI.Shipped.txt" />
     <AdditionalFiles Include="PublicAPI\netstandard2.0\PublicAPI.Unshipped.txt" />
   </ItemGroup>
-  <ItemGroup Condition=" $(TargetFramework) == 'netstandard2.1' ">
-    <AdditionalFiles Include="PublicAPI\netstandard2.1\PublicAPI.Shipped.txt" />
-    <AdditionalFiles Include="PublicAPI\netstandard2.1\PublicAPI.Unshipped.txt" />
-  </ItemGroup>
-  <ItemGroup Condition=" $(TargetFramework) == '$(MaxApiPlatform)' ">
+  <ItemGroup Condition=" $(TargetFramework) == 'netstandard2.1' or $(TargetFramework) == '$(MaxApiPlatform)' ">
     <AdditionalFiles Include="PublicAPI\netstandard2.1\PublicAPI.Shipped.txt" />
     <AdditionalFiles Include="PublicAPI\netstandard2.1\PublicAPI.Unshipped.txt" />
   </ItemGroup>
