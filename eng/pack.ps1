@@ -64,6 +64,8 @@ Usage: pack.ps1 [switches]
 "@
 }
 
+# ------------------------------------------------------------------------------
+
 function Get-PackageVersion {
     [CmdletBinding()]
     param(
@@ -89,6 +91,18 @@ function Get-PackageVersion {
     "$major.$minor.$patch-$prere"
 }
 
+function Get-UniqIds {
+    $vswhere = Find-VsWhere
+    $vspath = & $vswhere -legacy -latest -property installationPath
+    $fsi = "$vspath\Common7\IDE\CommonExtensions\Microsoft\FSharp\fsi.exe"
+
+    $uids = & $fsi "$PSScriptRoot\genuids.fsx"
+
+    $uids.Split(";")
+}
+
+# ------------------------------------------------------------------------------
+
 function Invoke-Test {
     SAY-LOUD "Testing."
 
@@ -101,7 +115,7 @@ function Invoke-Test {
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting net461."
 }
 
-# TODO: WIP
+# TODO: WIP, add all targets
 function Invoke-PackEDGE {
     [CmdletBinding()]
     param(
@@ -113,6 +127,12 @@ function Invoke-PackEDGE {
     SAY-LOUD "Packing EDGE."
 
     $proj = Join-Path $SRC_DIR $projectName -Resolve
+
+    # Get build info.
+    $uids = Get-UniqIds
+    $buildNumber    = $uids[0]
+    $revisionNumber = $uids[1]
+    $serialNumber   = $uids[2]
 
     # Find commit hash and branch.
     $commit = ""
@@ -126,10 +146,13 @@ function Invoke-PackEDGE {
         if ($branch -eq "") { Carp "The branch name will be empty." }
     }
 
-    & dotnet pack $proj -c $CONFIGURATION --nologo -v n `
+    & dotnet pack $proj -c $CONFIGURATION --nologo `
         --output $PKG_EDGE_OUTDIR `
         -p:DisplaySettings=true `
         -p:TargetFrameworks=netstandard2.0 `
+        -p:BuildNumber=$buildNumber `
+        -p:RevisionNumber=$revisionNumber `
+        -p:SerialNumber=$serialNumber `
         -p:RepositoryCommit=$commit `
         -p:RepositoryBranch=$branch `
         -p:Retail=true `
@@ -165,6 +188,12 @@ function Invoke-Pack {
         Remove-Item $pkg
     }
 
+    # Get build info.
+    $uids = Get-UniqIds
+    $buildNumber    = $uids[0]
+    $revisionNumber = $uids[1]
+    $serialNumber   = $uids[2]
+
     # Find commit hash and branch.
     $commit = ""
     $branch = ""
@@ -197,6 +226,9 @@ function Invoke-Pack {
         --output $PKG_OUTDIR `
         -p:DisplaySettings=true `
         -p:TargetFrameworks='\"netstandard2.1;netstandard2.0;netstandard1.0;net461\"' `
+        -p:BuildNumber=$buildNumber `
+        -p:RevisionNumber=$revisionNumber `
+        -p:SerialNumber=$serialNumber `
         -p:RepositoryCommit=$commit `
         -p:RepositoryBranch=$branch `
         -p:Retail=true

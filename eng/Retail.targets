@@ -1,31 +1,38 @@
-<Project InitialTargets="__CheckRetailTargets">
-
-  <Import Project="$(MSBuildThisFileDirectory)Retail.tasks" />
+<Project TreatAsLocalProperty="PackageVersion;InformationalVersion"
+         InitialTargets="__CheckRetailTargets">
 
   <PropertyGroup>
     <!--
       Versioning.
+        PackageVersion       = Major.Minor.Patch-(PreReleaseTag or EDGE.SerialNumber)
+
         AssemblyVersion      = Major.Minor.0.0
-        PackageVersion       = Major.Minor.Patch-PreReleaseTag
-        InformationalVersion = Major.Minor.Patch-PreReleaseTag+BuildMetadata
-        FileVersion          = Major.Minor.BuildNumber.RevisionNumber
+        FileVersion          = Major.Minor.Build.Revision
+        InformationalVersion = Major.Minor.Patch-PreReleaseTag+ShortCommitHash
 
         MSBuild task:
         https://github.com/dotnet/sdk/blob/master/src/Tasks/Microsoft.NET.Build.Tasks/targets/Microsoft.NET.DefaultAssemblyInfo.targets
         https://github.com/dotnet/sdk/blob/master/src/Tasks/Microsoft.NET.Build.Tasks/targets/Microsoft.NET.GenerateAssemblyInfo.targets
-      -->
-    <!-- We use the abbreviated git commit hash (first seven chars) -->
-    <BuildMetadata Condition=" $(RepositoryCommit) != '' ">$(RepositoryCommit.Substring(0, 7))</BuildMetadata>
-    <!-- Semantic version -->
-    <SemanticVersion>$(MajorVersion).$(MinorVersion).$(PatchVersion)</SemanticVersion>
-    <SemanticVersion Condition=" $(PreReleaseTag) != '' ">$(SemanticVersion)-$(PreReleaseTag)</SemanticVersion>
-    <SemanticVersion Condition=" $(BuildMetadata) != '' ">$(SemanticVersion)+$(BuildMetadata)</SemanticVersion>
+    -->
+
+    <NoWarn Condition=" $(EDGE) == 'true' ">$(NoWarn);NU5105</NoWarn>
+
     <!-- Package version -->
     <VersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</VersionPrefix>
-    <VersionSuffix>$(PreReleaseTag)</VersionSuffix>
+    <VersionSuffix Condition=" $(EDGE) != 'true' ">$(PreReleaseTag)</VersionSuffix>
+    <VersionSuffix Condition=" $(EDGE) == 'true' ">EDGE.$(SerialNumber)</VersionSuffix>
+
     <!-- Assembly version -->
     <AssemblyVersion>$(MajorVersion).$(MinorVersion).0.0</AssemblyVersion>
-    <InformationalVersion>$(SemanticVersion)</InformationalVersion>
+    <FileVersion>$(MajorVersion).$(MinorVersion).$(BuildNumber).$(RevisionNumber)</FileVersion>
+
+    <!--
+      Informational version = semantic version.
+      We use the abbreviated git commit hash (first seven chars).
+    -->
+    <InformationalVersion>$(MajorVersion).$(MinorVersion).$(PatchVersion)</InformationalVersion>
+    <InformationalVersion Condition=" $(PreReleaseTag) != '' ">$(InformationalVersion)-$(PreReleaseTag)</InformationalVersion>
+    <InformationalVersion Condition=" $(RepositoryCommit) != '' ">$(InformationalVersion)+$(RepositoryCommit.Substring(0, 7))</InformationalVersion>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -33,55 +40,14 @@
     <Description>$(Title) Built [$([System.DateTime]::UtcNow.ToString("r"))].</Description>
   </PropertyGroup>
 
-  <Target Name="GenerateBuildAndRevisionNumbers">
-    <GenerateBuildAndRevisionNumbers>
-      <Output TaskParameter="BuildNumber" PropertyName="__BuildNumber"/>
-      <Output TaskParameter="RevisionNumber" PropertyName="__RevisionNumber"/>
-    </GenerateBuildAndRevisionNumbers>
-  </Target>
-
-  <Target Name="GenerateSerialNumber" DependsOnTargets="GenerateBuildAndRevisionNumbers">
-    <GenerateSerialNumber BuildNumber="$(__BuildNumber)" RevisionNumber="$(__RevisionNumber)">
-      <Output TaskParameter="SerialNumber" PropertyName="__SerialNumber"/>
-    </GenerateSerialNumber>
-  </Target>
-
-  <Target Name="__SetAssemblyFileVersion"
-          BeforeTargets="GetAssemblyAttributes"
-          DependsOnTargets="GenerateBuildAndRevisionNumbers">
-    <!-- This target must run very early (before Build is not enough) -->
-    <Message Text="Setting assembly file version." Importance="normal" />
-
-    <PropertyGroup>
-      <FileVersion>$(MajorVersion).$(MinorVersion).$(__BuildNumber).$(__RevisionNumber)</FileVersion>
-    </PropertyGroup>
-  </Target>
-
-  <Target Name="__PatchVersion"
-          Condition=" $(EDGE) == 'true' "
-          AfterTargets="__SetAssemblyFileVersion"
-          DependsOnTargets="GenerateSerialNumber">
-    <Message Text="EDGE package: tagging versions." Importance="high" />
-
-    <PropertyGroup>
-      <NoWarn>$(NoWarn);NU5105</NoWarn>
-      <_VersionSuffix Condition=" $(VersionSuffix) != '' ">-$(VersionSuffix)</_VersionSuffix>
-      <_MetadataInfix Condition=" $(BuildMetadata) == '' ">+</_MetadataInfix>
-      <_MetadataInfix Condition=" $(BuildMetadata) != '' ">.</_MetadataInfix>
-
-      <!-- FIXME: unabled to override the global prop PackageVersion -->
-      <PackageVersion>$(VersionPrefix)$(_VersionSuffix)+edge.$(__SerialNumber)</PackageVersion>
-      <InformationalVersion>$(InformationalVersion)$(_MetadataInfix)edge.$(__SerialNumber)</InformationalVersion>
-    </PropertyGroup>
-
-    <Message Text="PackageVersion = $(PackageVersion)." Importance="high" />
-    <Message Text="InformationalVersion = $(InformationalVersion)." Importance="high" />
-  </Target>
-
   <Target Name="__CheckRetailTargets">
     <Error Text="Property MajorVersion is empty." Condition=" $(MajorVersion) == '' " />
     <Error Text="Property MinorVersion is empty." Condition=" $(MinorVersion) == '' " />
     <Error Text="Property PatchVersion is empty." Condition=" $(PatchVersion) == '' " />
+
+    <Error Text="Property BuildNumber is empty." Condition=" $(BuildNumber) == '' " />
+    <Error Text="Property RevisionNumber is empty." Condition=" $(RevisionNumber) == '' " />
+    <Error Text="Property SerialNumber is empty." Condition=" $(SerialNumber) == '' " />
 
     <Warning Text="Property Title is empty." Condition=" $(Title) == '' " />
     <PropertyGroup Condition=" $(Title) == '' ">
