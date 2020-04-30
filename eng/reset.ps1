@@ -28,6 +28,7 @@ try {
         Say "  Deleting 'bin' and 'obj' directories."
 
         Remove-BinAndObj $SRC_DIR
+        Remove-BinAndObj $TEST_OUTDIR
     }
 }
 catch {

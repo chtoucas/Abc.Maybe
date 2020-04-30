@@ -255,15 +255,13 @@ $MajorCore =`
 try {
     Approve-RepositoryRoot
 
-    $testdir = Join-Path $ROOT_DIR "test" -Resolve
-
-    pushd $testdir
+    pushd $TEST_OUTDIR
 
     if ($Safe) {
         if (Confirm-Yes "Hard clean?") {
             Say "  Deleting 'bin' and 'obj' directories."
 
-            Remove-BinAndObj $testdir
+            Remove-BinAndObj $TEST_OUTDIR
         }
     }
 
