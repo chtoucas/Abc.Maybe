@@ -114,14 +114,30 @@ function Invoke-PackEDGE {
 
     $proj = Join-Path $SRC_DIR $projectName -Resolve
 
-    & dotnet pack $proj -c $CONFIGURATION --nologo `
+    # Find commit hash and branch.
+    $commit = ""
+    $branch = ""
+    $git = Find-GitExe
+    if ($git -ne $null) {
+        Approve-GitStatus $git | Out-Null
+        $commit = Get-GitCommitHash $git
+        $branch = Get-GitBranch $git
+        if ($commit -eq "") { Carp "The commit hash will be empty." }
+        if ($branch -eq "") { Carp "The branch name will be empty." }
+    }
+
+    & dotnet pack $proj -c $CONFIGURATION --nologo -v n `
         --output $PKG_EDGE_OUTDIR `
         -p:DisplaySettings=true `
         -p:TargetFrameworks=netstandard2.0 `
+        -p:RepositoryCommit=$commit `
+        -p:RepositoryBranch=$branch `
         -p:Retail=true `
         -p:EDGE=true
 
     Assert-CmdSuccess -ErrMessage "Pack EDGE task failed."
+
+    Chirp "The package is here: $PKG_EDGE_OUTDIR."
 }
 
 function Invoke-Pack {
@@ -181,9 +197,9 @@ function Invoke-Pack {
         --output $PKG_OUTDIR `
         -p:DisplaySettings=true `
         -p:TargetFrameworks='\"netstandard2.1;netstandard2.0;netstandard1.0;net461\"' `
-        -p:Retail=true `
         -p:RepositoryCommit=$commit `
-        -p:RepositoryBranch=$branch
+        -p:RepositoryBranch=$branch `
+        -p:Retail=true
 
     Assert-CmdSuccess -ErrMessage "Pack task failed."
 
