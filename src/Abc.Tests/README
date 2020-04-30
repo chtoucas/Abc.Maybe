@@ -1,0 +1,31 @@
+README
+------
+
+- Do not hesitate to test the obvious and to write redundant tests.
+- Test what's not supposed to work too, eg misuses.
+- Tests should provide samples.
+
+Naming tests and grouping them are here to help us to find the relevant test
+cases and, more importantly, spot the missing ones. The only real rule is that
+what does a test should be easily understandable from the name.
+Anyway, in general, we use the following pattern for unit tests:
+- Property or method name, followed by
+- Instance, followed by
+- Expectation, followed by
+- "With" for parameters, followed by
+- "For" for generic parameters, followed by
+- "When" for specific conditions
+
+Testing with or without NRTs
+- T : notnull
+- T? where T : class
+Postfix the test method with _WithoutNRTs.
+Prefer Assert.Equal() to Assert.Some()/None(); we want to see the return type.
+Instead of using a #pragma to disable the warnings
+- CS8600 Converting null literal or possible null value to non-nullable type
+- CS8620  Argument cannot be used for parameter due to differences in the nullability of reference types.
+- CS8714  The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'notnull' constraint.
+I prefer to use the #nullable driective to disable annotations or warnings (this
+is more explicit about what's going on).
+These tests are really unnecessary, but I wish to see the methods at work in a
+context where NRTs is disabled and ensure that they truely make sense.
