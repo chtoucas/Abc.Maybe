@@ -32,8 +32,10 @@ try {
     }
 }
 catch {
-    Croak ("An unexpected error occured: {0}." -f $_.Exception.Message) `
-        -StackTrace $_.ScriptStackTrace
+    Write-Host $_
+    Write-Host $_.Exception
+    Write-Host $_.ScriptStackTrace
+    exit 1
 }
 finally {
     popd

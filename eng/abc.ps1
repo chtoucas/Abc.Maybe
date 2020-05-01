@@ -34,9 +34,12 @@ $ErrorActionPreference = "Stop"
 # Packages directories (no -Resolve, it might not exist yet).
 (Join-Path $ARTIFACTS_DIR "packages") `
     | New-Variable -Name "PKG_OUTDIR" -Scope Script -Option Constant
-
 (Join-Path $ARTIFACTS_DIR "packages-edge") `
     | New-Variable -Name "PKG_EDGE_OUTDIR" -Scope Script -Option Constant
+
+# Local NuGet feed.
+(Join-Path $ARTIFACTS_DIR "nuget-feed") `
+    | New-Variable -Name "NUGET_LOCAL_FEED" -Scope Script -Option Constant
 
 # ------------------------------------------------------------------------------
 
@@ -105,16 +108,12 @@ function Croak {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $Message,
-
-        [string] $StackTrace
+        [string] $Message
     )
 
     # We don't write the message to the error stream (we use Write-Host not
     # Write-Error).
     Write-Host $Message -BackgroundColor Red -ForegroundColor Yellow
-
-    if ($StackTrace -ne "") { Write-Host $StackTrace -ForegroundColor Yellow }
     exit 1
 }
 
@@ -311,6 +310,8 @@ function Find-VsWhere {
     if ($vswhere -ne $null) {
         return $vswhere.Path
     }
+
+    Write-Verbose "vswhere.exe could not be found in your PATH."
 
     $path = "${ENV:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
     if (Test-Path $path) {

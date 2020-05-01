@@ -125,7 +125,8 @@ function Invoke-OpenCover {
         -target:dotnet.exe `
         -targetargs:"test -v quiet -c $CONFIGURATION --no-restore /p:DebugType=Full" `
         -filter:$filter `
-        -excludebyattribute:*.ExcludeFromCodeCoverageAttribute
+        -excludebyattribute:*.ExcludeFromCodeCoverageAttribute `
+        | Out-Host
 
     Assert-CmdSuccess -ErrMessage "OpenCover failed."
 }
@@ -144,7 +145,8 @@ function Invoke-Coverlet([string] $output) {
         /p:CoverletOutputFormat=opencover `
         /p:CoverletOutput=$output `
         /p:Include="[Abc.Maybe]*" `
-        /p:Exclude=$exclude
+        /p:Exclude=$exclude `
+        | Out-Host
 
     Assert-CmdSuccess -ErrMessage "Coverlet failed."
 }
@@ -156,7 +158,8 @@ function Invoke-ReportGenerator([string] $reports, [string] $targetdir) {
         -verbosity:Warning `
         -reporttypes:"HtmlInline;Badges;TextSummary" `
         -reports:$reports `
-        -targetdir:$targetdir
+        -targetdir:$targetdir `
+        | Out-Host
 
     Assert-CmdSuccess -ErrMessage "ReportGenerator failed."
 }
@@ -214,8 +217,10 @@ try {
     }
 }
 catch {
-    Croak ("An unexpected error occured: {0}." -f $_.Exception.Message) `
-        -StackTrace $_.ScriptStackTrace
+    Write-Host $_
+    Write-Host $_.Exception
+    Write-Host $_.ScriptStackTrace
+    exit 1
 }
 finally {
     popd

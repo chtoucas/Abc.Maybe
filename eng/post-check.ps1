@@ -139,10 +139,10 @@ function Invoke-TestOldStyle {
     $proj = $framework.ToUpper()
 
     # https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2019
-    & $msbuild .\$proj\$proj.csproj -v:minimal /t:"Restore;Build"
+    & $msbuild .\$proj\$proj.csproj -v:minimal /t:"Restore;Build" | Out-Host
     Assert-CmdSuccess -ErrMessage "Build task failed when targeting $framework."
 
-    & $xunit .\$proj\bin\Release\$proj.dll
+    & $xunit .\$proj\bin\Release\$proj.dll | Out-Host
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting $framework."
 }
 
@@ -166,7 +166,9 @@ function Invoke-Test {
         $args = ""
     }
 
-    & dotnet test .\NETSdk\NETSdk.csproj -f $framework $args /p:__Max=true --nologo -v q
+    & dotnet test .\NETSdk\NETSdk.csproj -f $framework $args `
+        /p:__Max=true --nologo -v q `
+        | Out-Host
 
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting $framework."
 }
@@ -225,7 +227,8 @@ function Invoke-TestAll {
     & dotnet test .\NETSdk\NETSdk.csproj --nologo -v q $args `
         /p:__Max=$__max `
         /p:__ClassicOnly=$__classicOnly `
-        /p:__CoreOnly=$__coreOnly
+        /p:__CoreOnly=$__coreOnly `
+        | Out-Host
 
     Assert-CmdSuccess -ErrMessage "Test ALL task failed."
 
@@ -293,8 +296,10 @@ try {
     }
 }
 catch {
-    Croak ("An unexpected error occured: {0}." -f $_.Exception.Message) `
-        -StackTrace $_.ScriptStackTrace
+    Write-Host $_
+    Write-Host $_.Exception
+    Write-Host $_.ScriptStackTrace
+    exit 1
 }
 finally {
     popd
