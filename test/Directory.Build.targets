@@ -35,9 +35,15 @@
     <HashCodePkg Condition=" $(TargetFramework) == 'net46' ">false</HashCodePkg>
   </PropertyGroup>
 
+  <ItemGroup Condition=" $(EDGE) == 'true' ">
+    <PackageReference Include="Abc.Maybe" Version="1.0.0-edge.24222690" />
+  </ItemGroup>
+  <ItemGroup Condition=" $(EDGE) != 'true' ">
+    <PackageReference Include="Abc.Maybe" Version="1.0.0-beta4" />
+  </ItemGroup>
+
   <!-- Dependencies -->
   <ItemGroup>
-    <PackageReference Include="Abc.Maybe" Version="1.0.0-beta4" />
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0" Condition=" $(HashCodePkg) != 'false' " />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="xunit" Version="2.4.1" />

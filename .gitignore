@@ -3,8 +3,10 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+nuget.exe
 xunit.trx
 __/coverlet
+__/nuget-feed
 __/opencover
 __/packages
 __/packages-edge

@@ -237,6 +237,7 @@ function Invoke-Pack {
     Assert-CmdSuccess -ErrMessage "Pack task failed."
 
     if ($retail) {
+        # REVIEW: add an option to publish the package for us?
         Chirp "To publish the package:"
         Chirp "> dotnet nuget push $pkg -s https://www.nuget.org/ -k MYKEY"
     }
