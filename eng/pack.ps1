@@ -179,6 +179,7 @@ function Test-PackageFile {
         Carp "A package with the same version ($version) already exists."
         Confirm-Continue "Do you wish to proceed anyway?"
 
+        # Not necessary, dotnet will remove it, but I prefer to play safe.
         Say "  The old package file will be removed now."
         Remove-Item $package
     }

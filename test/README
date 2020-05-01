@@ -12,22 +12,25 @@ Of course, one can still use the dotnet command-line directly:
 Beware, this won't work with the projects NET45 and NET451 which use pre-SDK
 project files.
 
-See packages (we use net48, but any other would do the job).
+See packages CURRENTLY restored (we use net48, but any other would do the job).
 > dotnet list NETSdk package --framework net48
-See outdated packages
+
+Search outdated packages
 To see what is the last edge version of Abc.Maybe.
 Beware, you MUST be in the directory "test" (relative path
 > dotnet list NETSdk package --framework net48 --outdated --include-prerelease
 
-## Default version.
-Default restore (not necessary).
+Restore packages (not necessary).
+WARNING: if __\nuget-feed\ is not empty, it will use it too.
 > dotnet restore NETSdk
+
 Default build for net48.
 > dotnet build NETSdk -f net48
 
 ## Specific version.
 Default restore (not necessary).
 > dotnet restore NETSdk /p:AbcVersion=1.0.0-edge.24241460
+
 Build with specific version in mind.
 > dotnet build NETSdk -f net48 /p:AbcVersion=1.0.0-edge.24241460
 
