@@ -16,22 +16,28 @@ See outdated packages (we use net48, but any other one would do the job).
 > dotnet list NETSdk package --framework net48
 To see what is the last edge version of Abc.Maybe.
 Beware, you MUST be in the directory "test" (relative path).
-> dotnet list NETSdk package --framework net48 --config .\NuGet.relative.Config --outdated
+> dotnet list NETSdk package --framework net48 --config .\NuGet.local.Config --outdated
 
+## Default version.
+Default restore (not necessary).
+> dotnet restore NETSdk
+Default build for net48.
+> dotnet build NETSdk -f net48
 
-
+## Specific version.
+Default restore (not necessary).
+> dotnet restore NETSdk /p:AbcVersion=1.0.0-edge.24241460
+Build with specific version in mind.
+> dotnet build NETSdk -f net48 /p:AbcVersion=1.0.0-edge.24241460
 
 
 Restore packages.
-> dotnet restore .\NETSdk\ --configfile .\NuGet.relative.Config
+> dotnet restore .\NETSdk\ --configfile .\NuGet.local.Config
 
+nuget.exe install Abc.Maybe -Version 1.0.0-edge.2438389 -OutputDirectory ..\__\nuget-cache\
 
-
-
-
+# Ne semble pas marcher en local.
 nuget.exe list -Source C:\opt\code-github\Abc.Maybe\__\nuget-feed\
-
-nuget.exe install Abc.Maybe -Version 1.0.0-edge.24222690 -OutputDirectory .\__\nuget-packages\
 
 https://github.com/NuGet/Home/wiki/%5BSpec%5D-Fallback-package-folders
 https://docs.microsoft.com/en-us/nuget/reference/nuget-config-file
