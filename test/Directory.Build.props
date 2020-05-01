@@ -22,4 +22,8 @@
     <DefineConstants>$(DefineConstants);TRACE;CONTRACTS_FULL</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <RestorePackagesPath>$(MSBuildThisFileDirectory)../__/nuget-cache/</RestorePackagesPath>
+  </PropertyGroup>
+
 </Project>

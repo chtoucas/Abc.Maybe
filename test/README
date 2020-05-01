@@ -63,7 +63,13 @@ last restored version we must use the option --no-restore.
   > dotnet list NETSdk package --framework net48
   NETSdk uses the last restored version: 1.0.0-edge.24241460.
 
-
+https://docs.microsoft.com/en-us/nuget/consume-packages/package-restore#force-restore-from-package-sources
+https://docs.microsoft.com/en-us/nuget/consume-packages/managing-the-global-packages-and-cache-folders
+<PropertyGroup>
+  <RestoreSources>XXX</RestoreSources>
+  <RestorePackagesPath>YYY</RestorePackagesPath>
+  <RestoreNoCache>true</RestoreNoCache>
+</PropertyGroup>
 
 Add an edge package to the local cache.
   > nuget install Abc.Maybe -Version 1.0.0-edge.24241460 -OutputDirectory .\__\nuget-cache\
@@ -78,3 +84,7 @@ https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-nuget-add-source
 https://docs.microsoft.com/en-us/nuget/hosting-packages/local-feeds
 https://docs.microsoft.com/en-us/nuget/reference/cli-reference/cli-ref-sources
 https://medium.com/@churi.vibhav/creating-and-using-a-local-nuget-package-repository-9f19475d6af8
+
+https://docs.microsoft.com/en-us/nuget/consume-packages/package-restore#force-restore-from-package-sources
+https://github.com/dotnet/runtime/issues/3764
+https://stackoverflow.com/questions/43400069/dotnet-add-package-with-local-package-file
