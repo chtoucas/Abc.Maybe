@@ -72,29 +72,6 @@ Usage: pack.ps1 [switches]
 
 # ------------------------------------------------------------------------------
 
-function Find-Nuget {
-    [CmdletBinding()]
-    param()
-
-    Write-Verbose "Finding the local nuget.exe."
-
-    $nuget = Get-Command "nuget.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
-
-    if ($nuget -ne $null) {
-        return $nuget.Path
-    }
-
-    Write-Verbose "nuget.exe could not be found in your PATH."
-
-    $path = Join-Path $ENG_DIR "nuget.exe"
-    if (Test-Path $path) {
-        return $path
-    }
-    else {
-        return $null
-    }
-}
-
 function Get-PackageVersion {
     [CmdletBinding()]
     param(

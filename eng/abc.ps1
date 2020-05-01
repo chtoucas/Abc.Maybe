@@ -300,6 +300,29 @@ function Get-GitBranch {
 ################################################################################
 #region VS-related functions.
 
+function Find-Nuget {
+    [CmdletBinding()]
+    param()
+
+    Write-Verbose "Finding the local nuget.exe."
+
+    $nuget = Get-Command "nuget.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
+
+    if ($nuget -ne $null) {
+        return $nuget.Path
+    }
+
+    Write-Verbose "nuget.exe could not be found in your PATH."
+
+    $path = Join-Path $ROOT_DIR "nuget.exe"
+    if (Test-Path $path) {
+        return $path
+    }
+    else {
+        return $null
+    }
+}
+
 # & 'C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe' -?
 # https://aka.ms/vs/workloads for a list of workload (-requires)
 function Find-VsWhere {
