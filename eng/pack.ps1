@@ -185,23 +185,6 @@ function Test-PackageFile {
     }
 }
 
-function Publish-Local {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $package
-    )
-
-    $nuget = Find-Nuget
-    if ($nuget -eq $null) {
-        Croak "Cannot publish package to the local feed: couldn't find nuget.exe. "
-    }
-
-    & $nuget add $package -source $NUGET_LOCAL_FEED | Out-Host
-    Assert-CmdSuccess -ErrMessage "Failed to publish package to local feed."
-}
-
 # ------------------------------------------------------------------------------
 
 function Invoke-Test {
@@ -241,7 +224,7 @@ function Invoke-Pack {
     else {
         # For EDGE packages, we use a custom prerelease label (SemVer 2.0.0).
         if ($prere -eq "") {
-            # TODO: what to do if $prere = "rc".
+            # TODO: what should we do when $prere = "rc".
             # If the current version does not have a prerelease label, we
             # increase the patch number to guarantee a version higher than the
             # public one.
@@ -303,14 +286,19 @@ function Invoke-Publish {
     )
 
     if ($retail) {
-        # TODO: add an option to publish the package for us?
-        # --interactive
-        # --skip-duplicate (not necessary it is for multiple packages)
-        Chirp "To publish the package:"
-        Chirp "> dotnet nuget push $package -s https://www.nuget.org/ -k MYKEY"
+        # TODO: add an option to publish the package for us? --interactive
+        if (Confirm-Yes "Do you want me to publish the package for you?") {
+            Carp "Not yet implemented."
+            Chirp "> dotnet nuget push $package -s https://www.nuget.org/ -k MYKEY"
+        }
+        else {
+            Chirp "To publish the package:"
+            Chirp "> dotnet nuget push $package -s https://www.nuget.org/ -k MYKEY"
+        }
     }
     else {
-        Publish-Local $package
+        & dotnet nuget push $package -s $NUGET_LOCAL_FEED | Out-Host
+        Assert-CmdSuccess -ErrMessage "Failed to publish package to local feed."
 
         Chirp "EDGE package successfully installed."
     }

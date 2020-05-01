@@ -1,9 +1,5 @@
 <Project>
 
-  <PropertyGroup>
-    <AbcVersion>[1.0.0-beta4,)</AbcVersion>
-  </PropertyGroup>
-
   <!-- Old style project files, we must set a few things manually -->
   <PropertyGroup Condition=" $(TargetFrameworkVersion) == 'v4.5' ">
     <TargetFramework>net45</TargetFramework>
