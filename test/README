@@ -3,48 +3,73 @@ README
 
 The actual test project is not here but in "src" and is called Abc.Tests.
 
-Projects here are meant to work with "eng\post-check.ps1".
+Projects here are really meant to work with "eng\post-check.ps1".
 
 Of course, one can still use the dotnet command-line directly:
-> dotnet build NETSdk
-> dotnet build NETSdk /p:__Max=true
-> dotnet test NETSdk -f net48
+  > dotnet build NETSdk
+  > dotnet build NETSdk /p:__Max=true
+  > dotnet test NETSdk -f net48
 Beware, this won't work with the projects NET45 and NET451 which use pre-SDK
 project files.
 
-See packages CURRENTLY restored (we use net48, but any other would do the job).
-> dotnet list NETSdk package --framework net48
+At any time, we can see the versions in use:
+  > dotnet list NETSdk package --framework net48
+We can also look for outdated packages
+  > dotnet list NETSdk package --framework net48 --outdated --include-prerelease
+We used net48, but any other would do the job.
 
-Search outdated packages
-To see what is the last edge version of Abc.Maybe.
-Beware, you MUST be in the directory "test" (relative path
-> dotnet list NETSdk package --framework net48 --outdated --include-prerelease
+## Default version or a specific one.
 
-Restore packages (not necessary).
-WARNING: if __\nuget-feed\ is not empty, it will use it too.
-> dotnet restore NETSdk
+Default version (the one listed in Directory.Build.props).
+  > dotnet restore NETSdk -v n
+  > dotnet build NETSdk
+  > dotnet build NETSdk -f net48
+At any time, we can see the versions in use:
+  > dotnet list NETSdk package --framework net48
 
-Default build for net48.
-> dotnet build NETSdk -f net48
+Restore accepts params /p: and -v,
+  > dotnet restore NETSdk -v n /p:__Max=true
+  > dotnet restore NETSdk -v n /p:AbcVersion=1.0.0-edge.24241460
+  > dotnet restore NETSdk -v n /p:__Max=true /p:AbcVersion=1.0.0-edge.24241460
+Build accepts params /p: (net46 requires __Max, -v is available but too verbose),
+  > dotnet build NETSdk /p:__Max=true
+  > dotnet build NETSdk /p:__Max=true -f net46
+  > dotnet build NETSdk /p:__Max=true -f net46 /p:AbcVersion=1.0.0-edge.24241460
+List package does NOT accept params /p: and -v.
 
-## Specific version.
-Default restore (not necessary).
-> dotnet restore NETSdk /p:AbcVersion=1.0.0-edge.24241460
+## Restore/build traps.
 
-Build with specific version in mind.
-> dotnet build NETSdk -f net48 /p:AbcVersion=1.0.0-edge.24241460
+We can restore w/ a specific version in mind, but if the next build does not
+specify a version, it will revert to the default version. If we wish to use the
+last restored version we must use the option --no-restore.
+- If we restore without /p:AbcVersion
+  > dotnet restore NETSdk -v n
+  > dotnet list NETSdk package --framework net48
+  NETSdk uses the default version (no surprise).
+- If we restore with /p:AbcVersion
+  > dotnet restore NETSdk -v n /p:AbcVersion=1.0.0-edge.24241460
+  > dotnet list NETSdk package --framework net48
+  NETSdk uses version 1.0.0-edge.24241460 (no surprise).
+- If we build without /p:AbcVersion
+  > dotnet build NETSdk -f net48
+  > dotnet list NETSdk package --framework net48
+  **NETSdk is back to the _default_ version**
+- If we restore with /p:AbcVersion
+  > dotnet build NETSdk -f net48 /p:AbcVersion=1.0.0-edge.24241460
+  > dotnet list NETSdk package --framework net48
+  NETSdk uses version 1.0.0-edge.24241460.
+- If we build without /p:AbcVersion BUT with --no-restore
+  > dotnet build NETSdk -f net48 --no-restore
+  > dotnet list NETSdk package --framework net48
+  NETSdk uses the last restored version: 1.0.0-edge.24241460.
 
-## Add an edge package to the local cache.
-> nuget install Abc.Maybe -Version 1.0.0-edge.24241460 -OutputDirectory .\__\nuget-cache\
 
 
+Add an edge package to the local cache.
+  > nuget install Abc.Maybe -Version 1.0.0-edge.24241460 -OutputDirectory .\__\nuget-cache\
 
-
-> dotnet list NETSdk package --framework net48 --config .\NuGet.local.Config --outdated
-> dotnet restore .\NETSdk\ --configfile .\NuGet.local.Config
-
-# Ne semble pas marcher en local.
-nuget.exe list -Source C:\opt\code-github\Abc.Maybe\__\nuget-feed\
+Does not work with a local folder?
+  > nuget list -Source C:\opt\code-github\Abc.Maybe\__\nuget-feed\
 
 https://docs.microsoft.com/en-us/nuget/consume-packages/configuring-nuget-behavior
 https://github.com/NuGet/Home/wiki/%5BSpec%5D-Fallback-package-folders
