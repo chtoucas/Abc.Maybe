@@ -1,6 +1,10 @@
-<Project>
+<Project InitialTargets="__CheckAssemblyPropertyFile">
 
-  <Import Project="$(MSBuildThisFileDirectory)$(AssemblyName).props" />
+  <PropertyGroup>
+    <__AssemblyPropertyFile>$(MSBuildThisFileDirectory)$(AssemblyName).props</__AssemblyPropertyFile>
+  </PropertyGroup>
+
+  <Import Project="$(__AssemblyPropertyFile)" />
 
   <PropertyGroup>
     <BuildNumber Condition=" $(BuildNumber) == '' ">$(PatchVersion)</BuildNumber>
@@ -23,5 +27,10 @@
     <!-- NB: the default AssemblyTitle uses AssemblyName not Title -->
     <Description>$(Title) Built [$([System.DateTime]::UtcNow.ToString("r"))].</Description>
   </PropertyGroup>
+
+  <Target Name="__CheckAssemblyPropertyFile">
+    <Error Text="File '$(__AssemblyPropertyFile)' does not exists."
+           Condition="!Exists('$(__AssemblyPropertyFile)')" />
+  </Target>
 
 </Project>
