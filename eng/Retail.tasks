@@ -1,11 +1,6 @@
 <Project>
 
-  <!--
-    Obsolete.
-    We were using it to set PackageVersion for edge packages but MSBuild makes
-    it too difficult to override global properties.
-    We keep it as it describes the schema we used until 2020-04-30.
-   -->
+  <!-- Obsolete, we keep it as it describes the schema we used until 2020-04-30 -->
 
   <PropertyGroup>
     <CodeTaskFactoryAssemblyFile>$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll</CodeTaskFactoryAssemblyFile>
@@ -38,6 +33,5 @@ RevisionNumber = (ushort)seconds;
       </Code>
     </Task>
   </UsingTask>
-
 
 </Project>

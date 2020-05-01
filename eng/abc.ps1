@@ -38,6 +38,8 @@ $ErrorActionPreference = "Stop"
 (Join-Path $ARTIFACTS_DIR "packages-edge") `
     | New-Variable -Name "PKG_EDGE_OUTDIR" -Scope Script -Option Constant
 
+# ------------------------------------------------------------------------------
+
 function Approve-RepositoryRoot {
     if (-not [System.IO.Path]::IsPathRooted($ROOT_DIR)) {
         Croak "The root path MUST be absolute."
@@ -54,10 +56,12 @@ function Say {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $Message
+        [string] $Message,
+
+        [switch] $NoNewline
     )
 
-    Write-Host $Message
+    Write-Host $Message -NoNewline:$NoNewline.IsPresent
 }
 
 # Say out loud a message; print it with emphasis.
@@ -159,6 +163,8 @@ function Confirm-Continue {
     }
 }
 
+# ------------------------------------------------------------------------------
+
 # Die if the exit code of the last external command that was run is not equal to zero.
 function Assert-CmdSuccess {
     [CmdletBinding()]
@@ -170,6 +176,8 @@ function Assert-CmdSuccess {
 
     if ($LastExitCode -ne 0) { Croak $ErrMessage }
 }
+
+# ------------------------------------------------------------------------------
 
 function Remove-BinAndObj {
     [CmdletBinding()]
@@ -220,6 +228,8 @@ function Find-GitExe {
 
     $git.Path
 }
+
+# ------------------------------------------------------------------------------
 
 # Verify that there are no pending changes.
 function Approve-GitStatus {
@@ -311,12 +321,16 @@ function Find-VsWhere {
     }
 }
 
+# ------------------------------------------------------------------------------
+
 function Find-MSBuild {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
         [string] $vswhere
     )
+    Write-Verbose "Finding MSBuild."
 
     $exe = & $vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe | select-object -first 1
 
@@ -325,6 +339,26 @@ function Find-MSBuild {
     }
 
     $exe
+}
+
+function Find-Fsi {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $vswhere
+    )
+    Write-Verbose "Finding fsi.exe."
+
+    $vspath = & $vswhere -legacy -latest -property installationPath
+
+    $path = "$vspath\Common7\IDE\CommonExtensions\Microsoft\FSharp\fsi.exe"
+    if (Test-Path $path) {
+        return $path
+    }
+    else {
+        Croak "Could not find vswhere."
+    }
 }
 
 #endregion

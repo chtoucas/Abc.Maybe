@@ -25,14 +25,14 @@ Print help.
 
 .EXAMPLE
 PS>pack.ps1
-Create an EDGE package.
+Create an EDGE package. Append -f to discard warnings about obsolete git infos.
 
 .EXAMPLE
-PS>pack.ps1 -n -f -r
+PS>pack.ps1 -r -n -f
 Fast packing, retail mode, no test, maybe obsolete git infos.
 
 .EXAMPLE
-PS>pack.ps1 -s -r
+PS>pack.ps1 -r -s
 Safe packing, retail mode.
 #>
 [CmdletBinding()]
@@ -90,21 +90,79 @@ function Get-PackageVersion {
     $patch = $node | Select -First 1 -ExpandProperty PatchVersion
     $prere = $node | Select -First 1 -ExpandProperty PreReleaseTag
 
-    if ($prere.StartsWith("DEV")) {
-        Croak "We disallow the creation of DEV packages."
-    }
-
-    "$major.$minor.$patch-$prere"
+    @($major, $minor, $patch, $prere)
 }
 
+# In the past, we used to generate the id's within MSBuild but then it is nearly
+# impossible to override the global properties PackageVersion and VersionSuffix.
+# Besides that, generating the id's outside ensures that all assemblies inherit
+# the same id's.
 function Generate-Uids {
+    [CmdletBinding()]
+    param()
+
     $vswhere = Find-VsWhere
-    $vspath = & $vswhere -legacy -latest -property installationPath
-    $fsi = "$vspath\Common7\IDE\CommonExtensions\Microsoft\FSharp\fsi.exe"
+    $fsi = Find-Fsi $vswhere
+
+    Write-Verbose "Executing genuids.fsx."
 
     $uids = & $fsi "$PSScriptRoot\genuids.fsx"
 
     $uids.Split(";")
+}
+
+# Find commit hash and branch.
+function Get-GitInfo {
+    [CmdletBinding()]
+    param(
+        [switch] $force
+    )
+
+    $commit = ""
+    $branch = ""
+
+    $git = Find-GitExe
+    if ($git -eq $null) {
+        Confirm-Continue "Continue even without any git metadata?"
+    }
+    else {
+        # Keep Approve-GitStatus before $force: we always want to see a warning
+        # when there are uncommited changes.
+        if ((Approve-GitStatus $git) -or $force) {
+            $commit = Get-GitCommitHash $git
+            $branch = Get-GitBranch $git
+        }
+        if ($commit -eq "") { Carp "The commit hash will be empty. Maybe use -Force?" }
+        if ($branch -eq "") { Carp "The branch name will be empty. Maybe use -Force?" }
+    }
+
+    return @($commit, $branch)
+}
+
+function Test-PackageFile {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $projectName,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $version
+    )
+
+    $pkg = Join-Path $PKG_OUTDIR "$projectName.$version.nupkg"
+
+    # Check dandling package file.
+    if (Test-Path $pkg) {
+        Carp "A package with the same version ($version) already exists."
+        Confirm-Continue "Do you wish to proceed anyway?"
+
+        Say "  The old package file will be removed now."
+        Remove-Item $pkg
+    }
+
+    $pkg
 }
 
 # ------------------------------------------------------------------------------
@@ -130,78 +188,43 @@ function Invoke-Pack {
 
         [switch] $retail,
         [switch] $force,
-        [switch] $safe,
         [switch] $myVerbose
     )
 
     SAY-LOUD "Packing."
 
-    # Check dandling package file.
-    # In fact, we don't need to check if $retail is true, EDGE packages files
-    # have a timestamped name.
-    if ($retail) {
-        $version = Get-PackageVersion $projectName
-        $pkg = Join-Path $PKG_OUTDIR "$projectName.$version.nupkg"
-
-        if (Test-Path $pkg) {
-            Carp "A package with the same version ($version) already exists."
-            Confirm-Continue "Do you wish to proceed anyway?"
-
-            Say "  The old package file will be removed now."
-            Remove-Item $pkg
-        }
-    }
-
-    # Find commit hash and branch.
-    $commit = ""
-    $branch = ""
-    $git = Find-GitExe
-    if ($git -eq $null) {
-        Confirm-Continue "Continue even without any git metadata?"
-    }
-    else {
-        # Keep Approve-GitStatus before $force: we always want to see a warning
-        # when there are uncommited changes.
-        if ((Approve-GitStatus $git) -or $force) {
-            $commit = Get-GitCommitHash $git
-            $branch = Get-GitBranch $git
-        }
-        if ($commit -eq "") { Carp "The commit hash will be empty. Maybe use -Force?" }
-        if ($branch -eq "") { Carp "The branch name will be empty. Maybe use -Force?" }
-    }
-
-    # Safe packing?
-    if ($safe) {
-        if (Confirm-Yes "Hard clean?") {
-            Say "  Deleting 'bin' and 'obj' directories."
-
-            Remove-BinAndObj $SRC_DIR
-        }
-    }
-
-    # Arguments for dotnet.exe.
-    $uids = Generate-Uids
-    $buildNumber    = $uids[0]
-    $revisionNumber = $uids[1]
-    $serialNumber   = $uids[2]
+    $major, $minor, $patch, $prere = Get-PackageVersion $projectName
+    $buildNumber, $revisionNumber, $serialNumber = Generate-Uids
+    $commit, $branch = Get-GitInfo -Force:$force.IsPresent
 
     if ($retail) {
         $output = $PKG_OUTDIR
         $args = ""
     }
     else {
-        # For EDGE packages, we use a custom VersionSuffix.
+        # For EDGE packages, we use a custom prerelease label (SemVer 2.0.0).
+        $prere = "edge.$serialNumber"
         $output = $PKG_EDGE_OUTDIR
-        $args = "--version-suffix:EDGE$serialNumber"
+        $args = "--version-suffix:$prere", "-p:NoWarnX=NU5105"
     }
 
     if ($myVerbose) {
         $args = $args, "-p:DisplaySettings=true"
     }
 
+    $version = "$major.$minor.$patch-$prere"
+    # NB: only meaningful when in Retail mode; otherwise we don't even use $pkg.
+    $pkg = Test-PackageFile $projectName $version
+
     $proj = Join-Path $SRC_DIR $projectName -Resolve
 
-    # The command at last.
+    Say "Packing version $version --- build $buildNumber, rev. $revisionNumber" -NoNewline
+    if ($branch -and $commit) {
+        $abbrv = $commit.Substring(0, 7)
+        Say " on branch ""$branch"", commit $abbrv."
+    }
+    else { Say " on branch ""???"", commit ???." }
+
     # Do NOT use --no-restore or --no-build (option Safe removes everything).
     & dotnet pack $proj -c $CONFIGURATION --nologo $args --output $output `
         -p:TargetFrameworks='\"netstandard2.1;netstandard2.0;netstandard1.0;net461\"' `
@@ -216,6 +239,9 @@ function Invoke-Pack {
     if ($retail) {
         Chirp "To publish the package:"
         Chirp "> dotnet nuget push $pkg -s https://www.nuget.org/ -k MYKEY"
+    }
+    else {
+        Chirp "EDGE package successfully created."
     }
 }
 
@@ -233,10 +259,18 @@ try {
 
     if ($Retail -and (-not $NoTest)) { Invoke-Test }
 
+    # Safe packing?
+    if ($Safe) {
+        if (Confirm-Yes "Hard clean?") {
+            Say "  Deleting 'bin' and 'obj' directories."
+
+            Remove-BinAndObj $SRC_DIR
+        }
+    }
+
     Invoke-Pack "Abc.Maybe" `
         -Retail:$Retail.IsPresent `
         -Force:$Force.IsPresent `
-        -Safe:$Safe.IsPresent `
         -MyVerbose:$MyVerbose.IsPresent
 }
 catch {

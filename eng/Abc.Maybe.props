@@ -6,12 +6,9 @@
     <MinorVersion>0</MinorVersion>
     <PatchVersion>0</PatchVersion>
     <!--
-      Format: empty -or- (DEV|alpha|beta|rc)[1-9][0-9]?
+      Format: empty -or- (alpha|beta|rc)[1-9][0-9]?
       Do not use "." or "-" to separate alphas from digits.
-      DEV1 < DEV2 < ... < DEV11 < ... < alpha1 < ... < beta1 < ... < rc1 < ...
-      Currently, DEV only exists to prevent accidental publication of a dev
-      package (see pack.ps1). In the future, we might use it to publish packages
-      to myget.
+      alpha1 < alpha2 < ... < alpha11 < ... < beta1 < ... < rc1 < ...
     -->
     <PreReleaseTag>beta4</PreReleaseTag>
 
