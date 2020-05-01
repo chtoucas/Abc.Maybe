@@ -72,6 +72,29 @@ Usage: pack.ps1 [switches]
 
 # ------------------------------------------------------------------------------
 
+function Find-Nuget {
+    [CmdletBinding()]
+    param()
+
+    Write-Verbose "Finding the local nuget.exe."
+
+    $nuget = Get-Command "nuget.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
+
+    if ($nuget -ne $null) {
+        return $nuget.Path
+    }
+
+    Write-Verbose "nuget.exe could not be found in your PATH."
+
+    $path = Join-Path $ENG_DIR "nuget.exe"
+    if (Test-Path $path) {
+        return $path
+    }
+    else {
+        return $null
+    }
+}
+
 function Get-PackageVersion {
     [CmdletBinding()]
     param(
@@ -139,7 +162,7 @@ function Get-GitInfo {
     return @($commit, $branch)
 }
 
-function Test-PackageFile {
+function Get-PackageFile {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -148,21 +171,57 @@ function Test-PackageFile {
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
+        [string] $version,
+
+        [switch] $retail
+    )
+
+    if ($retail) {
+        return Join-Path $PKG_OUTDIR "$projectName.$version.nupkg"
+    }
+    else {
+        return Join-Path $PKG_EDGE_OUTDIR "$projectName.$version.nupkg"
+    }
+}
+
+function Test-PackageFile {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $package,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
         [string] $version
     )
 
-    $pkg = Join-Path $PKG_OUTDIR "$projectName.$version.nupkg"
-
     # Check dandling package file.
-    if (Test-Path $pkg) {
+    # NB: only meaningful when in Retail mode; otherwise the id is unique.
+    if (Test-Path $package) {
         Carp "A package with the same version ($version) already exists."
         Confirm-Continue "Do you wish to proceed anyway?"
 
         Say "  The old package file will be removed now."
-        Remove-Item $pkg
+        Remove-Item $package
+    }
+}
+
+function Publish-Local {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $package
+    )
+
+    $nuget = Find-Nuget
+    if ($nuget -eq $null) {
+        Croak "Cannot publish package to the local feed: couldn't find nuget.exe. "
     }
 
-    $pkg
+    & $nuget add $package -source $NUGET_LOCAL_FEED | Out-Host
+    Assert-CmdSuccess -ErrMessage "Failed to publish package to local feed."
 }
 
 # ------------------------------------------------------------------------------
@@ -170,12 +229,12 @@ function Test-PackageFile {
 function Invoke-Test {
     SAY-LOUD "Testing."
 
-    & dotnet test -c $CONFIGURATION -v minimal --nologo
+    & dotnet test -c $CONFIGURATION -v minimal --nologo | Out-Host
     Assert-CmdSuccess -ErrMessage "Test task failed."
 
     SAY-LOUD "Testing (net461)."
 
-    & dotnet test -c $CONFIGURATION -v minimal --nologo /p:TargetFramework=net461
+    & dotnet test -c $CONFIGURATION -v minimal --nologo /p:TargetFramework=net461 | Out-Host
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting net461."
 }
 
@@ -203,6 +262,13 @@ function Invoke-Pack {
     }
     else {
         # For EDGE packages, we use a custom prerelease label (SemVer 2.0.0).
+        if ($prere -eq "") {
+            # TODO: what to do if $prere = "rc".
+            # If the current version does not have a prerelease label, we
+            # increase the patch number to guarantee a version higher than the
+            # public one.
+            $patch = 1 + [int]$patch
+        }
         $prere = "edge.$serialNumber"
         $output = $PKG_EDGE_OUTDIR
         $args = "--version-suffix:$prere", "-p:NoWarnX=NU5105"
@@ -213,8 +279,9 @@ function Invoke-Pack {
     }
 
     $version = "$major.$minor.$patch-$prere"
-    # NB: only meaningful when in Retail mode; otherwise we don't even use $pkg.
-    $pkg = Test-PackageFile $projectName $version
+    $package = Get-PackageFile $projectName $version -Retail:$retail.IsPresent
+
+    if ($retail) { Test-PackageFile $package $version }
 
     $proj = Join-Path $SRC_DIR $projectName -Resolve
 
@@ -232,17 +299,42 @@ function Invoke-Pack {
         -p:RevisionNumber=$revisionNumber `
         -p:RepositoryCommit=$commit `
         -p:RepositoryBranch=$branch `
-        -p:Retail=true
+        -p:Retail=true `
+        | Out-Host
 
     Assert-CmdSuccess -ErrMessage "Pack task failed."
 
     if ($retail) {
-        # REVIEW: add an option to publish the package for us?
-        Chirp "To publish the package:"
-        Chirp "> dotnet nuget push $pkg -s https://www.nuget.org/ -k MYKEY"
+        Chirp "Package successfully created."
     }
     else {
         Chirp "EDGE package successfully created."
+    }
+
+    $package
+}
+
+function Invoke-Publish {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $package,
+
+        [switch] $retail
+    )
+
+    if ($retail) {
+        # TODO: add an option to publish the package for us?
+        # --interactive
+        # --skip-duplicate (not necessary it is for multiple packages)
+        Chirp "To publish the package:"
+        Chirp "> dotnet nuget push $package -s https://www.nuget.org/ -k MYKEY"
+    }
+    else {
+        Publish-Local $package
+
+        Chirp "EDGE package successfully installed."
     }
 }
 
@@ -269,14 +361,18 @@ try {
         }
     }
 
-    Invoke-Pack "Abc.Maybe" `
+    $package = Invoke-Pack "Abc.Maybe" `
         -Retail:$Retail.IsPresent `
         -Force:$Force.IsPresent `
         -MyVerbose:$MyVerbose.IsPresent
+
+    Invoke-Publish $package -Retail:$Retail.IsPresent
 }
 catch {
-    Croak ("An unexpected error occured: {0}." -f $_.Exception.Message) `
-        -StackTrace $_.ScriptStackTrace
+    Write-Host $_
+    Write-Host $_.Exception
+    Write-Host $_.ScriptStackTrace
+    exit 1
 }
 finally {
     popd
