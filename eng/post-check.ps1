@@ -32,7 +32,7 @@ Ignored if -Framework is also specified.
 .PARAMETER Yes
 Do not ask for confirmation.
 
-.PARAMETER Safe
+.PARAMETER Clean
 Hard clean the solution before creating the package by removing the 'bin' and
 'obj' directories.
 It's necessary when there are "dangling" cs files created during a previous
@@ -67,11 +67,14 @@ param(
     [Parameter(Mandatory = $false, Position = 1)]
     [string] $Runtime = "",
 
+    [Parameter(Mandatory = $false, Position = 2)]
+    [string] $Version = "",
+
                  [switch] $Max,
                  [switch] $ClassicOnly,
                  [switch] $CoreOnly,
     [Alias("y")] [switch] $Yes,
-    [Alias("c")] [switch] $Safe,
+    [Alias("c")] [switch] $Clean,
     [Alias("h")] [switch] $Help
 )
 
@@ -94,7 +97,7 @@ Usage: pack.ps1 [switches].
     |-ClassicOnly   when Max is also specified, only test for .NET Framework.
     |-CoreOnly      when Max is also specified, only test for .NET Core.
   -y|-Yes           do not ask for confirmation before running any test harness.
-  -s|-Safe          hard clean the solution before anything else.
+  -c|-Clean         hard clean the solution before anything else.
   -h|-Help          print this help and exit.
 
 "@
@@ -180,18 +183,18 @@ function Invoke-TestMajor {
         [Parameter(Mandatory = $false, Position = 0)]
         [string] $runtime,
 
-        [switch] $ClassicOnly,
-        [switch] $CoreOnly
+        [switch] $classicOnly,
+        [switch] $coreOnly
     )
 
-    if (-not $CoreOnly) {
+    if (-not $coreOnly) {
         foreach ($fmk in $MajorClassic) {
             if (Confirm-Yes "Test harness for ${fmk}?") {
                 Invoke-Test $fmk -Runtime $runtime
             }
         }
     }
-    if (-not $ClassicOnly) {
+    if (-not $classicOnly) {
         foreach ($fmk in $MajorCore) {
             if (Confirm-Yes "Test harness for ${fmk}?") {
                 Invoke-Test $fmk -Runtime $runtime
@@ -206,9 +209,9 @@ function Invoke-TestAll {
         [Parameter(Mandatory = $false, Position = 0)]
         [string] $runtime,
 
-        [switch] $Max,
-        [switch] $ClassicOnly,
-        [switch] $CoreOnly
+        [switch] $max,
+        [switch] $classicOnly,
+        [switch] $coreOnly
     )
 
     SAY-LOUD "Testing for all platforms."
@@ -220,9 +223,9 @@ function Invoke-TestAll {
         $args = ""
     }
 
-    if ($Max) { $__max = "true" } else { $__max = "false" }
-    if ($ClassicOnly) { $__classicOnly = "true" } else { $__classicOnly = "false" }
-    if ($CoreOnly) { $__coreOnly = "true" } else { $__coreOnly = "false" }
+    if ($max) { $__max = "true" } else { $__max = "false" }
+    if ($classicOnly) { $__classicOnly = "true" } else { $__classicOnly = "false" }
+    if ($coreOnly) { $__coreOnly = "true" } else { $__coreOnly = "false" }
 
     & dotnet test .\NETSdk\NETSdk.csproj --nologo -v q $args `
         /p:__Max=$__max `
@@ -232,7 +235,7 @@ function Invoke-TestAll {
 
     Assert-CmdSuccess -ErrMessage "Test ALL task failed."
 
-    if ($Max -and (-not $CoreOnly)) {
+    if ($max -and (-not $coreOnly)) {
         Invoke-TestOldStyle "net45"
         Invoke-TestOldStyle "net451"
     }
@@ -245,22 +248,27 @@ if ($Help) {
     exit 0
 }
 
+# ------------------------------------------------------------------------------
+
 # Last minor version of each major version.
 $MajorClassic = `
     "net452",
     "net462",
     "net472",
     "net48"
+
 $MajorCore =`
     "netcoreapp2.2",
     "netcoreapp3.1"
+
+# ------------------------------------------------------------------------------
 
 try {
     Approve-RepositoryRoot
 
     pushd $TEST_OUTDIR
 
-    if ($Safe) {
+    if ($Clean) {
         if (Confirm-Yes "Hard clean?") {
             Say "  Deleting 'bin' and 'obj' directories."
 
