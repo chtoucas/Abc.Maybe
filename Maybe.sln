@@ -39,6 +39,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eng", "eng", "{6D957FE8-23D
 		eng\qbuild.cmd = eng\qbuild.cmd
 		eng\qperf.cmd = eng\qperf.cmd
 		eng\qtest.cmd = eng\qtest.cmd
+		eng\README = eng\README
 		eng\reset.ps1 = eng\reset.ps1
 		eng\Retail.props = eng\Retail.props
 		eng\Retail.tasks = eng\Retail.tasks
@@ -54,6 +55,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{73C72FF8-F
 		test\NET451\NET451.csproj = test\NET451\NET451.csproj
 		test\NETSdk\NETSdk.csproj = test\NETSdk\NETSdk.csproj
 		test\NuGet.Config = test\NuGet.Config
+		test\README = test\README
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Blank", "Blank", "{22206E77-3EB9-4B73-BEC0-2A63201DA473}"
