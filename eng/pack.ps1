@@ -233,7 +233,11 @@ function Invoke-Pack {
         }
         $prere = "ci-$timestamp"
         $output = $PKG_CI_OUTDIR
-        $args = "--version-suffix:$prere", "-p:NoWarnX=NU5105"
+        $args = `
+            "--version-suffix:$prere",
+            "-p:PreReleaseTag=ci",
+            "-p:Title=""$projectName (CI)""",
+            "-p:NoWarnX=NU5105"
     }
 
     if ($myVerbose) {
@@ -305,7 +309,7 @@ function Invoke-Publish {
         # We could have created the package directly in $NUGET_LOCAL_FEED
         # but it seems cleaner to keep creation and publication separated.
         # Also, if Microsoft ever decided to change the behaviour of "push",
-        # we won't have to update this script.
+        # we won't have to update this script (but maybe reset.ps1).
 
         Say "Pushing the package to the local NuGet feed"
         & dotnet nuget push $package -s $NUGET_LOCAL_FEED --force-english-output | Out-Host

@@ -25,7 +25,7 @@
     <InformationalVersion Condition=" $(RepositoryCommit) != '' ">$(InformationalVersion)+$(RepositoryCommit.Substring(0, 7))</InformationalVersion>
 
     <!-- NB: the default AssemblyTitle uses AssemblyName not Title -->
-    <Description>$(Title) Built [$([System.DateTime]::UtcNow.ToString("r"))].</Description>
+    <Description>$(Title). Built [$([System.DateTime]::UtcNow.ToString("r"))].</Description>
   </PropertyGroup>
 
   <Target Name="__CheckAssemblyPropertyFile">

@@ -12,7 +12,7 @@
     -->
     <PreReleaseTag>beta4</PreReleaseTag>
 
-    <Title>A Safe Yet Effective Option Type.</Title>
+    <Title>A Safe Yet Effective Option Type</Title>
 
     <PackageDescription><![CDATA[
 Provides a fully-featured Option type, aka a Maybe type, with several companion helpers (parsing, LINQ).
