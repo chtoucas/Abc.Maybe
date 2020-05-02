@@ -113,8 +113,7 @@ function Croak {
         [string] $Message
     )
 
-    # We don't write the message to the error stream (we use Write-Host not
-    # Write-Error).
+    # NB: we don't write the message to the error stream.
     Write-Host $Message -BackgroundColor Red -ForegroundColor Yellow
     exit 1
 }

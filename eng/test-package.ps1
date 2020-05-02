@@ -163,10 +163,10 @@ function Invoke-Test {
     SAY-LOUD "Testing ($framework)."
 
     if ($runtime) {
-        $args = "--runtime:$runtime"
+        $args = @("--runtime:$runtime")
     }
     else {
-        $args = ""
+        $args = @()
     }
 
     & dotnet test .\NETSdk\NETSdk.csproj -f $framework $args `
@@ -217,10 +217,10 @@ function Invoke-TestAll {
     SAY-LOUD "Testing for all platforms."
 
     if ($runtime) {
-        $args = "--runtime:$runtime"
+        $args = @("--runtime:$runtime")
     }
     else {
-        $args = ""
+        $args = @()
     }
 
     if ($max) { $__max = "true" } else { $__max = "false" }

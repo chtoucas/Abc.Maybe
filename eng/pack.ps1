@@ -220,7 +220,7 @@ function Invoke-Pack {
 
     if ($retail) {
         $output = $PKG_OUTDIR
-        $args = ""
+        $args = @()
     }
     else {
         # For CI packages, we use a custom prerelease label (SemVer 2.0.0).
@@ -241,7 +241,7 @@ function Invoke-Pack {
     }
 
     if ($myVerbose) {
-        $args = $args, "-p:DisplaySettings=true"
+        $args += "-p:DisplaySettings=true"
     }
 
     $version = "$major.$minor.$patch-$prere"

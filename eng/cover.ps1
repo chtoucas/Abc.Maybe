@@ -77,11 +77,11 @@ function Find-OpenCover {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $ProjectPath
+        [string] $projectPath
     )
 
     # Find the OpenCover version.
-    $xml = [Xml] (Get-Content $ProjectPath)
+    $xml = [Xml] (Get-Content $projectPath)
     $xpath = "//Project/ItemGroup/PackageReference[@Include='OpenCover']"
     $version = Select-Xml -Xml $xml -XPath $xpath `
         | Select -ExpandProperty Node `
@@ -138,7 +138,7 @@ function Invoke-Coverlet([string] $output) {
         "[Abc*]System.Diagnostics.CodeAnalysis.*",
         "[Abc*]System.Runtime.CompilerServices.*",
         "[Abc*]Microsoft.CodeAnalysis.*"
-    $exclude = '\"' + ($excludes -join ",") + '\"'
+    $exclude = '\"' + ($excludes -Join ",") + '\"'
 
     & dotnet test -c $CONFIGURATION --no-restore `
         /p:CollectCoverage=true `
