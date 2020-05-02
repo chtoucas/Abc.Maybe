@@ -1,11 +1,15 @@
 <Project>
 
   <PropertyGroup>
-    <SourceRoot>$(MSBuildThisFileDirectory)..\src\</SourceRoot>
+    <RepositoryRoot>$(MSBuildThisFileDirectory)..\</RepositoryRoot>
+    <SourceRoot>$(RepositoryRoot)src\</SourceRoot>
+    <EngRoot>$(RepositoryRoot)eng\</EngRoot>
   </PropertyGroup>
 
+  <Import Project="$(EngRoot)\Abc.Maybe.props" />
+
   <PropertyGroup>
-    <AbcVersion>1.0.0-beta4</AbcVersion>
+    <AbcVersion>$(MajorVersion).$(MinorVersion).$(PatchVersion)-$(PreReleaseTag)</AbcVersion>
   </PropertyGroup>
 
   <PropertyGroup>
