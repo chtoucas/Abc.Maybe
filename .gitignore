@@ -5,9 +5,9 @@
 
 xunit.trx
 __/coverlet
-__/nuget-cache/*
-!__/nuget-cache/_._
-__/nuget-feed
+__/nuget-cache
+__/nuget-feed/*
+!__/nuget-feed/_._
 __/opencover
 __/packages
 __/packages-edge
