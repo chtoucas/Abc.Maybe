@@ -270,7 +270,7 @@ try {
 
     if ($Clean) {
         if (Confirm-Yes "Hard clean?") {
-            Say "  Deleting 'bin' and 'obj' directories."
+            Say "  Deleting 'bin' and 'obj' directories within 'test'."
 
             Remove-BinAndObj $TEST_DIR
         }

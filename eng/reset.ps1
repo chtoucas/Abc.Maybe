@@ -77,12 +77,12 @@ try {
     pushd $ROOT_DIR
 
     if ($Yes -or (Confirm-Yes "Hard clean the src directory?")) {
-        Say "  Deleting 'bin' and 'obj' directories."
+        Say "  Deleting 'bin' and 'obj' directories within 'src'."
         Remove-BinAndObj $SRC_DIR
     }
 
     if ($Yes -or (Confirm-Yes "Hard clean the test directory?")) {
-        Say "  Deleting 'bin' and 'obj' directories."
+        Say "  Deleting 'bin' and 'obj' directories within 'test'."
         Remove-BinAndObj $TEST_DIR
     }
 
