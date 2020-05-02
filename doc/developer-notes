@@ -60,7 +60,7 @@ the TODOs and REVIEWs.
 
 Pre action
 a. Run eng\pack.ps1 -f
-b. Run eng\post-check.ps1 -Max -Version XXX
+b. Run eng\test-package.ps1 -Max -Version XXX
 
 Pre action, for beta -or- production packages.
 0. Run script eng\freeze-api.ps1, then review the result.
@@ -75,7 +75,7 @@ Pre action, for beta -or- production packages.
 
 Post actions.
 a. Update the version of Abc.Maybe in test\Directory.Build.targets,
-   then run eng\post-check.ps1 -Max
+   then run eng\test-package.ps1 -Max
 b. For production packages, git tag (??? before, to get the correct tag ???)
 
 Multi-targeting
