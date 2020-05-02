@@ -97,12 +97,10 @@ try {
         # We can't delete the directory, otherwise "dotnet restore" will fail.
         Say "  Resetting local NuGet feed."
         Remove-Packages $NUGET_LOCAL_FEED
-        #Remove-Dir $NUGET_LOCAL_FEED
 
         # "dotnet restore" will recreate the directory if needed.
         Say "  Clearing local NuGet cache."
-        #Remove-Dir (Join-Path $NUGET_LOCAL_CACHE "abc.maybe")
-        Remove-Dir $NUGET_LOCAL_CACHE
+        Remove-Dir (Join-Path $NUGET_LOCAL_CACHE "abc.maybe")
     }
 }
 catch {

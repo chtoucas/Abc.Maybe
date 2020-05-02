@@ -37,10 +37,10 @@ $ErrorActionPreference = "Stop"
 (Join-Path $ARTIFACTS_DIR "packages-ci") `
     | New-Variable -Name "PKG_CI_OUTDIR" -Scope Script -Option Constant
 # Local NuGet feed.
-(Join-Path $ARTIFACTS_DIR "nuget-feed") `
+(Join-Path $ARTIFACTS_DIR "nuget-feed" -Resolve) `
     | New-Variable -Name "NUGET_LOCAL_FEED" -Scope Script -Option Constant
 # Local NuGet cache.
-(Join-Path $ARTIFACTS_DIR "nuget-cache" -Resolve) `
+(Join-Path $ARTIFACTS_DIR "nuget-cache") `
     | New-Variable -Name "NUGET_LOCAL_CACHE" -Scope Script -Option Constant
 
 # ------------------------------------------------------------------------------
