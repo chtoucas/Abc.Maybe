@@ -3,8 +3,8 @@
   <!--
     Blank project used by pack.ps1 to populate the local NuGet cache; see
     NuGet.Config in parent directory.
-    We restore from the local NuGet cache; see the property RestorePackagesPath
-    below.
+    We restore packages to the local NuGet cache; see the property
+    RestorePackagesPath below.
     https://docs.microsoft.com/en-us/nuget/consume-packages/package-restore#force-restore-from-package-sources
   -->
 
