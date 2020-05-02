@@ -17,8 +17,6 @@ The NuGet package offers full support for:
 - .NET Standard 1.0 / 2.0 / 2.1.
 - .NET Framework 4.6.1.
 
-.NET Standard 1.0 is _provided as is_ (see caveats below).
-
 The public API is not the same for all targets. We currently define two profiles,
 - _API Profile 2.1_ is for .NET Standard 2.1.
 - _API Profile 2.0_ is for .NET Standard 2.0 and the legacy systems (either
@@ -26,21 +24,12 @@ The public API is not the same for all targets. We currently define two profiles
 
 Of course, API Profile 2.1 is a superset of 2.0.
 
-### Testing
-
-We primarily run tests against the following targets:
-- .NET Core 3.1.
-- .NET Framework 4.6.1.
-
-We also check that everything is fine with
-- .NET Core, all versions from 2.0 to 3.0.
+We run tests against the following targets:
+- .NET Core, all versions from 2.0 to 3.1.
 - .NET Framework, all versions from 4.5 to 4.8.
 
-but only after we push a new package upstream, and it is not done automatically,
-which means that it may take some time before a failing test is discovered (and
-fixed). Everything should work with .NET Core 1.0/1.1 too, but keep in mind that
-I never bothered to port the test suite to these platforms, and I do not intend
-to.
+It should work with .NET Core 1.0/1.1 too, but keep in mind that I never bothered
+to port the test suite to these platforms, and I do not intend to.
 
 ## Objectives/Features
 

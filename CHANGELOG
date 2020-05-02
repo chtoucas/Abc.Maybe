@@ -4,11 +4,9 @@ vNEXT
 -----
 
 Internal Changes
-- Enable (postponed) testing with
+- Enable testing with
   - .NET Core, version >= 2.0.
   - .NET Framework, version >= 4.5.
-
-Internal Changes
 - Add nullable annotations to the public API files.
 - Make the packaging script more versatile.
 - Upgraded packages:
