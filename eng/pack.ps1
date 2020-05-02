@@ -225,7 +225,7 @@ function Invoke-Pack {
     else {
         # For CI packages, we use a custom prerelease label (SemVer 2.0.0).
         if ($prere -eq "") {
-            # TODO: what should we do when $prere = "rc".
+            # TODO: what should we do when $prere = "rc" > "ci"? Does it matter?
             # If the current version does not have a prerelease label, we
             # increase the patch number to guarantee a version higher than the
             # public one.
@@ -233,7 +233,6 @@ function Invoke-Pack {
         }
         $prere = "ci-$timestamp"
         $output = $PKG_CI_OUTDIR
-        # TODO: NoWarnX is no longer necessary.
         $args = "--version-suffix:$prere", "-p:NoWarnX=NU5105"
     }
 

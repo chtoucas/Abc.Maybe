@@ -49,6 +49,7 @@ let revnum   = uint16(seconds)
 // revnum is left padded with 0 to ensure it has a length of 5.
 //let serialnum = sprintf "%i%05i" buildnum revnum
 
-let timestamp = sprintf "%i%02i%02i-%02i%02i%02i" now.Year now.Month now.Day now.Hour now.Minute now.Second
+// Format "YYYYMMDD.hhmmss".
+let timestamp = sprintf "%i%02i%02i.%02i%02i%02i" now.Year now.Month now.Day now.Hour now.Minute now.Second
 
 printfn "%i;%i;%s" buildnum revnum timestamp
