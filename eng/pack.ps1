@@ -272,7 +272,7 @@ function Invoke-Pack {
         Chirp "EDGE package successfully created."
     }
 
-    $package
+    @($package, $version)
 }
 
 function Invoke-Publish {
@@ -282,11 +282,17 @@ function Invoke-Publish {
         [ValidateNotNullOrEmpty()]
         [string] $package,
 
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $version,
+
         [switch] $retail
     )
 
+    SAY-LOUD "Publishing."
+
     if ($retail) {
-        # TODO: add an option to publish the package for us? --interactive
+        # TODO: add an option to publish the package for us. --interactive?
         if (Confirm-Yes "Do you want me to publish the package for you?") {
             Carp "Not yet implemented."
             Chirp "> dotnet nuget push $package -s https://www.nuget.org/ -k MYKEY"
@@ -297,8 +303,14 @@ function Invoke-Publish {
         }
     }
     else {
+        Say "Pushing the package to the local NuGet feed"
         & dotnet nuget push $package -s $NUGET_LOCAL_FEED | Out-Host
-        Assert-CmdSuccess -ErrMessage "Failed to publish package to local feed."
+        Assert-CmdSuccess -ErrMessage "Failed to publish package to local NuGet feed."
+
+        Say "Updating the local NuGet cache"
+        $proj = Join-Path $TEST_DIR "Blank" -Resolve
+        & dotnet restore $proj /p:AbcVersion=$version
+        Assert-CmdSuccess -ErrMessage "Failed to update the local NuGet cache."
 
         Chirp "EDGE package successfully installed."
     }
@@ -327,12 +339,12 @@ try {
         }
     }
 
-    $package = Invoke-Pack "Abc.Maybe" `
+    $package, $version = Invoke-Pack "Abc.Maybe" `
         -Retail:$Retail.IsPresent `
         -Force:$Force.IsPresent `
         -MyVerbose:$MyVerbose.IsPresent
 
-    Invoke-Publish $package -Retail:$Retail.IsPresent
+    Invoke-Publish $package $version -Retail:$Retail.IsPresent
 }
 catch {
     Write-Host $_

@@ -24,11 +24,14 @@ try {
 
     pushd $ROOT_DIR
 
-    if ($Yes -or (Confirm-Yes "Hard clean?")) {
+    if ($Yes -or (Confirm-Yes "Hard clean the src directory?")) {
         Say "  Deleting 'bin' and 'obj' directories."
-
         Remove-BinAndObj $SRC_DIR
-        Remove-BinAndObj $TEST_OUTDIR
+    }
+
+    if ($Yes -or (Confirm-Yes "Hard clean the test directory?")) {
+        Say "  Deleting 'bin' and 'obj' directories."
+        Remove-BinAndObj $TEST_DIR
     }
 }
 catch {

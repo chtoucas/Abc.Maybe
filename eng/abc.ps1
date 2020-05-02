@@ -15,10 +15,6 @@ $ErrorActionPreference = "Stop"
 (Get-Item $PSScriptRoot).Parent.FullName `
     | New-Variable -Name "ROOT_DIR" -Scope Local -Option Constant
 
-# Artifacts directory.
-(Join-Path $ROOT_DIR "__" -Resolve) `
-    | New-Variable -Name "ARTIFACTS_DIR" -Scope Script -Option Constant
-
 # Engineering directory.
 (Join-Path $ROOT_DIR "eng" -Resolve) `
     | New-Variable -Name "ENG_DIR" -Scope Script -Option Constant
@@ -28,16 +24,18 @@ $ErrorActionPreference = "Stop"
     | New-Variable -Name "SRC_DIR" -Scope Script -Option Constant
 
 # Test directory.
-(Join-Path $ROOT_DIR "test") `
-    | New-Variable -Name "TEST_OUTDIR" -Scope Script -Option Constant
+(Join-Path $ROOT_DIR "test" -Resolve) `
+    | New-Variable -Name "TEST_DIR" -Scope Script -Option Constant
 
+# Artifacts directory.
+(Join-Path $ROOT_DIR "__" -Resolve) `
+    | New-Variable -Name "ARTIFACTS_DIR" -Scope Script -Option Constant
 # Packages directories (no -Resolve, it might not exist yet).
 (Join-Path $ARTIFACTS_DIR "packages") `
     | New-Variable -Name "PKG_OUTDIR" -Scope Script -Option Constant
 (Join-Path $ARTIFACTS_DIR "packages-edge") `
     | New-Variable -Name "PKG_EDGE_OUTDIR" -Scope Script -Option Constant
-
-# Local NuGet feed.
+# Local NuGet feed (no -Resolve, it might not exist yet).
 (Join-Path $ARTIFACTS_DIR "nuget-feed") `
     | New-Variable -Name "NUGET_LOCAL_FEED" -Scope Script -Option Constant
 
@@ -360,55 +358,6 @@ function Find-Fsi {
     else {
         Croak "Could not find vswhere."
     }
-}
-
-#endregion
-################################################################################
-#region NugGet-related functions.
-
-function Find-Nuget {
-    [CmdletBinding()]
-    param()
-
-    Write-Verbose "Finding the local nuget.exe."
-
-    $nuget = Get-Command "nuget.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
-
-    if ($nuget -ne $null) {
-        return $nuget.Path
-    }
-
-    Write-Verbose "nuget.exe could not be found in your PATH."
-
-    $path = Join-Path $ROOT_DIR "nuget.exe"
-    if (Test-Path $path) {
-        return $path
-    }
-    else {
-        return $null
-    }
-}
-
-# ------------------------------------------------------------------------------
-
-function NuGet-Add {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $package,
-
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $source
-    )
-
-    $nuget = Find-Nuget
-    if ($nuget -eq $null) {
-        Croak "Cannot publish package to the local feed: couldn't find nuget.exe. "
-    }
-
-    & $nuget add $package -source $source | Out-Host
 }
 
 #endregion
