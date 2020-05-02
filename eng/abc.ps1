@@ -33,9 +33,9 @@ $ErrorActionPreference = "Stop"
 # Packages.
 (Join-Path $ARTIFACTS_DIR "packages") `
     | New-Variable -Name "PKG_OUTDIR" -Scope Script -Option Constant
-# Edge packages.
-(Join-Path $ARTIFACTS_DIR "packages-edge") `
-    | New-Variable -Name "PKG_EDGE_OUTDIR" -Scope Script -Option Constant
+# CI packages.
+(Join-Path $ARTIFACTS_DIR "packages-ci") `
+    | New-Variable -Name "PKG_CI_OUTDIR" -Scope Script -Option Constant
 # Local NuGet feed.
 (Join-Path $ARTIFACTS_DIR "nuget-feed") `
     | New-Variable -Name "NUGET_LOCAL_FEED" -Scope Script -Option Constant

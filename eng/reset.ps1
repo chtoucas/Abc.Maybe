@@ -59,12 +59,17 @@ try {
         Remove-BinAndObj $TEST_DIR
     }
 
-    if ($Yes -or (Confirm-Yes "Clear local NuGet feed?")) {
-        Say "  Clearing local NuGet feed."
-        Remove-Dir (Join-Path $NUGET_LOCAL_FEED "abc.maybe")
-    }
+    if ($Yes -or (Confirm-Yes "Clear local NuGet feed/cache?")) {
+        # When we reset the NuGet feed, better to clear the cache too, this is
+        # not mandatory but it keeps cache and feed in sync.
+        # The inverse is also true.
+        # If we clear the cache but don't reset the feed, things will continue
+        # to work but packages from the local NuGet feed will then be restored
+        # to the global cache, exactly what we wanted to avoid.
 
-    if ($Yes -or (Confirm-Yes "Clear local NuGet cache?")) {
+        Say "  Deleting local NuGet feed."
+        Remove-Dir $NUGET_LOCAL_FEED
+
         Say "  Clearing local NuGet cache."
         Remove-Dir (Join-Path $NUGET_LOCAL_CACHE "abc.maybe")
     }

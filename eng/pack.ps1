@@ -25,7 +25,7 @@ Print help.
 
 .EXAMPLE
 PS>pack.ps1
-Create an EDGE package. Append -f to discard warnings about obsolete git infos.
+Create a CI package. Append -f to discard warnings about obsolete git infos.
 
 .EXAMPLE
 PS>pack.ps1 -r -n -f
@@ -158,7 +158,7 @@ function Get-PackageFile {
         return Join-Path $PKG_OUTDIR "$projectName.$version.nupkg"
     }
     else {
-        return Join-Path $PKG_EDGE_OUTDIR "$projectName.$version.nupkg"
+        return Join-Path $PKG_CI_OUTDIR "$projectName.$version.nupkg"
     }
 }
 
@@ -215,7 +215,7 @@ function Invoke-Pack {
     SAY-LOUD "Packing."
 
     $major, $minor, $patch, $prere = Get-PackageVersion $projectName
-    $buildNumber, $revisionNumber, $serialNumber = Generate-Uids
+    $buildNumber, $revisionNumber, $timestamp = Generate-Uids
     $commit, $branch = Get-GitInfo -Force:$force.IsPresent
 
     if ($retail) {
@@ -223,7 +223,7 @@ function Invoke-Pack {
         $args = ""
     }
     else {
-        # For EDGE packages, we use a custom prerelease label (SemVer 2.0.0).
+        # For CI packages, we use a custom prerelease label (SemVer 2.0.0).
         if ($prere -eq "") {
             # TODO: what should we do when $prere = "rc".
             # If the current version does not have a prerelease label, we
@@ -231,8 +231,8 @@ function Invoke-Pack {
             # public one.
             $patch = 1 + [int]$patch
         }
-        $prere = "edge.$serialNumber"
-        $output = $PKG_EDGE_OUTDIR
+        $prere = "ci-$timestamp"
+        $output = $PKG_CI_OUTDIR
         $args = "--version-suffix:$prere", "-p:NoWarnX=NU5105"
     }
 
@@ -270,7 +270,7 @@ function Invoke-Pack {
         Chirp "Package successfully created."
     }
     else {
-        Chirp "EDGE package successfully created."
+        Chirp "CI package successfully created."
     }
 
     @($package, $version)
@@ -306,12 +306,16 @@ function Invoke-Publish {
         & dotnet nuget push $package -s $NUGET_LOCAL_FEED | Out-Host
         Assert-CmdSuccess -ErrMessage "Failed to publish package to local NuGet feed."
 
+        # If the following task fails, we should remove the package from the feed,
+        # otherwise, later on, the package will be restored to the global cache.
+        # This is not such a big problem, but I prefer not to pollute it with
+        # CI packages.
         Say "Updating the local NuGet cache"
         $proj = Join-Path $TEST_DIR "Blank" -Resolve
-        & dotnet restore $proj /p:AbcVersion=$version
+        & dotnet restore $proj /p:AbcVersion=$version | Out-Host
         Assert-CmdSuccess -ErrMessage "Failed to update the local NuGet cache."
 
-        Chirp "EDGE package successfully installed."
+        Chirp "CI package successfully installed."
     }
 }
 

@@ -46,4 +46,9 @@ let seconds  = (now - mon).TotalSeconds
 let buildnum = uint16(halfdays)
 let revnum   = uint16(seconds)
 
-printfn "%i;%i;%i%05i" buildnum revnum buildnum revnum
+// revnum is left padded with 0 to ensure it has a length of 5.
+//let serialnum = sprintf "%i%05i" buildnum revnum
+
+let timestamp = sprintf "%i%02i%02i-%02i%02i%02i" now.Year now.Month now.Day now.Hour now.Minute now.Second
+
+printfn "%i;%i;%s" buildnum revnum timestamp
