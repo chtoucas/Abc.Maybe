@@ -183,7 +183,7 @@ function Approve-PackageFile {
         Confirm-Continue "Do you wish to proceed anyway?"
 
         # Not necessary, dotnet will remove it, but I prefer to play safe.
-        Say "  The old package file will be removed now."
+        Say-Indent "The old package file will be removed now."
         Remove-Item $package
     }
 }
@@ -256,9 +256,9 @@ function Invoke-Pack {
     Say "Packing version $version --- build $buildNumber, rev. $revisionNumber" -NoNewline
     if ($branch -and $commit) {
         $abbrv = $commit.Substring(0, 7)
-        Say " on branch ""$branch"", commit $abbrv."
+        Say-Indent "on branch ""$branch"", commit $abbrv."
     }
-    else { Say " on branch ""???"", commit ???." }
+    else { Say-Indent "on branch ""???"", commit ???." }
 
     # Do NOT use --no-restore or --no-build (option Safe removes everything).
     & dotnet pack $proj -c $CONFIGURATION --nologo $args --output $output `
@@ -346,8 +346,8 @@ try {
 
     # Safe packing?
     if ($Safe) {
-        if (Confirm-Yes "Hard clean?") {
-            Say "  Deleting 'bin' and 'obj' directories."
+        if (Confirm-Yes "Hard clean the directory 'src'?") {
+            Say-Indent "Deleting 'bin' and 'obj' directories within 'src'."
 
             Remove-BinAndObj $SRC_DIR
         }

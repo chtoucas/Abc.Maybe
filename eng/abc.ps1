@@ -69,6 +69,19 @@ function Say {
     Write-Host $Message -NoNewline:$NoNewline.IsPresent
 }
 
+function Say-Indent {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $Message,
+
+        [switch] $NoNewline
+    )
+
+    Write-Host "  $Message" -NoNewline:$NoNewline.IsPresent
+}
+
 # Say out loud a message; print it with emphasis.
 function Say-Loud {
     [CmdletBinding()]
@@ -134,7 +147,7 @@ function Confirm-Yes {
         $answer = (Read-Host $Question, '[y/N]')
 
         if ($answer -eq "" -or $answer -eq "n") {
-            Say "  Discarding on your request."
+            Say-Indent "Discarding on your request."
             return $false
         }
         elseif ($answer -eq "y") {
@@ -156,7 +169,7 @@ function Confirm-Continue {
         $answer = (Read-Host $Question, "[y/N]")
 
         if ($answer -eq "" -or $answer -eq "n") {
-            Say "  Stopping on your request."
+            Say-Indent "Stopping on your request."
             exit 0
         }
         elseif ($answer -eq "y") {

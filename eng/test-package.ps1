@@ -40,23 +40,23 @@ build. Now, it's no longer a problem (we explicitely exclude 'bin' and 'obj' in
 Directory.Build.targets), but we never know.
 
 .EXAMPLE
-PS>post-check.ps1 -Framework netcoreapp2.2
+PS>test-package.ps1 -Framework netcoreapp2.2
 Test harness for a specific version.
 
 .EXAMPLE
-PS>post-check.ps1 net452
+PS>test-package.ps1 net452
 Test harness for a specific version (-Framework is not mandatory).
 
 .EXAMPLE
-PS>post-check.ps1 -y
+PS>test-package.ps1 -y
 Test harness for ALL major versions; do NOT ask for confirmation.
 
 .EXAMPLE
-PS>post-check.ps1 -Max
+PS>test-package.ps1 -Max
 Test harness for ALL versions, minor ones too.
 
 .EXAMPLE
-PS>post-check.ps1 -Max -ClassicOnly
+PS>test-package.ps1 -Max -ClassicOnly
 Test harness for ALL .NET Framework versions, minor ones too.
 #>
 [CmdletBinding()]
@@ -182,30 +182,21 @@ function Invoke-Test {
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting $framework."
 }
 
-# Interactive mode, last minor version of each major version.
-function Invoke-TestMajor {
+# Interactive mode.
+function Invoke-TestMany {
     [CmdletBinding()]
     param(
+        [Parameter(Mandatory = $true)]
+        [string[]] $frameworks,
+
         [Parameter(Mandatory = $false)]
         [ValidateNotNull()]
-        [string] $runtime = "",
-
-        [switch] $classicOnly,
-        [switch] $coreOnly
+        [string] $runtime = ""
     )
 
-    if (-not $coreOnly) {
-        foreach ($fmk in $MajorClassic) {
-            if (Confirm-Yes "Test harness for ${fmk}?") {
-                Invoke-Test $fmk -Runtime $runtime
-            }
-        }
-    }
-    if (-not $classicOnly) {
-        foreach ($fmk in $MajorCore) {
-            if (Confirm-Yes "Test harness for ${fmk}?") {
-                Invoke-Test $fmk -Runtime $runtime
-            }
+    foreach ($fmk in $frameworks) {
+        if (Confirm-Yes "Test harness for ${fmk}?") {
+            Invoke-Test $fmk -Runtime $runtime
         }
     }
 }
@@ -258,14 +249,16 @@ if ($Help) {
 
 # ------------------------------------------------------------------------------
 
+#New-Variable -Name "CONFIGURATION" -Value "Release" -Scope Script -Option Constant
+
 # Last minor version of each major version.
-$MajorClassic = `
+$MajorClassics = `
     "net452",
     "net462",
     "net472",
     "net48"
 
-$MajorCore =`
+$MajorCores =`
     "netcoreapp2.2",
     "netcoreapp3.1"
 
@@ -277,8 +270,8 @@ try {
     pushd $TEST_DIR
 
     if ($Clean) {
-        if (Confirm-Yes "Hard clean?") {
-            Say "  Deleting 'bin' and 'obj' directories within 'test'."
+        if (Confirm-Yes "Hard clean the directory 'test'?") {
+            Say-Indent "Deleting 'bin' and 'obj' directories within 'test'."
 
             Remove-BinAndObj $TEST_DIR
         }
@@ -293,10 +286,12 @@ try {
                 -ClassicOnly:$ClassicOnly.IsPresent
         }
         else {
-            Invoke-TestMajor `
-                -Runtime $Runtime `
-                -CoreOnly:$CoreOnly.IsPresent `
-                -ClassicOnly:$ClassicOnly.IsPresent
+            if (-not $CoreOnly) {
+                Invoke-TestMany $MajorClassics -Runtime $runtime
+            }
+            if (-not $ClassicOnly) {
+                Invoke-TestMany $MajorCores -Runtime $runtime
+            }
         }
     }
     else {

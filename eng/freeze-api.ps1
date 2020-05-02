@@ -52,13 +52,13 @@ function Update-PublicAPI {
         }
     }
 
-    Say "  Writing PublicAPI.Shipped.txt."
+    Say-Indent "Writing PublicAPI.Shipped.txt."
     $shipped `
         | Sort-Object `
         | ?{ -not $removed.Contains($_) } `
         | Out-File $shippedPath -Encoding UTF8
 
-    Say "  Writing PublicAPI.Unshipped.txt."
+    Say-Indent "Writing PublicAPI.Unshipped.txt."
     "" | Out-File $unshippedPath -Encoding UTF8
 }
 
