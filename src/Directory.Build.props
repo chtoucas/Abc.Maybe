@@ -37,7 +37,7 @@
 
   <PropertyGroup Condition=" $(Retail) == 'true' ">
     <!--
-      *** BE VERY, VERY CAREFUL BEFORE CHANGING THIS ***
+      *** BE VERY, VERY CAREFUL, BEFORE CHANGING THIS ***
 
       Weird bug in MSBuild; see https://github.com/Microsoft/msbuild/issues/2754
       First, it must stay here, it can't be in Directory.Build.targets
@@ -45,7 +45,7 @@
       even if use what's there here, it does NOT work.
     -->
     <DebugType>embedded</DebugType>
-    <DebugType Condition=" $(TargetFramework) == 'net461' ">full</DebugType>
+    <DebugType Condition=" $(TargetFramework.StartsWith('net4')) ">full</DebugType>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
