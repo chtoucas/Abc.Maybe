@@ -16,11 +16,8 @@
       Valid values for DebugType are "full," "pdbonly," "portable", "embedded", and "none".
       See https://docs.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-properties?view=vs-2019
 
-      Weird bug in MSBuild, I have to set this twice, here and in Directory.Build.props.
-      See https://github.com/Microsoft/msbuild/issues/2754
-    -->
-    <DebugType>embedded</DebugType>
-    <!--
+      DISABLED: see comments in Directory.Build.props.
+
     <DebugType Condition=" $(TargetFrameworkIdentifier) == '.NETFramework' ">full</DebugType>
     <DebugType Condition=" $(TargetFrameworkIdentifier) != '.NETFramework' ">embedded</DebugType>
     <AllowedOutputExtensionsInPackageBuildOutputFolder
@@ -54,8 +51,9 @@
     <NoWarn Condition=" $(RelaxWarnings) == 'true' ">$(NoWarn);CA1034;CA1303;CA1707</NoWarn>
     <NoWarn Condition=" $(RelaxAsyncWarnings) == 'true' ">$(NoWarn);CA2007</NoWarn>
     <NoWarn Condition=" $(GenerateDocumentationFile) == 'true' ">$(NoWarn);CS1591</NoWarn>
+
     <!-- Maybe, append a custom list of excluded rules (scripts) -->
-    <NoWarn Condition=" $(NoWarnX) != '' ">$(NoWarn);$(NoWarnX)</NoWarn>
+    <NoWarn>$(NoWarn);$(NoWarnX)</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

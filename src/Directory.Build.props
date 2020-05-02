@@ -27,22 +27,26 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <!-- Local options, all default to false -->
-    <DisplaySettings Condition=" $(DisplaySettings) != 'true' ">false</DisplaySettings>
-    <PatchEquality Condition=" $(PatchEquality) != 'true' ">false</PatchEquality>
-    <HideInternals Condition=" $(HideInternals) != 'true' ">false</HideInternals>
+    <!-- Local options -->
+    <DisplaySettings>false</DisplaySettings>
+    <PatchEquality>false</PatchEquality>
+    <HideInternals>false</HideInternals>
     <!-- Meta-option -->
-    <Retail Condition=" $(Retail) != 'true' ">false</Retail>
+    <Retail>false</Retail>
   </PropertyGroup>
 
   <PropertyGroup Condition=" $(Retail) == 'true' ">
     <!--
-      Weird bug in MSBuild, I have to set this twice, here and in Directory.Build.targets.
-      https://github.com/Microsoft/msbuild/issues/2754
+      *** BE VERY, VERY CAREFUL BEFORE CHANGING THIS ***
+
+      Weird bug in MSBuild; see https://github.com/Microsoft/msbuild/issues/2754
+      First, it must stay here, it can't be in Directory.Build.targets
+      Second, What we really want is sketched in Directory.Build.targets but
+      even if use what's there here, it does NOT work.
     -->
-    <!--<DebugType Condition=" $(TargetFrameworkIdentifier) == '.NETFramework' ">full</DebugType>
-    <DebugType Condition=" $(TargetFrameworkIdentifier) != '.NETFramework' ">embedded</DebugType>-->
     <DebugType>embedded</DebugType>
+    <DebugType Condition=" $(TargetFramework) == 'net461' ">full</DebugType>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
   <PropertyGroup>
