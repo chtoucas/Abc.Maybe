@@ -22,18 +22,19 @@ $ErrorActionPreference = "Stop"
 function Remove-Dir {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
         [string] $path
     )
 
     Write-Verbose "Removing $path."
 
     if (-not (Test-Path $path)) {
-        Write-Verbose "Ignoring '$path'; the path does NOT exist."
+        Write-Verbose "Skipping '$path'; the path does NOT exist."
         return
     }
     if (-not [System.IO.Path]::IsPathRooted($path)) {
-        Carp "Ignoring '$path'; the path MUST be absolute."
+        Carp "Skipping '$path'; the path MUST be absolute."
         return
     }
 
@@ -45,18 +46,19 @@ function Remove-Dir {
 function Remove-Packages {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
         [string] $path
     )
 
     Write-Verbose "Removing $path."
 
     if (-not (Test-Path $path)) {
-        Write-Verbose "Ignoring '$path'; the path does NOT exist."
+        Write-Verbose "Skipping '$path'; the path does NOT exist."
         return
     }
     if (-not [System.IO.Path]::IsPathRooted($path)) {
-        Carp "Ignoring '$path'; the path MUST be absolute."
+        Carp "Skipping '$path'; the path MUST be absolute."
         return
     }
 

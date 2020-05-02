@@ -62,10 +62,10 @@ Test harness for ALL .NET Framework versions, minor ones too.
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $false, Position = 0)]
-    [string] $Framework = "*",
+    [Alias("f")] [string] $Framework = "*",
 
     [Parameter(Mandatory = $false, Position = 1)]
-    [string] $Runtime = "",
+    [Alias("r")] [string] $Runtime = "",
 
     [Parameter(Mandatory = $false, Position = 2)]
     [string] $Version = "",
@@ -91,8 +91,8 @@ function Write-Usage {
 Test harness for Abc.Maybe
 
 Usage: pack.ps1 [switches].
-    |-Framework     specify a single framework to be tested.
-    |-Runtime       specifiy a target runtime to test for.
+  -f|-Framework     specify a single framework to be tested.
+  -r|-Runtime       specifiy a target runtime to test for.
     |-Max           test ALL frameworks (SLOW), not just the last major versions.
     |-ClassicOnly   when Max is also specified, only test for .NET Framework.
     |-CoreOnly      when Max is also specified, only test for .NET Core.
@@ -110,17 +110,22 @@ Usage: pack.ps1 [switches].
 # if it ever becomes too much of a burden.
 
 function Find-XunitRunner {
+    [CmdletBinding()]
+    param()
+
+    Write-Verbose "Finding xunit.console.exe."
+
     $version = "2.4.1"
     $framework = "net452"
 
-    $exe = Join-Path $env:USERPROFILE `
+    $path = Join-Path ${ENV:USERPROFILE} `
         ".nuget\packages\xunit.runner.console\$version\tools\$framework\xunit.console.exe"
 
-    if (-not (Test-Path $exe)) {
+    if (-not (Test-Path $path)) {
         Croak "Couldn't find Xunit Console Runner v$version where I expected it to be."
     }
 
-    $exe
+    $path
 }
 
 # ------------------------------------------------------------------------------
@@ -128,7 +133,7 @@ function Find-XunitRunner {
 function Invoke-TestOldStyle {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true, Position = 0)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $framework
     )
@@ -157,12 +162,13 @@ function Invoke-Test {
         [string] $framework,
 
         [Parameter(Mandatory = $false, Position = 1)]
-        [string] $runtime
+        [ValidateNotNull()]
+        [string] $runtime = ""
     )
 
     SAY-LOUD "Testing ($framework)."
 
-    if ($runtime) {
+    if ($runtime -ne "") {
         $args = @("--runtime:$runtime")
     }
     else {
@@ -180,8 +186,9 @@ function Invoke-Test {
 function Invoke-TestMajor {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $false, Position = 0)]
-        [string] $runtime,
+        [Parameter(Mandatory = $false)]
+        [ValidateNotNull()]
+        [string] $runtime = "",
 
         [switch] $classicOnly,
         [switch] $coreOnly
@@ -206,8 +213,9 @@ function Invoke-TestMajor {
 function Invoke-TestAll {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $false, Position = 0)]
-        [string] $runtime,
+        [Parameter(Mandatory = $false)]
+        [ValidateNotNull()]
+        [string] $runtime = "",
 
         [switch] $max,
         [switch] $classicOnly,
@@ -216,7 +224,7 @@ function Invoke-TestAll {
 
     SAY-LOUD "Testing for all platforms."
 
-    if ($runtime) {
+    if ($runtime -ne "") {
         $args = @("--runtime:$runtime")
     }
     else {

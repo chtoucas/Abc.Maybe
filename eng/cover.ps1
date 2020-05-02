@@ -80,6 +80,8 @@ function Find-OpenCover {
         [string] $projectPath
     )
 
+    Write-Verbose "Finding OpenCover.Console.exe."
+
     # Find the OpenCover version.
     $xml = [Xml] (Get-Content $projectPath)
     $xpath = "//Project/ItemGroup/PackageReference[@Include='OpenCover']"
@@ -87,22 +89,25 @@ function Find-OpenCover {
         | Select -ExpandProperty Node `
         | Select -First 1 -ExpandProperty Version
 
-    $exe = Join-Path $env:USERPROFILE `
+    $path = Join-Path ${ENV:USERPROFILE} `
         ".nuget\packages\opencover\$version\tools\OpenCover.Console.exe"
 
-    if (-not (Test-Path $exe)) {
+    if (-not (Test-Path $path)) {
         Croak "Couldn't find OpenCover v$version where I expected it to be."
     }
 
-    $exe
+    $path
 }
 
 function Invoke-OpenCover {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
         [string] $exe,
 
+        [Parameter(Mandatory = $true, Position = 1)]
+        [ValidateNotNullOrEmpty()]
         [string] $output
     )
 
@@ -131,7 +136,14 @@ function Invoke-OpenCover {
     Assert-CmdSuccess -ErrMessage "OpenCover failed."
 }
 
-function Invoke-Coverlet([string] $output) {
+function Invoke-Coverlet {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $output
+    )
+
     SAY-LOUD "Running Coverlet."
 
     $excludes = `
@@ -151,7 +163,18 @@ function Invoke-Coverlet([string] $output) {
     Assert-CmdSuccess -ErrMessage "Coverlet failed."
 }
 
-function Invoke-ReportGenerator([string] $reports, [string] $targetdir) {
+function Invoke-ReportGenerator {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [string] $reports,
+
+        [Parameter(Mandatory = $true, Position = 1)]
+        [ValidateNotNullOrEmpty()]
+        [string] $targetdir
+    )
+
     SAY-LOUD "Running ReportGenerator."
 
     & dotnet tool run reportgenerator `

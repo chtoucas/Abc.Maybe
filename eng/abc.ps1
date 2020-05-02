@@ -89,7 +89,7 @@ function Chirp {
         [string] $Message
     )
 
-  Write-Host $Message -ForegroundColor Green
+    Write-Host $Message -ForegroundColor Green
 }
 
 # Warn user.
@@ -101,7 +101,7 @@ function Carp {
         [string] $Message
     )
 
-  Write-Warning $Message
+    Write-Warning $Message
 }
 
 # Die of errors.
@@ -122,10 +122,11 @@ function Croak {
 ################################################################################
 #region Misc helpers.
 
-# Request confirmation to continue.
+# Request confirmation.
 function Confirm-Yes {
     param(
-        [Parameter(Mandatory = $true, Position = 0)]
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
         [string] $Question
     )
 
@@ -142,11 +143,12 @@ function Confirm-Yes {
     }
 }
 
-# Request confirmation to continue.
+# Request confirmation to continue, terminate the script if not.
 function Confirm-Continue {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true, Position = 0)]
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
         [string] $Question
     )
 
@@ -182,7 +184,7 @@ function Assert-CmdSuccess {
 function Remove-BinAndObj {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [Alias('p')] [string[]] $PathList
     )
 
@@ -190,11 +192,11 @@ function Remove-BinAndObj {
 
     $PathList | %{
         if (-not (Test-Path $_)) {
-            Carp "Ignoring '$_'; the path does NOT exist."
+            Carp "Skipping '$_'; the path does NOT exist."
             return
         }
         if (-not [System.IO.Path]::IsPathRooted($_)) {
-            Carp "Ignoring '$_'; the path MUST be absolute."
+            Carp "Skipping '$_'; the path MUST be absolute."
             return
         }
 
@@ -212,21 +214,20 @@ function Remove-BinAndObj {
 ################################################################################
 #region Git-related functions.
 
-# Find the path to the system git command.
-function Find-GitExe {
+function Find-Git {
     [CmdletBinding()]
     param()
 
-    Write-Verbose "Finding the system git command."
+    Write-Verbose "Finding git.exe."
 
-    $git = Get-Command "git.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
+    $cmd = Get-Command "git.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
 
-    if ($git -eq $null) {
-        Carp "Git could not be found in your PATH. Please ensure Git is installed."
+    if ($cmd -eq $null) {
+        Carp "Could not be find git.exe. Please ensure Git is installed."
         return $null
     }
 
-    $git.Path
+    $cmd.Path
 }
 
 # ------------------------------------------------------------------------------
@@ -235,7 +236,7 @@ function Find-GitExe {
 function Approve-GitStatus {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $Git
     )
@@ -255,7 +256,7 @@ function Approve-GitStatus {
         }
     }
     catch {
-        Carp "Git status failed: $_"
+        Carp "'git status' failed: $_"
     }
 }
 
@@ -263,7 +264,7 @@ function Approve-GitStatus {
 function Get-GitCommitHash {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $Git
     )
@@ -274,7 +275,7 @@ function Get-GitCommitHash {
         return & $Git log -1 --format="%H" 2>&1
     }
     catch {
-        Carp "Git log failed: $_"
+        Carp "'git log' failed: $_"
     }
 }
 
@@ -282,7 +283,7 @@ function Get-GitCommitHash {
 function Get-GitBranch {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $Git
     )
@@ -293,7 +294,7 @@ function Get-GitBranch {
         return & $Git rev-parse --abbrev-ref HEAD 2>&1
     }
     catch {
-        Carp "Git rev-parse failed: $_"
+        Carp "'git rev-parse' failed: $_"
     }
 }
 
@@ -304,22 +305,25 @@ function Get-GitBranch {
 # & 'C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe' -?
 # https://aka.ms/vs/workloads for a list of workload (-requires)
 function Find-VsWhere {
-    Write-Verbose "Finding the vswhere command."
+    [CmdletBinding()]
+    param()
 
-    $vswhere = Get-Command "vswhere.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
+    Write-Verbose "Finding vswhere.exe."
 
-    if ($vswhere -ne $null) {
-        return $vswhere.Path
+    $cmd = Get-Command "vswhere.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
+
+    if ($cmd -ne $null) {
+        return $cmd.Path
     }
 
     Write-Verbose "vswhere.exe could not be found in your PATH."
 
-    $path = "${ENV:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+    $path = Join-Path ${ENV:ProgramFiles(x86)} "\Microsoft Visual Studio\Installer\vswhere.exe"
     if (Test-Path $path) {
         return $path
     }
     else {
-        Croak "Could not find vswhere."
+        Croak "Could not find vswhere.exe."
     }
 }
 
@@ -328,38 +332,40 @@ function Find-VsWhere {
 function Find-MSBuild {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $vswhere
     )
-    Write-Verbose "Finding MSBuild."
 
-    $exe = & $vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe | select-object -first 1
+    Write-Verbose "Finding MSBuild.exe."
 
-    if (-not $exe) {
-        Croak "Could not find MSBuild."
+    $path = & $vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe | select-object -first 1
+
+    if (-not $path) {
+        Croak "Could not find MSBuild.exe."
     }
 
-    $exe
+    $path
 }
 
 function Find-Fsi {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $vswhere
     )
+
     Write-Verbose "Finding fsi.exe."
 
     $vspath = & $vswhere -legacy -latest -property installationPath
 
-    $path = "$vspath\Common7\IDE\CommonExtensions\Microsoft\FSharp\fsi.exe"
+    $path = Join-Path $vspath "\Common7\IDE\CommonExtensions\Microsoft\FSharp\fsi.exe"
     if (Test-Path $path) {
         return $path
     }
     else {
-        Croak "Could not find vswhere."
+        Croak "Could not find fsi.exe."
     }
 }
 

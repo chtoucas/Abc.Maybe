@@ -113,16 +113,18 @@ function Generate-Uids {
 }
 
 # Find commit hash and branch.
-function Get-GitInfo {
+function Get-GitInfos {
     [CmdletBinding()]
     param(
         [switch] $force
     )
 
+    Write-Verbose "Getting git infos."
+
     $commit = ""
     $branch = ""
 
-    $git = Find-GitExe
+    $git = Find-Git
     if ($git -eq $null) {
         Confirm-Continue "Continue even without any git metadata?"
     }
@@ -143,11 +145,11 @@ function Get-GitInfo {
 function Get-PackageFile {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, Position = 0)]
         [ValidateNotNullOrEmpty()]
         [string] $projectName,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
         [string] $version,
 
@@ -162,14 +164,14 @@ function Get-PackageFile {
     }
 }
 
-function Test-PackageFile {
+function Approve-PackageFile {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, Position = 0)]
         [ValidateNotNullOrEmpty()]
         [string] $package,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
         [string] $version
     )
@@ -214,9 +216,9 @@ function Invoke-Pack {
 
     SAY-LOUD "Packing."
 
-    $major, $minor, $patch, $prere = Get-PackageVersion $projectName
+               $major, $minor, $patch, $prere = Get-PackageVersion $projectName
     $buildNumber, $revisionNumber, $timestamp = Generate-Uids
-    $commit, $branch = Get-GitInfo -Force:$force.IsPresent
+                             $commit, $branch = Get-GitInfos -Force:$force.IsPresent
 
     if ($retail) {
         $output = $PKG_OUTDIR
@@ -235,19 +237,19 @@ function Invoke-Pack {
         $output = $PKG_CI_OUTDIR
         $args = `
             "--version-suffix:$prere",
-            "-p:PreReleaseTag=ci",
-            "-p:Title=""$projectName (CI)""",
-            "-p:NoWarnX=NU5105"
+            "/p:PreReleaseTag=ci",
+            "/p:Title=""$projectName (CI)""",
+            "/p:NoWarnX=NU5105"
     }
 
     if ($myVerbose) {
-        $args += "-p:DisplaySettings=true"
+        $args += "/p:DisplaySettings=true"
     }
 
     $version = "$major.$minor.$patch-$prere"
     $package = Get-PackageFile $projectName $version -Retail:$retail.IsPresent
 
-    if ($retail) { Test-PackageFile $package $version }
+    if ($retail) { Approve-PackageFile $package $version }
 
     $proj = Join-Path $SRC_DIR $projectName -Resolve
 
@@ -260,12 +262,12 @@ function Invoke-Pack {
 
     # Do NOT use --no-restore or --no-build (option Safe removes everything).
     & dotnet pack $proj -c $CONFIGURATION --nologo $args --output $output `
-        -p:TargetFrameworks='\"netstandard2.1;netstandard2.0;netstandard1.0;net461\"' `
-        -p:BuildNumber=$buildNumber `
-        -p:RevisionNumber=$revisionNumber `
-        -p:RepositoryCommit=$commit `
-        -p:RepositoryBranch=$branch `
-        -p:Retail=true `
+        /p:TargetFrameworks='\"netstandard2.1;netstandard2.0;netstandard1.0;net461\"' `
+        /p:BuildNumber=$buildNumber `
+        /p:RevisionNumber=$revisionNumber `
+        /p:RepositoryCommit=$commit `
+        /p:RepositoryBranch=$branch `
+        /p:Retail=true `
         | Out-Host
 
     Assert-CmdSuccess -ErrMessage "Pack task failed."
@@ -283,11 +285,11 @@ function Invoke-Pack {
 function Invoke-Publish {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, Position = 0)]
         [ValidateNotNullOrEmpty()]
         [string] $package,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
         [string] $version,
 

@@ -18,7 +18,14 @@ $ErrorActionPreference = "Stop"
 
 ################################################################################
 
-function Update-PublicAPI([string] $dir) {
+function Update-PublicAPI {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $dir
+    )
+
     SAY-LOUD "Processing $dir"
 
     $shippedPath = Join-Path $dir "PublicAPI.Shipped.txt" -Resolve
