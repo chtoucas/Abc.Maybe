@@ -89,8 +89,9 @@ function Get-PackageVersion {
     $minor = $node | Select -First 1 -ExpandProperty MinorVersion
     $patch = $node | Select -First 1 -ExpandProperty PatchVersion
     $prere = $node | Select -First 1 -ExpandProperty PreReleaseTag
+    $preno = $node | Select -First 1 -ExpandProperty PreReleaseNum
 
-    @($major, $minor, $patch, $prere)
+    @($major, $minor, $patch, $prere, $preno)
 }
 
 # In the past, we used to generate the id's within MSBuild but then it is nearly
@@ -216,28 +217,42 @@ function Invoke-Pack {
 
     SAY-LOUD "Packing."
 
-               $major, $minor, $patch, $prere = Get-PackageVersion $projectName
+       $major, $minor, $patch, $prere, $preno = Get-PackageVersion $projectName
     $buildNumber, $revisionNumber, $timestamp = Generate-Uids
                              $commit, $branch = Get-GitInfos -Force:$force.IsPresent
 
     if ($retail) {
         $output = $PKG_OUTDIR
+        if ($prere -eq "") {
+            $suffix = ""
+        }
+        else {
+            $suffix = "$prere$preno"
+        }
         $args = @()
     }
     else {
         # For CI packages, we use a custom prerelease label (SemVer 2.0.0).
         if ($prere -eq "") {
-            # TODO: what should we do when $prere = "rc" > "ci"? Does it matter?
             # If the current version does not have a prerelease label, we
             # increase the patch number to guarantee a version higher than the
             # public one.
             $patch = 1 + [int]$patch
+            $prelab = "ci"
+            $suffix = "ci-$timestamp"
         }
-        $prere = "ci-$timestamp"
+        else {
+            # If the current does have a prerelease label, increase the
+            # prerelease number.
+            $preno = 1 + [int]$preno
+            $prelab = "$prere$preno-ci"
+            $suffix = "$prere$preno-ci-$timestamp"
+        }
+
         $output = $PKG_CI_OUTDIR
         $args = `
-            "--version-suffix:$prere",
-            "/p:PreReleaseTag=ci",
+            "--version-suffix:$suffix",
+            "/p:PreReleaseLabel=$prelab",
             "/p:Title=""$projectName (CI)""",
             "/p:NoWarnX=NU5105"
     }
@@ -246,7 +261,13 @@ function Invoke-Pack {
         $args += "/p:DisplaySettings=true"
     }
 
-    $version = "$major.$minor.$patch-$prere"
+    if ($suffix -eq "") {
+        $version = "$major.$minor.$patch"
+    }
+    else {
+        $version = "$major.$minor.$patch-$suffix"
+    }
+
     $package = Get-PackageFile $projectName $version -Retail:$retail.IsPresent
 
     if ($retail) { Approve-PackageFile $package $version }

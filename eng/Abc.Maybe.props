@@ -10,7 +10,8 @@
       Do not use "." or "-" to separate alphas from digits.
       alpha1 < alpha2 < ... < alpha11 < ... < beta1 < ... < rc1 < ...
     -->
-    <PreReleaseTag>beta4</PreReleaseTag>
+    <PreReleaseTag>beta</PreReleaseTag>
+    <PreReleaseNum>4</PreReleaseNum>
 
     <Title>A Safe Yet Effective Option Type</Title>
 

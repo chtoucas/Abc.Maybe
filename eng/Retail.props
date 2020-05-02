@@ -9,19 +9,22 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <PreReleaseLabel Condition=" $(PreReleaseTag) != '' and $(PreReleaseNum) != ''">$(PreReleaseTag)$(PreReleaseNum)</PreReleaseLabel>
+
     <VersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</VersionPrefix>
-    <VersionSuffix>$(PreReleaseTag)</VersionSuffix>
+    <VersionSuffix>$(PreReleaseLabel)</VersionSuffix>
 
     <AssemblyVersion>$(MajorVersion).$(MinorVersion).0.0</AssemblyVersion>
     <FileVersion>$(MajorVersion).$(MinorVersion).$(BuildNumber).$(RevisionNumber)</FileVersion>
 
     <!-- Informational version = semantic version -->
     <InformationalVersion>$(MajorVersion).$(MinorVersion).$(PatchVersion)</InformationalVersion>
-    <InformationalVersion Condition=" $(PreReleaseTag) != '' ">$(InformationalVersion)-$(PreReleaseTag)</InformationalVersion>
+    <InformationalVersion Condition=" $(PreReleaseLabel) != '' ">$(InformationalVersion)-$(PreReleaseLabel)</InformationalVersion>
     <InformationalVersion Condition=" $(RepositoryCommit) != '' ">$(InformationalVersion)+$(RepositoryCommit.Substring(0, 7))</InformationalVersion>
 
     <!-- NB: the default AssemblyTitle uses AssemblyName not Title -->
-    <Description>$(Title). Built [$([System.DateTime]::UtcNow.ToString("r"))].</Description>
+    <AssemblyTitle>$(Title)</AssemblyTitle>
+    <Description>$(AssemblyName), built [$([System.DateTime]::UtcNow.ToString("r"))].</Description>
   </PropertyGroup>
 
 </Project>
