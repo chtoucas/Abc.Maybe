@@ -27,17 +27,21 @@ $ErrorActionPreference = "Stop"
 (Join-Path $ROOT_DIR "test" -Resolve) `
     | New-Variable -Name "TEST_DIR" -Scope Script -Option Constant
 
-# Artifacts directory.
+# Artifacts directory. Be careful with -Resolve, dir does not necessary exist.
 (Join-Path $ROOT_DIR "__" -Resolve) `
     | New-Variable -Name "ARTIFACTS_DIR" -Scope Script -Option Constant
-# Packages directories (no -Resolve, it might not exist yet).
+# Packages.
 (Join-Path $ARTIFACTS_DIR "packages") `
     | New-Variable -Name "PKG_OUTDIR" -Scope Script -Option Constant
+# Edge packages.
 (Join-Path $ARTIFACTS_DIR "packages-edge") `
     | New-Variable -Name "PKG_EDGE_OUTDIR" -Scope Script -Option Constant
-# Local NuGet feed (no -Resolve, it might not exist yet).
+# Local NuGet feed.
 (Join-Path $ARTIFACTS_DIR "nuget-feed") `
     | New-Variable -Name "NUGET_LOCAL_FEED" -Scope Script -Option Constant
+# Local NuGet cache.
+(Join-Path $ARTIFACTS_DIR "nuget-cache" -Resolve) `
+    | New-Variable -Name "NUGET_LOCAL_CACHE" -Scope Script -Option Constant
 
 # ------------------------------------------------------------------------------
 
