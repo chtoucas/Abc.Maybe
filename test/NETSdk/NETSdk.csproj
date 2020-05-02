@@ -4,28 +4,28 @@
     Prerequesite: .NET Framework Developer Pack or Targeting Pack.
     The Targeting Pack should be sufficient.
     A very simple way to see what works and what does not,
-    just compile this project with /p:__Max=true.
+    just compile this project with /p:AllVersions=true.
     https://docs.microsoft.com/en-us/dotnet/framework/install/guide-for-developers
     https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/how-to-determine-which-versions-are-installed
 
     Versions.
     .NET Framework.
-      When __Max is not true, we only list the last minor version of each major version.
+      When AllVersions is not true, we only list the last minor version of each major version.
       https://support.microsoft.com/en-us/help/17455/lifecycle-faq-net-framework
     .NET Core.
-      When __Max is not true, we only list the LTS versions.
+      When AllVersions is not true, we only list the LTS versions.
       https://dotnet.microsoft.com/platform/support/policy/dotnet-core
       https://github.com/dotnet/core/blob/master/microsoft-support.md
   -->
 
-  <PropertyGroup Condition=" $(__Max) == 'true' ">
-    <__NETClassicTargets Condition=" $(__CoreOnly) != 'true' ">net452;net46;net461;net462;net47;net471;net472;net48</__NETClassicTargets>
-    <__NETCoreTargets Condition=" $(__ClassicOnly) != 'true' ">netcoreapp2.0;netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netcoreapp3.1</__NETCoreTargets>
+  <PropertyGroup Condition=" $(AllVersions) == 'true' ">
+    <__NETClassicTargets Condition=" $(ClassicSet) == 'true' ">net452;net46;net461;net462;net47;net471;net472;net48</__NETClassicTargets>
+    <__NETCoreTargets Condition=" $(CoreSet) == 'true' ">netcoreapp2.0;netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netcoreapp3.1</__NETCoreTargets>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" $(__Max) != 'true' ">
-    <__NETClassicTargets Condition=" $(__CoreOnly) != 'true' ">net452;net462;net472;net48</__NETClassicTargets>
-    <__NETCoreTargets Condition=" $(__ClassicOnly) != 'true' ">netcoreapp2.1;netcoreapp3.1</__NETCoreTargets>
+  <PropertyGroup Condition=" $(AllVersions) != 'true' ">
+    <__NETClassicTargets Condition=" $(ClassicSet) == 'true' ">net452;net462;net472;net48</__NETClassicTargets>
+    <__NETCoreTargets Condition=" $(CoreSet) == 'true' ">netcoreapp2.1;netcoreapp3.1</__NETCoreTargets>
   </PropertyGroup>
 
   <PropertyGroup>

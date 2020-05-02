@@ -88,10 +88,12 @@ function Say-Loud {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $Message
+        [string] $Message,
+
+        [switch] $NoNewline
     )
 
-    Write-Host $Message -BackgroundColor DarkCyan -ForegroundColor Green
+    Write-Host $Message -BackgroundColor DarkCyan -ForegroundColor Green -NoNewline:$NoNewline.IsPresent
 }
 
 function Chirp {
@@ -99,10 +101,12 @@ function Chirp {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $Message
+        [string] $Message,
+
+        [switch] $NoNewline
     )
 
-    Write-Host $Message -ForegroundColor Green
+    Write-Host $Message -ForegroundColor Green -NoNewline:$NoNewline.IsPresent
 }
 
 # Warn user.

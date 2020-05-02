@@ -16,17 +16,21 @@ Ignored by targets "net45" or "net451".
 For instance, runtime can be "win10-x64" or "win10-x86".
 See https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
 
-.PARAMETER Max
-Test ALL frameworks (SLOW), not just the last major versions.
+.PARAMETER AllVersions
+Test with ALL frameworks (SLOW), not just the last minor version of each major version.
 Ignored if -Framework is also specified.
 Ignored if you answer "no" when asked to confirm to test all platforms.
 
-.PARAMETER ClassicOnly
-When Max is also specified, only test for .NET Framework.
+.PARAMETER Classic
+Test with .NET Framework, all or just the last minor version of each major version.
+When specified, .NET Core targets are ignored unless -Core is also specified.
+What it does really mean is that "I don't want include .NET Core this time".
 Ignored if -Framework is also specified.
 
-.PARAMETER CoreOnly
-When Max is also specified, only test for .NET Core.
+.PARAMETER Core
+Test with .NET Core, all or just the last minor version of each major version.
+When specified, .NET Framework targets are ignored unless -Classic is also specified.
+What it does really mean is that "I don't want to include .NET Framework this time".
 Ignored if -Framework is also specified.
 
 .PARAMETER Yes
@@ -52,11 +56,11 @@ PS>test-package.ps1 -y
 Test harness for ALL major versions; do NOT ask for confirmation.
 
 .EXAMPLE
-PS>test-package.ps1 -Max
+PS>test-package.ps1 -AllVersions
 Test harness for ALL versions, minor ones too.
 
 .EXAMPLE
-PS>test-package.ps1 -Max -ClassicOnly
+PS>test-package.ps1 -AllVersions -Classic
 Test harness for ALL .NET Framework versions, minor ones too.
 #>
 [CmdletBinding()]
@@ -70,9 +74,9 @@ param(
     [Parameter(Mandatory = $false, Position = 2)]
     [string] $Version = "",
 
-                 [switch] $Max,
-                 [switch] $ClassicOnly,
-                 [switch] $CoreOnly,
+    [Alias("a")] [switch] $AllVersions,
+                 [switch] $Classic,
+                 [switch] $Core,
     [Alias("y")] [switch] $Yes,
     [Alias("c")] [switch] $Clean,
     [Alias("h")] [switch] $Help
@@ -93,9 +97,9 @@ Test harness for Abc.Maybe
 Usage: pack.ps1 [switches].
   -f|-Framework     specify a single framework to be tested.
   -r|-Runtime       specifiy a target runtime to test for.
-    |-Max           test ALL frameworks (SLOW), not just the last major versions.
-    |-ClassicOnly   when Max is also specified, only test for .NET Framework.
-    |-CoreOnly      when Max is also specified, only test for .NET Core.
+  -a|-AllVersions   test with ALL framework versions (SLOW), not just the last minor version of each major version.
+    |-Classic       test with .NET Framework, all -or- just the minor version of each major version.
+    |-Core          test with .NET Core, all -or- just the minor version of each major version.
   -y|-Yes           do not ask for confirmation before running any test harness.
   -c|-Clean         hard clean the solution before anything else.
   -h|-Help          print this help and exit.
@@ -128,6 +132,18 @@ function Find-XunitRunner {
     $path
 }
 
+function Get-RuntimeString {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $false)]
+        [ValidateNotNull()]
+        [string] $runtime = ""
+    )
+
+    if ($runtime -eq "") { return "default" }
+    $runtime
+}
+
 # ------------------------------------------------------------------------------
 
 function Invoke-TestOldStyle {
@@ -138,7 +154,8 @@ function Invoke-TestOldStyle {
         [string] $framework
     )
 
-    SAY-LOUD "Testing ($framework)."
+    SAY-LOUD "Testing" -NoNewline
+    Say " ($framework, runtime=default)."
 
     $vswhere = Find-VsWhere
     $msbuild = Find-MSBuild $vswhere
@@ -148,13 +165,13 @@ function Invoke-TestOldStyle {
 
     # https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2019
     & $msbuild .\$proj\$proj.csproj -v:minimal /t:"Restore;Build" | Out-Host
-    Assert-CmdSuccess -ErrMessage "Build task failed when targeting $framework."
+    Assert-CmdSuccess -ErrMessage "Build task failed when targeting '$framework'."
 
     & $xunit .\$proj\bin\Release\$proj.dll | Out-Host
-    Assert-CmdSuccess -ErrMessage "Test task failed when targeting $framework."
+    Assert-CmdSuccess -ErrMessage "Test task failed when targeting '$framework'."
 }
 
-function Invoke-Test {
+function Invoke-TestSingle {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, Position = 0)]
@@ -166,7 +183,9 @@ function Invoke-Test {
         [string] $runtime = ""
     )
 
-    SAY-LOUD "Testing ($framework)."
+    SAY-LOUD "Testing" -NoNewline
+    $runtimeStr = Get-RuntimeString $runtime
+    Say " ($framework, runtime=$runtimeStr)."
 
     if ($runtime -ne "") {
         $args = @("--runtime:$runtime")
@@ -176,10 +195,10 @@ function Invoke-Test {
     }
 
     & dotnet test .\NETSdk\NETSdk.csproj -f $framework $args `
-        /p:__Max=true --nologo -v q `
+        /p:AllVersions=true --nologo -v q `
         | Out-Host
 
-    Assert-CmdSuccess -ErrMessage "Test task failed when targeting $framework."
+    Assert-CmdSuccess -ErrMessage "Test task failed when targeting '$framework'."
 }
 
 # Interactive mode.
@@ -195,25 +214,37 @@ function Invoke-TestMany {
     )
 
     foreach ($fmk in $frameworks) {
-        if (Confirm-Yes "Test harness for ${fmk}?") {
-            Invoke-Test $fmk -Runtime $runtime
+        if (Confirm-Yes "Test harness for '${fmk}'?") {
+            Invoke-TestSingle $fmk -Runtime $runtime
         }
     }
 }
 
-function Invoke-TestAll {
+function Invoke-TestBatch {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $false)]
         [ValidateNotNull()]
         [string] $runtime = "",
 
-        [switch] $max,
-        [switch] $classicOnly,
-        [switch] $coreOnly
+        [switch] $allVersions,
+        [switch] $classic,
+        [switch] $core,
+        [switch] $both
     )
 
-    SAY-LOUD "Testing for all platforms."
+    SAY-LOUD "Batch testing" -NoNewline
+    Say " (" -NoNewline
+    if ($both)        { Say "Classic+Core frameworks, "  -NoNewline }
+    elseif ($classic) { Say "Classic frameworks, "  -NoNewline }
+    else              { Say "Core frameworks, "  -NoNewline }
+    if ($allVersions) { Say "all versions, "  -NoNewline }
+    $runtimeStr = Get-RuntimeString $runtime
+    Say "runtime=$runtimeStr)."
+
+    $allVersions_ = "$allVersions".ToLower()
+    $classicSet   = "$classic".ToLower()
+    $coreSet      = "$core".ToLower()
 
     if ($runtime -ne "") {
         $args = @("--runtime:$runtime")
@@ -222,19 +253,15 @@ function Invoke-TestAll {
         $args = @()
     }
 
-    if ($max) { $__max = "true" } else { $__max = "false" }
-    if ($classicOnly) { $__classicOnly = "true" } else { $__classicOnly = "false" }
-    if ($coreOnly) { $__coreOnly = "true" } else { $__coreOnly = "false" }
-
     & dotnet test .\NETSdk\NETSdk.csproj --nologo -v q $args `
-        /p:__Max=$__max `
-        /p:__ClassicOnly=$__classicOnly `
-        /p:__CoreOnly=$__coreOnly `
+        /p:AllVersions=$allVersions_ `
+        /p:ClassicSet=$classicSet `
+        /p:CoreSet=$coreSet `
         | Out-Host
 
-    Assert-CmdSuccess -ErrMessage "Test ALL task failed."
+    Assert-CmdSuccess -ErrMessage "Test task failed."
 
-    if ($max -and (-not $coreOnly)) {
+    if ($allVersions -and (-not $coreOnly)) {
         Invoke-TestOldStyle "net45"
         Invoke-TestOldStyle "net451"
     }
@@ -248,8 +275,6 @@ if ($Help) {
 }
 
 # ------------------------------------------------------------------------------
-
-#New-Variable -Name "CONFIGURATION" -Value "Release" -Scope Script -Option Constant
 
 # Last minor version of each major version.
 $MajorClassics = `
@@ -278,18 +303,28 @@ try {
     }
 
     if ($Framework -eq "*") {
-        if ($Yes -or (Confirm-Yes "Test all platforms at once (SLOW)?")) {
-            Invoke-TestAll `
-                -Runtime $Runtime `
-                -Max:$Max.IsPresent `
-                -CoreOnly:$CoreOnly.IsPresent `
-                -ClassicOnly:$ClassicOnly.IsPresent
+        if (-not $Classic -and -not $Core) {
+            $both = $true
         }
         else {
-            if (-not $CoreOnly) {
+            $both = $false
+        }
+
+        if ($Yes -or (Confirm-Yes "Test all platforms at once (SLOW)?")) {
+            Invoke-TestBatch `
+                -Runtime $Runtime `
+                -AllVersions:$AllVersions.IsPresent `
+                -Core:$Core.IsPresent `
+                -Classic:$Classic.IsPresent `
+                -Both:$both
+        }
+        else {
+            Chirp "Now you will have the opportunity to test the last minor version of each major platform version."
+
+            if ($both -or $Classic) {
                 Invoke-TestMany $MajorClassics -Runtime $runtime
             }
-            if (-not $ClassicOnly) {
+            if ($both -or $Core) {
                 Invoke-TestMany $MajorCores -Runtime $runtime
             }
         }
@@ -302,7 +337,7 @@ try {
             Invoke-TestOldStyle "net451"
         }
         else {
-            Invoke-Test $Framework -Runtime $Runtime
+            Invoke-TestSingle $Framework -Runtime $Runtime
         }
     }
 }
