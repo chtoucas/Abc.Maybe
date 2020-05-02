@@ -295,12 +295,10 @@ function Invoke-Publish {
         # TODO: add an option to publish the package for us. --interactive?
         if (Confirm-Yes "Do you want me to publish the package for you?") {
             Carp "Not yet implemented."
-            Chirp "> dotnet nuget push $package -s https://www.nuget.org/ -k MYKEY"
         }
-        else {
-            Chirp "To publish the package:"
-            Chirp "> dotnet nuget push $package -s https://www.nuget.org/ -k MYKEY"
-        }
+
+        Chirp "To publish the package:"
+        Chirp "> dotnet nuget push $package -s https://www.nuget.org/ -k MYKEY"
     }
     else {
         Say "Pushing the package to the local NuGet feed"
