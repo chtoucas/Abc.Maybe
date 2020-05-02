@@ -5,11 +5,11 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <AbcVersion Condition=" $(AbcVersion) == '' ">1.0.0-beta4</AbcVersion>
+    <AbcVersion>1.0.0-beta4</AbcVersion>
   </PropertyGroup>
 
   <PropertyGroup>
-    <Platform Condition=" $(Platform) == '' ">AnyCPU</Platform>
+    <Platform>AnyCPU</Platform>
     <Configuration>Release</Configuration>
     <Optimize>true</Optimize>
     <DebugType>none</DebugType>
