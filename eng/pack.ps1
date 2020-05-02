@@ -103,10 +103,11 @@ function Generate-Uids {
 
     $vswhere = Find-VsWhere
     $fsi = Find-Fsi $vswhere
+    $fsx = Join-Path $PSScriptRoot "genuids.fsx" -Resolve
 
     Write-Verbose "Executing genuids.fsx."
 
-    $uids = & $fsi "$PSScriptRoot\genuids.fsx"
+    $uids = & $fsi $fsx
 
     $uids.Split(";")
 }

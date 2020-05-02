@@ -1,6 +1,7 @@
 README
 ------
 
+Core scripts.
 - qtest.cmd             quickly run the test suite.
 - qperf.cmd             quickly run the perf tool.
 - qbuild.cmd            build project/solution for all supported frameworks.
@@ -10,3 +11,12 @@ README
 - freeze-api.ps1        update public API files.
 - pack.ps1              create a package.
 - test-package.ps1      test a package.
+
+Other files.
+- Abc.Maybe.props       NuGet package props for Abc.Maybe.
+- Retail.props          MSBuild props for retail builds.
+- Retail.tasks          MSBuild tasks for retail builds (obsolete).
+- genuids.fsx           generate unique ids used to timestamp a package.
+- genuids.ps1           execute genuids.fsx.
+- Abc.snk               strong named key.
+- Abc.pk                public key.

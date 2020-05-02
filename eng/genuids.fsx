@@ -31,7 +31,6 @@
 // reason to use an algorithm depending only on the date and the time.
 
 open System
-open System.Globalization
 
 let orig = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc)
 
@@ -47,6 +46,4 @@ let seconds  = (now - mon).TotalSeconds
 let buildnum = uint16(halfdays)
 let revnum   = uint16(seconds)
 
-let revstr = revnum.ToString(CultureInfo.InvariantCulture).PadLeft(5, '0')
-
-printfn "%i;%i;%i%s" buildnum revnum buildnum revstr
+printfn "%i;%i;%i%05i" buildnum revnum buildnum revnum
