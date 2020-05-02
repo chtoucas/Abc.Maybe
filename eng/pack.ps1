@@ -233,6 +233,7 @@ function Invoke-Pack {
         }
         $prere = "ci-$timestamp"
         $output = $PKG_CI_OUTDIR
+        # TODO: NoWarnX is no longer necessary.
         $args = "--version-suffix:$prere", "-p:NoWarnX=NU5105"
     }
 
@@ -302,8 +303,13 @@ function Invoke-Publish {
         Chirp "> dotnet nuget push $package -s https://www.nuget.org/ -k MYKEY"
     }
     else {
+        # We could have created the package directly in $NUGET_LOCAL_FEED
+        # but it seems cleaner to keep creation and publication separated.
+        # Also, if Microsoft ever decided to change the behaviour of "push",
+        # we won't have to update this script.
+
         Say "Pushing the package to the local NuGet feed"
-        & dotnet nuget push $package -s $NUGET_LOCAL_FEED | Out-Host
+        & dotnet nuget push $package -s $NUGET_LOCAL_FEED --force-english-output | Out-Host
         Assert-CmdSuccess -ErrMessage "Failed to publish package to local NuGet feed."
 
         # If the following task fails, we should remove the package from the feed,

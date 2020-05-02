@@ -1,22 +1,29 @@
 README
 ------
 
-Core scripts.
-- qtest.cmd             quickly run the test suite.
-- qperf.cmd             quickly run the perf tool.
+Build script.
 - qbuild.cmd            build project/solution for all supported frameworks.
-- dump-test-suite.cmd   dump the test suite.
-- reset.ps1             delete 'bin' and 'obj' directories, clear local NuGet feed/cache.
+
+Test-related scripts.
+- qtest.cmd             quickly run the test suite.
 - cover.ps1             code coverage (Coverlet or OpenCover).
-- freeze-api.ps1        update public API files.
+- qperf.cmd             quickly run the perf tool.
+
+Package-related scripts.
 - pack.ps1              create a package.
 - test-package.ps1      test a package.
+alongside the supporting scripts (not meant to be called directly)
+- genuids.fsx           generate unique ids used to timestamp a package.
+- genuids.ps1           execute genuids.fsx.
+
+Maintenance scripts.
+- dump-test-suite.cmd   dump the test suite.
+- freeze-api.ps1        update public API files.
+- reset.ps1             delete 'bin' and 'obj' directories, clear local NuGet feed/cache.
 
 Other files.
 - Abc.Maybe.props       NuGet package props for Abc.Maybe.
 - Retail.props          MSBuild props for retail builds.
 - Retail.tasks          MSBuild tasks for retail builds (obsolete).
-- genuids.fsx           generate unique ids used to timestamp a package.
-- genuids.ps1           execute genuids.fsx.
 - Abc.snk               strong named key.
 - Abc.pk                public key.
