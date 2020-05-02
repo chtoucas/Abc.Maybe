@@ -23,14 +23,14 @@ Ignored if you answer "no" when asked to confirm to test all platforms.
 
 .PARAMETER Classic
 Test with .NET Framework, all or just the last minor version of each major version.
+What it does really mean is "I don't want include .NET Core this time".
 When specified, .NET Core targets are ignored unless -Core is also specified.
-What it does really mean is that "I don't want include .NET Core this time".
 Ignored if -Framework is also specified.
 
 .PARAMETER Core
 Test with .NET Core, all or just the last minor version of each major version.
+What it does really mean is "I don't want to include .NET Framework this time".
 When specified, .NET Framework targets are ignored unless -Classic is also specified.
-What it does really mean is that "I don't want to include .NET Framework this time".
 Ignored if -Framework is also specified.
 
 .PARAMETER Yes
@@ -305,6 +305,8 @@ try {
     if ($Framework -eq "*") {
         if (-not $Classic -and -not $Core) {
             $both = $true
+            $Classic = $true
+            $Core = $true
         }
         else {
             $both = $false
