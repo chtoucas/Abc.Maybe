@@ -10,7 +10,7 @@
       The first listed framework is the one used by the VS editor.
       Full NRT-analysis requires .NET Core 3.0 or above, .NET Standard does
       not include the nullable annotations (version 2.1 defines the nullable
-      attributes but don't use them if I understand things correctly).
+      attributes but VS doesn't use them if I understand things correctly).
       We use the version 3.1 instead of 3.0 because the former is LTS and the
       latter is already EOL.
       For libraries, use

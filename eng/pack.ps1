@@ -264,6 +264,7 @@ function Invoke-Pack {
     else { Chirp " on branch ""???"", commit ???." }
 
     # Do NOT use --no-restore or --no-build (option Safe removes everything).
+    # RepositoryCommit and RepositoryBranch are standard props, do not remove them.
     & dotnet pack $proj -c $CONFIGURATION --nologo $args --output $output `
         /p:TargetFrameworks='\"netstandard2.1;netstandard2.0;netstandard1.0;net461\"' `
         /p:BuildNumber=$buildNumber `
