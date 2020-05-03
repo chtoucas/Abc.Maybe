@@ -5,7 +5,6 @@
   <PropertyGroup>
     <BuildNumber Condition=" $(BuildNumber) == '' ">$(PatchVersion)</BuildNumber>
     <RevisionNumber Condition=" $(RevisionNumber) == '' ">0</RevisionNumber>
-    <Title Condition=" $(Title) == '' ">$(AssemblyName)</Title>
   </PropertyGroup>
 
   <PropertyGroup>

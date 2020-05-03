@@ -3,8 +3,6 @@
   <PropertyGroup>
     <SourceRoot>$(MSBuildThisFileDirectory)</SourceRoot>
     <EngRoot>$(MSBuildThisFileDirectory)..\eng\</EngRoot>
-
-    <AssemblyOriginatorKeyFile>$(EngRoot)Abc.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -77,8 +75,10 @@
     <!-- CONTRACTS_FULL is necessary to enable the attribute Pure -->
     <DefineConstants>$(DefineConstants);TRACE;CONTRACTS_FULL</DefineConstants>
 
+    <AssemblyOriginatorKeyFile>$(EngRoot)Abc.snk</AssemblyOriginatorKeyFile>
+
     <!--
-      Fake version only used during development. For Retail builds of a package,
+      Fake version only used during development. For retail builds of a package,
       the version is set within eng\Retail.targets which is loaded later on.
     -->
     <VersionPrefix>1.0.0</VersionPrefix>
