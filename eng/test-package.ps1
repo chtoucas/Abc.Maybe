@@ -21,7 +21,7 @@ See https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
 Test the package for ALL platform versions (SLOW), not just the last minor
 version of each major version.
 Ignored if -Platform is also specified.
-Ignored if you answer "no" when asked to confirm to test all platforms.
+Ignored if you answer "no" when asked to confirm to test all selected platforms.
 
 .PARAMETER Classic
 Only test the package for .NET Framework.
@@ -43,20 +43,20 @@ Directory.Build.targets), but we never know.
 
 .EXAMPLE
 PS>test-package.ps1
-Test the package for all platforms and for the last minor version of each major
-version.
+Test the package for the last minor version of each major version of .NET Core
+and .NET Framework.
 
 .EXAMPLE
 PS>test-package.ps1 -AllVersions
-Test the package for all platforms and for ALL versions, minor ones too.
+Test the package for ALL versions of .NET Core and .NET Framework, minor ones too.
 
 .EXAMPLE
 PS>test-package.ps1 -AllVersions -Classic
-Test the package for .NET Framework only and for ALL versions, minor ones too.
+Test the package for ALL versions of .NET Framework, minor ones too.
 
 .EXAMPLE
 PS>test-package.ps1 net452 -Runtime win10-x64
-Test the package for a specific platform and for the runime "win10-x64".
+Test the package for a specific platform and for the runtime "win10-x64".
 #>
 [CmdletBinding()]
 param(
@@ -287,7 +287,7 @@ try {
     }
 
     if ($Platform -eq "") {
-        if ($Yes -or (Confirm-Yes "Test the package for ALL platforms at once (SLOW)?")) {
+        if ($Yes -or (Confirm-Yes "Test the package for all selected platforms at once (SLOW)?")) {
             Invoke-TestBatch `
                 -Runtime $Runtime `
                 -AllVersions:$AllVersions.IsPresent `
