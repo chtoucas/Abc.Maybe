@@ -10,32 +10,32 @@
 
     Versions.
     .NET Framework.
-      When AllVersions != "true", we only list the last minor version of each major version.
+      Unless AllVersions == "true", we only list the last minor version of each major version.
       https://support.microsoft.com/en-us/help/17455/lifecycle-faq-net-framework
     .NET Core.
-      When AllVersions != "true", we only list the LTS versions.
+      Unless AllVersions == "true", we only list the LTS versions.
       https://dotnet.microsoft.com/platform/support/policy/dotnet-core
       https://github.com/dotnet/core/blob/master/microsoft-support.md
   -->
 
   <PropertyGroup>
     <AllVersions>false</AllVersions>
-    <ClassicSet>true</ClassicSet>
-    <CoreSet>true</CoreSet>
+    <NoClassic>false</NoClassic>
+    <NoCore>false</NoCore>
   </PropertyGroup>
 
   <PropertyGroup Condition=" $(AllVersions) == 'true' ">
-    <__NETClassicTargets Condition=" $(ClassicSet) == 'true' ">net452;net46;net461;net462;net47;net471;net472;net48</__NETClassicTargets>
-    <__NETCoreTargets Condition=" $(CoreSet) == 'true' ">netcoreapp2.0;netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netcoreapp3.1</__NETCoreTargets>
+    <ClassicTargets Condition=" $(NoClassic) != 'true' ">net452;net46;net461;net462;net47;net471;net472;net48</ClassicTargets>
+    <CoreTargets Condition=" $(NoCore) != 'true' ">netcoreapp2.0;netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netcoreapp3.1</CoreTargets>
   </PropertyGroup>
 
   <PropertyGroup Condition=" $(AllVersions) != 'true' ">
-    <__NETClassicTargets Condition=" $(ClassicSet) == 'true' ">net452;net462;net472;net48</__NETClassicTargets>
-    <__NETCoreTargets Condition=" $(CoreSet) == 'true' ">netcoreapp2.1;netcoreapp3.1</__NETCoreTargets>
+    <ClassicTargets Condition=" $(NoClassic) != 'true' ">net452;net462;net472;net48</ClassicTargets>
+    <CoreTargets Condition=" $(NoCore) != 'true' ">netcoreapp2.1;netcoreapp3.1</CoreTargets>
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFrameworks>$(__NETClassicTargets);$(__NETCoreTargets)</TargetFrameworks>
+    <TargetFrameworks>$(ClassicTargets);$(CoreTargets)</TargetFrameworks>
   </PropertyGroup>
 
 </Project>
