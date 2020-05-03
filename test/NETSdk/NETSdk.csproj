@@ -25,17 +25,17 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" $(AllVersions) == 'true' ">
-    <ClassicTargets Condition=" $(NoClassic) != 'true' ">net452;net46;net461;net462;net47;net471;net472;net48</ClassicTargets>
-    <CoreTargets Condition=" $(NoCore) != 'true' ">netcoreapp2.0;netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netcoreapp3.1</CoreTargets>
+    <NetFmkTargets Condition=" $(NoClassic) != 'true' ">net452;net46;net461;net462;net47;net471;net472;net48</NetFmkTargets>
+    <NetCoreTargets Condition=" $(NoCore) != 'true' ">netcoreapp2.0;netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netcoreapp3.1</NetCoreTargets>
   </PropertyGroup>
 
   <PropertyGroup Condition=" $(AllVersions) != 'true' ">
-    <ClassicTargets Condition=" $(NoClassic) != 'true' ">net452;net462;net472;net48</ClassicTargets>
-    <CoreTargets Condition=" $(NoCore) != 'true' ">netcoreapp2.1;netcoreapp3.1</CoreTargets>
+    <NetFmkTargets Condition=" $(NoClassic) != 'true' ">net452;net462;net472;net48</NetFmkTargets>
+    <NetCoreTargets Condition=" $(NoCore) != 'true' ">netcoreapp2.1;netcoreapp3.1</NetCoreTargets>
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFrameworks>$(ClassicTargets);$(CoreTargets)</TargetFrameworks>
+    <TargetFrameworks>$(NetFmkTargets);$(NetCoreTargets)</TargetFrameworks>
   </PropertyGroup>
 
 </Project>
