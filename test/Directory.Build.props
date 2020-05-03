@@ -9,7 +9,8 @@
   <Import Project="$(EngRoot)\Abc.Maybe.props" />
 
   <PropertyGroup>
-    <AbcVersion>$(MajorVersion).$(MinorVersion).$(PatchVersion)-$(PreReleaseTag)$(PreReleaseNum)</AbcVersion>
+    <AbcVersion>$(MajorVersion).$(MinorVersion).$(PatchVersion)</AbcVersion>
+    <AbcVersion Condition=" $(PreReleaseCycle) != '' ">$(AbcVersion)-$(PreReleaseCycle)$(PreReleaseNumber)</AbcVersion>
   </PropertyGroup>
 
   <PropertyGroup>

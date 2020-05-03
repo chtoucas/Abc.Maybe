@@ -1,17 +1,20 @@
 <Project>
 
-  <!-- See also Directory.Build.props which is loaded before this file -->
+  <!-- See also src\Directory.Build.props which is loaded before this file -->
   <PropertyGroup>
     <MajorVersion>1</MajorVersion>
     <MinorVersion>0</MinorVersion>
     <PatchVersion>0</PatchVersion>
     <!--
       Format: empty -or- (alpha|beta|rc)[1-9][0-9]?
-      Do not use "." or "-" to separate alphas from digits.
+      Do not use "." or "-" to separate alphas from digits (SemVer 1.0.0).
       alpha1 < alpha2 < ... < alpha11 < ... < beta1 < ... < rc1 < ...
+      If PreReleaseCycle is not empty, we expect PreReleaseNumber to be > 0.
+      If PreReleaseCycle is empty, then PreReleaseNumber is ignored, but better
+      to keep it empty.
     -->
-    <PreReleaseTag>beta</PreReleaseTag>
-    <PreReleaseNum>4</PreReleaseNum>
+    <PreReleaseCycle>beta</PreReleaseCycle>
+    <PreReleaseNumber>4</PreReleaseNumber>
 
     <Title>A Safe Yet Effective Option Type</Title>
 

@@ -49,7 +49,9 @@ let revnum   = uint16(seconds)
 // revnum is left padded with 0 to ensure it has a length of 5.
 //let serialnum = sprintf "%i%05i" buildnum revnum
 
-// Format "YYYYMMDD.hhmmss".
-let timestamp = sprintf "%i%02i%02i.%02i%02i%02i" now.Year now.Month now.Day now.Hour now.Minute now.Second
+// Format "YYYYMMDD.Thhmmss".
+// Weird thing, NuGet.targets doesn't like a prerelease label which contains
+// the string ".0". To avoid the problem we prefix the time part with "T".
+let timestamp = sprintf "%i%02i%02i.T%02i%02i%02i" now.Year now.Month now.Day now.Hour now.Minute now.Second
 
 printfn "%i;%i;%s" buildnum revnum timestamp

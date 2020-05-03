@@ -88,10 +88,10 @@ function Get-PackageVersion {
     $major = $node | Select -First 1 -ExpandProperty MajorVersion
     $minor = $node | Select -First 1 -ExpandProperty MinorVersion
     $patch = $node | Select -First 1 -ExpandProperty PatchVersion
-    $prere = $node | Select -First 1 -ExpandProperty PreReleaseTag
-    $preno = $node | Select -First 1 -ExpandProperty PreReleaseNum
+    $precy = $node | Select -First 1 -ExpandProperty PreReleaseCycle
+    $preno = $node | Select -First 1 -ExpandProperty PreReleaseNumber
 
-    @($major, $minor, $patch, $prere, $preno)
+    @($major, $minor, $patch, $precy, $preno)
 }
 
 # In the past, we used to generate the id's within MSBuild but then it is nearly
@@ -217,43 +217,46 @@ function Invoke-Pack {
 
     SAY-LOUD "Packing."
 
-       $major, $minor, $patch, $prere, $preno = Get-PackageVersion $projectName
+       $major, $minor, $patch, $precy, $preno = Get-PackageVersion $projectName
     $buildNumber, $revisionNumber, $timestamp = Generate-Uids
                              $commit, $branch = Get-GitInfos -Force:$force.IsPresent
 
     if ($retail) {
         $output = $PKG_OUTDIR
-        if ($prere -eq "") {
+        if ($precy -eq "") {
             $suffix = ""
         }
         else {
-            $suffix = "$prere$preno"
+            $suffix = "$precy$preno"
         }
         $args = @()
     }
     else {
-        # For CI packages, we use a custom prerelease label (SemVer 2.0.0).
-        if ($prere -eq "") {
-            # If the current version does not have a prerelease label, we
-            # increase the patch number to guarantee a version higher than the
-            # public one.
-            $patch = 1 + [int]$patch
-            $prelab = "ci"
+        # For CI packages, we use SemVer 2.0.0, and we ensure that the package
+        # is seen as a prerelease of what could be the next version. Examples:
+        # - "1.2.3"       -> "1.2.4-ci-20201231-T121212".
+        # - "1.2.3-beta4" -> "1.2.3-beta5-ci-20201231-T121212".
+        if ($precy -eq "") {
+            # Without a prerelease label, we increase the patch number.
+            $patch  = 1 + [int]$patch
             $suffix = "ci-$timestamp"
         }
         else {
-            # If the current does have a prerelease label, increase the
-            # prerelease number.
-            $preno = 1 + [int]$preno
-            $prelab = "$prere$preno-ci"
-            $suffix = "$prere$preno-ci-$timestamp"
+            # With a prerelease label, we increase the prerelease number.
+            $preno  = 1 + [int]$preno
+            $suffix = "$precy$preno-ci-$timestamp"
         }
 
         $output = $PKG_CI_OUTDIR
+        # VersionSuffix is for Retail.props, but it is not enough, we MUST
+        # also specify --version-suffix (not sure it is necessary any more, but
+        # I prefer to play safe).
+        # NB: this is not something that we have to do for retail builds (see
+        # above), since in that case we don't patch the suffix.
         $args = `
             "--version-suffix:$suffix",
-            "/p:PreReleaseLabel=$prelab",
-            "/p:Title=""$projectName (CI)""",
+            "/p:VersionSuffix=$suffix",
+            "/p:AssemblyTitle=""$projectName (CI)""",
             "/p:NoWarnX=NU5105"
     }
 
