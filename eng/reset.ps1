@@ -30,15 +30,15 @@ function Remove-Dir {
     Write-Verbose "Removing $path."
 
     if (-not (Test-Path $path)) {
-        Write-Verbose "Skipping '$path'; the path does NOT exist."
+        Write-Verbose "Skipping ""$path""; the path does NOT exist."
         return
     }
     if (-not [System.IO.Path]::IsPathRooted($path)) {
-        Carp "Skipping '$path'; the path MUST be absolute."
+        Carp "Skipping ""$path""; the path MUST be absolute."
         return
     }
 
-    Write-Verbose "Processing directory '$path'."
+    Write-Verbose "Processing directory ""$path""."
 
     rm $path -Force -Recurse
 }
@@ -54,18 +54,18 @@ function Remove-Packages {
     Write-Verbose "Removing $path."
 
     if (-not (Test-Path $path)) {
-        Write-Verbose "Skipping '$path'; the path does NOT exist."
+        Write-Verbose "Skipping ""$path""; the path does NOT exist."
         return
     }
     if (-not [System.IO.Path]::IsPathRooted($path)) {
-        Carp "Skipping '$path'; the path MUST be absolute."
+        Carp "Skipping ""$path""; the path MUST be absolute."
         return
     }
 
-    Write-Verbose "Processing directory '$path'."
+    Write-Verbose "Processing directory ""$path""."
 
     ls $path -Include "*.nupkg" -Recurse | ?{
-        Write-Verbose "Deleting '$_'."
+        Write-Verbose "Deleting ""$_""."
 
         rm $_.FullName -Force
     }
@@ -78,13 +78,13 @@ try {
 
     pushd $ROOT_DIR
 
-    if ($Yes -or (Confirm-Yes "Hard clean the directory 'src'?")) {
-        Say-Indent "Deleting 'bin' and 'obj' directories within 'src'."
+    if ($Yes -or (Confirm-Yes "Hard clean the directory ""src""?")) {
+        Say-Indent "Deleting ""bin"" and ""obj"" directories within ""src""."
         Remove-BinAndObj $SRC_DIR
     }
 
-    if ($Yes -or (Confirm-Yes "Hard clean the directory 'test'?")) {
-        Say-Indent "Deleting 'bin' and 'obj' directories within 'test'."
+    if ($Yes -or (Confirm-Yes "Hard clean the directory ""test""?")) {
+        Say-Indent "Deleting ""bin"" and ""obj"" directories within ""test""."
         Remove-BinAndObj $TEST_DIR
     }
 

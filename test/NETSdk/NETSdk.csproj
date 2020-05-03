@@ -1,19 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!--
-    Prerequesite: .NET Framework Developer Pack or Targeting Pack.
-    The Targeting Pack should be sufficient.
-    A very simple way to see what works and what does not,
-    just compile this project with /p:AllVersions=true.
+    Prerequesite: .NET Framework Developer Pack or Targeting Pack, the later
+    should suffice.
+    A very simple way to see what works and what does not is to compile this
+    project with /p:AllVersions=true.
     https://docs.microsoft.com/en-us/dotnet/framework/install/guide-for-developers
     https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/how-to-determine-which-versions-are-installed
 
     Versions.
     .NET Framework.
-      When AllVersions is not true, we only list the last minor version of each major version.
+      When AllVersions != "true", we only list the last minor version of each major version.
       https://support.microsoft.com/en-us/help/17455/lifecycle-faq-net-framework
     .NET Core.
-      When AllVersions is not true, we only list the LTS versions.
+      When AllVersions != "true", we only list the LTS versions.
       https://dotnet.microsoft.com/platform/support/policy/dotnet-core
       https://github.com/dotnet/core/blob/master/microsoft-support.md
   -->

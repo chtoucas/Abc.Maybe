@@ -37,10 +37,10 @@ Ignored if -Framework is also specified.
 Do not ask for confirmation.
 
 .PARAMETER Clean
-Hard clean the solution before creating the package by removing the 'bin' and
-'obj' directories.
+Hard clean the solution before creating the package by removing the "bin" and
+"obj" directories.
 It's necessary when there are "dangling" cs files created during a previous
-build. Now, it's no longer a problem (we explicitely exclude 'bin' and 'obj' in
+build. Now, it's no longer a problem (we explicitely exclude "bin" and "obj" in
 Directory.Build.targets), but we never know.
 
 .EXAMPLE
@@ -165,10 +165,10 @@ function Invoke-TestOldStyle {
 
     # https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2019
     & $msbuild .\$proj\$proj.csproj -v:minimal /t:"Restore;Build" | Out-Host
-    Assert-CmdSuccess -ErrMessage "Build task failed when targeting '$framework'."
+    Assert-CmdSuccess -ErrMessage "Build task failed when targeting ""$framework""."
 
     & $xunit .\$proj\bin\Release\$proj.dll | Out-Host
-    Assert-CmdSuccess -ErrMessage "Test task failed when targeting '$framework'."
+    Assert-CmdSuccess -ErrMessage "Test task failed when targeting ""$framework""."
 }
 
 function Invoke-TestSingle {
@@ -198,7 +198,7 @@ function Invoke-TestSingle {
         /p:AllVersions=true --nologo -v q `
         | Out-Host
 
-    Assert-CmdSuccess -ErrMessage "Test task failed when targeting '$framework'."
+    Assert-CmdSuccess -ErrMessage "Test task failed when targeting ""$framework""."
 }
 
 # Interactive mode.
@@ -214,7 +214,7 @@ function Invoke-TestMany {
     )
 
     foreach ($fmk in $frameworks) {
-        if (Confirm-Yes "Test harness for '${fmk}'?") {
+        if (Confirm-Yes "Test harness for ""${fmk}""?") {
             Invoke-TestSingle $fmk -Runtime $runtime
         }
     }
@@ -295,8 +295,8 @@ try {
     pushd $TEST_DIR
 
     if ($Clean) {
-        if (Confirm-Yes "Hard clean the directory 'test'?") {
-            Say-Indent "Deleting 'bin' and 'obj' directories within 'test'."
+        if (Confirm-Yes "Hard clean the directory ""test""?") {
+            Say-Indent "Deleting ""bin"" and ""obj"" directories within ""test""."
 
             Remove-BinAndObj $TEST_DIR
         }

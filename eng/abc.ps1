@@ -53,6 +53,31 @@ function Approve-RepositoryRoot {
 
 #endregion
 ################################################################################
+#region Project-specific helpers.
+
+function Get-PackageVersion {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $projectName
+    )
+
+    $proj = Join-Path $ENG_DIR "$projectName.props" -Resolve
+
+    $xml = [Xml] (Get-Content $proj)
+    $node = (Select-Xml -Xml $xml -XPath "//Project/PropertyGroup/MajorVersion/..").Node
+
+    $major = $node | Select -First 1 -ExpandProperty MajorVersion
+    $minor = $node | Select -First 1 -ExpandProperty MinorVersion
+    $patch = $node | Select -First 1 -ExpandProperty PatchVersion
+    $precy = $node | Select -First 1 -ExpandProperty PreReleaseCycle
+    $preno = $node | Select -First 1 -ExpandProperty PreReleaseNumber
+
+    @($major, $minor, $patch, $precy, $preno)
+}
+
+################################################################################
 #region Reporting.
 
 # Print a message.
@@ -148,7 +173,7 @@ function Confirm-Yes {
     )
 
     while ($true) {
-        $answer = (Read-Host $Question, '[y/N]')
+        $answer = (Read-Host $Question, "[y/N]")
 
         if ($answer -eq "" -or $answer -eq "n") {
             Say-Indent "Discarding on your request."
@@ -202,25 +227,25 @@ function Remove-BinAndObj {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
-        [Alias('p')] [string[]] $PathList
+        [Alias("p")] [string[]] $PathList
     )
 
-    Write-Verbose "Removing 'bin' and 'obj' directories."
+    Write-Verbose "Removing ""bin"" and ""obj"" directories."
 
     $PathList | %{
         if (-not (Test-Path $_)) {
-            Carp "Skipping '$_'; the path does NOT exist."
+            Carp "Skipping ""$_""; the path does NOT exist."
             return
         }
         if (-not [System.IO.Path]::IsPathRooted($_)) {
-            Carp "Skipping '$_'; the path MUST be absolute."
+            Carp "Skipping ""$_""; the path MUST be absolute."
             return
         }
 
-        Write-Verbose "Processing directory '$_'."
+        Write-Verbose "Processing directory ""$_""."
 
         ls $_ -Include bin,obj -Recurse | ?{
-            Write-Verbose "Deleting '$_'."
+            Write-Verbose "Deleting ""$_""."
 
             rm $_.FullName -Force -Recurse
         }
@@ -273,7 +298,7 @@ function Approve-GitStatus {
         }
     }
     catch {
-        Carp "'git status' failed: $_"
+        Carp """git status"" failed: $_"
     }
 }
 
@@ -292,7 +317,7 @@ function Get-GitCommitHash {
         return & $Git log -1 --format="%H" 2>&1
     }
     catch {
-        Carp "'git log' failed: $_"
+        Carp """git log"" failed: $_"
     }
 }
 
@@ -311,7 +336,7 @@ function Get-GitBranch {
         return & $Git rev-parse --abbrev-ref HEAD 2>&1
     }
     catch {
-        Carp "'git rev-parse' failed: $_"
+        Carp """git rev-parse"" failed: $_"
     }
 }
 

@@ -5,7 +5,7 @@
 Create a NuGet package.
 
 .PARAMETER Retail
-Build Retail packages.
+Build retail packages.
 
 .PARAMETER NoTest
 Do NOT run the test suite. Retail option only.
@@ -14,8 +14,8 @@ Do NOT run the test suite. Retail option only.
 Force packing even when there are uncommited changes.
 
 .PARAMETER Safe
-Hard clean the solution before creating the package by removing the 'bin' and
-'obj' directories.
+Hard clean the solution before creating the package by removing the "bin" and
+"obj" directories.
 
 .PARAMETER MyVerbose
 Verbose mode. Display settings used to compile each DLL.
@@ -60,7 +60,7 @@ function Write-Usage {
 Create a NuGet package for Abc.Maybe
 
 Usage: pack.ps1 [switches]
-    |-Retail      build Retail packages.
+    |-Retail      build retail packages.
   -n|-NoTest      do NOT run the test suite.
   -f|-Force       force packing even when there are uncommited changes.
   -s|-Safe        hard clean the solution before creating the package.
@@ -71,28 +71,6 @@ Usage: pack.ps1 [switches]
 }
 
 # ------------------------------------------------------------------------------
-
-function Get-PackageVersion {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $projectName
-    )
-
-    $proj = Join-Path $ENG_DIR "$projectName.props" -Resolve
-
-    $xml = [Xml] (Get-Content $proj)
-    $node = (Select-Xml -Xml $xml -XPath "//Project/PropertyGroup/MajorVersion/..").Node
-
-    $major = $node | Select -First 1 -ExpandProperty MajorVersion
-    $minor = $node | Select -First 1 -ExpandProperty MinorVersion
-    $patch = $node | Select -First 1 -ExpandProperty PatchVersion
-    $precy = $node | Select -First 1 -ExpandProperty PreReleaseCycle
-    $preno = $node | Select -First 1 -ExpandProperty PreReleaseNumber
-
-    @($major, $minor, $patch, $precy, $preno)
-}
 
 # In the past, we used to generate the id's within MSBuild but then it is nearly
 # impossible to override the global properties PackageVersion and VersionSuffix.
@@ -177,8 +155,8 @@ function Approve-PackageFile {
         [string] $version
     )
 
-    # Check dandling package file.
-    # NB: only meaningful when in Retail mode; otherwise the id is unique.
+    # Is there a dangling package file?
+    # NB: only meaningful when in retail mode; otherwise the filename is unique.
     if (Test-Path $package) {
         Carp "A package with the same version ($version) already exists."
         Confirm-Continue "Do you wish to proceed anyway?"
@@ -278,12 +256,12 @@ function Invoke-Pack {
 
     $proj = Join-Path $SRC_DIR $projectName -Resolve
 
-    Say "Packing version $version --- build $buildNumber, rev. $revisionNumber" -NoNewline
+    Chirp "Packing version $version --- build $buildNumber, rev. $revisionNumber" -NoNewline
     if ($branch -and $commit) {
         $abbrv = $commit.Substring(0, 7)
-        Say-Indent "on branch ""$branch"", commit $abbrv."
+        Chirp " on branch ""$branch"", commit $abbrv."
     }
-    else { Say-Indent "on branch ""???"", commit ???." }
+    else { Chirp " on branch ""???"", commit ???." }
 
     # Do NOT use --no-restore or --no-build (option Safe removes everything).
     & dotnet pack $proj -c $CONFIGURATION --nologo $args --output $output `
@@ -371,8 +349,8 @@ try {
 
     # Safe packing?
     if ($Safe) {
-        if (Confirm-Yes "Hard clean the directory 'src'?") {
-            Say-Indent "Deleting 'bin' and 'obj' directories within 'src'."
+        if (Confirm-Yes "Hard clean the directory ""src""?") {
+            Say-Indent "Deleting ""bin"" and ""obj"" directories within ""src""."
 
             Remove-BinAndObj $SRC_DIR
         }

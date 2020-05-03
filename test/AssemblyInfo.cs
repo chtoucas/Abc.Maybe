@@ -8,8 +8,8 @@ using System.Runtime.InteropServices;
 [assembly: CLSCompliant(false)]
 [assembly: ComVisible(false)]
 
-[assembly: AssemblyTitle("Abc.Tests")]
-[assembly: AssemblyDescription("Test library for Abc.Maybe.")]
+[assembly: AssemblyTitle("Abc.PackageTests")]
+[assembly: AssemblyDescription("Test library for the packaged Abc.Maybe assembly.")]
 [assembly: AssemblyConfiguration("Release")]
 [assembly: AssemblyCompany("Narvalo.Org")]
 [assembly: AssemblyProduct("Abécédaire Library")]
