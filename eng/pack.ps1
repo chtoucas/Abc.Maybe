@@ -222,13 +222,14 @@ function Invoke-Pack {
                              $commit, $branch = Get-GitInfos -Force:$force.IsPresent
 
     if ($retail) {
-        $output = $PKG_OUTDIR
         if ($precy -eq "") {
             $suffix = ""
         }
         else {
             $suffix = "$precy$preno"
         }
+
+        $output = $PKG_OUTDIR
         $args = @()
     }
     else {

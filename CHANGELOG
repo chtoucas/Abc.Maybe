@@ -7,11 +7,11 @@ Changed
 - For .NET Framework 4.6.1 (retail build), changed DebugType from "full" to "pdbonly".
 
 Internal Changes
-- Make the packaging script more robust and more versatile.
-- Enable testing a package with
+- Made the packaging script more robust and more versatile.
+- Enabled testing a package with
   - .NET Core, version >= 2.0.
   - .NET Framework, version >= 4.5.
-- Add nullable annotations to the public API files.
+- Added nullable annotations to the public API files.
 - Upgraded packages:
   * Microsoft.CodeAnalysis.FxCopAnalyzers 2.9.8 -> 3.0.0.
   * Microsoft.CodeAnalysis.PublicApiAnalyzers 2.9.8 -> 3.0.0.
@@ -24,15 +24,15 @@ Added
 - Support for .NET Standard 1.0, but only for Abc.Maybe (completely untested).
 
 Changed
-- Simplify Squash(Maybe<T?>) where T : class, and apply attribute Advanced.
-- Remove attribute Advanced from Flatten().
+- Simplified Squash(Maybe<T?>) where T : class, and apply attribute Advanced.
+- Removed attribute Advanced from Flatten().
 - Package:
-  - Add .NET Framework 4.6.1.
-  - Add .NET Standard 1.0.
-  - Remove .NET Core 3.1.
+  - Added .NET Framework 4.6.1.
+  - Added .NET Standard 1.0.
+  - Removed .NET Core 3.1.
 
 Internal Changes
-- Define two API profiles:
+- Defined two API profiles:
   Profile 2.0: .NET Standard 2.0 / .NET Framework 4.6.1 / .NET Standard 1.0
   Profile 2.1: .NET Standard 2.1
 - Upgraded packages:
@@ -44,15 +44,15 @@ Internal Changes
 Changed
 - MaybeComparer<T>.GetHashCode() now throws when "obj" is null.
 - Removed the notnull constraint on the result type of Switch().
-- Apply attribute EditorBrowsable to Maybe<T>.GetEnumerator() and
+- Applied attribute EditorBrowsable to Maybe<T>.GetEnumerator() and
   Maybe<T>.TryGetValue().
 - Structural comparison is now possible when the generic type params differ.
 - License changed from BSD-2-Clause to BSD-3-Clause.
 
 Internal Changes
-- Rename project Abc.Future to Abc.Sketches.
-- Ensure that all projects have well-formed XML comments.
-- Imrpove the build system.
+- Renamed project Abc.Future to Abc.Sketches.
+- Ensured that all projects have well-formed XML comments.
+- Imrpoved the build system.
 - Upgraded packages:
   * Microsoft.NET.Test.Sdk 16.5.0 -> 16.6.0.
 
@@ -83,7 +83,7 @@ Added
 
 Changed
 - [OBSOLETE] Maybe.Flatten() with a struct constraint; use Maybe.Squash().
-- Remove the in parameter modifier used by the Maybe.Flatten() with no generic
+- Removed the "in" parameter modifier used by the Maybe.Flatten() with no generic
   type constraint.
 - LINQ ElementAtOrNone() no longer returns an empty maybe if the index is out of
   range but rather throws an ArgumentOutOfRangeException.
@@ -102,13 +102,13 @@ Internal Changes
 
 Changed
 - [BREAKING] MaybeComparer<T>, complete rewrite, optionally structural.
-- Apply attribute EditorBrowsable to methods reserved for advanced scenarios.
+- Applied attribute EditorBrowsable to methods reserved for advanced scenarios.
 - Strong-name the public assembly.
 - Embed the debug symbols.
 
 Internal Changes
 - New perf project.
-- Rewrite most scripts using PowerShell.
+- Rewrote most scripts using PowerShell.
 - Better build system.
 - Upgraded packages:
   * BenchmarkDotNet 0.12.0 -> 0.12.1.
