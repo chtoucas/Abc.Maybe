@@ -3,8 +3,11 @@ Changelog for Abc.
 vNEXT
 -----
 
+Changed
+- For .NET Framework 4.6.1 (retail build), changed DebugType from "full" to "pdbonly".
+
 Internal Changes
-- Make the packaging script more versatile.
+- Make the packaging script more robust and more versatile.
 - Enable testing a package with
   - .NET Core, version >= 2.0.
   - .NET Framework, version >= 4.5.

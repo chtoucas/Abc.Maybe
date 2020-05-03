@@ -45,7 +45,7 @@
       even if use what's there here, it does NOT work.
     -->
     <DebugType>embedded</DebugType>
-    <DebugType Condition=" $(TargetFramework.StartsWith('net4')) ">full</DebugType>
+    <DebugType Condition=" $(TargetFramework.StartsWith('net4')) ">pdbonly</DebugType>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 

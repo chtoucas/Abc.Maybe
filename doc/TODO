@@ -16,6 +16,9 @@ equality and ordering comparisons.
   * Maybe<Func<>>
   * delegates that return null.
 - Check published packages (upgrade, debugging experience).
+- Debugging: embedded, pdbonly or full...
+  https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/debug-compiler-option
+  https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/making-an-image-easier-to-debug
 
 Multitargeting: target net461/netstandard1.0.
 - We use TargetFrameworkIdentifier ('.NETFramework') and NETFRAMEWORK instead
