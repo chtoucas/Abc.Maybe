@@ -228,10 +228,7 @@ function Invoke-TestSingle {
     }
     if ($noRestore) { $args += "--no-restore" }
 
-    & dotnet test NETSdk -f $platform $args `
-        /p:AbcVersion=$version /p:AllKnown=true --nologo `
-        | Out-Host
-
+    & dotnet test NETSdk -f $platform $args /p:AbcVersion=$version /p:AllKnown=true --nologo | Out-Host
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting ""$platform""."
 }
 
@@ -240,7 +237,7 @@ function Invoke-TestMany {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, Position = 0)]
-        [string[]] $platforms,
+        [string[]] $platformList,
 
         [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
@@ -259,13 +256,13 @@ function Invoke-TestMany {
     }
 
     Say "Restoring dependencies, please wait..."
-    & dotnet restore NETSdk $args /p:AbcVersion=$version /p:AllKnown=true | Out-Host
 
+    & dotnet restore NETSdk $args /p:AbcVersion=$version /p:AllKnown=true | Out-Host
     Assert-CmdSuccess -ErrMessage "Test task failed when trying to restore the dependencies."
 
-    foreach ($item in $platforms) {
-        if (Confirm-Yes "Test the package for ""$item""?") {
-            Invoke-TestSingle -Platform $item -Version $version -Runtime $runtime -NoRestore
+    foreach ($platform in $platformList) {
+        if (Confirm-Yes "Test the package for ""$platform""?") {
+            Invoke-TestSingle -Platform $platform -Version $version -Runtime $runtime -NoRestore
         }
     }
 }
@@ -308,7 +305,6 @@ function Invoke-TestAll {
     if ($runtime -ne "") { $args += "--runtime:$runtime" }
 
     & dotnet test NETSdk --nologo $args /p:AbcVersion=$version | Out-Host
-
     Assert-CmdSuccess -ErrMessage "Test task failed."
 
     if ($allKnown -and (-not $noClassic)) {
@@ -390,20 +386,20 @@ try {
                 -NoCore:$NoCore.IsPresent
         }
         else {
-            Chirp "Now you will have the opportunity to choose which platform to test the package for."
+            Chirp "Now, you will have the opportunity to choose which platform to test the package for."
 
             if (-not $NoClassic) {
-                if ($AllKnown) { $platforms = $AllClassic }
-                else { $platforms = $LastClassic }
+                if ($AllKnown) { $platformList = $AllClassic }
+                else { $platformList = $LastClassic }
 
-                Invoke-TestMany -Platforms $platforms -Version $Version -Runtime $runtime
+                Invoke-TestMany -PlatformList $platformList -Version $Version -Runtime $runtime
             }
 
             if (-not $NoCore) {
-                if ($AllKnown) { $platforms = $AllCore }
-                else { $platforms = $LTSCore }
+                if ($AllKnown) { $platformList = $AllCore }
+                else { $platformList = $LTSCore }
 
-                Invoke-TestMany -Platforms $platforms -Version $Version -Runtime $runtime
+                Invoke-TestMany -PlatformList $platformList -Version $Version -Runtime $runtime
             }
         }
     }
