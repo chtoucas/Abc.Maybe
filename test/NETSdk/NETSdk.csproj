@@ -4,32 +4,32 @@
     Prerequesite: .NET Framework Developer Pack or Targeting Pack, the later
     should suffice.
     A very simple way to see what works and what does not is to compile this
-    project with /p:AllVersions=true.
+    project with /p:AllKnown=true.
     https://docs.microsoft.com/en-us/dotnet/framework/install/guide-for-developers
     https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/how-to-determine-which-versions-are-installed
 
     Versions.
     .NET Framework.
-      Unless AllVersions == "true", we only list the last minor version of each major version.
+      Unless AllKnown == "true", we only list the last minor version of each major version.
       https://support.microsoft.com/en-us/help/17455/lifecycle-faq-net-framework
     .NET Core.
-      Unless AllVersions == "true", we only list the LTS versions.
+      Unless AllKnown == "true", we only list the LTS versions.
       https://dotnet.microsoft.com/platform/support/policy/dotnet-core
       https://github.com/dotnet/core/blob/master/microsoft-support.md
   -->
 
   <PropertyGroup>
-    <AllVersions>false</AllVersions>
+    <AllKnown>false</AllKnown>
     <NoClassic>false</NoClassic>
     <NoCore>false</NoCore>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" $(AllVersions) == 'true' ">
+  <PropertyGroup Condition=" $(AllKnown) == 'true' ">
     <NetFmkTargets Condition=" $(NoClassic) != 'true' ">net452;net46;net461;net462;net47;net471;net472;net48</NetFmkTargets>
     <NetCoreTargets Condition=" $(NoCore) != 'true' ">netcoreapp2.0;netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netcoreapp3.1</NetCoreTargets>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" $(AllVersions) != 'true' ">
+  <PropertyGroup Condition=" $(AllKnown) != 'true' ">
     <NetFmkTargets Condition=" $(NoClassic) != 'true' ">net452;net462;net472;net48</NetFmkTargets>
     <NetCoreTargets Condition=" $(NoCore) != 'true' ">netcoreapp2.1;netcoreapp3.1</NetCoreTargets>
   </PropertyGroup>

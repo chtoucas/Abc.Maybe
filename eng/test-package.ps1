@@ -2,23 +2,29 @@
 
 <#
 .SYNOPSIS
-Test the package for net(4,5,6,7,8)x and netcoreapp(2,3).x.
+Test the package Abc.Maybe for net(4,5,6,7,8)x and netcoreapp(2,3).x.
 Matching .NET Framework Developer Packs or Targeting Packs must be installed
 locally, the later should suffice. The script will fail with error MSB3644 when
 it is not the case.
 
 .PARAMETER Platform
 Specify a single platform for which to test the package.
+If the platform is not known, the script will fail silently.
 
 .PARAMETER Runtime
 The target runtime to test the package for.
-Ignored by targets "net45" or "net451".
+If the runtime is not known, the script will fail silently, and if it is not
+supported the script will abort.
+Ignored by platforms "net45" or "net451".
 
 For instance, runtime can be "win10-x64" or "win10-x86".
 See https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
 
-.PARAMETER AllVersions
-Test the package for ALL platform versions (SLOW).
+.PARAMETER Version
+Specify a version of the package Abc.Maybe.
+
+.PARAMETER AllKnown
+Test the package for ALL known platform versions (SLOW).
 Ignored if -Platform is also specified.
 
 .PARAMETER NoClassic
@@ -52,15 +58,15 @@ PS>test-package.ps1 -NoCore
 Test the package for the last minor version of each major version of .NET Framework.
 
 .EXAMPLE
-PS>test-package.ps1 -AllVersions
+PS>test-package.ps1 -AllKnown
 Test the package for ALL versions of .NET Core and .NET Framework.
 
 .EXAMPLE
-PS>test-package.ps1 -AllVersions -NoClassic
+PS>test-package.ps1 -AllKnown -NoClassic
 Test the package for ALL versions of .NET Core.
 
 .EXAMPLE
-PS>test-package.ps1 -AllVersions -NoCore
+PS>test-package.ps1 -AllKnown -NoCore
 Test the package for ALL versions of .NET Framework.
 
 .EXAMPLE
@@ -76,11 +82,11 @@ param(
     [Alias("r")] [string] $Runtime = "",
 
     [Parameter(Mandatory = $false, Position = 2)]
-    [Alias("v")] [string] $PackageVersion = "",
+    [Alias("v")] [string] $Version = "",
 
-    [Alias("a")] [switch] $AllVersions,
-                 [switch] $noClassic,
-                 [switch] $noCore,
+    [Alias("a")] [switch] $AllKnown,
+                 [switch] $NoClassic,
+                 [switch] $NoCore,
     [Alias("y")] [switch] $Yes,
     [Alias("c")] [switch] $Clean,
     [Alias("h")] [switch] $Help
@@ -99,14 +105,15 @@ function Write-Usage {
 Test package Abc.Maybe
 
 Usage: pack.ps1 [switches].
-  -p|-Platform      specify a single platform for which to test the package.
-  -r|-Runtime       specify a target runtime to test for.
-  -a|-AllVersions   test the package for ALL platform versions (SLOW).
-    |-noClassic     exclude .NET Framework from the tests.
-    |-noCore        exclude .NET Core from the tests.
-  -y|-Yes           do not ask for confirmation before running any test.
-  -c|-Clean         hard clean the solution before anything else.
-  -h|-Help          print this help and exit.
+  -p|-Platform    specify a single platform for which to test the package.
+  -r|-Runtime     specify a target runtime to test for.
+  -v|-Version     specify a version of the package Abc.Maybe.
+  -a|-AllKnown    test the package for ALL known platform versions (SLOW).
+    |-NoClassic   exclude .NET Framework from the tests.
+    |-NoCore      exclude .NET Core from the tests.
+  -y|-Yes         do not ask for confirmation before running any test.
+  -c|-Clean       hard clean the solution before anything else.
+  -h|-Help        print this help and exit.
 
 "@
 }
@@ -153,19 +160,23 @@ function Get-RuntimeString {
 function Invoke-TestOldStyle {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, Position = 0)]
         [ValidateNotNullOrEmpty()]
         [string] $platform,
 
         [Parameter(Mandatory = $false, Position = 1)]
         [ValidateNotNull()]
-        [string] $runtime = ""
+        [string] $runtime = "",
+
+        [Parameter(Mandatory = $false, Position = 2)]
+        [ValidateNotNull()]
+        [string] $version = ""
     )
 
     $runtimeStr = Get-RuntimeString $runtime
-    Chirp "Testing the package for ""$platform"" $runtimeStr."
+    Chirp "Testing the package v$version for ""$platform"" $runtimeStr."
 
-    if ($runtime -ne "") { Carp "Runtime parameter ""$runtime"" is ignored for ""$platform""." }
+    if ($runtime -ne "") { Carp "Runtime parameter ""$runtime"" is ignored by ""$platform""." }
 
     $vswhere = Find-VsWhere
     $msbuild = Find-MSBuild $vswhere
@@ -190,17 +201,21 @@ function Invoke-TestSingle {
 
         [Parameter(Mandatory = $false, Position = 1)]
         [ValidateNotNull()]
-        [string] $runtime = ""
+        [string] $runtime = "",
+
+        [Parameter(Mandatory = $false, Position = 2)]
+        [ValidateNotNull()]
+        [string] $version = ""
     )
 
     if (($platform -eq "net45") -or ($platform -eq "net451")) {
         # "net45" and "net451" must be handled separately.
-        Invoke-TestOldStyle -Platform $platform -Runtime $runtime
+        Invoke-TestOldStyle -Platform $platform -Runtime $runtime -Version $version
         return
     }
 
     $runtimeStr = Get-RuntimeString $runtime
-    Chirp "Testing the package for ""$platform"" $runtimeStr."
+    Chirp "Testing the package v$version for ""$platform"" $runtimeStr."
 
     if ($runtime -ne "") {
         $args = @("--runtime:$runtime")
@@ -210,7 +225,7 @@ function Invoke-TestSingle {
     }
 
     & dotnet test .\NETSdk\NETSdk.csproj -f $platform $args `
-        /p:AllVersions=true --nologo -v q `
+        /p:AllKnown=true --nologo -v q `
         | Out-Host
 
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting ""$platform""."
@@ -225,12 +240,16 @@ function Invoke-TestMany {
 
         [Parameter(Mandatory = $false)]
         [ValidateNotNull()]
-        [string] $runtime = ""
+        [string] $runtime = "",
+
+        [Parameter(Mandatory = $false, Position = 2)]
+        [ValidateNotNull()]
+        [string] $version = ""
     )
 
     foreach ($item in $platforms) {
         if (Confirm-Yes "Test the package for ""$item""?") {
-            Invoke-TestSingle -Platform $item -Runtime $runtime
+            Invoke-TestSingle -Platform $item -Runtime $runtime -Version $version
         }
     }
 }
@@ -238,28 +257,37 @@ function Invoke-TestMany {
 function Invoke-TestAll {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $false)]
+        [Parameter(Mandatory = $false, Position = 0)]
         [ValidateNotNull()]
         [string] $runtime = "",
 
-        [switch] $allVersions,
+        [Parameter(Mandatory = $false, Position = 1)]
+        [ValidateNotNull()]
+        [string] $version = "",
+
+        [switch] $allKnown,
         [switch] $noClassic,
         [switch] $noCore
     )
 
     $runtimeStr = Get-RuntimeString $runtime
-    Chirp "Batch testing the package for" -NoNewline
+    Chirp "Batch testing the package v$version for" -NoNewline
+    # Platform set.
     if ($noClassic)  { Chirp " .NET Core"  -NoNewline }
     elseif ($noCore) { Chirp " .NET Framework"  -NoNewline }
     else             { Chirp " .NET Framework and .NET Core"  -NoNewline }
-    if ($allVersions)   { Chirp ", ALL versions"  -NoNewline }
+    # Versions.
+    if ($allKnown)      { Chirp ", ALL versions"  -NoNewline }
     elseif ($noClassic) { Chirp ", LTS versions"  -NoNewline }
     elseif ($noCore)    { Chirp ", last minor version of each major version"  -NoNewline }
     else                { Chirp ", selected versions"  -NoNewline }
+    # Runtime.
     Chirp " $runtimeStr."
 
+    exit 0
+
     $args = @()
-    if ($allVersions)    { $args += "/p:AllVersions=true" }
+    if ($allKnown)       { $args += "/p:AllKnown=true" }
     if ($noCore)         { $args += "/p:NoCore=true" }
     if ($noClassic)      { $args += "/p:NoClassic=true" }
     if ($runtime -ne "") { $args += "--runtime:$runtime" }
@@ -268,10 +296,10 @@ function Invoke-TestAll {
 
     Assert-CmdSuccess -ErrMessage "Test task failed."
 
-    if ($allVersions -and (-not $noClassic)) {
+    if ($allKnown -and (-not $noClassic)) {
         # "net45" and "net451" must be handled separately.
-        Invoke-TestOldStyle -Platform "net45" -Runtime $runtime
-        Invoke-TestOldStyle -Platform "net451" -Runtime $runtime
+        Invoke-TestOldStyle -Platform "net45" -Runtime $runtime -Version $version
+        Invoke-TestOldStyle -Platform "net451" -Runtime $runtime -Version $version
     }
 }
 
@@ -337,7 +365,8 @@ try {
         if ($Yes -or (Confirm-Yes "Test the package for all selected platforms at once (SLOW)?")) {
             Invoke-TestAll `
                 -Runtime $Runtime `
-                -AllVersions:$AllVersions.IsPresent `
+                -Version $Version `
+                -AllKnown:$AllKnown.IsPresent `
                 -NoClassic:$NoClassic.IsPresent `
                 -NoCore:$NoCore.IsPresent
         }
@@ -345,24 +374,22 @@ try {
             Chirp "Now you will have the opportunity to choose which platform to test the package for."
 
             if (-not $NoClassic) {
-                if ($AllVersions) { $platforms = $AllClassic }
+                if ($AllKnown) { $platforms = $AllClassic }
                 else { $platforms = $LastClassic }
 
-                Invoke-TestMany -Platforms $platforms -Runtime $runtime
+                Invoke-TestMany -Platforms $platforms -Runtime $runtime -Version $Version
             }
 
             if (-not $NoCore) {
-                if ($AllVersions) { $platforms = $AllCore }
+                if ($AllKnown) { $platforms = $AllCore }
                 else { $platforms = $LTSCore }
 
-                Invoke-TestMany -Platforms $platforms -Runtime $runtime
+                Invoke-TestMany -Platforms $platforms -Runtime $runtime -Version $Version
             }
-
-            $yestonet45x = $false
         }
     }
     else {
-        Invoke-TestSingle -Platform $Platform -Runtime $Runtime
+        Invoke-TestSingle -Platform $Platform -Runtime $Runtime -Version $Version
     }
 }
 catch {

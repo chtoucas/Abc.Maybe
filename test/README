@@ -10,7 +10,7 @@ They are really meant to work with "eng\test-package.ps1".
 
 Of course, one can still use the dotnet command-line directly:
   > dotnet build NETSdk
-  > dotnet build NETSdk /p:AllVersions=true
+  > dotnet build NETSdk /p:AllKnown=true
   > dotnet test NETSdk -f net48
 Beware, this won't work with the projects NET45 and NET451 which use pre-SDK
 project files.
@@ -31,13 +31,13 @@ At any time, we can see the versions in use:
   > dotnet list NETSdk package --framework net48
 
 Restore accepts params /p: and -v,
-  > dotnet restore NETSdk -v n /p:AllVersions=true
+  > dotnet restore NETSdk -v n /p:AllKnown=true
   > dotnet restore NETSdk -v n /p:AbcVersion=1.0.0-ci-20200502.T081916
-  > dotnet restore NETSdk -v n /p:AllVersions=true /p:AbcVersion=1.0.0-ci-20200502.T081916
-Build accepts params /p: (net46 requires AllVersions, -v is available but too verbose),
-  > dotnet build NETSdk /p:AllVersions=true
-  > dotnet build NETSdk /p:AllVersions=true -f net46
-  > dotnet build NETSdk /p:AllVersions=true -f net46 /p:AbcVersion=1.0.0-ci-20200502.T081916
+  > dotnet restore NETSdk -v n /p:AllKnown=true /p:AbcVersion=1.0.0-ci-20200502.T081916
+Build accepts params /p: (net46 requires AllKnown, -v is available but too verbose),
+  > dotnet build NETSdk /p:AllKnown=true
+  > dotnet build NETSdk /p:AllKnown=true -f net46
+  > dotnet build NETSdk /p:AllKnown=true -f net46 /p:AbcVersion=1.0.0-ci-20200502.T081916
 List package does NOT accept params /p: and -v.
 
 ## Restore/build traps.
