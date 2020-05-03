@@ -60,10 +60,12 @@ function Get-PackageVersion {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $projectName
+        [string] $ProjectName,
+
+        [switch] $AsString
     )
 
-    $proj = Join-Path $ENG_DIR "$projectName.props" -Resolve
+    $proj = Join-Path $ENG_DIR "$ProjectName.props" -Resolve
 
     $xml = [Xml] (Get-Content $proj)
     $node = (Select-Xml -Xml $xml -XPath "//Project/PropertyGroup/MajorVersion/..").Node
@@ -74,7 +76,17 @@ function Get-PackageVersion {
     $precy = $node | Select -First 1 -ExpandProperty PreReleaseCycle
     $preno = $node | Select -First 1 -ExpandProperty PreReleaseNumber
 
-    @($major, $minor, $patch, $precy, $preno)
+    if ($AsString) {
+        if ($precy -eq "") {
+            return "$major.$minor.$patch"
+        }
+        else {
+            return "$major.$minor.$patch-$precy$preno"
+        }
+    }
+    else {
+        @($major, $minor, $patch, $precy, $preno)
+    }
 }
 
 ################################################################################
