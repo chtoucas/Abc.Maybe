@@ -200,7 +200,7 @@ function Invoke-TestSingle {
         [ValidateNotNullOrEmpty()]
         [string] $platform,
 
-        [Parameter(Mandatory = $false, Position = 1)]
+        [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
         [string] $version = "",
 
@@ -270,7 +270,7 @@ function Invoke-TestMany {
 function Invoke-TestAll {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $false, Position = 0)]
+        [Parameter(Mandatory = $true, Position = 0)]
         [ValidateNotNullOrEmpty()]
         [string] $version = "",
 
