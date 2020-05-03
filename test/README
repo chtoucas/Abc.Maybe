@@ -32,12 +32,12 @@ At any time, we can see the versions in use:
 
 Restore accepts params /p: and -v,
   > dotnet restore NETSdk -v n /p:AllVersions=true
-  > dotnet restore NETSdk -v n /p:AbcVersion=1.0.0-ci-20200502-081916
-  > dotnet restore NETSdk -v n /p:AllVersions=true /p:AbcVersion=1.0.0-ci-20200502-081916
+  > dotnet restore NETSdk -v n /p:AbcVersion=1.0.0-ci-20200502.T081916
+  > dotnet restore NETSdk -v n /p:AllVersions=true /p:AbcVersion=1.0.0-ci-20200502.T081916
 Build accepts params /p: (net46 requires AllVersions, -v is available but too verbose),
   > dotnet build NETSdk /p:AllVersions=true
   > dotnet build NETSdk /p:AllVersions=true -f net46
-  > dotnet build NETSdk /p:AllVersions=true -f net46 /p:AbcVersion=1.0.0-ci-20200502-081916
+  > dotnet build NETSdk /p:AllVersions=true -f net46 /p:AbcVersion=1.0.0-ci-20200502.T081916
 List package does NOT accept params /p: and -v.
 
 ## Restore/build traps.
@@ -50,18 +50,18 @@ last restored version we must use the option --no-restore.
   > dotnet list NETSdk package --framework net48
   NETSdk uses the default version (no surprise).
 - If we restore with /p:AbcVersion
-  > dotnet restore NETSdk -v n /p:AbcVersion=1.0.0-ci-20200502-081916
+  > dotnet restore NETSdk -v n /p:AbcVersion=1.0.0-ci-20200502.T081916
   > dotnet list NETSdk package --framework net48
-  NETSdk uses version 1.0.0-ci-20200502-081916 (no surprise).
+  NETSdk uses version 1.0.0-ci-20200502.T081916 (no surprise).
 - If we build without /p:AbcVersion
   > dotnet build NETSdk -f net48
   > dotnet list NETSdk package --framework net48
   **NETSdk is back to the _default_ version**
 - If we restore with /p:AbcVersion
-  > dotnet build NETSdk -f net48 /p:AbcVersion=1.0.0-ci-20200502-081916
+  > dotnet build NETSdk -f net48 /p:AbcVersion=1.0.0-ci-20200502.T081916
   > dotnet list NETSdk package --framework net48
-  NETSdk uses version 1.0.0-ci-20200502-081916.
+  NETSdk uses version 1.0.0-ci-20200502.T081916.
 - If we build without /p:AbcVersion BUT with --no-restore
   > dotnet build NETSdk -f net48 --no-restore
   > dotnet list NETSdk package --framework net48
-  NETSdk uses the last restored version: 1.0.0-ci-20200502-081916.
+  NETSdk uses the last restored version: 1.0.0-ci-20200502.T081916.

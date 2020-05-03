@@ -18,6 +18,12 @@
       https://github.com/dotnet/core/blob/master/microsoft-support.md
   -->
 
+  <PropertyGroup>
+    <AllVersions>false</AllVersions>
+    <ClassicSet>true</ClassicSet>
+    <CoreSet>true</CoreSet>
+  </PropertyGroup>
+
   <PropertyGroup Condition=" $(AllVersions) == 'true' ">
     <__NETClassicTargets Condition=" $(ClassicSet) == 'true' ">net452;net46;net461;net462;net47;net471;net472;net48</__NETClassicTargets>
     <__NETCoreTargets Condition=" $(CoreSet) == 'true' ">netcoreapp2.0;netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netcoreapp3.1</__NETCoreTargets>
