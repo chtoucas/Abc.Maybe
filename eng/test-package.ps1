@@ -18,16 +18,19 @@ For instance, runtime can be "win10-x64" or "win10-x86".
 See https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
 
 .PARAMETER AllVersions
-Test the package for ALL platform versions (SLOW), not just the last minor
-version of each major version.
+Test the package for ALL platform versions (SLOW).
 Ignored if -Platform is also specified.
+See also -Classic and -Core.
 
 .PARAMETER Classic
 Only test the package for .NET Framework.
+If -AllVersions is not specified too, only includes the last minor version of
+each major version.
 Ignored if -Platform is also specified.
 
 .PARAMETER Core
 Only test the package for .NET Core.
+If -AllVersions is not specified too, only includes the LTS versions.
 Ignored if -Platform is also specified.
 
 .PARAMETER Yes
@@ -35,27 +38,26 @@ Do not ask for confirmation.
 
 .PARAMETER Clean
 Hard clean the solution before creating the package by removing the "bin" and
-"obj" directories.
+"obj" directories within "src".
 It's necessary when there are "dangling" cs files created during a previous
 build. Now, it's no longer a problem (we explicitely exclude "bin" and "obj" in
 Directory.Build.targets), but we never know.
 
 .EXAMPLE
 PS>test-package.ps1
-Test the package for the last minor version of each major version of .NET Core
-and .NET Framework.
+Test the package for selected versions of .NET Core and .NET Framework.
 
 .EXAMPLE
 PS>test-package.ps1 -Core
-Test the package for the last minor version of each major version of .NET Core.
+Test the package for the LTS versions of .NET Core.
 
 .EXAMPLE
 PS>test-package.ps1 -AllVersions
-Test the package for ALL versions of .NET Core and .NET Framework, minor ones too.
+Test the package for ALL versions of .NET Core and .NET Framework.
 
 .EXAMPLE
 PS>test-package.ps1 -AllVersions -Classic
-Test the package for ALL versions of .NET Framework, minor ones too.
+Test the package for ALL versions of .NET Framework.
 
 .EXAMPLE
 PS>test-package.ps1 net452 -Runtime win10-x64
@@ -70,7 +72,7 @@ param(
     [Alias("r")] [string] $Runtime = "",
 
     [Parameter(Mandatory = $false, Position = 2)]
-    [string] $Version = "",
+    [Alias("v")] [string] $PackageVersion = "",
 
     [Alias("a")] [switch] $AllVersions,
                  [switch] $Classic,
@@ -95,7 +97,7 @@ Test package Abc.Maybe
 Usage: pack.ps1 [switches].
   -p|-Platform      specify a single platform for which to test the package.
   -r|-Runtime       specify a target runtime to test for.
-  -a|-AllVersions   test the package for ALL platform versions (SLOW), not just the last minor version of each major version.
+  -a|-AllVersions   test the package for ALL platform versions (SLOW).
     |-Classic       only test the package for .NET Framework.
     |-Core          only test the package for .NET Core.
   -y|-Yes           do not ask for confirmation before running any test.
@@ -233,8 +235,8 @@ function Invoke-TestBatch {
     Chirp "Batch testing the package for" -NoNewline
     if ($classic)  { Chirp " the .NET Framework"  -NoNewline }
     elseif ($core) { Chirp " the .NET Core"  -NoNewline }
-    else           { Chirp " ALL platforms"  -NoNewline }
-    if ($allVersions) { Chirp ", all versions"  -NoNewline }
+    else           { Chirp " .NET Framework and .NET Core"  -NoNewline }
+    if ($allVersions) { Chirp ", ALL versions"  -NoNewline }
     $runtimeStr = Get-RuntimeString $runtime
     Chirp " (runtime = ""$runtimeStr"")."
 
@@ -247,11 +249,6 @@ function Invoke-TestBatch {
     & dotnet test .\NETSdk\NETSdk.csproj --nologo -v q $args | Out-Host
 
     Assert-CmdSuccess -ErrMessage "Test task failed."
-
-    if ($allVersions -and (-not $core)) {
-        Invoke-TestOldStyle -Platform "net45"
-        Invoke-TestOldStyle -Platform "net451"
-    }
 }
 
 ################################################################################
@@ -264,7 +261,8 @@ if ($Help) {
 # ------------------------------------------------------------------------------
 
 # Last minor version of each major version or all versions.
-$LastMajorsClassic = `
+# Keep in sync w/ test\NETSdk\NETSdk.csproj.
+$LastClassic = `
     "net452",
     "net462",
     "net472",
@@ -280,8 +278,8 @@ $AllClassic = `
     "net472",
     "net48"
 
-$LastMajorsCore =`
-    "netcoreapp2.2",
+$LTSCore =`
+    "netcoreapp2.1",
     "netcoreapp3.1"
 $AllCore =`
     "netcoreapp2.0",
@@ -298,10 +296,10 @@ try {
     pushd $TEST_DIR
 
     if ($Clean) {
-        if (Confirm-Yes "Hard clean the directory ""test""?") {
-            Say-Indent "Deleting ""bin"" and ""obj"" directories within ""test""."
+        if (Confirm-Yes "Hard clean the directories ""src""?") {
+            Say-Indent "Deleting ""bin"" and ""obj"" directories within ""src""."
 
-            Remove-BinAndObj $TEST_DIR
+            Remove-BinAndObj $SRC_DIR
         }
     }
 
@@ -312,29 +310,35 @@ try {
                 -AllVersions:$AllVersions.IsPresent `
                 -Core:$Core.IsPresent `
                 -Classic:$Classic.IsPresent
+
+            $yestonet45x = $true
         }
         else {
             Chirp "Now you will have the opportunity to choose which platform to test the package for."
 
             if (-not $Core) {
                 if ($AllVersions) { $platforms = $AllClassic }
-                else { $platforms = $LastMajorsClassic }
-
-                if ($allVersions) {
-                    if (Confirm-Yes "Test the package for ""net45""?") {
-                        Invoke-TestOldStyle -Platform "net45"
-                    }
-                    if (Confirm-Yes "Test the package for ""net451""?") {
-                        Invoke-TestOldStyle -Platform "net451"
-                    }
-                }
+                else { $platforms = $LastClassic }
 
                 Invoke-TestMany -Platforms $platforms -Runtime $runtime
             }
+
             if (-not $Classic) {
                 if ($AllVersions) { $platforms = $AllCore }
-                else { $platforms = $LastMajorsCore }
+                else { $platforms = $LTSCore }
+
                 Invoke-TestMany -Platforms $platforms -Runtime $runtime
+            }
+
+            $yestonet45x = $false
+        }
+
+        if ($AllVersions -and (-not $Core)) {
+            if ($yestonet45x -or (Confirm-Yes "Test the package for ""net45""?")) {
+                Invoke-TestOldStyle -Platform "net45"
+            }
+            if ($yestonet45x -or (Confirm-Yes "Test the package for ""net451""?")) {
+                Invoke-TestOldStyle -Platform "net451"
             }
         }
     }
