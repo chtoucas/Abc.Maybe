@@ -21,7 +21,6 @@ See https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
 Test the package for ALL platform versions (SLOW), not just the last minor
 version of each major version.
 Ignored if -Platform is also specified.
-Ignored if you answer "no" when asked to confirm to test all selected platforms.
 
 .PARAMETER Classic
 Only test the package for .NET Framework.
@@ -45,6 +44,10 @@ Directory.Build.targets), but we never know.
 PS>test-package.ps1
 Test the package for the last minor version of each major version of .NET Core
 and .NET Framework.
+
+.EXAMPLE
+PS>test-package.ps1 -Core
+Test the package for the last minor version of each major version of .NET Core.
 
 .EXAMPLE
 PS>test-package.ps1 -AllVersions
@@ -260,15 +263,31 @@ if ($Help) {
 
 # ------------------------------------------------------------------------------
 
-# Last minor version of each major version.
-$LastMajorClassics = `
+# Last minor version of each major version or all versions.
+$LastMajorsClassic = `
     "net452",
     "net462",
     "net472",
     "net48"
+# NB: "net45" and "net451" are handled separately.
+$AllClassic = `
+    "net452",
+    "net46",
+    "net461",
+    "net462",
+    "net47",
+    "net471",
+    "net472",
+    "net48"
 
-$LastMajorCores =`
+$LastMajorsCore =`
     "netcoreapp2.2",
+    "netcoreapp3.1"
+$AllCore =`
+    "netcoreapp2.0",
+    "netcoreapp2.1",
+    "netcoreapp2.2",
+    "netcoreapp3.0",
     "netcoreapp3.1"
 
 # ------------------------------------------------------------------------------
@@ -296,22 +315,32 @@ try {
         }
         else {
             Chirp "Now you will have the opportunity to choose which platform to test the package for."
-            Chirp "NB: we only propose the last minor version of each major version."
 
             if (-not $Core) {
-                Invoke-TestMany -Platforms $LastMajorClassics -Runtime $runtime
+                if ($AllVersions) { $platforms = $AllClassic }
+                else { $platforms = $LastMajorsClassic }
+
+                if ($allVersions) {
+                    if (Confirm-Yes "Test the package for ""net45""?") {
+                        Invoke-TestOldStyle -Platform "net45"
+                    }
+                    if (Confirm-Yes "Test the package for ""net451""?") {
+                        Invoke-TestOldStyle -Platform "net451"
+                    }
+                }
+
+                Invoke-TestMany -Platforms $platforms -Runtime $runtime
             }
             if (-not $Classic) {
-                Invoke-TestMany -Platforms $LastMajorCores -Runtime $runtime
+                if ($AllVersions) { $platforms = $AllCore }
+                else { $platforms = $LastMajorsCore }
+                Invoke-TestMany -Platforms $platforms -Runtime $runtime
             }
         }
     }
     else {
-        if ($Platform -eq "net45") {
-            Invoke-TestOldStyle -Platform "net45"
-        }
-        elseif ($Platform -eq "net451") {
-            Invoke-TestOldStyle -Platform "net451"
+        if (($Platform -eq "net45") -or ($Platform -eq "net451")) {
+            Invoke-TestOldStyle -Platform $Platform
         }
         else {
             Invoke-TestSingle -Platform $Platform -Runtime $Runtime
