@@ -17,95 +17,14 @@ $ErrorActionPreference = "Stop"
 
 . (Join-Path $PSScriptRoot "abc.ps1")
 
-################################################################################
-
-function Remove-Dir {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $path
-    )
-
-    Write-Verbose "Removing $path."
-
-    if (-not (Test-Path $path)) {
-        Write-Verbose "Skipping ""$path""; the path does NOT exist."
-        return
-    }
-    if (-not [System.IO.Path]::IsPathRooted($path)) {
-        Carp "Skipping ""$path""; the path MUST be absolute."
-        return
-    }
-
-    Write-Verbose "Processing directory ""$path""."
-
-    rm $path -Force -Recurse
-}
-
-function Remove-Packages {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $path
-    )
-
-    Write-Verbose "Removing $path."
-
-    if (-not (Test-Path $path)) {
-        Write-Verbose "Skipping ""$path""; the path does NOT exist."
-        return
-    }
-    if (-not [System.IO.Path]::IsPathRooted($path)) {
-        Carp "Skipping ""$path""; the path MUST be absolute."
-        return
-    }
-
-    Write-Verbose "Processing directory ""$path""."
-
-    ls $path -Include "*.nupkg" -Recurse | ?{
-        Write-Verbose "Deleting ""$_""."
-
-        rm $_.FullName -Force
-    }
-}
-
-################################################################################
-
 try {
     Approve-RepositoryRoot
 
     pushd $ROOT_DIR
 
-    if ($Yes -or (Confirm-Yes "Hard clean the directory ""src""?")) {
-        Say-Indent "Deleting ""bin"" and ""obj"" directories within ""src""."
-        Remove-BinAndObj $SRC_DIR
-    }
-
-    if ($Yes -or (Confirm-Yes "Hard clean the directory ""test""?")) {
-        Say-Indent "Deleting ""bin"" and ""obj"" directories within ""test""."
-        Remove-BinAndObj $TEST_DIR
-    }
-
-    if ($Yes -or (Confirm-Yes "Reset local NuGet feed/cache?")) {
-        # When we reset the NuGet feed, better to clear the cache too, this is
-        # not mandatory but it keeps cache and feed in sync.
-        # The inverse is also true.
-        # If we clear the cache but don't reset the feed, things will continue
-        # to work but packages from the local NuGet feed will then be restored
-        # to the global cache, exactly what we wanted to avoid.
-
-        # We can't delete the directory, otherwise "dotnet restore" will fail.
-        Say-Indent "Resetting local NuGet feed."
-        Remove-Packages $NUGET_LOCAL_FEED
-
-        # "dotnet restore" will recreate the directory if needed.
-        # We could have deleted the whole directory $NUGET_LOCAL_CACHE, but
-        # let's be more specific.
-        Say-Indent "Clearing local NuGet cache."
-        Remove-Dir (Join-Path $NUGET_LOCAL_CACHE "abc.maybe")
-    }
+    Reset-SourceTree -Yes:$Yes.IsPresent
+    Reset-TestTree   -Yes:$Yes.IsPresent
+    Reset-LocalNuGet -Yes:$Yes.IsPresent
 }
 catch {
     Write-Host $_
@@ -116,5 +35,3 @@ catch {
 finally {
     popd
 }
-
-################################################################################

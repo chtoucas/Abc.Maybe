@@ -440,14 +440,8 @@ try {
         # cs files in "src" that were created during a previous build. Now, it's
         # no longer a problem (we explicitely exclude "bin" and "obj" in
         # "test\Directory.Build.targets"), but we never know.
-        if ($Yes -or (Confirm-Yes "Hard clean the directories ""src""?")) {
-            Say-Indent "Deleting ""bin"" and ""obj"" directories within ""src""."
-            Remove-BinAndObj $SRC_DIR
-        }
-        if ($Yes -or (Confirm-Yes "Hard clean the directory ""test""?")) {
-            Say-Indent "Deleting ""bin"" and ""obj"" directories within ""test""."
-            Remove-BinAndObj $TEST_DIR
-        }
+        Reset-SourceTree -Yes:$Yes.IsPresent
+        Reset-TestTree   -Yes:$Yes.IsPresent
     }
 
     if ($Version -eq "") {

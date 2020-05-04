@@ -89,6 +89,63 @@ function Get-PackageVersion {
     }
 }
 
+# ------------------------------------------------------------------------------
+
+function Reset-SourceTree {
+    [CmdletBinding()]
+    param(
+        [Alias("y")] [switch] $Yes
+    )
+
+    if ($Yes -or (Confirm-Yes "Hard clean the directory ""src""?")) {
+        Say-Indent "Deleting ""bin"" and ""obj"" directories within ""src""."
+
+        Remove-BinAndObj $SRC_DIR
+    }
+}
+
+function Reset-TestTree {
+    [CmdletBinding()]
+    param(
+        [Alias("y")] [switch] $Yes
+    )
+
+    if ($Yes -or (Confirm-Yes "Hard clean the directory ""test""?")) {
+        Say-Indent "Deleting ""bin"" and ""obj"" directories within ""test""."
+
+        Remove-BinAndObj $TEST_DIR
+    }
+}
+
+function Reset-LocalNuGet {
+    [CmdletBinding()]
+    param(
+        [Alias("y")] [switch] $Yes
+    )
+
+    if ($Yes -or (Confirm-Yes "Reset local NuGet feed/cache?")) {
+        # When we reset the NuGet feed, better to clear the cache too, this is
+        # not mandatory but it keeps cache and feed in sync.
+        # The inverse is also true.
+        # If we clear the cache but don't reset the feed, things will continue
+        # to work but packages from the local NuGet feed will then be restored
+        # to the global cache, exactly what we wanted to avoid.
+
+        # We can't delete the directory, otherwise "dotnet restore" will fail.
+        Say-Indent "Resetting local NuGet feed."
+        Remove-Packages $NUGET_LOCAL_FEED
+
+        # "dotnet restore" will recreate the directory if needed.
+        # We could have deleted the whole directory $NUGET_LOCAL_CACHE, but
+        # let's be more specific.
+        Say-Indent "Clearing local NuGet cache."
+        Remove-Dir (Join-Path $NUGET_LOCAL_CACHE "abc.maybe")
+    }
+}
+
+# ------------------------------------------------------------------------------
+
+#endregion
 ################################################################################
 #region Reporting.
 
@@ -237,13 +294,63 @@ function Assert-CmdSuccess {
     if ($LastExitCode -ne 0) { Croak $ErrMessage }
 }
 
-# ------------------------------------------------------------------------------
+#endregion
+################################################################################
+#region Remove files
+
+function Remove-Dir {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $Path
+    )
+
+    Write-Verbose "Removing $Path."
+
+    if (-not (Test-Path $Path)) {
+        Write-Verbose "Skipping ""$Path""; the path does NOT exist."
+        return
+    }
+    if (-not [System.IO.Path]::IsPathRooted($Path)) {
+        Carp "Skipping ""$Path""; the path MUST be absolute."
+        return
+    }
+
+    rm $Path -Force -Recurse
+}
+
+function Remove-Packages {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $Path
+    )
+
+    Write-Verbose "Removing NuGet packages in $Path."
+
+    if (-not (Test-Path $Path)) {
+        Write-Verbose "Skipping ""$Path""; the path does NOT exist."
+        return
+    }
+    if (-not [System.IO.Path]::IsPathRooted($Path)) {
+        Carp "Skipping ""$Path""; the path MUST be absolute."
+        return
+    }
+
+    ls $Path -Include "*.nupkg" -Recurse | ?{
+        Write-Verbose "Deleting ""$_""."
+
+        rm $_.FullName -Force
+    }
+}
 
 function Remove-BinAndObj {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
-        [Alias("p")] [string[]] $PathList
+        [string[]] $PathList
     )
 
     Write-Verbose "Removing ""bin"" and ""obj"" directories."

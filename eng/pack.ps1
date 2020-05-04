@@ -97,42 +97,6 @@ function Generate-Uids {
     $uids.Split(";")
 }
 
-# Find commit hash and branch.
-function Get-GitInfos {
-    [CmdletBinding()]
-    param(
-        [switch] $force,
-        [switch] $fatal
-    )
-
-    Write-Verbose "Getting git infos."
-
-    $branch = ""
-    $commit = ""
-
-    $git = Find-Git -Fatal:$fatal.IsPresent
-    if ($git -eq $null) {
-        Confirm-Continue "Continue even without any git metadata?"
-    }
-    else {
-        # Keep Approve-GitStatus before $force: we always want to see a warning
-        # when there are uncommited changes.
-        $ok = Approve-GitStatus -Git $git -Fatal:$fatal.IsPresent
-        if ($ok -or $force) {
-            $branch = Get-GitBranch     -Git $git -Fatal:$fatal.IsPresent
-            $commit = Get-GitCommitHash -Git $git -Fatal:$fatal.IsPresent
-        }
-        if ($branch -eq "") {
-            Carp "The branch name will be empty. Maybe use -Force?"
-        }
-        if ($commit -eq "") {
-            Carp "The commit hash will be empty. Maybe use -Force?"
-        }
-    }
-
-    return @($branch, $commit)
-}
-
 function Get-PackageFile {
     [CmdletBinding()]
     param(
@@ -181,6 +145,63 @@ function Approve-PackageFile {
 }
 
 # ------------------------------------------------------------------------------
+
+# Cleanup when -Final is set.
+function Invoke-Clean {
+    [CmdletBinding()]
+    param()
+
+    SAY-LOUD "Cleanup"
+
+    Reset-SourceTree -Yes:$true
+
+    # TODO: soft clean.
+    # We ensure that any temporary retail package is removed from the local
+    # NuGet cache/feed. Failing to do so would imply that after publication
+    # test-package.ps1 would test the package from the local NuGet cache/feed
+    # not the one from nuget.org.
+    Reset-LocalNuGet -Yes:$true
+
+    # We remove any retail package, thought it is not necessary.
+    Say-Indent "Clearing output directory for packages."
+    Remove-Packages $PKG_OUTDIR
+}
+
+# Find commit hash and branch.
+function Invoke-Git {
+    [CmdletBinding()]
+    param(
+        [switch] $force,
+        [switch] $fatal
+    )
+
+    SAY-LOUD "Retrieving repository status."
+
+    $branch = ""
+    $commit = ""
+
+    $git = Find-Git -Fatal:$fatal.IsPresent
+    if ($git -eq $null) {
+        Confirm-Continue "Continue even without any git metadata?"
+    }
+    else {
+        # Keep Approve-GitStatus before $force: we always want to see a warning
+        # when there are uncommited changes.
+        $ok = Approve-GitStatus -Git $git -Fatal:$fatal.IsPresent
+        if ($ok -or $force) {
+            $branch = Get-GitBranch     -Git $git -Fatal:$fatal.IsPresent
+            $commit = Get-GitCommitHash -Git $git -Fatal:$fatal.IsPresent
+        }
+        if ($branch -eq "") {
+            Carp "The branch name will be empty. Maybe use -Force?"
+        }
+        if ($commit -eq "") {
+            Carp "The commit hash will be empty. Maybe use -Force?"
+        }
+    }
+
+    return @($branch, $commit)
+}
 
 function Invoke-Pack {
     [CmdletBinding()]
@@ -303,7 +324,9 @@ function Invoke-PushLocal {
 
         [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
-        [string] $version
+        [string] $version,
+
+        [switch] $retail
     )
 
     SAY-LOUD "Pushing the package to the local NuGet feed/cache."
@@ -360,22 +383,17 @@ try {
     pushd $ROOT_DIR
 
     if ($Final) {
-        # TODO: clean up local NuGet cache/feed & remove previous package file.
         $isRetail = $true
-        $forceClean = $true
+
+        Invoke-Clean
     }
     else {
         $isRetail = $Retail.IsPresent
-        $forceClean = $false
+
+        if ($Clean.IsPresent) { Reset-SourceTree }
     }
 
-    if ($forceClean `
-        -or ($Clean.IsPresent -and (Confirm-Yes "Hard clean the directory ""src""?"))) {
-          Say-Indent "Deleting ""bin"" and ""obj"" directories within ""src""."
-          Remove-BinAndObj $SRC_DIR
-    }
-
-    $branch, $commit = Get-GitInfos -Force:$force.IsPresent -Fatal:$final.IsPresent
+    $branch, $commit = Invoke-Git -Force:$force.IsPresent -Fatal:$final.IsPresent
 
     $package, $version = Invoke-Pack "Abc.Maybe" `
         -Branch:$branch `
@@ -388,15 +406,18 @@ try {
     }
     else {
         if ($isRetail) {
-            Confirm-Continue "Push the package to the local NuGet feed/cache.?"
-            # TODO: we should clear the local NuGet cache/feed.
+            Confirm-Continue "Push the package to the local NuGet feed/cache?"
+            # TODO: soft clean.
+            # If we don't reset the local NuGet cache, Invoke-PushLocal won't
+            # update it with a new version of the package (the feed part is fine).
+            Reset-LocalNuGet -Yes:$true
         }
+
         Invoke-PushLocal $package $version
+
         if ($isRetail) {
             Chirp "---`nNow, you can test the package."
             Chirp "> eng\test-package.ps1 -a -y"
-            Chirp "Do not forget to reset the local NuGet cache/feed after."
-            Chirp "> eng\reset.ps1 -y"
         }
     }
 }
