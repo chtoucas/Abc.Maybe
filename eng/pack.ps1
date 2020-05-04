@@ -7,18 +7,14 @@ Create a NuGet package.
 .PARAMETER Retail
 Build retail packages.
 
-.PARAMETER NoTest
-Do NOT run the test suite. Retail option only.
-
 .PARAMETER Force
 Force packing even when there are uncommited changes.
 
-.PARAMETER Safe
-Hard clean the solution before creating the package by removing the "bin" and
-"obj" directories.
+.PARAMETER Clean
+Hard clean the source directory before anything else.
 
 .PARAMETER MyVerbose
-Verbose mode. Display settings used to compile each DLL.
+Verbose mode. Display settings used while compiling each DLL.
 
 .PARAMETER Help
 Print help.
@@ -38,9 +34,8 @@ Safe packing, retail mode.
 [CmdletBinding()]
 param(
                  [switch] $Retail,
-    [Alias("n")] [switch] $NoTest,
     [Alias("f")] [switch] $Force,
-    [Alias("s")] [switch] $Safe,
+    [Alias("c")] [switch] $Clean,
     [Alias("v")] [switch] $MyVerbose,
     [Alias("h")] [switch] $Help
 )
@@ -61,9 +56,8 @@ Create a NuGet package for Abc.Maybe
 
 Usage: pack.ps1 [switches]
     |-Retail      build retail packages.
-  -n|-NoTest      do NOT run the test suite.
   -f|-Force       force packing even when there are uncommited changes.
-  -s|-Safe        hard clean the solution before creating the package.
+  -c|-Clean       hard clean the solution before anything else.
   -v|-MyVerbose   display settings used to compile each DLL.
   -h|-Help        print this help and exit.
 
@@ -161,25 +155,14 @@ function Approve-PackageFile {
         Carp "A package with the same version ($version) already exists."
         Confirm-Continue "Do you wish to proceed anyway?"
 
-        # Not necessary, dotnet will remove it, but I prefer to play safe.
+        # Not necessary, dotnet will replace it, but to avoid any ambiguity
+        # I prefer to remove it anyway.
         Say-Indent "The old package file will be removed now."
         Remove-Item $package
     }
 }
 
 # ------------------------------------------------------------------------------
-
-function Invoke-Test {
-    SAY-LOUD "Testing."
-
-    & dotnet test -c $CONFIGURATION -v minimal --nologo | Out-Host
-    Assert-CmdSuccess -ErrMessage "Test task failed."
-
-    SAY-LOUD "Testing (net461)."
-
-    & dotnet test -c $CONFIGURATION -v minimal --nologo /p:TargetFramework=net461 | Out-Host
-    Assert-CmdSuccess -ErrMessage "Test task failed when targeting net461."
-}
 
 function Invoke-Pack {
     [CmdletBinding()]
@@ -263,7 +246,7 @@ function Invoke-Pack {
     }
     else { Chirp " on branch ""???"", commit ???." }
 
-    # Do NOT use --no-restore or --no-build (option Safe removes everything).
+    # Do NOT use --no-restore or --no-build (option Clean removes everything).
     # RepositoryCommit and RepositoryBranch are standard props, do not remove them.
     & dotnet pack $proj -c $CONFIGURATION --nologo $args --output $output `
         /p:TargetFrameworks='\"netstandard2.1;netstandard2.0;netstandard1.0;net461\"' `
@@ -346,13 +329,9 @@ try {
 
     pushd $ROOT_DIR
 
-    if ($Retail -and (-not $NoTest)) { Invoke-Test }
-
-    # Safe packing?
-    if ($Safe) {
+    if ($Clean) {
         if (Confirm-Yes "Hard clean the directory ""src""?") {
             Say-Indent "Deleting ""bin"" and ""obj"" directories within ""src""."
-
             Remove-BinAndObj $SRC_DIR
         }
     }
