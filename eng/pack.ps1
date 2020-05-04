@@ -10,10 +10,10 @@ The default behaviour is to build CI packages.
 
 .PARAMETER Final
 Create a retail package.
-This is a meta-option, it automatically set -Retail and -Clean too.
-In addition, it aborts the script when there are uncommited changes or if it
-cannot get git-related infos.
-The resulting package is no different from the one you would get using -Retail,
+This is a meta-option, it automatically sets -Retail and -Clean too.
+In addition, the script stops when there are uncommited changes or if it cannot
+get git-related infos.
+The resulting package is not different from the one you would get using -Retail,
 so, if this option is too strict and you are in a hurry, you can use:
 PS> pack.ps1 -Retail -Force
 
@@ -366,18 +366,17 @@ try {
         }
 
         $isRetail = $true
-        $hardClean = $true
+        $forceClean = $true
     }
     else {
         $isRetail = $Retail.IsPresent
-        $hardClean = $Clean.IsPresent
+        $forceClean = $false
     }
 
-    if ($hardClean) {
-        if (Confirm-Yes "Hard clean the directory ""src""?") {
-            Say-Indent "Deleting ""bin"" and ""obj"" directories within ""src""."
-            Remove-BinAndObj $SRC_DIR
-        }
+    if ($forceClean `
+        -or ($Clean.IsPresent -and (Confirm-Yes "Hard clean the directory ""src""?"))) {
+          Say-Indent "Deleting ""bin"" and ""obj"" directories within ""src""."
+          Remove-BinAndObj $SRC_DIR
     }
 
     $branch, $commit = Get-GitInfos -Force:$force.IsPresent -Fatal:$final.IsPresent
@@ -397,6 +396,11 @@ try {
             Confirm-Continue "Push the package to the local NuGet feed/cache.?"
         }
         Invoke-PushLocal $package $version
+        if ($isRetail) {
+            Chirp "Now, you can test the package:"
+            Chirp "> eng\test-package.ps1 -a -y"
+            Chirp "Do not forget to reset the local NuGet cache/feed after."
+        }
     }
 }
 catch {
