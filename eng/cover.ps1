@@ -22,9 +22,11 @@ Use OpenCover instead of Coverlet.
 
 .PARAMETER NoReport
 Do NOT build HTML/text reports and badges w/ ReportGenerator.
+This option and -ReportOnly are mutually exclusive.
 
 .PARAMETER ReportOnly
 Do NOT run any Code Coverage tool.
+This option and -NoReport are mutually exclusive.
 
 .PARAMETER Help
 Print help.
@@ -198,6 +200,11 @@ try {
     Approve-RepositoryRoot
 
     pushd $ROOT_DIR
+
+    if ($ReportOnly -and $NoReport) {
+        Carp "You cannot use both options -ReportOnly and -NoReport at the same time."
+        exit 0
+    }
 
     $tool = if ($OpenCover) { "opencover" } else { "coverlet" }
     $outdir = Join-Path $ARTIFACTS_DIR $tool

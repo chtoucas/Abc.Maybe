@@ -4,7 +4,7 @@
 .SYNOPSIS
 Reset the solution.
 
-.PARAMETER Force
+.PARAMETER Yes
 Do not ask for confirmation.
 #>
 [CmdletBinding()]
@@ -101,6 +101,8 @@ try {
         Remove-Packages $NUGET_LOCAL_FEED
 
         # "dotnet restore" will recreate the directory if needed.
+        # We could have deleted the whole directory $NUGET_LOCAL_CACHE, but
+        # let's be more specific.
         Say-Indent "Clearing local NuGet cache."
         Remove-Dir (Join-Path $NUGET_LOCAL_CACHE "abc.maybe")
     }
