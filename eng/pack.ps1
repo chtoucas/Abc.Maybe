@@ -169,7 +169,6 @@ function Approve-PackageFile {
 
     # Is there a dangling package file?
     # NB: only meaningful when in retail mode; otherwise the filename is unique.
-    # TODO: for final packages we should do it right away.
     if (Test-Path $package) {
         Carp "A package with the same version ($version) already exists."
         Confirm-Continue "Do you wish to proceed anyway?"
@@ -207,6 +206,7 @@ function Invoke-Pack {
        $major, $minor, $patch, $precy, $preno = Get-PackageVersion $projectName
     $buildNumber, $revisionNumber, $timestamp = Generate-Uids
 
+    # TODO: do part of this in a separate function.
     if ($retail) {
         if ($precy -eq "") {
             $suffix = ""
@@ -320,7 +320,6 @@ function Invoke-PushLocal {
     # otherwise, later on, the package will be restored to the global cache.
     # This is not such a big problem, but I prefer not to pollute it with
     # CI packages (or versions we are going to publish).
-    # TODO: for non-CI packages we should clear the cache.
     Say "Updating the local NuGet cache"
     $proj = Join-Path $TEST_DIR "Blank" -Resolve
     & dotnet restore $proj /p:AbcVersion=$version | Out-Host
@@ -361,6 +360,7 @@ try {
     pushd $ROOT_DIR
 
     if ($Final) {
+        # TODO: clean up local NuGet cache/feed & remove previous package file.
         $isRetail = $true
         $forceClean = $true
     }
@@ -389,6 +389,7 @@ try {
     else {
         if ($isRetail) {
             Confirm-Continue "Push the package to the local NuGet feed/cache.?"
+            # TODO: we should clear the local NuGet cache/feed.
         }
         Invoke-PushLocal $package $version
         if ($isRetail) {
