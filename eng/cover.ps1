@@ -202,8 +202,7 @@ try {
     pushd $ROOT_DIR
 
     if ($ReportOnly -and $NoReport) {
-        Carp "You cannot use both options -ReportOnly and -NoReport at the same time."
-        exit 0
+        Croak "You cannot use both options -ReportOnly and -NoReport at the same time."
     }
 
     $tool = if ($OpenCover) { "opencover" } else { "coverlet" }

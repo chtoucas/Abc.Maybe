@@ -460,8 +460,7 @@ try {
 
     if ($Platform -eq "") {
         if ($NoClassic -and $NoCore) {
-            Carp "You specified both -NoClassic and -NoCore... There is nothing left to be done."
-            exit 0
+            Croak "You specified both -NoClassic and -NoCore... There is nothing left to be done."
         }
 
         if ($Yes -or (Confirm-Yes "Test the package for all selected platforms at once (SLOW)?")) {
