@@ -185,7 +185,7 @@ function Confirm-Yes {
     )
 
     while ($true) {
-        $answer = (Read-Host $Question, "[y/N]")
+        $answer = (Read-Host $Question, "[y/N/q]")
 
         if ($answer -eq "" -or $answer -eq "n") {
             Say-Indent "Discarding on your request."
@@ -193,6 +193,10 @@ function Confirm-Yes {
         }
         elseif ($answer -eq "y") {
             return $true
+        }
+        elseif ($answer -eq "q") {
+            Say-Indent "Terminating the script on your request."
+            exit 0
         }
     }
 }
