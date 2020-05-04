@@ -36,6 +36,9 @@ Ignored if -Platform is also specified.
 Exclude .NET Core from the tests.
 Ignored if -Platform is also specified.
 
+.PARAMETER NoSpeedUp
+Do not attempt to speed up things when testing many platforms one at a time.
+
 .PARAMETER Yes
 Do not ask for confirmation.
 
@@ -84,6 +87,7 @@ param(
     [Alias("a")] [switch] $AllKnown,
                  [switch] $NoClassic,
                  [switch] $NoCore,
+                 [switch] $NoSpeedUp,
     [Alias("c")] [switch] $Clean,
     [Alias("y")] [switch] $Yes,
     [Alias("h")] [switch] $Help
@@ -111,6 +115,7 @@ Usage: pack.ps1 [switches].
   -a|-AllKnown    test the package for ALL known platform versions (SLOW).
     |-NoClassic   exclude .NET Framework from the tests.
     |-NoCore      exclude .NET Core from the tests.
+    |-NoSpeedUp   do not attempt to speed up things when testing many platforms one at a time.
   -c|-Clean       hard clean the solution before anything else.
   -y|-Yes         do not ask for confirmation before running any test.
   -h|-Help        print this help and exit.
@@ -468,8 +473,19 @@ try {
                 -NoCore:$NoCore.IsPresent
         }
         else {
-            # Building the solution only once should speed up things a bit.
-            Invoke-Build -Version $Version -Runtime $Runtime -AllKnown:$AllKnown.IsPresent
+            # Building or restoring the solution only once should speed up things a bit.
+            if ($NoSpeedUp) {
+                $noBuild   = $true
+                $noRestore = $false
+
+                Invoke-Restore -Version $Version -Runtime $Runtime -AllKnown:$AllKnown.IsPresent
+            }
+            else {
+                $noBuild   = $false
+                $noRestore = $true
+
+                Invoke-Build -Version $Version -Runtime $Runtime -AllKnown:$AllKnown.IsPresent
+            }
 
             Chirp "Now, you will have the opportunity to choose which platform to test the package for."
 
@@ -478,7 +494,8 @@ try {
                 else { $platformList = $LastClassic }
 
                 Invoke-TestMany -PlatformList $platformList `
-                    -Version $Version -Runtime $Runtime -NoBuild
+                    -Version $Version -Runtime $Runtime `
+                    -NoBuild:$noBuild -NoRestore:$noRestore
             }
 
             if (-not $NoCore) {
@@ -486,7 +503,8 @@ try {
                 else { $platformList = $LTSCore }
 
                 Invoke-TestMany -PlatformList $platformList `
-                    -Version $Version -Runtime $Runtime -NoBuild
+                    -Version $Version -Runtime $Runtime `
+                    -NoBuild:$noBuild -NoRestore:$noRestore
             }
         }
     }
