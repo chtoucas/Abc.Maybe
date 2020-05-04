@@ -94,6 +94,9 @@ $ErrorActionPreference = "Stop"
 
 . (Join-Path $PSScriptRoot "abc.ps1")
 
+(Join-Path $TEST_DIR "NETSdk\NETSdk.csproj" -Resolve) `
+    | New-Variable -Name "NETSdkProj" -Scope Script -Option Constant
+
 ################################################################################
 
 function Write-Usage {
@@ -164,10 +167,12 @@ function Invoke-Restore {
 
         [Parameter(Mandatory = $false, Position = 1)]
         [ValidateNotNull()]
-        [string] $runtime = ""
+        [string] $runtime = "",
+
+        [switch] $allKnown
     )
 
-    Say "Restoring dependencies, please wait..."
+    Chirp "Restoring dependencies for NETSdk, please wait..."
 
     if ($runtime -eq "") {
         $args = @()
@@ -175,8 +180,40 @@ function Invoke-Restore {
     else {
         $args = @("--runtime:$runtime")
     }
+    if ($allKnown) { $args += "/p:AllKnown=true" }
 
-    & dotnet restore NETSdk $args /p:AbcVersion=$version /p:AllKnown=true | Out-Host
+    & dotnet restore $NETSdkProj $args /p:AbcVersion=$version | Out-Host
+    Assert-CmdSuccess -ErrMessage "Restore task failed."
+}
+
+# NB: does not cover the solutions for "net45" and "net451".
+function Invoke-Build {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [string] $version = "",
+
+        [Parameter(Mandatory = $false, Position = 1)]
+        [ValidateNotNull()]
+        [string] $runtime = "",
+
+        [switch] $allKnown,
+        [switch] $noRestore
+    )
+
+    Chirp "Building NETSdk, please wait..."
+
+    if ($runtime -eq "") {
+        $args = @()
+    }
+    else {
+        $args = @("--runtime:$runtime")
+    }
+    if ($allKnown)  { $args += "/p:AllKnown=true" }
+    if ($noRestore) { $args += "--no-restore" }
+
+    & dotnet build $NETSdkProj $args /p:AbcVersion=$version | Out-Host
     Assert-CmdSuccess -ErrMessage "Restore task failed."
 }
 
@@ -205,16 +242,20 @@ function Invoke-TestOldStyle {
     $msbuild = Find-MSBuild $vswhere
     $xunit   = Find-XunitRunner
 
-    $proj = $platform.ToUpper()
+    $projName = $platform.ToUpper()
+    $proj = Join-Path $TEST_DIR "$projName\$projName.csproj" -Resolve
 
     # https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2019
     & $msbuild $proj -v:minimal /p:AbcVersion=$version /t:"Restore;Build" | Out-Host
     Assert-CmdSuccess -ErrMessage "Build task failed when targeting ""$platform""."
 
-    & $xunit .\$proj\bin\Release\$proj.dll | Out-Host
+    $projDLL = Join-Path $TEST_DIR "$projName\bin\Release\$projName.dll" -Resolve
+
+    & $xunit $projDLL | Out-Host
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting ""$platform""."
 }
 
+# Option -NoRestore is ignored when -Platform is "net45" or "net451".
 function Invoke-TestSingle {
     [CmdletBinding()]
     param(
@@ -230,7 +271,8 @@ function Invoke-TestSingle {
         [ValidateNotNull()]
         [string] $runtime = "",
 
-        [switch] $noRestore
+        [switch] $noRestore,
+        [switch] $noBuild
     )
 
     if (($platform -eq "net45") -or ($platform -eq "net451")) {
@@ -248,9 +290,10 @@ function Invoke-TestSingle {
     else {
         $args = @("--runtime:$runtime")
     }
-    if ($noRestore) { $args += "--no-restore" }
+    if ($noBuild)       { $args += "--no-build" }   # NB: no-build => no-restore
+    elseif ($noRestore) { $args += "--no-restore" }
 
-    & dotnet test NETSdk -f $platform $args `
+    & dotnet test $NETSdkProj -f $platform $args `
         /p:AbcVersion=$version /p:AllKnown=true --nologo `
         | Out-Host
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting ""$platform""."
@@ -271,7 +314,8 @@ function Invoke-TestMany {
         [ValidateNotNull()]
         [string] $runtime = "",
 
-        [switch] $noRestore
+        [switch] $noRestore,
+        [switch] $noBuild
     )
 
     if ($runtime -eq "") {
@@ -287,7 +331,8 @@ function Invoke-TestMany {
                 -Platform $platform `
                 -Version $version `
                 -Runtime $runtime `
-                -NoRestore:$noRestore.IsPresent
+                -NoRestore:$noRestore.IsPresent `
+                -NoBuild:$noBuild.IsPresent
         }
     }
 }
@@ -329,7 +374,7 @@ function Invoke-TestAll {
     if ($noCore)         { $args += "/p:NoCore=true" }
     if ($runtime -ne "") { $args += "--runtime:$runtime" }
 
-    & dotnet test NETSdk --nologo $args /p:AbcVersion=$version | Out-Host
+    & dotnet test $NETSdkProj --nologo $args /p:AbcVersion=$version | Out-Host
     Assert-CmdSuccess -ErrMessage "Test task failed."
 
     if ($allKnown -and (-not $noClassic)) {
@@ -423,17 +468,17 @@ try {
                 -NoCore:$NoCore.IsPresent
         }
         else {
-            Chirp "Now, you will have the opportunity to choose which platform to test the package for."
+            # Building the solution only once should speed up things a bit.
+            Invoke-Build -Version $Version -Runtime $Runtime -AllKnown:$AllKnown.IsPresent
 
-            # Restoring the dependencies here should speed up things a bit.
-            Invoke-Restore -Version $Version -Runtime $Runtime
+            Chirp "Now, you will have the opportunity to choose which platform to test the package for."
 
             if (-not $NoClassic) {
                 if ($AllKnown) { $platformList = $AllClassic }
                 else { $platformList = $LastClassic }
 
                 Invoke-TestMany -PlatformList $platformList `
-                    -Version $Version -Runtime $Runtime -NoRestore
+                    -Version $Version -Runtime $Runtime -NoBuild
             }
 
             if (-not $NoCore) {
@@ -441,7 +486,7 @@ try {
                 else { $platformList = $LTSCore }
 
                 Invoke-TestMany -PlatformList $platformList `
-                    -Version $Version -Runtime $Runtime -NoRestore
+                    -Version $Version -Runtime $Runtime -NoBuild
             }
         }
     }
