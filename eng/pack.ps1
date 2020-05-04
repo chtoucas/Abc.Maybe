@@ -262,7 +262,7 @@ function Invoke-Pack {
 
     if ($retail) { Approve-PackageFile $package $version }
 
-    $proj = Join-Path $SRC_DIR $projectName -Resolve
+    $project = Join-Path $SRC_DIR "$projectName\$projectName.csproj" -Resolve
 
     Chirp "Packing version $version --- build $buildNumber, rev. $revisionNumber" -NoNewline
     if ($branch -and $commit) {
@@ -273,7 +273,7 @@ function Invoke-Pack {
 
     # Do NOT use --no-restore or --no-build (option Clean removes everything).
     # RepositoryCommit and RepositoryBranch are standard props, do not remove them.
-    & dotnet pack $proj -c $CONFIGURATION --nologo $args --output $output `
+    & dotnet pack $project -c $CONFIGURATION --nologo $args --output $output `
         /p:TargetFrameworks='\"netstandard2.1;netstandard2.0;netstandard1.0;net461\"' `
         /p:BuildNumber=$buildNumber `
         /p:RevisionNumber=$revisionNumber `
@@ -321,8 +321,8 @@ function Invoke-PushLocal {
     # This is not such a big problem, but I prefer not to pollute it with
     # CI packages (or versions we are going to publish).
     Say "Updating the local NuGet cache"
-    $proj = Join-Path $TEST_DIR "Blank" -Resolve
-    & dotnet restore $proj /p:AbcVersion=$version | Out-Host
+    $project = Join-Path $TEST_DIR "Blank\Blank.csproj" -Resolve
+    & dotnet restore $project /p:AbcVersion=$version | Out-Host
     Assert-CmdSuccess -ErrMessage "Failed to update the local NuGet cache."
 
     Chirp "Package successfully installed."

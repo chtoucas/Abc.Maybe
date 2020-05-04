@@ -99,7 +99,7 @@ $ErrorActionPreference = "Stop"
 . (Join-Path $PSScriptRoot "abc.ps1")
 
 (Join-Path $TEST_DIR "NETSdk\NETSdk.csproj" -Resolve) `
-    | New-Variable -Name "NETSdkProj" -Scope Script -Option Constant
+    | New-Variable -Name "NETSdkProject" -Scope Script -Option Constant
 
 ################################################################################
 
@@ -187,7 +187,7 @@ function Invoke-Restore {
     }
     if ($allKnown) { $args += "/p:AllKnown=true" }
 
-    & dotnet restore $NETSdkProj $args /p:AbcVersion=$version | Out-Host
+    & dotnet restore $NETSdkProject $args /p:AbcVersion=$version | Out-Host
     Assert-CmdSuccess -ErrMessage "Restore task failed."
 }
 
@@ -218,7 +218,7 @@ function Invoke-Build {
     if ($allKnown)  { $args += "/p:AllKnown=true" }
     if ($noRestore) { $args += "--no-restore" }
 
-    & dotnet build $NETSdkProj $args /p:AbcVersion=$version | Out-Host
+    & dotnet build $NETSdkProject $args /p:AbcVersion=$version | Out-Host
     Assert-CmdSuccess -ErrMessage "Restore task failed."
 }
 
@@ -247,16 +247,17 @@ function Invoke-TestOldStyle {
     $msbuild = Find-MSBuild $vswhere
     $xunit   = Find-XunitRunner
 
-    $projName = $platform.ToUpper()
-    $proj = Join-Path $TEST_DIR "$projName\$projName.csproj" -Resolve
+    $projectName = $platform.ToUpper()
+    $project = Join-Path $TEST_DIR "$projectName\$projectName.csproj" -Resolve
 
     # https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2019
-    & $msbuild $proj -v:minimal /p:AbcVersion=$version /t:"Restore;Build" | Out-Host
+    & $msbuild $project -v:minimal /p:AbcVersion=$version /t:"Restore;Build" | Out-Host
     Assert-CmdSuccess -ErrMessage "Build task failed when targeting ""$platform""."
 
-    $projDLL = Join-Path $TEST_DIR "$projName\bin\Release\$projName.dll" -Resolve
+    # NB: Release, not Debug, this is hard-coded within the project file.
+    $DLL = Join-Path $TEST_DIR "$projectName\bin\Release\$projectName.dll" -Resolve
 
-    & $xunit $projDLL | Out-Host
+    & $xunit $DLL | Out-Host
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting ""$platform""."
 }
 
@@ -298,7 +299,7 @@ function Invoke-TestSingle {
     if ($noBuild)       { $args += "--no-build" }   # NB: no-build => no-restore
     elseif ($noRestore) { $args += "--no-restore" }
 
-    & dotnet test $NETSdkProj -f $platform $args `
+    & dotnet test $NETSdkProject -f $platform $args `
         /p:AbcVersion=$version /p:AllKnown=true --nologo `
         | Out-Host
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting ""$platform""."
@@ -379,7 +380,7 @@ function Invoke-TestAll {
     if ($noCore)         { $args += "/p:NoCore=true" }
     if ($runtime -ne "") { $args += "--runtime:$runtime" }
 
-    & dotnet test $NETSdkProj --nologo $args /p:AbcVersion=$version | Out-Host
+    & dotnet test $NETSdkProject --nologo $args /p:AbcVersion=$version | Out-Host
     Assert-CmdSuccess -ErrMessage "Test task failed."
 
     if ($allKnown -and (-not $noClassic)) {
@@ -435,9 +436,9 @@ try {
     pushd $TEST_DIR
 
     if ($Clean) {
-        # Cleaning the "src" directory is necessary when there are "dangling" cs
-        # files in "src" that were created during a previous build. Now, it's no
-        # longer a problem (we explicitely exclude "bin" and "obj" in
+        # Cleaning the "src" directory is only necessary when there are "dangling"
+        # cs files in "src" that were created during a previous build. Now, it's
+        # no longer a problem (we explicitely exclude "bin" and "obj" in
         # "test\Directory.Build.targets"), but we never know.
         if ($Yes -or (Confirm-Yes "Hard clean the directories ""src""?")) {
             Say-Indent "Deleting ""bin"" and ""obj"" directories within ""src""."

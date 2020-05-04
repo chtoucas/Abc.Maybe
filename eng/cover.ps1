@@ -106,7 +106,7 @@ function Invoke-OpenCover {
     param(
         [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $exe,
+        [string] $openCover,
 
         [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
@@ -125,7 +125,7 @@ function Invoke-OpenCover {
     $filter = "$filters"
 
     # See https://github.com/opencover/opencover/wiki/Usage
-    & $exe -oldStyle -register:user `
+    & $openCover -oldStyle -register:user `
         -hideskipped:All `
         -showunvisited `
         -output:$output `
