@@ -12,13 +12,13 @@ The default behaviour is to build CI packages.
 Create a retail package.
 This is a meta-option, it automatically sets -Retail and -Clean too.
 In addition, the script stops when there are uncommited changes or if it cannot
-get git-related infos.
+retrieve git-related informations.
 The resulting package is not different from the one you would get using -Retail,
 so, if this option is too strict and you are in a hurry, you can use:
 PS> pack.ps1 -Retail -Force
 
 .PARAMETER Force
-Force packing even when there are uncommited changes.
+Force retrieval of git-related informations when there are uncommited changes.
 Ignored if -Final is also set.
 
 .PARAMETER Clean
@@ -68,7 +68,7 @@ Create a NuGet package for Abc.Maybe
 
 Usage: pack.ps1 [switches]
     |-Retail      build retail packages.
-  -f|-Force       force packing even when there are uncommited changes.
+  -f|-Force       force retrieval of git-related informations when there are uncommited changes.
   -c|-Clean       hard clean the solution before anything else.
   -v|-MyVerbose   display settings used to compile each DLL.
   -h|-Help        print this help and exit.
@@ -169,6 +169,7 @@ function Approve-PackageFile {
 
     # Is there a dangling package file?
     # NB: only meaningful when in retail mode; otherwise the filename is unique.
+    # TODO: for final packages we should do it right away.
     if (Test-Path $package) {
         Carp "A package with the same version ($version) already exists."
         Confirm-Continue "Do you wish to proceed anyway?"
@@ -198,7 +199,6 @@ function Invoke-Pack {
         [string] $commit = "",
 
         [switch] $retail,
-        [switch] $force,
         [switch] $myVerbose
     )
 
@@ -313,20 +313,20 @@ function Invoke-PushLocal {
     # Also, if Microsoft ever decided to change the behaviour of "push",
     # we won't have to update this script (but maybe reset.ps1).
 
-    Say "Pushing the package to the local NuGet feed"
     & dotnet nuget push $package -s $NUGET_LOCAL_FEED --force-english-output | Out-Host
     Assert-CmdSuccess -ErrMessage "Failed to publish package to local NuGet feed."
 
     # If the following task fails, we should remove the package from the feed,
     # otherwise, later on, the package will be restored to the global cache.
     # This is not such a big problem, but I prefer not to pollute it with
-    # CI packages.
+    # CI packages (or versions we are going to publish).
+    # TODO: for non-CI packages we should clear the cache.
     Say "Updating the local NuGet cache"
     $proj = Join-Path $TEST_DIR "Blank" -Resolve
     & dotnet restore $proj /p:AbcVersion=$version | Out-Host
     Assert-CmdSuccess -ErrMessage "Failed to update the local NuGet cache."
 
-    Chirp "CI package successfully installed."
+    Chirp "Package successfully installed."
 }
 
 function Invoke-Publish {
@@ -344,7 +344,7 @@ function Invoke-Publish {
         Carp "Not yet implemented."
     }
 
-    Chirp "To publish the package:"
+    Chirp "---`nTo publish the package:"
     Chirp "> dotnet nuget push $package -s https://www.nuget.org/ -k MYKEY"
 }
 
@@ -361,10 +361,6 @@ try {
     pushd $ROOT_DIR
 
     if ($Final) {
-        if ($Force) {
-            Croak "You cannot set both options -Final and -Force at the same time."
-        }
-
         $isRetail = $true
         $forceClean = $true
     }
@@ -385,7 +381,6 @@ try {
         -Branch:$branch `
         -Commit:$commit `
         -Retail:$isRetail `
-        -Force:$Force.IsPresent `
         -MyVerbose:$MyVerbose.IsPresent
 
     if ($Final) {
@@ -397,9 +392,10 @@ try {
         }
         Invoke-PushLocal $package $version
         if ($isRetail) {
-            Chirp "Now, you can test the package:"
+            Chirp "---`nNow, you can test the package."
             Chirp "> eng\test-package.ps1 -a -y"
             Chirp "Do not forget to reset the local NuGet cache/feed after."
+            Chirp "> eng\reset.ps1 -y"
         }
     }
 }
