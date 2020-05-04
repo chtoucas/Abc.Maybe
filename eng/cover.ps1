@@ -32,15 +32,15 @@ This option and -NoReport are mutually exclusive.
 Print help.
 
 .EXAMPLE
-PS>cover.ps1
+PS> cover.ps1
 Run Coverlet then build the human-readable reports.
 
 .EXAMPLE
-PS>cover.ps1 -x
+PS> cover.ps1 -x
 Run OpenCover then build the human-readable reports.
 
 .EXAMPLE
-PS>cover.ps1 -OpenCover -NoReport
+PS> cover.ps1 -OpenCover -NoReport
 Run OpenCover, do NOT build human-readable reports and badges.
 #>
 [CmdletBinding()]
@@ -202,7 +202,7 @@ try {
     pushd $ROOT_DIR
 
     if ($ReportOnly -and $NoReport) {
-        Croak "You cannot use both options -ReportOnly and -NoReport at the same time."
+        Croak "You cannot set both options -ReportOnly and -NoReport at the same time."
     }
 
     $tool = if ($OpenCover) { "opencover" } else { "coverlet" }

@@ -26,15 +26,15 @@ See https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
 
 .PARAMETER AllKnown
 Test the package for ALL known platform versions (SLOW).
-Ignored if -Platform is also specified.
+Ignored if -Platform is also set.
 
 .PARAMETER NoClassic
 Exclude .NET Framework from the tests.
-Ignored if -Platform is also specified.
+Ignored if -Platform is also set.
 
 .PARAMETER NoCore
 Exclude .NET Core from the tests.
-Ignored if -Platform is also specified.
+Ignored if -Platform is also set.
 
 .PARAMETER NoSpeedUp
 Do not attempt to speed up things when testing many platforms one at a time.
@@ -46,31 +46,31 @@ Do not ask for confirmation.
 Hard clean the source and test directories before anything else.
 
 .EXAMPLE
-PS>test-package.ps1
+PS> test-package.ps1
 Test the package for selected versions of .NET Core and .NET Framework
 
 .EXAMPLE
-PS>test-package.ps1 -NoClassic
+PS> test-package.ps1 -NoClassic
 Test the package for the LTS versions of .NET Core.
 
 .EXAMPLE
-PS>test-package.ps1 -NoCore
+PS> test-package.ps1 -NoCore
 Test the package for the last minor version of each major version of .NET Framework.
 
 .EXAMPLE
-PS>test-package.ps1 -AllKnown
+PS> test-package.ps1 -AllKnown
 Test the package for ALL versions of .NET Core and .NET Framework.
 
 .EXAMPLE
-PS>test-package.ps1 -AllKnown -NoClassic
+PS> test-package.ps1 -AllKnown -NoClassic
 Test the package for ALL versions of .NET Core.
 
 .EXAMPLE
-PS>test-package.ps1 -AllKnown -NoCore
+PS> test-package.ps1 -AllKnown -NoCore
 Test the package for ALL versions of .NET Framework.
 
 .EXAMPLE
-PS>test-package.ps1 net452 -Runtime win10-x64
+PS> test-package.ps1 net452 -Runtime win10-x64
 Test the package for a specific platform and for the runtime "win10-x64".
 #>
 [CmdletBinding()]
@@ -460,7 +460,7 @@ try {
 
     if ($Platform -eq "") {
         if ($NoClassic -and $NoCore) {
-            Croak "You specified both -NoClassic and -NoCore... There is nothing left to be done."
+            Croak "You set both -NoClassic and -NoCore... There is nothing left to be done."
         }
 
         if ($Yes -or (Confirm-Yes "Test the package for all selected platforms at once (SLOW)?")) {
