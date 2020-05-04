@@ -68,11 +68,11 @@ Pre action, for beta -or- production packages.
 4. Run eng\test-package.ps1 -a -y     Test the package
 5. Run eng\reset.ps1 -y               Reset local NuGet cache/feed (delete the temp retail pkg)
 6. Git commit
-7. Run script eng\pack.ps1 -r
+7. Run script eng\pack.ps1 -Final
 8. Publish package
 
 Post actions.
-a. For production packages, git tag (??? before, to get the correct tag ???)
+a. For production packages, git tag (??? before, to get the correct branch ???)
 
 Multi-targeting
 ---------------

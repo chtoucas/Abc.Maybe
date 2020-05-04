@@ -6,6 +6,11 @@ Create a NuGet package.
 
 .PARAMETER Retail
 Build retail packages.
+The default behaviour is to build CI packages.
+
+.PARAMETER Final
+Build retail packages, ready for publication.
+This is a meta-option, it automatically set -Retail and -Clean.
 
 .PARAMETER Force
 Force packing even when there are uncommited changes.
@@ -24,16 +29,17 @@ PS>pack.ps1
 Create a CI package. Append -f to discard warnings about obsolete git infos.
 
 .EXAMPLE
-PS>pack.ps1 -r -n -f
-Fast packing, retail mode, no test, maybe obsolete git infos.
+PS>pack.ps1 -r -f
+Fast packing, retail mode, maybe obsolete git infos.
 
 .EXAMPLE
-PS>pack.ps1 -r -s
-Safe packing, retail mode.
+PS>pack.ps1 -Final
+Create a package ready for publication.
 #>
 [CmdletBinding()]
 param(
                  [switch] $Retail,
+                 [switch] $Final,
     [Alias("f")] [switch] $Force,
     [Alias("c")] [switch] $Clean,
     [Alias("v")] [switch] $MyVerbose,
@@ -269,7 +275,7 @@ function Invoke-Pack {
     @($package, $version)
 }
 
-function Invoke-Publish {
+function Invoke-PushLocal {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, Position = 0)]
@@ -278,43 +284,49 @@ function Invoke-Publish {
 
         [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
-        [string] $version,
-
-        [switch] $retail
+        [string] $version
     )
 
-    SAY-LOUD "Publishing."
+    SAY-LOUD "Pushing the package to the local NuGet feed/cache."
 
-    if ($retail) {
-        # TODO: add an option to publish the package for us. --interactive?
-        if (Confirm-Yes "Do you want me to publish the package for you?") {
-            Carp "Not yet implemented."
-        }
+    # We could have created the package directly in $NUGET_LOCAL_FEED
+    # but it seems cleaner to keep creation and publication separated.
+    # Also, if Microsoft ever decided to change the behaviour of "push",
+    # we won't have to update this script (but maybe reset.ps1).
 
-        Chirp "To publish the package:"
-        Chirp "> dotnet nuget push $package -s https://www.nuget.org/ -k MYKEY"
+    Say "Pushing the package to the local NuGet feed"
+    & dotnet nuget push $package -s $NUGET_LOCAL_FEED --force-english-output | Out-Host
+    Assert-CmdSuccess -ErrMessage "Failed to publish package to local NuGet feed."
+
+    # If the following task fails, we should remove the package from the feed,
+    # otherwise, later on, the package will be restored to the global cache.
+    # This is not such a big problem, but I prefer not to pollute it with
+    # CI packages.
+    Say "Updating the local NuGet cache"
+    $proj = Join-Path $TEST_DIR "Blank" -Resolve
+    & dotnet restore $proj /p:AbcVersion=$version | Out-Host
+    Assert-CmdSuccess -ErrMessage "Failed to update the local NuGet cache."
+
+    Chirp "CI package successfully installed."
+}
+
+function Invoke-Publish {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $package
+    )
+
+    SAY-LOUD "Publishing the package to the official NuGet repository."
+
+    # TODO: publish the package for us. --interactive?
+    if (Confirm-Yes "Do you want me to publish the package for you?") {
+        Carp "Not yet implemented."
     }
-    else {
-        # We could have created the package directly in $NUGET_LOCAL_FEED
-        # but it seems cleaner to keep creation and publication separated.
-        # Also, if Microsoft ever decided to change the behaviour of "push",
-        # we won't have to update this script (but maybe reset.ps1).
 
-        Say "Pushing the package to the local NuGet feed"
-        & dotnet nuget push $package -s $NUGET_LOCAL_FEED --force-english-output | Out-Host
-        Assert-CmdSuccess -ErrMessage "Failed to publish package to local NuGet feed."
-
-        # If the following task fails, we should remove the package from the feed,
-        # otherwise, later on, the package will be restored to the global cache.
-        # This is not such a big problem, but I prefer not to pollute it with
-        # CI packages.
-        Say "Updating the local NuGet cache"
-        $proj = Join-Path $TEST_DIR "Blank" -Resolve
-        & dotnet restore $proj /p:AbcVersion=$version | Out-Host
-        Assert-CmdSuccess -ErrMessage "Failed to update the local NuGet cache."
-
-        Chirp "CI package successfully installed."
-    }
+    Chirp "To publish the package:"
+    Chirp "> dotnet nuget push $package -s https://www.nuget.org/ -k MYKEY"
 }
 
 ################################################################################
@@ -329,7 +341,20 @@ try {
 
     pushd $ROOT_DIR
 
-    if ($Clean) {
+    if ($Final) {
+        if ($Force) {
+            Croak "You cannot use both options -Final and -Force at the same time."
+        }
+
+        $isRetail = $true
+        $hardClean = $true
+    }
+    else {
+        $isRetail = $Retail.IsPresent
+        $hardClean = $Clean.IsPresent
+    }
+
+    if ($hardClean) {
         if (Confirm-Yes "Hard clean the directory ""src""?") {
             Say-Indent "Deleting ""bin"" and ""obj"" directories within ""src""."
             Remove-BinAndObj $SRC_DIR
@@ -337,11 +362,19 @@ try {
     }
 
     $package, $version = Invoke-Pack "Abc.Maybe" `
-        -Retail:$Retail.IsPresent `
+        -Retail:$isRetail `
         -Force:$Force.IsPresent `
         -MyVerbose:$MyVerbose.IsPresent
 
-    Invoke-Publish $package $version -Retail:$Retail.IsPresent
+    if ($Final) {
+        Invoke-Publish $package
+    }
+    else {
+        if ($isRetail) {
+            Confirm-Continue "Push the package to the local NuGet feed/cache.?"
+        }
+        Invoke-PushLocal $package $version
+    }
 }
 catch {
     Write-Host $_
