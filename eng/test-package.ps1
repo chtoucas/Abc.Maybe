@@ -13,7 +13,7 @@ If the platform is not known, the script will fail silently.
 
 .PARAMETER Version
 Specify a version of the package Abc.Maybe.
-When no version is specified, we use the one from the last public release.
+When no version is specified, we use the one found in Abc.Maybe.props.
 
 .PARAMETER Runtime
 The target runtime to test the package for.
@@ -40,11 +40,7 @@ Ignored if -Platform is also specified.
 Do not ask for confirmation.
 
 .PARAMETER Clean
-Hard clean the solution before creating the package by removing the "bin" and
-"obj" directories within "src".
-It's necessary when there are "dangling" cs files created during a previous
-build. Now, it's no longer a problem (we explicitely exclude "bin" and "obj" in
-Directory.Build.targets), but we never know.
+Hard clean the source and test directories before anything else.
 
 .EXAMPLE
 PS>test-package.ps1
@@ -88,8 +84,8 @@ param(
     [Alias("a")] [switch] $AllKnown,
                  [switch] $NoClassic,
                  [switch] $NoCore,
-    [Alias("y")] [switch] $Yes,
     [Alias("c")] [switch] $Clean,
+    [Alias("y")] [switch] $Yes,
     [Alias("h")] [switch] $Help
 )
 
@@ -112,8 +108,8 @@ Usage: pack.ps1 [switches].
   -a|-AllKnown    test the package for ALL known platform versions (SLOW).
     |-NoClassic   exclude .NET Framework from the tests.
     |-NoCore      exclude .NET Core from the tests.
-  -y|-Yes         do not ask for confirmation before running any test.
   -c|-Clean       hard clean the solution before anything else.
+  -y|-Yes         do not ask for confirmation before running any test.
   -h|-Help        print this help and exit.
 
 "@
@@ -157,6 +153,32 @@ function Get-RuntimeString {
 }
 
 # ------------------------------------------------------------------------------
+
+# NB: does not cover the solutions for "net45" and "net451".
+function Invoke-Restore {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [string] $version = "",
+
+        [Parameter(Mandatory = $false, Position = 1)]
+        [ValidateNotNull()]
+        [string] $runtime = ""
+    )
+
+    Say "Restoring dependencies, please wait..."
+
+    if ($runtime -eq "") {
+        $args = @()
+    }
+    else {
+        $args = @("--runtime:$runtime")
+    }
+
+    & dotnet restore NETSdk $args /p:AbcVersion=$version /p:AllKnown=true | Out-Host
+    Assert-CmdSuccess -ErrMessage "Restore task failed."
+}
 
 function Invoke-TestOldStyle {
     [CmdletBinding()]
@@ -228,7 +250,9 @@ function Invoke-TestSingle {
     }
     if ($noRestore) { $args += "--no-restore" }
 
-    & dotnet test NETSdk -f $platform $args /p:AbcVersion=$version /p:AllKnown=true --nologo | Out-Host
+    & dotnet test NETSdk -f $platform $args `
+        /p:AbcVersion=$version /p:AllKnown=true --nologo `
+        | Out-Host
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting ""$platform""."
 }
 
@@ -245,7 +269,9 @@ function Invoke-TestMany {
 
         [Parameter(Mandatory = $false, Position = 2)]
         [ValidateNotNull()]
-        [string] $runtime = ""
+        [string] $runtime = "",
+
+        [switch] $noRestore
     )
 
     if ($runtime -eq "") {
@@ -255,14 +281,13 @@ function Invoke-TestMany {
         $args = @("--runtime:$runtime")
     }
 
-    Say "Restoring dependencies, please wait..."
-
-    & dotnet restore NETSdk $args /p:AbcVersion=$version /p:AllKnown=true | Out-Host
-    Assert-CmdSuccess -ErrMessage "Test task failed when trying to restore the dependencies."
-
     foreach ($platform in $platformList) {
         if (Confirm-Yes "Test the package for ""$platform""?") {
-            Invoke-TestSingle -Platform $platform -Version $version -Runtime $runtime -NoRestore
+            Invoke-TestSingle `
+                -Platform $platform `
+                -Version $version `
+                -Runtime $runtime `
+                -NoRestore:$noRestore.IsPresent
         }
     }
 }
@@ -300,8 +325,8 @@ function Invoke-TestAll {
     $args = @()
 
     if ($allKnown)       { $args += "/p:AllKnown=true" }
-    if ($noCore)         { $args += "/p:NoCore=true" }
     if ($noClassic)      { $args += "/p:NoClassic=true" }
+    if ($noCore)         { $args += "/p:NoCore=true" }
     if ($runtime -ne "") { $args += "--runtime:$runtime" }
 
     & dotnet test NETSdk --nologo $args /p:AbcVersion=$version | Out-Host
@@ -360,19 +385,31 @@ try {
     pushd $TEST_DIR
 
     if ($Clean) {
-        if (Confirm-Yes "Hard clean the directories ""src""?") {
+        # Cleaning the "src" directory is necessary when there are "dangling" cs
+        # files in "src" that were created during a previous build. Now, it's no
+        # longer a problem (we explicitely exclude "bin" and "obj" in
+        # "test\Directory.Build.targets"), but we never know.
+        if ($Yes -or (Confirm-Yes "Hard clean the directories ""src""?")) {
             Say-Indent "Deleting ""bin"" and ""obj"" directories within ""src""."
-
             Remove-BinAndObj $SRC_DIR
+        }
+        if ($Yes -or (Confirm-Yes "Hard clean the directory ""test""?")) {
+            Say-Indent "Deleting ""bin"" and ""obj"" directories within ""test""."
+            Remove-BinAndObj $TEST_DIR
         }
     }
 
     if ($Version -eq "") {
+        # There were two options, use an explicit version or let the target
+        # project decides for us. Both give the __same__ value, but I opted for
+        # an explicit version, since I need its value for logging but also
+        # because it is safer to do so (see the dicussion on "restore/build traps"
+        # in "test\README").
         $Version = Get-PackageVersion "Abc.Maybe" -AsString
     }
 
     if ($Platform -eq "") {
-        if ($noClassic -and $noCore) {
+        if ($NoClassic -and $NoCore) {
             Carp "You specified both -NoClassic and -NoCore... There is nothing left to be done."
             exit 0
         }
@@ -388,18 +425,23 @@ try {
         else {
             Chirp "Now, you will have the opportunity to choose which platform to test the package for."
 
+            # Restoring the dependencies here should speed up things a bit.
+            Invoke-Restore -Version $Version -Runtime $Runtime
+
             if (-not $NoClassic) {
                 if ($AllKnown) { $platformList = $AllClassic }
                 else { $platformList = $LastClassic }
 
-                Invoke-TestMany -PlatformList $platformList -Version $Version -Runtime $runtime
+                Invoke-TestMany -PlatformList $platformList `
+                    -Version $Version -Runtime $Runtime -NoRestore
             }
 
             if (-not $NoCore) {
                 if ($AllKnown) { $platformList = $AllCore }
                 else { $platformList = $LTSCore }
 
-                Invoke-TestMany -PlatformList $platformList -Version $Version -Runtime $runtime
+                Invoke-TestMany -PlatformList $platformList `
+                    -Version $Version -Runtime $Runtime -NoRestore
             }
         }
     }
