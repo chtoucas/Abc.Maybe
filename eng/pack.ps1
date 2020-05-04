@@ -5,15 +5,21 @@
 Create a NuGet package.
 
 .PARAMETER Retail
-Build retail packages.
+Create a retail package.
 The default behaviour is to build CI packages.
 
 .PARAMETER Final
-Build retail packages, ready for publication.
-This is a meta-option, it automatically set -Retail and -Clean.
+Create a retail package.
+This is a meta-option, it automatically set -Retail and -Clean too.
+In addition, it aborts the script when there are uncommited changes or if it
+cannot get git-related infos.
+The resulting package is no different from the one you would get using -Retail,
+so, if this option is too strict and you are in a hurry, you can use:
+PS> pack.ps1 -Retail -Force
 
 .PARAMETER Force
 Force packing even when there are uncommited changes.
+Ignored if -Final is also set.
 
 .PARAMETER Clean
 Hard clean the source directory before anything else.
@@ -25,15 +31,15 @@ Verbose mode. Display settings used while compiling each DLL.
 Print help.
 
 .EXAMPLE
-PS>pack.ps1
+PS> pack.ps1
 Create a CI package. Append -f to discard warnings about obsolete git infos.
 
 .EXAMPLE
-PS>pack.ps1 -r -f
+PS> pack.ps1 -r -f
 Fast packing, retail mode, maybe obsolete git infos.
 
 .EXAMPLE
-PS>pack.ps1 -Final
+PS> pack.ps1 -Final
 Create a package ready for publication.
 #>
 [CmdletBinding()]
@@ -95,30 +101,36 @@ function Generate-Uids {
 function Get-GitInfos {
     [CmdletBinding()]
     param(
-        [switch] $force
+        [switch] $force,
+        [switch] $fatal
     )
 
     Write-Verbose "Getting git infos."
 
-    $commit = ""
     $branch = ""
+    $commit = ""
 
-    $git = Find-Git
+    $git = Find-Git -Fatal:$fatal.IsPresent
     if ($git -eq $null) {
         Confirm-Continue "Continue even without any git metadata?"
     }
     else {
         # Keep Approve-GitStatus before $force: we always want to see a warning
         # when there are uncommited changes.
-        if ((Approve-GitStatus $git) -or $force) {
-            $commit = Get-GitCommitHash $git
-            $branch = Get-GitBranch $git
+        $ok = Approve-GitStatus -Git $git -Fatal:$fatal.IsPresent
+        if ($ok -or $force) {
+            $branch = Get-GitBranch     -Git $git -Fatal:$fatal.IsPresent
+            $commit = Get-GitCommitHash -Git $git -Fatal:$fatal.IsPresent
         }
-        if ($commit -eq "") { Carp "The commit hash will be empty. Maybe use -Force?" }
-        if ($branch -eq "") { Carp "The branch name will be empty. Maybe use -Force?" }
+        if ($branch -eq "") {
+            Carp "The branch name will be empty. Maybe use -Force?"
+        }
+        if ($commit -eq "") {
+            Carp "The commit hash will be empty. Maybe use -Force?"
+        }
     }
 
-    return @($commit, $branch)
+    return @($branch, $commit)
 }
 
 function Get-PackageFile {
@@ -173,9 +185,17 @@ function Approve-PackageFile {
 function Invoke-Pack {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, Position = 0)]
         [ValidateNotNullOrEmpty()]
         [string] $projectName,
+
+        [Parameter(Mandatory = $false, Position = 1)]
+        [ValidateNotNull()]
+        [string] $branch = "",
+
+        [Parameter(Mandatory = $false, Position = 2)]
+        [ValidateNotNull()]
+        [string] $commit = "",
 
         [switch] $retail,
         [switch] $force,
@@ -186,7 +206,6 @@ function Invoke-Pack {
 
        $major, $minor, $patch, $precy, $preno = Get-PackageVersion $projectName
     $buildNumber, $revisionNumber, $timestamp = Generate-Uids
-                             $commit, $branch = Get-GitInfos -Force:$force.IsPresent
 
     if ($retail) {
         if ($precy -eq "") {
@@ -343,7 +362,7 @@ try {
 
     if ($Final) {
         if ($Force) {
-            Croak "You cannot use both options -Final and -Force at the same time."
+            Croak "You cannot set both options -Final and -Force at the same time."
         }
 
         $isRetail = $true
@@ -361,7 +380,11 @@ try {
         }
     }
 
+    $branch, $commit = Get-GitInfos -Force:$force.IsPresent -Fatal:$final.IsPresent
+
     $package, $version = Invoke-Pack "Abc.Maybe" `
+        -Branch:$branch `
+        -Commit:$commit `
         -Retail:$isRetail `
         -Force:$Force.IsPresent `
         -MyVerbose:$MyVerbose.IsPresent

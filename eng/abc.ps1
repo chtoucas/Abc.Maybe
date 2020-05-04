@@ -274,14 +274,18 @@ function Remove-BinAndObj {
 
 function Find-Git {
     [CmdletBinding()]
-    param()
+    param(
+        [switch] $Fatal
+    )
 
     Write-Verbose "Finding git.exe."
+
+    if ($Fatal) { $onError = "Croak" } else { $onError = "Carp" }
 
     $cmd = Get-Command "git.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
 
     if ($cmd -eq $null) {
-        Carp "Could not be find git.exe. Please ensure Git is installed."
+        . $onError "Could not be find git.exe. Please ensure Git is installed."
         return $null
     }
 
@@ -296,10 +300,14 @@ function Approve-GitStatus {
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $Git
+        [string] $Git,
+
+        [switch] $Fatal
     )
 
     Write-Verbose "Getting the git status."
+
+    if ($Fatal) { $onError = "Croak" } else { $onError = "Carp" }
 
     try {
         # If there no uncommitted changes, the result is null, not empty.
@@ -309,12 +317,12 @@ function Approve-GitStatus {
             return $true
         }
         else {
-            Carp "Uncommitted changes are pending."
+            . $onError "Uncommitted changes are pending."
             return $false
         }
     }
     catch {
-        Carp """git status"" failed: $_"
+        . $onError """git status"" failed: $_"
     }
 }
 
@@ -324,16 +332,20 @@ function Get-GitCommitHash {
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $Git
+        [string] $Git,
+
+        [switch] $Fatal
     )
 
     Write-Verbose "Getting the last git commit hash."
+
+    if ($Fatal) { $onError = "Croak" } else { $onError = "Carp" }
 
     try {
         return & $Git log -1 --format="%H" 2>&1
     }
     catch {
-        Carp """git log"" failed: $_"
+        . $onError """git log"" failed: $_"
     }
 }
 
@@ -343,16 +355,20 @@ function Get-GitBranch {
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $Git
+        [string] $Git,
+
+        [switch] $Fatal
     )
 
     Write-Verbose "Getting the git branch."
+
+    if ($Fatal) { $onError = "Croak" } else { $onError = "Carp" }
 
     try {
         return & $Git rev-parse --abbrev-ref HEAD 2>&1
     }
     catch {
-        Carp """git rev-parse"" failed: $_"
+        . $onError """git rev-parse"" failed: $_"
     }
 }
 
@@ -392,12 +408,12 @@ function Find-MSBuild {
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $vswhere
+        [string] $VSWhere
     )
 
     Write-Verbose "Finding MSBuild.exe."
 
-    $path = & $vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe | select-object -first 1
+    $path = & $VSWhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe | select-object -first 1
 
     if (-not $path) {
         Croak "Could not find MSBuild.exe."
@@ -411,12 +427,12 @@ function Find-Fsi {
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $vswhere
+        [string] $VSWhere
     )
 
     Write-Verbose "Finding fsi.exe."
 
-    $vspath = & $vswhere -legacy -latest -property installationPath
+    $vspath = & $VSWhere -legacy -latest -property installationPath
 
     $path = Join-Path $vspath "\Common7\IDE\CommonExtensions\Microsoft\FSharp\fsi.exe"
     if (Test-Path $path) {
