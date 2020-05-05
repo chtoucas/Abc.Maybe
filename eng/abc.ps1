@@ -1,5 +1,27 @@
 #Requires -Version 4.0
 
+# Dot sourcing this file ensures that it executes in the caller scope.
+# For safety, we still add the $Script: prefix.
+Set-StrictMode -Version Latest
+$Script:ErrorActionPreference = "Stop"
+
+# ===============================================================
+# THIS FUNCTION IS AUTOMATICALLY EXECUTED AT THE END OF THIS FILE
+# ===============================================================
+function Initialize-Script {
+    [CmdletBinding()]
+    param()
+
+    Write-Verbose "Initialization."
+
+    if (-not [System.IO.Path]::IsPathRooted($ROOT_DIR)) {
+        Croak "The root path MUST be absolute."
+    }
+
+    # See https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet
+    [Environment]::SetEnvironmentVariable("DOTNET_CLI_UI_LANGUAGE", "en", "User")
+}
+
 ################################################################################
 #region Project-specific constants.
 
@@ -40,22 +62,9 @@
 (Join-Path $ARTIFACTS_DIR "nuget-cache") `
     | New-Variable -Name "NUGET_LOCAL_CACHE" -Scope Script -Option Constant
 
-# ------------------------------------------------------------------------------
-
-function Approve-RepositoryRoot {
-    [CmdletBinding()]
-    param()
-
-    Write-Verbose "Approving repository root."
-
-    if (-not [System.IO.Path]::IsPathRooted($ROOT_DIR)) {
-        Croak "The root path MUST be absolute."
-    }
-}
-
 #endregion
 ################################################################################
-#region Project-specific helpers.
+#region Project-specific functions.
 
 function Get-PackageVersion {
     [CmdletBinding()]
@@ -207,7 +216,7 @@ function Remove-PackageFromLocalNuGet {
     $oldFilename = "$projectName.$version.nupkg"
     $oldFilepath = Join-Path $NUGET_LOCAL_FEED $oldFilename
     if (Test-Path $oldFilepath) {
-        rm -Force $oldFilepath
+        Remove-Item $oldFilepath -Force
     }
 }
 
@@ -310,19 +319,6 @@ function Croak {
 ################################################################################
 #region Misc helpers.
 
-# See https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet
-function Set-DotNetUILang {
-    param(
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $LangCode
-    )
-
-    [Environment]::SetEnvironmentVariable("DOTNET_CLI_UI_LANGUAGE", $LangCode, "User")
-}
-
-# ------------------------------------------------------------------------------
-
 # Request confirmation.
 function Confirm-Yes {
     param(
@@ -411,7 +407,7 @@ function Remove-Dir {
         return
     }
 
-    rm $Path -Force -Recurse
+    Remove-Item $Path -Force -Recurse
 }
 
 # ------------------------------------------------------------------------------
@@ -438,7 +434,7 @@ function Remove-Packages {
     ls $Path -Include "*.nupkg" -Recurse | ?{
         Write-Verbose "Deleting ""$_""."
 
-        rm $_.FullName -Force
+        Remove-Item $_.FullName -Force
     }
 }
 
@@ -468,7 +464,7 @@ function Remove-BinAndObj {
         ls $_ -Include bin,obj -Recurse | ?{
             Write-Verbose "Deleting ""$_""."
 
-            rm $_.FullName -Force -Recurse
+            Remove-Item $_.FullName -Force -Recurse
         }
     }
 }
@@ -672,5 +668,34 @@ function Find-Fsi {
     }
 }
 
+# ------------------------------------------------------------------------------
+
+# Return $null if the XML node does not exist.
+function Get-PackageReferenceVersion {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [string] $projectPath,
+
+        [Parameter(Mandatory = $true, Position = 1)]
+        [ValidateNotNullOrEmpty()]
+        [string] $package
+    )
+
+    Write-Verbose "Getting version for ""$package"" from ""$projectPath""."
+
+    $xml = [Xml] (Get-Content $projectPath)
+    $xpath = "//Project/ItemGroup/PackageReference[@Include='$package']"
+
+    Select-Xml -Xml $xml -XPath $xpath `
+        | Select -ExpandProperty Node `
+        | Select -First 1 -ExpandProperty Version
+}
+
 #endregion
+################################################################################
+
+Initialize-Script
+
 ################################################################################

@@ -12,12 +12,8 @@ param(
     [Alias("y")] [switch] $Yes
 )
 
-Set-StrictMode -Version Latest
-$ErrorActionPreference = "Stop"
-
 . (Join-Path $PSScriptRoot "abc.ps1")
 
-Approve-RepositoryRoot
 
 try {
     pushd $ROOT_DIR
@@ -29,6 +25,7 @@ try {
     Reset-LocalNuGet      -Yes:$Yes.IsPresent
 }
 catch {
+    Write-Host "An unexpected error occured." -BackgroundColor Red -ForegroundColor Yellow
     Write-Host $_
     Write-Host $_.Exception
     Write-Host $_.ScriptStackTrace

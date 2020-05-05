@@ -11,12 +11,7 @@ Obsolete members are moved from Shipped to Unshipped and prefixed w/ *REMOVED*.
 [CmdletBinding()]
 param()
 
-Set-StrictMode -Version Latest
-$ErrorActionPreference = "Stop"
-
 . (Join-Path $PSScriptRoot "abc.ps1")
-
-Approve-RepositoryRoot
 
 ################################################################################
 
@@ -75,6 +70,7 @@ try {
     }
 }
 catch {
+    Write-Host "An unexpected error occured." -BackgroundColor Red -ForegroundColor Yellow
     Write-Host $_
     Write-Host $_.Exception
     Write-Host $_.ScriptStackTrace

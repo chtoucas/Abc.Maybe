@@ -10,6 +10,11 @@ Matching .NET Framework Developer Packs or Targeting Packs must be installed
 locally, the later should suffice. The script will fail with error MSB3644 when
 it is not the case.
 
+.OUTPUTS
+In case of a fatal error, the script exits with a code 1.
+The script exits with a code 2 when -Platform is equal "net45" or "net451", and
+it couldn't find the Xunit runner console.
+
 .PARAMETER Platform
 Specify a single platform for which to test the package.
 If the platform is not known, the script will fail silently.
@@ -96,21 +101,18 @@ param(
     [Alias("h")] [switch] $Help
 )
 
-Set-StrictMode -Version Latest
-$ErrorActionPreference = "Stop"
-
 . (Join-Path $PSScriptRoot "abc.ps1")
-
-Approve-RepositoryRoot
-Set-DotNetUILang "en"
 
 # ------------------------------------------------------------------------------
 
 (Join-Path $TEST_DIR "NETSdk" -Resolve) `
     | New-Variable -Name "NET_SDK_PROJECT" -Scope Script -Option Constant
 
-# Cumulative number of errors.
-New-Variable -Name "ExitCode" -Value 0 -Scope Script
+(Join-Path $TEST_DIR "Directory.Build.targets" -Resolve) `
+    | New-Variable -Name "XUNIT_REF_PROJECT" -Scope Script -Option Constant
+
+New-Variable -Name "XUNIT_PLATFORM" -Value "net452" -Scope Script -Option Constant
+New-Variable -Name "NoXunitConsole" -Value $false   -Scope Script
 
 #endregion
 ################################################################################
@@ -148,15 +150,22 @@ function Find-XunitRunner {
 
     Write-Verbose "Finding xunit.console.exe."
 
-    $version = "2.4.1"
-    $platform = "net452"
+    if ($NoXunitConsole) { Carp "No Xunit Console Runner." ; return $null }
+
+    $version = Get-PackageReferenceVersion $XUNIT_REF_PROJECT "xunit.runner.console"
+
+    if ($version -eq $null) {
+        Carp "Xunit Console Runner is not referenced in ""$XUNIT_REF_PROJECT""."
+        $Script:NoXunitConsole = $true
+        return $null
+    }
 
     $path = Join-Path ${Env:USERPROFILE} `
-        ".nuget\packages\xunit.runner.console\$version\tools\$platform\xunit.console.exe"
+        ".nuget\packages\xunit.runner.console\$version\tools\$XUNIT_PLATFORM\xunit.console.exe"
 
     if (-not (Test-Path $path)) {
         Carp "Couldn't find Xunit Console Runner v$version where I expected it to be."
-        $ExitCode++
+        $Script:NoXunitConsole = $true
         return $null
     }
 
@@ -268,13 +277,11 @@ function Invoke-TestOldStyle {
 
     if ($runtime -ne "") { Carp "Runtime parameter ""$runtime"" is ignored by ""$platform""." }
 
+    $xunit = Find-XunitRunner
+    if ($xunit -eq $null) { Say "Skipping." ; return }
+
     $vswhere = Find-VsWhere
     $msbuild = Find-MSBuild $vswhere
-    $xunit   = Find-XunitRunner
-
-    if ($xunit -eq $null) {
-        return
-    }
 
     $projectName = $platform.ToUpper()
     $project = Join-Path $TEST_DIR $projectName -Resolve
@@ -542,16 +549,16 @@ try {
     }
 }
 catch {
+    Write-Host "An unexpected error occured." -BackgroundColor Red -ForegroundColor Yellow
     Write-Host $_
     Write-Host $_.Exception
     Write-Host $_.ScriptStackTrace
-
-    $ExitCode++
+    exit 1
 }
 finally {
     popd
 
-    exit $ExitCode
+    if ($NoXunitConsole) { exit 2 } else { exit 0 }
 }
 
 #endregion

@@ -54,17 +54,14 @@ param(
     [Alias("h")] [switch] $Help
 )
 
-Set-StrictMode -Version Latest
-$ErrorActionPreference = "Stop"
-
 . (Join-Path $PSScriptRoot "abc.ps1")
-
-Approve-RepositoryRoot
-Set-DotNetUILang "en"
 
 # ------------------------------------------------------------------------------
 
 New-Variable -Name "CONFIGURATION" -Value "Debug" -Scope Script -Option Constant
+
+(Join-Path $SRC_DIR "Abc.Tests\Abc.Tests.csproj" -Resolve)
+    | New-Variable -Name "OPENCOVER_REF_PROJECT" -Scope Script -Option Constant
 
 #endregion
 ################################################################################
@@ -88,20 +85,15 @@ Usage: cover.ps1 [switches]
 
 function Find-OpenCover {
     [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $projectPath
-    )
+    param()
 
     Write-Verbose "Finding OpenCover.Console.exe."
 
-    # Find the OpenCover version.
-    $xml = [Xml] (Get-Content $projectPath)
-    $xpath = "//Project/ItemGroup/PackageReference[@Include='OpenCover']"
-    $version = Select-Xml -Xml $xml -XPath $xpath `
-        | Select -ExpandProperty Node `
-        | Select -First 1 -ExpandProperty Version
+    $version = Get-PackageReferenceVersion $OPENCOVER_REF_PROJECT "OpenCover"
+
+    if ($version -eq $null) {
+        Croak "OpenCover is not referenced in ""$OPENCOVER_REF_PROJECT""."
+    }
 
     $path = Join-Path ${Env:USERPROFILE} `
         ".nuget\packages\opencover\$version\tools\OpenCover.Console.exe"
@@ -241,8 +233,7 @@ try {
         Carp "On your request, we do not run any Code Coverage tool."
     }
     elseif ($OpenCover) {
-        Find-OpenCover (Join-Path $SRC_DIR "Abc.Tests\Abc.Tests.csproj" -Resolve) `
-            | Invoke-OpenCover -output $outxml
+        Find-OpenCover | Invoke-OpenCover -output $outxml
     }
     else {
         # For coverlet.msbuild the path must be absolute if we want the result to be
@@ -268,6 +259,7 @@ try {
     }
 }
 catch {
+    Write-Host "An unexpected error occured." -BackgroundColor Red -ForegroundColor Yellow
     Write-Host $_
     Write-Host $_.Exception
     Write-Host $_.ScriptStackTrace

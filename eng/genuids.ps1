@@ -1,8 +1,5 @@
 #Requires -Version 4.0
 
-Set-StrictMode -Version Latest
-$ErrorActionPreference = "Stop"
-
 . (Join-Path $PSScriptRoot "abc.ps1")
 
 try {
@@ -15,6 +12,7 @@ try {
     Say $uids
 }
 catch {
+    Write-Host "An unexpected error occured." -BackgroundColor Red -ForegroundColor Yellow
     Write-Host $_
     Write-Host $_.Exception
     Write-Host $_.ScriptStackTrace
