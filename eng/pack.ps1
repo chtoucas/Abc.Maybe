@@ -19,6 +19,7 @@ retrieve git-related informations.
 The resulting package is not different from the one you would get using -Retail,
 so, if this option is too strict and you are in a hurry, you can use:
 PS> pack.ps1 -Retail -Force
+In that event, do not forget to reset the repository after.
 
 .PARAMETER Force
 Force retrieval of git-related informations when there are uncommited changes.
@@ -27,8 +28,11 @@ Ignored if -Final is also set.
 .PARAMETER Clean
 Hard clean the source directory before anything else.
 
+.PARAMETER Yes
+Do not ask for confirmation.
+
 .PARAMETER MyVerbose
-Verbose mode. Display settings used while compiling each DLL.
+Verbose mode. We display the settings used before compiling each assembly.
 
 .PARAMETER Help
 Print help.
@@ -43,7 +47,7 @@ Fast packing, retail mode, maybe obsolete git infos.
 
 .EXAMPLE
 PS> pack.ps1 -Final
-Create a final package.
+Create a final package, ready to be published to NuGet.Org.
 #>
 [CmdletBinding()]
 param(
@@ -51,6 +55,7 @@ param(
                  [switch] $Final,
     [Alias("f")] [switch] $Force,
     [Alias("c")] [switch] $Clean,
+    [Alias("y")] [switch] $Yes,
     [Alias("v")] [switch] $MyVerbose,
     [Alias("h")] [switch] $Help
 )
@@ -84,24 +89,30 @@ Usage: pack.ps1 [switches]
 # ------------------------------------------------------------------------------
 
 # Reset the repository when -Final is set.
-function Reset-All {
+function Reset-Repository {
     [CmdletBinding()]
     param()
 
     Say "Resetting the repository."
 
+    # This one is for "safety".
     Reset-SourceTree -Yes:$true
+    # This one is to ensure a clean test tree after publication.
     Reset-TestTree -Yes:$true
 
-    # Not necessary but I like to keep things clean.
+    # These two ensure that soon-to-be obsolete package files are removed.
+    # One advantage is that Approve-PackageFile won't ask for any confirmation
+    # since there is no dangling package file.
     Reset-PackageOutDir -Yes:$true
     Reset-CIPackageOutDir -Yes:$true
 
-    # TODO: soft clean.
+    # This is the only mandatory part.
     # We ensure that any temporary retail package is removed from the local
-    # NuGet cache/feed. Failing to do so would imply that after publication
-    # test-package.ps1 would test the package from the local NuGet cache/feed
-    # not the one from nuget.org.
+    # NuGet cache/feed. Failing to do so would mean that, after publishing the
+    # package to NuGet.Org, test-package.ps1 could test a package from the local
+    # NuGet cache/feed not the one from NuGet.Org.
+    # Since we are at it, we go a bit further and remove any temporary package.
+    # This is in line with our philosophy of keeping things clean.
     Reset-LocalNuGet -Yes:$true
 }
 
@@ -111,11 +122,11 @@ function Reset-All {
 # impossible to override the global properties PackageVersion and VersionSuffix.
 # Besides that, generating the id's outside ensures that all assemblies inherit
 # the same id's.
-function Generate-Uids {
+function Generate-UIDs {
     [CmdletBinding()]
     param()
 
-    Write-Verbose "Generating Build IDs."
+    Write-Verbose "Generating Build UIDs."
 
     $vswhere = Find-VsWhere
     $fsi = Find-Fsi $vswhere
@@ -190,17 +201,24 @@ function Invoke-Git {
     [CmdletBinding()]
     param(
         [switch] $force,
-        [switch] $fatal
+        [switch] $fatal,
+        [switch] $yes
     )
 
-    Say "Retrieving repository status."
+    Say "Retrieving git metadata."
 
     $branch = ""
     $commit = ""
 
     $git = Find-Git -Fatal:$fatal.IsPresent
+
     if ($git -eq $null) {
-        Confirm-Continue "Continue even without any git metadata?"
+        if ($yes) {
+            Carp "The package description won't include any git metadata."
+        }
+        else {
+            Confirm-Continue "Continue even without any git metadata?"
+        }
     }
     else {
         # Keep Approve-GitStatus before $force: we always want to see a warning
@@ -245,7 +263,7 @@ function Invoke-Pack {
     SAY-LOUD "Packing."
 
        $major, $minor, $patch, $precy, $preno = Get-PackageVersion $projectName
-    $buildNumber, $revisionNumber, $timestamp = Generate-Uids
+    $buildNumber, $revisionNumber, $timestamp = Generate-UIDs
 
     # TODO: do part of this in a separate function.
     if ($retail) {
@@ -411,7 +429,7 @@ try {
     if ($Final) {
         $isRetail = $true
 
-        Reset-All
+        Reset-Repository
     }
     else {
         $isRetail = $Retail.IsPresent
@@ -419,7 +437,8 @@ try {
         if ($Clean.IsPresent) { Reset-SourceTree }
     }
 
-    $branch, $commit = Invoke-Git -Force:$force.IsPresent -Fatal:$final.IsPresent
+    $branch, $commit = Invoke-Git `
+        -Force:$force.IsPresent -Fatal:$final.IsPresent -Yes:$Yes.IsPresent
 
     $package, $version = Invoke-Pack "Abc.Maybe" `
         -Branch:$branch `
