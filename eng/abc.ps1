@@ -180,11 +180,33 @@ function Reset-LocalNuGet {
         Remove-Packages $NUGET_LOCAL_FEED
 
         # "dotnet restore" will recreate the directory if needed.
-        # We could have deleted the whole directory $NUGET_LOCAL_CACHE, but
-        # let's be more specific.
         Say-Indent "Clearing local NuGet cache."
-        Remove-Dir (Join-Path $NUGET_LOCAL_CACHE "abc.maybe")
+        Remove-Dir $NUGET_LOCAL_CACHE
     }
+}
+
+# ------------------------------------------------------------------------------
+
+function Remove-VersionFromLocalNuGet {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [string] $projectName,
+
+        [Parameter(Mandatory = $true, Position = 1)]
+        [ValidateNotNullOrEmpty()]
+        [string] $version
+    )
+
+    Write-Verbose "Removing obsolete version ($version) from local NuGet feed/cache."
+
+    $cacheEntry = Join-Path $projectName.ToLower() $version
+    $oldFilename = "$projectName.$version.nupkg"
+
+    Say-Indent "Removing obsolete entry from the local NuGet cache/feed."
+    Remove-Dir (Join-Path $NUGET_LOCAL_CACHE $cacheEntry)
+    rm -Force (Join-Path $NUGET_LOCAL_FEED $oldFilename)
 }
 
 #endregion

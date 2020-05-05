@@ -5,14 +5,14 @@
 
 <#
 .SYNOPSIS
-Create a NuGet package.
+Create a NuGet package, retail or CI (the default).
 
 .PARAMETER Retail
 Create a retail package, ready to be published to NuGet.Org.
 The default behaviour is to build CI packages.
 
 .PARAMETER Safe
-Create a retail package, safe mode, ready to be published to NuGet.Org.
+Create a retail package, safe mode and ready to be published to NuGet.Org.
 This is a meta-option, it automatically sets -Retail.
 In addition, the script resets the repository, and stops when there are
 uncommited changes or if it cannot retrieve git metadata.
@@ -29,7 +29,7 @@ Ignored if -Safe is also set.
 Hard clean the source directory before anything else.
 
 .PARAMETER Yes
-Do not ask for confirmation.
+Do not ask for confirmation (mostly).
 
 .PARAMETER MyVerbose
 Verbose mode. We display the settings used before compiling each assembly.
@@ -47,7 +47,7 @@ Fast packing, retail mode, maybe obsolete git metadata.
 
 .EXAMPLE
 PS> pack.ps1 -s
-Create a retail package, safe mode, ready to be published to NuGet.Org.
+Create a retail package, safe mode and ready to be published to NuGet.Org.
 #>
 [CmdletBinding()]
 param(
@@ -78,7 +78,7 @@ Create a NuGet package for Abc.Maybe
 
 Usage: pack.ps1 [switches]
   -r|-Retail      create a retail package, ready to be published to NuGet.Org.
-  -s|-Safe        create a retail package, safe mode, ready to be published to NuGet.Org.
+  -s|-Safe        create a retail package, safe mode and ready to be published to NuGet.Org.
   -f|-Force       force retrieval of git metadata when there are uncommited changes.
   -c|-Clean       hard clean the solution before anything else.
   -v|-MyVerbose   display settings used to compile each DLL.
@@ -181,7 +181,9 @@ function Approve-PackageFile {
 
         [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
-        [string] $version
+        [string] $version,
+
+        [switch] $yes
     )
 
     Write-Verbose "Approving package file."
@@ -190,7 +192,9 @@ function Approve-PackageFile {
     # NB: only meaningful when in retail mode; otherwise the filename is unique.
     if (Test-Path $packageFile) {
         Carp "A package with the same version ($version) already exists."
-        Confirm-Continue "Do you wish to proceed anyway?"
+        if (-not $yes) {
+            Confirm-Continue "Do you wish to proceed anyway?"
+        }
 
         # Not necessary, dotnet will replace it, but to avoid any ambiguity
         # I prefer to remove it anyway.
@@ -210,7 +214,9 @@ function Get-ActualVersion {
 
         [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
-        [string] $timestamp
+        [string] $timestamp,
+
+        [switch] $retail
     )
 
     $major, $minor, $patch, $precy, $preno = Get-PackageVersion $projectName
@@ -343,9 +349,15 @@ function Invoke-Pack {
         [switch] $myVerbose
     )
 
-    SAY-LOUD "Packing."
-
-    $args = @("/p:VersionPrefix=$versionPrefix")
+    # VersionSuffix is for Retail.props, but it is not enough, we MUST
+    # also specify --version-suffix (not sure it is necessary any more, but
+    # I prefer to play safe).
+    # NB: this is not something that we have to do for retail builds (see
+    # above), since in that case we don't patch the suffix, but let's not bother.
+    $args = `
+        "/p:VersionPrefix=$versionPrefix",
+        "/p:VersionSuffix=$versionSuffix",
+        "--version-suffix:$versionSuffix"
 
     if ($myVerbose) {
         $args += "/p:DisplaySettings=true"
@@ -356,14 +368,7 @@ function Invoke-Pack {
     }
     else {
         $output = $PKG_CI_OUTDIR
-        # VersionSuffix is for Retail.props, but it is not enough, we MUST
-        # also specify --version-suffix (not sure it is necessary any more, but
-        # I prefer to play safe).
-        # NB: this is not something that we have to do for retail builds (see
-        # above), since in that case we don't patch the suffix.
         $args += `
-            "--version-suffix:$versionSuffix",
-            "/p:VersionSuffix=$versionSuffix",
             "/p:AssemblyTitle=""$projectName (CI)""",
             "/p:NoWarnX=NU5105"
     }
@@ -489,11 +494,14 @@ try {
     # 2. Get build numbers.
     $buildNumber, $revisionNumber, $timestamp = Generate-UIDs
     # 3. Get package version.
-    $version, $prefix, $suffix = Get-ActualVersion $projectName $timestamp
+    $version, $prefix, $suffix = Get-ActualVersion $projectName $timestamp -Retail:$isRetail
     # 4. Get package file.
     $packageFile = Get-PackageFile $projectName $version -Retail:$isRetail
     # 5. Approve package file.
-    if ($isRetail) { Approve-PackageFile $packageFile $version }
+    if ($isRetail) {
+        $forceRemoval = $Safe -or $Yes
+        Approve-PackageFile $packageFile $version -Yes:$forceRemoval
+    }
 
     Invoke-Pack $projectName `
         -BuildNumber:$buildNumber `
@@ -512,17 +520,18 @@ try {
     }
     else {
         if ($isRetail) {
-            Confirm-Continue "Push the package to the local NuGet feed/cache?"
-            # TODO: soft clean.
             # If we don't reset the local NuGet cache, Invoke-PushLocal won't
             # update it with a new version of the package (the feed part is fine).
-            Reset-LocalNuGet -Yes:$true
+
+            Remove-VersionFromLocalNuGet $projectName $version
+
+            Confirm-Continue "Push the package to the local NuGet feed/cache?"
         }
 
         Invoke-PushLocal $packageFile $version
 
         if ($isRetail) {
-            Chirp "---`nNow, you can test the package."
+            Chirp "---`nNow, you can test the package. For instance,"
             Chirp "> eng\test-package.ps1 -a -y"
         }
     }
