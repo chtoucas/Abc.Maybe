@@ -99,10 +99,11 @@ function Reset-SourceTree {
 
     if ($Yes -or (Confirm-Yes "Hard clean the directory ""src""?")) {
         Say-Indent "Deleting ""bin"" and ""obj"" directories within ""src""."
-
         Remove-BinAndObj $SRC_DIR
     }
 }
+
+# ------------------------------------------------------------------------------
 
 function Reset-TestTree {
     [CmdletBinding()]
@@ -112,10 +113,39 @@ function Reset-TestTree {
 
     if ($Yes -or (Confirm-Yes "Hard clean the directory ""test""?")) {
         Say-Indent "Deleting ""bin"" and ""obj"" directories within ""test""."
-
         Remove-BinAndObj $TEST_DIR
     }
 }
+
+# ------------------------------------------------------------------------------
+
+function Reset-PackageOutDir {
+    [CmdletBinding()]
+    param(
+        [Alias("y")] [switch] $Yes
+    )
+
+    if ($Yes -or (Confirm-Yes "Reset output directory for packages?")) {
+        Say-Indent "Clearing output directory for packages."
+        Remove-Packages $PKG_OUTDIR
+    }
+}
+
+# ------------------------------------------------------------------------------
+
+function Reset-PackageCIOutDir {
+    [CmdletBinding()]
+    param(
+        [Alias("y")] [switch] $Yes
+    )
+
+    if ($Yes -or (Confirm-Yes "Reset output directory for CI packages?")) {
+        Say-Indent "Clearing output directory for CI packages."
+        Remove-Packages $PKG_CI_OUTDIR
+    }
+}
+
+# ------------------------------------------------------------------------------
 
 function Reset-LocalNuGet {
     [CmdletBinding()]
@@ -143,8 +173,6 @@ function Reset-LocalNuGet {
     }
 }
 
-# ------------------------------------------------------------------------------
-
 #endregion
 ################################################################################
 #region Reporting.
@@ -163,6 +191,9 @@ function Say {
     Write-Host $Message -NoNewline:$NoNewline.IsPresent
 }
 
+# ------------------------------------------------------------------------------
+
+# Print an indented (2 spaces) message.
 function Say-Indent {
     [CmdletBinding()]
     param(
@@ -175,6 +206,8 @@ function Say-Indent {
 
     Write-Host "  $Message" -NoNewline:$NoNewline.IsPresent
 }
+
+# ------------------------------------------------------------------------------
 
 # Say out loud a message; print it with emphasis.
 function Say-Loud {
@@ -190,6 +223,8 @@ function Say-Loud {
     Write-Host $Message -BackgroundColor DarkCyan -ForegroundColor Green -NoNewline:$NoNewline.IsPresent
 }
 
+# ------------------------------------------------------------------------------
+
 function Chirp {
     [CmdletBinding()]
     param(
@@ -203,6 +238,8 @@ function Chirp {
     Write-Host $Message -ForegroundColor Green -NoNewline:$NoNewline.IsPresent
 }
 
+# ------------------------------------------------------------------------------
+
 # Warn user.
 function Carp {
     [CmdletBinding()]
@@ -214,6 +251,8 @@ function Carp {
 
     Write-Warning $Message
 }
+
+# ------------------------------------------------------------------------------
 
 # Die of errors.
 function Croak {
@@ -258,6 +297,8 @@ function Confirm-Yes {
     }
 }
 
+# ------------------------------------------------------------------------------
+
 # Request confirmation to continue, terminate the script if not.
 function Confirm-Continue {
     [CmdletBinding()]
@@ -296,7 +337,7 @@ function Assert-CmdSuccess {
 
 #endregion
 ################################################################################
-#region Remove files
+#region FileSystem-related functions.
 
 function Remove-Dir {
     [CmdletBinding()]
@@ -319,6 +360,8 @@ function Remove-Dir {
 
     rm $Path -Force -Recurse
 }
+
+# ------------------------------------------------------------------------------
 
 function Remove-Packages {
     [CmdletBinding()]
@@ -345,6 +388,8 @@ function Remove-Packages {
         rm $_.FullName -Force
     }
 }
+
+# ------------------------------------------------------------------------------
 
 function Remove-BinAndObj {
     [CmdletBinding()]
@@ -433,6 +478,8 @@ function Approve-GitStatus {
     }
 }
 
+# ------------------------------------------------------------------------------
+
 # Get the last git commit hash.
 function Get-GitCommitHash {
     [CmdletBinding()]
@@ -455,6 +502,8 @@ function Get-GitCommitHash {
         . $onError """git log"" failed: $_"
     }
 }
+
+# ------------------------------------------------------------------------------
 
 # Get the current git branch.
 function Get-GitBranch {
@@ -528,6 +577,8 @@ function Find-MSBuild {
 
     $path
 }
+
+# ------------------------------------------------------------------------------
 
 function Find-Fsi {
     [CmdletBinding()]

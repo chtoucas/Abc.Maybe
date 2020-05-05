@@ -102,6 +102,7 @@ $ErrorActionPreference = "Stop"
     | New-Variable -Name "NETSdkProject" -Scope Script -Option Constant
 
 ################################################################################
+#region Helpers.
 
 function Write-Usage {
     Say @"
@@ -148,6 +149,8 @@ function Find-XunitRunner {
     $path
 }
 
+# ------------------------------------------------------------------------------
+
 function Get-RuntimeString {
     [CmdletBinding()]
     param(
@@ -160,7 +163,9 @@ function Get-RuntimeString {
     "(runtime = ""$runtime"")"
 }
 
-# ------------------------------------------------------------------------------
+#endregion
+################################################################################
+#region Tasks.
 
 # NB: does not cover the solutions for "net45" and "net451".
 function Invoke-Restore {
@@ -190,6 +195,8 @@ function Invoke-Restore {
     & dotnet restore $NETSdkProject $args /p:AbcVersion=$version | Out-Host
     Assert-CmdSuccess -ErrMessage "Restore task failed."
 }
+
+# ------------------------------------------------------------------------------
 
 # NB: does not cover the solutions for "net45" and "net451".
 function Invoke-Build {
@@ -221,6 +228,8 @@ function Invoke-Build {
     & dotnet build $NETSdkProject $args /p:AbcVersion=$version | Out-Host
     Assert-CmdSuccess -ErrMessage "Restore task failed."
 }
+
+# ------------------------------------------------------------------------------
 
 function Invoke-TestOldStyle {
     [CmdletBinding()]
@@ -260,6 +269,8 @@ function Invoke-TestOldStyle {
     & $xunit $DLL | Out-Host
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting ""$platform""."
 }
+
+# ------------------------------------------------------------------------------
 
 # Option -NoRestore is ignored when -Platform is "net45" or "net451".
 function Invoke-TestSingle {
@@ -305,6 +316,8 @@ function Invoke-TestSingle {
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting ""$platform""."
 }
 
+# ------------------------------------------------------------------------------
+
 # Interactive mode.
 function Invoke-TestMany {
     [CmdletBinding()]
@@ -342,6 +355,8 @@ function Invoke-TestMany {
         }
     }
 }
+
+# ------------------------------------------------------------------------------
 
 function Invoke-TestAll {
     [CmdletBinding()]
@@ -390,7 +405,9 @@ function Invoke-TestAll {
     }
 }
 
+#endregion
 ################################################################################
+#region Main.
 
 if ($Help) {
     Write-Usage
@@ -516,4 +533,5 @@ finally {
     popd
 }
 
+#endregion
 ################################################################################

@@ -59,6 +59,7 @@ $ErrorActionPreference = "Stop"
 New-Variable -Name "CONFIGURATION" -Value "Debug" -Scope Script -Option Constant
 
 ################################################################################
+#region Helpers.
 
 function Write-Usage {
     Say @"
@@ -73,6 +74,8 @@ Usage: cover.ps1 [switches]
 
 "@
 }
+
+# ------------------------------------------------------------------------------
 
 function Find-OpenCover {
     [CmdletBinding()]
@@ -100,6 +103,10 @@ function Find-OpenCover {
 
     $path
 }
+
+#endregion
+################################################################################
+#region Tasks.
 
 function Invoke-OpenCover {
     [CmdletBinding()]
@@ -138,6 +145,8 @@ function Invoke-OpenCover {
     Assert-CmdSuccess -ErrMessage "OpenCover failed."
 }
 
+# ------------------------------------------------------------------------------
+
 function Invoke-Coverlet {
     [CmdletBinding()]
     param(
@@ -165,6 +174,8 @@ function Invoke-Coverlet {
     Assert-CmdSuccess -ErrMessage "Coverlet failed."
 }
 
+# ------------------------------------------------------------------------------
+
 function Invoke-ReportGenerator {
     [CmdletBinding()]
     param(
@@ -189,7 +200,9 @@ function Invoke-ReportGenerator {
     Assert-CmdSuccess -ErrMessage "ReportGenerator failed."
 }
 
+#endregion
 ################################################################################
+#region Main.
 
 if ($Help) {
     Write-Usage
@@ -255,4 +268,5 @@ finally {
     popd
 }
 
+#endregion
 ################################################################################

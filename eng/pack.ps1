@@ -40,7 +40,7 @@ Fast packing, retail mode, maybe obsolete git infos.
 
 .EXAMPLE
 PS> pack.ps1 -Final
-Create a package ready for publication.
+Create a final package.
 #>
 [CmdletBinding()]
 param(
@@ -60,6 +60,7 @@ $ErrorActionPreference = "Stop"
 New-Variable -Name "CONFIGURATION" -Value "Release" -Scope Script -Option Constant
 
 ################################################################################
+#region Helpers
 
 function Write-Usage {
     Say @"
@@ -97,6 +98,8 @@ function Generate-Uids {
     $uids.Split(";")
 }
 
+# ------------------------------------------------------------------------------
+
 function Get-PackageFile {
     [CmdletBinding()]
     param(
@@ -118,6 +121,8 @@ function Get-PackageFile {
         return Join-Path $PKG_CI_OUTDIR "$projectName.$version.nupkg"
     }
 }
+
+# ------------------------------------------------------------------------------
 
 function Approve-PackageFile {
     [CmdletBinding()]
@@ -144,14 +149,16 @@ function Approve-PackageFile {
     }
 }
 
-# ------------------------------------------------------------------------------
+#endregion
+################################################################################
+#region Tasks.
 
 # Cleanup when -Final is set.
-function Invoke-Clean {
+function Invoke-CleanAll {
     [CmdletBinding()]
     param()
 
-    SAY-LOUD "Cleanup"
+    Say "Cleanup."
 
     Reset-SourceTree -Yes:$true
 
@@ -163,9 +170,10 @@ function Invoke-Clean {
     Reset-LocalNuGet -Yes:$true
 
     # We remove any retail package, thought it is not necessary.
-    Say-Indent "Clearing output directory for packages."
-    Remove-Packages $PKG_OUTDIR
+    Reset-PackageOutDir -Yes:$true
 }
+
+# ------------------------------------------------------------------------------
 
 # Find commit hash and branch.
 function Invoke-Git {
@@ -175,7 +183,7 @@ function Invoke-Git {
         [switch] $fatal
     )
 
-    SAY-LOUD "Retrieving repository status."
+    Say "Retrieving repository status."
 
     $branch = ""
     $commit = ""
@@ -202,6 +210,8 @@ function Invoke-Git {
 
     return @($branch, $commit)
 }
+
+# ------------------------------------------------------------------------------
 
 function Invoke-Pack {
     [CmdletBinding()]
@@ -315,6 +325,8 @@ function Invoke-Pack {
     @($package, $version)
 }
 
+# ------------------------------------------------------------------------------
+
 function Invoke-PushLocal {
     [CmdletBinding()]
     param(
@@ -351,6 +363,8 @@ function Invoke-PushLocal {
     Chirp "Package successfully installed."
 }
 
+# ------------------------------------------------------------------------------
+
 function Invoke-Publish {
     [CmdletBinding()]
     param(
@@ -370,7 +384,9 @@ function Invoke-Publish {
     Chirp "> dotnet nuget push $package -s https://www.nuget.org/ -k MYKEY"
 }
 
+#endregion
 ################################################################################
+#region Main.
 
 if ($Help) {
     Write-Usage
@@ -385,7 +401,7 @@ try {
     if ($Final) {
         $isRetail = $true
 
-        Invoke-Clean
+        Invoke-CleanAll
     }
     else {
         $isRetail = $Retail.IsPresent
@@ -431,4 +447,5 @@ finally {
     popd
 }
 
+#endregion
 ################################################################################

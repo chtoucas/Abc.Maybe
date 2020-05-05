@@ -22,9 +22,11 @@ try {
 
     pushd $ROOT_DIR
 
-    Reset-SourceTree -Yes:$Yes.IsPresent
-    Reset-TestTree   -Yes:$Yes.IsPresent
-    Reset-LocalNuGet -Yes:$Yes.IsPresent
+    Reset-SourceTree      -Yes:$Yes.IsPresent
+    Reset-TestTree        -Yes:$Yes.IsPresent
+    Reset-PackageOutDir   -Yes:$Yes.IsPresent
+    Reset-PackageCIOutDir -Yes:$Yes.IsPresent
+    Reset-LocalNuGet      -Yes:$Yes.IsPresent
 }
 catch {
     Write-Host $_
