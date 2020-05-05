@@ -8,22 +8,22 @@
 Create a NuGet package.
 
 .PARAMETER Retail
-Create a retail package.
+Create a retail package, ready to be published to NuGet.Org.
 The default behaviour is to build CI packages.
 
-.PARAMETER Final
-Create a retail package.
-This is a meta-option, it automatically sets -Retail and -Clean too.
-In addition, the script stops when there are uncommited changes or if it cannot
-retrieve git-related informations.
-The resulting package is not different from the one you would get using -Retail,
-so, if this option is too strict and you are in a hurry, you can use:
+.PARAMETER Safe
+Create a retail package, safe mode, ready to be published to NuGet.Org.
+This is a meta-option, it automatically sets -Retail.
+In addition, the script resets the repository, and stops when there are
+uncommited changes or if it cannot retrieve git metadata.
+The resulting package is not different from the one you would get using -Retail.
+If this option is too strict and you are in a hurry, you can use:
 PS> pack.ps1 -Retail -Force
 In that event, do not forget to reset the repository after.
 
 .PARAMETER Force
-Force retrieval of git-related informations when there are uncommited changes.
-Ignored if -Final is also set.
+Force retrieval of git metadata when there are uncommited changes.
+Ignored if -Safe is also set.
 
 .PARAMETER Clean
 Hard clean the source directory before anything else.
@@ -39,20 +39,20 @@ Print help.
 
 .EXAMPLE
 PS> pack.ps1
-Create a CI package. Append -f to discard warnings about obsolete git infos.
+Create a CI package.
 
 .EXAMPLE
 PS> pack.ps1 -r -f
-Fast packing, retail mode, maybe obsolete git infos.
+Fast packing, retail mode, maybe obsolete git metadata.
 
 .EXAMPLE
-PS> pack.ps1 -Final
-Create a final package, ready to be published to NuGet.Org.
+PS> pack.ps1 -s
+Create a retail package, safe mode, ready to be published to NuGet.Org.
 #>
 [CmdletBinding()]
 param(
-                 [switch] $Retail,
-                 [switch] $Final,
+    [Alias("r")] [switch] $Retail,
+    [Alias("s")] [switch] $Safe,
     [Alias("f")] [switch] $Force,
     [Alias("c")] [switch] $Clean,
     [Alias("y")] [switch] $Yes,
@@ -77,8 +77,9 @@ function Write-Usage {
 Create a NuGet package for Abc.Maybe
 
 Usage: pack.ps1 [switches]
-    |-Retail      build retail packages.
-  -f|-Force       force retrieval of git-related informations when there are uncommited changes.
+  -r|-Retail      create a retail package, ready to be published to NuGet.Org.
+  -s|-Safe        create a retail package, safe mode, ready to be published to NuGet.Org.
+  -f|-Force       force retrieval of git metadata when there are uncommited changes.
   -c|-Clean       hard clean the solution before anything else.
   -v|-MyVerbose   display settings used to compile each DLL.
   -h|-Help        print this help and exit.
@@ -88,7 +89,7 @@ Usage: pack.ps1 [switches]
 
 # ------------------------------------------------------------------------------
 
-# Reset the repository when -Final is set.
+# Reset the repository when -Safe is set.
 function Reset-Repository {
     [CmdletBinding()]
     param()
@@ -221,13 +222,15 @@ function Invoke-Git {
         }
     }
     else {
+        $ok = Approve-GitStatus -Git $git -Fatal:$fatal.IsPresent
+
         # Keep Approve-GitStatus before $force: we always want to see a warning
         # when there are uncommited changes.
-        $ok = Approve-GitStatus -Git $git -Fatal:$fatal.IsPresent
         if ($ok -or $force) {
             $branch = Get-GitBranch     -Git $git -Fatal:$fatal.IsPresent
             $commit = Get-GitCommitHash -Git $git -Fatal:$fatal.IsPresent
         }
+
         if ($branch -eq "") {
             Carp "The branch name will be empty. Maybe use -Force?"
         }
@@ -421,12 +424,14 @@ if ($Help) {
     exit 0
 }
 
+# TODO: do more w/ option Yes.
+
 try {
     Approve-RepositoryRoot
 
     pushd $ROOT_DIR
 
-    if ($Final) {
+    if ($Safe) {
         $isRetail = $true
 
         Reset-Repository
@@ -434,11 +439,11 @@ try {
     else {
         $isRetail = $Retail.IsPresent
 
-        if ($Clean.IsPresent) { Reset-SourceTree }
+        if ($Clean.IsPresent) { Reset-SourceTree -Yes:$Yes.IsPresent }
     }
 
     $branch, $commit = Invoke-Git `
-        -Force:$force.IsPresent -Fatal:$final.IsPresent -Yes:$Yes.IsPresent
+        -Force:$force.IsPresent -Fatal:$Safe.IsPresent -Yes:$Yes.IsPresent
 
     $package, $version = Invoke-Pack "Abc.Maybe" `
         -Branch:$branch `
@@ -446,7 +451,8 @@ try {
         -Retail:$isRetail `
         -MyVerbose:$MyVerbose.IsPresent
 
-    if ($Final) {
+    if ($Safe) {
+        # TODO: reset repository, again?
         Invoke-Publish $package
     }
     else {

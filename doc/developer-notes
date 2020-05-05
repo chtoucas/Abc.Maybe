@@ -67,7 +67,7 @@ Pre action, for beta -or- production packages.
 3. Run eng\pack.ps1 -r -f             Create the package
 4. Run eng\test-package.ps1 -a -y     Test the package
 6. Git commit
-7. Run script eng\pack.ps1 -Final
+7. Run script eng\pack.ps1 -s
 8. Publish package
 
 Post actions.
