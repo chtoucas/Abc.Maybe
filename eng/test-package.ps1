@@ -268,9 +268,9 @@ function Invoke-TestOldStyle {
     Assert-CmdSuccess -ErrMessage "Build task failed when targeting ""$platform""."
 
     # NB: Release, not Debug, this is hard-coded within the project file.
-    $DLL = Join-Path $TEST_DIR "$projectName\bin\Release\$projectName.dll" -Resolve
+    $asm = Join-Path $TEST_DIR "$projectName\bin\Release\$projectName.dll" -Resolve
 
-    & $xunit $DLL | Out-Host
+    & $xunit $asm | Out-Host
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting ""$platform""."
 }
 

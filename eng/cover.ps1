@@ -15,7 +15,7 @@ Prerequesites: NuGet packages and tools must have been restored before. If not
 the script may fail with not even a single warning... (eg w/ Coverlet).
 
 OpenCover is slow when compared to Coverlet, but we get risk hotspots
-(NPath complexity, crap score) and the list of unvisited methods.
+(NPath complexity, crap score) and a list of unvisited methods.
 Furthermore, the results differ slightly (LINQ and async so far) which
 makes the two tools complementary --- line counts may differ too but
 that's just a detail.
