@@ -110,7 +110,7 @@ function Reset-Repository {
     # One advantage is that Approve-PackageFile won't ask for any confirmation
     # since there is no dangling package file.
     Reset-PackageOutDir -Yes:$true
-    Reset-CIPackageOutDir -Yes:$true
+    Reset-PackageCIOutDir -Yes:$true
 
     # This is the only mandatory part.
     # We ensure that any temporary retail package is removed from the local
