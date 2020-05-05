@@ -42,11 +42,11 @@ Ignored if -Platform is also set.
 .PARAMETER NoSpeedUp
 Do not attempt to speed up things when testing many platforms one at a time.
 
-.PARAMETER Yes
-Do not ask for confirmation.
-
 .PARAMETER Clean
 Hard clean the source and test directories before anything else.
+
+.PARAMETER Yes
+Do not ask for confirmation.
 
 .EXAMPLE
 PS> test-package.ps1
