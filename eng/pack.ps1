@@ -135,6 +135,8 @@ function Generate-UIDs {
 
     $uids = & $fsi $fsx
 
+    Write-Verbose "Build UIDs: ""$uids"""
+
     $uids.Split(";")
 }
 
@@ -157,11 +159,15 @@ function Get-PackageFile {
     Write-Verbose "Getting package file."
 
     if ($retail) {
-        return Join-Path $PKG_OUTDIR "$projectName.$version.nupkg"
+        $path = Join-Path $PKG_OUTDIR "$projectName.$version.nupkg"
     }
     else {
-        return Join-Path $PKG_CI_OUTDIR "$projectName.$version.nupkg"
+        $path = Join-Path $PKG_CI_OUTDIR "$projectName.$version.nupkg"
     }
+
+    Write-Verbose "Package file: ""$path"""
+
+    $path
 }
 
 # ------------------------------------------------------------------------------
@@ -171,7 +177,7 @@ function Approve-PackageFile {
     param(
         [Parameter(Mandatory = $true, Position = 0)]
         [ValidateNotNullOrEmpty()]
-        [string] $package,
+        [string] $packageFile,
 
         [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
@@ -182,14 +188,68 @@ function Approve-PackageFile {
 
     # Is there a dangling package file?
     # NB: only meaningful when in retail mode; otherwise the filename is unique.
-    if (Test-Path $package) {
+    if (Test-Path $packageFile) {
         Carp "A package with the same version ($version) already exists."
         Confirm-Continue "Do you wish to proceed anyway?"
 
         # Not necessary, dotnet will replace it, but to avoid any ambiguity
         # I prefer to remove it anyway.
         Say-Indent "The old package file will be removed now."
-        Remove-Item $package
+        Remove-Item $packageFile
+    }
+}
+
+# ------------------------------------------------------------------------------
+
+function Get-ActualVersion {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [string] $projectName,
+
+        [Parameter(Mandatory = $true, Position = 1)]
+        [ValidateNotNullOrEmpty()]
+        [string] $timestamp
+    )
+
+    $major, $minor, $patch, $precy, $preno = Get-PackageVersion $projectName
+
+    if ($retail) {
+        if ($precy -eq "") {
+            $suffix = ""
+        }
+        else {
+            $suffix = "$precy$preno"
+        }
+    }
+    else {
+        # For CI packages, we use SemVer 2.0.0, and we ensure that the package
+        # is seen as a prerelease of what could be the next version. Examples:
+        # - "1.2.3"       -> "1.2.4-ci-20201231-T121212".
+        # - "1.2.3-beta4" -> "1.2.3-beta5-ci-20201231-T121212".
+        if ($precy -eq "") {
+            # Without a prerelease label, we increase the patch number.
+            $patch  = 1 + [int]$patch
+            $suffix = "ci-$timestamp"
+        }
+        else {
+            # With a prerelease label, we increase the prerelease number.
+            $preno  = 1 + [int]$preno
+            $suffix = "$precy$preno-ci-$timestamp"
+        }
+    }
+
+    $prefix = "$major.$minor.$patch"
+
+    Write-Verbose "Version suffix: ""$suffix"""
+    Write-Verbose "Version prefix: ""$prefix"""
+
+    if ($suffix -eq "") {
+        return @($prefix, $prefix, "")
+    }
+    else {
+        return @("$prefix-$suffix", $prefix, $suffix)
     }
 }
 
@@ -251,13 +311,33 @@ function Invoke-Pack {
         [ValidateNotNullOrEmpty()]
         [string] $projectName,
 
-        [Parameter(Mandatory = $false, Position = 1)]
-        [ValidateNotNull()]
-        [string] $branch = "",
+        [Parameter(Mandatory = $true, Position = 1)]
+        [ValidateNotNullOrEmpty()]
+        [string] $buildNumber,
 
-        [Parameter(Mandatory = $false, Position = 2)]
+        [Parameter(Mandatory = $true, Position = 2)]
+        [ValidateNotNullOrEmpty()]
+        [string] $revisionNumber,
+
+        [Parameter(Mandatory = $true, Position = 3)]
+        [ValidateNotNullOrEmpty()]
+        [string] $version,
+
+        [Parameter(Mandatory = $true, Position = 4)]
+        [ValidateNotNullOrEmpty()]
+        [string] $versionPrefix = "",
+
+        [Parameter(Mandatory = $false, Position = 5)]
         [ValidateNotNull()]
-        [string] $commit = "",
+        [string] $versionSuffix = "",
+
+        [Parameter(Mandatory = $false, Position = 6)]
+        [ValidateNotNull()]
+        [string] $repositoryBranch = "",
+
+        [Parameter(Mandatory = $false, Position = 7)]
+        [ValidateNotNull()]
+        [string] $repositoryCommit = "",
 
         [switch] $retail,
         [switch] $myVerbose
@@ -265,82 +345,46 @@ function Invoke-Pack {
 
     SAY-LOUD "Packing."
 
-       $major, $minor, $patch, $precy, $preno = Get-PackageVersion $projectName
-    $buildNumber, $revisionNumber, $timestamp = Generate-UIDs
+    $args = @("/p:VersionPrefix=$versionPrefix")
 
-    # TODO: do part of this in a separate function.
+    if ($myVerbose) {
+        $args += "/p:DisplaySettings=true"
+    }
+
     if ($retail) {
-        if ($precy -eq "") {
-            $suffix = ""
-        }
-        else {
-            $suffix = "$precy$preno"
-        }
-
         $output = $PKG_OUTDIR
-        $args = @()
     }
     else {
-        # For CI packages, we use SemVer 2.0.0, and we ensure that the package
-        # is seen as a prerelease of what could be the next version. Examples:
-        # - "1.2.3"       -> "1.2.4-ci-20201231-T121212".
-        # - "1.2.3-beta4" -> "1.2.3-beta5-ci-20201231-T121212".
-        if ($precy -eq "") {
-            # Without a prerelease label, we increase the patch number.
-            $patch  = 1 + [int]$patch
-            $suffix = "ci-$timestamp"
-        }
-        else {
-            # With a prerelease label, we increase the prerelease number.
-            $preno  = 1 + [int]$preno
-            $suffix = "$precy$preno-ci-$timestamp"
-        }
-
         $output = $PKG_CI_OUTDIR
         # VersionSuffix is for Retail.props, but it is not enough, we MUST
         # also specify --version-suffix (not sure it is necessary any more, but
         # I prefer to play safe).
         # NB: this is not something that we have to do for retail builds (see
         # above), since in that case we don't patch the suffix.
-        $args = `
-            "--version-suffix:$suffix",
-            "/p:VersionSuffix=$suffix",
+        $args += `
+            "--version-suffix:$versionSuffix",
+            "/p:VersionSuffix=$versionSuffix",
             "/p:AssemblyTitle=""$projectName (CI)""",
             "/p:NoWarnX=NU5105"
     }
 
-    if ($myVerbose) {
-        $args += "/p:DisplaySettings=true"
-    }
-
-    if ($suffix -eq "") {
-        $version = "$major.$minor.$patch"
-    }
-    else {
-        $version = "$major.$minor.$patch-$suffix"
-    }
-
-    $package = Get-PackageFile $projectName $version -Retail:$retail.IsPresent
-
-    if ($retail) { Approve-PackageFile $package $version }
-
     $project = Join-Path $SRC_DIR $projectName -Resolve
 
-    Chirp "Packing version $version --- build $buildNumber, rev. $revisionNumber" -NoNewline
-    if ($branch -and $commit) {
-        $abbrv = $commit.Substring(0, 7)
-        Chirp " on branch ""$branch"", commit $abbrv."
+    Chirp "Packing v$version --- build $buildNumber, rev. $revisionNumber" -NoNewline
+    if ($repositoryBranch -and $repositoryCommit) {
+        $abbrv = $repositoryCommit.Substring(0, 7)
+        Chirp " on branch ""$repositoryBranch"", commit ""$abbrv""."
     }
-    else { Chirp " on branch ""???"", commit ???." }
+    else { Chirp " on branch ""???"", commit ""???""." }
 
-    # Do NOT use --no-restore or --no-build (option Clean removes everything).
+    # Do NOT use --no-restore or --no-build (options -Clean/-Safe remove everything).
     # RepositoryCommit and RepositoryBranch are standard props, do not remove them.
     & dotnet pack $project -c $CONFIGURATION --nologo $args --output $output `
         /p:TargetFrameworks='\"netstandard2.1;netstandard2.0;netstandard1.0;net461\"' `
         /p:BuildNumber=$buildNumber `
         /p:RevisionNumber=$revisionNumber `
-        /p:RepositoryCommit=$commit `
-        /p:RepositoryBranch=$branch `
+        /p:RepositoryCommit=$repositoryCommit `
+        /p:RepositoryBranch=$repositoryBranch `
         /p:Retail=true `
         | Out-Host
 
@@ -352,8 +396,6 @@ function Invoke-Pack {
     else {
         Chirp "CI package successfully created."
     }
-
-    @($package, $version)
 }
 
 # ------------------------------------------------------------------------------
@@ -363,7 +405,7 @@ function Invoke-PushLocal {
     param(
         [Parameter(Mandatory = $true, Position = 0)]
         [ValidateNotNullOrEmpty()]
-        [string] $package,
+        [string] $packageFile,
 
         [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
@@ -372,14 +414,14 @@ function Invoke-PushLocal {
         [switch] $retail
     )
 
-    SAY-LOUD "Pushing the package to the local NuGet feed/cache."
+    Chirp "Pushing the package to the local NuGet feed/cache."
 
     # We could have created the package directly in $NUGET_LOCAL_FEED
     # but it seems cleaner to keep creation and publication separated.
     # Also, if Microsoft ever decided to change the behaviour of "push",
     # we won't have to update this script (but maybe reset.ps1).
 
-    & dotnet nuget push $package -s $NUGET_LOCAL_FEED --force-english-output | Out-Host
+    & dotnet nuget push $packageFile -s $NUGET_LOCAL_FEED --force-english-output | Out-Host
     Assert-CmdSuccess -ErrMessage "Failed to publish package to local NuGet feed."
 
     # If the following task fails, we should remove the package from the feed,
@@ -401,10 +443,8 @@ function Invoke-Publish {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $package
+        [string] $packageFile
     )
-
-    SAY-LOUD "Publishing the package to the NuGet.Org."
 
     # TODO: publish, --interactive?
     if (Confirm-Yes "Do you want me to publish the package for you?") {
@@ -412,7 +452,7 @@ function Invoke-Publish {
     }
 
     Chirp "---`nTo publish the package:"
-    Chirp "> dotnet nuget push $package -s https://www.nuget.org/ -k MYKEY"
+    Chirp "> dotnet nuget push $packageFile -s https://www.nuget.org/ -k MYKEY"
 }
 
 #endregion
@@ -442,18 +482,33 @@ try {
         if ($Clean.IsPresent) { Reset-SourceTree -Yes:$Yes.IsPresent }
     }
 
-    $branch, $commit = Invoke-Git `
-        -Force:$force.IsPresent -Fatal:$Safe.IsPresent -Yes:$Yes.IsPresent
+    $projectName = "Abc.Maybe"
 
-    $package, $version = Invoke-Pack "Abc.Maybe" `
-        -Branch:$branch `
-        -Commit:$commit `
+    # 1. Get git metadata.
+    $branch, $commit = Invoke-Git -Force:$force.IsPresent -Fatal:$Safe.IsPresent -Yes:$Yes.IsPresent
+    # 2. Get build numbers.
+    $buildNumber, $revisionNumber, $timestamp = Generate-UIDs
+    # 3. Get package version.
+    $version, $prefix, $suffix = Get-ActualVersion $projectName $timestamp
+    # 4. Get package file.
+    $packageFile = Get-PackageFile $projectName $version -Retail:$isRetail
+    # 5. Approve package file.
+    if ($isRetail) { Approve-PackageFile $packageFile $version }
+
+    Invoke-Pack $projectName `
+        -BuildNumber:$buildNumber `
+        -RevisionNumber:$revisionNumber `
+        -Version:$version `
+        -VersionPrefix:$prefix `
+        -VersionSuffix:$suffix `
+        -RepositoryBranch:$branch `
+        -RepositoryCommit:$commit `
         -Retail:$isRetail `
         -MyVerbose:$MyVerbose.IsPresent
 
     if ($Safe) {
         # TODO: reset repository, again?
-        Invoke-Publish $package
+        Invoke-Publish $packageFile
     }
     else {
         if ($isRetail) {
@@ -464,7 +519,7 @@ try {
             Reset-LocalNuGet -Yes:$true
         }
 
-        Invoke-PushLocal $package $version
+        Invoke-PushLocal $packageFile $version
 
         if ($isRetail) {
             Chirp "---`nNow, you can test the package."
