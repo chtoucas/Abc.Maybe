@@ -43,6 +43,11 @@
 # ------------------------------------------------------------------------------
 
 function Approve-RepositoryRoot {
+    [CmdletBinding()]
+    param()
+
+    Write-Verbose "Approving repository root."
+
     if (-not [System.IO.Path]::IsPathRooted($ROOT_DIR)) {
         Croak "The root path MUST be absolute."
     }
@@ -61,6 +66,8 @@ function Get-PackageVersion {
 
         [switch] $AsString
     )
+
+    Write-Verbose "Getting package version."
 
     $proj = Join-Path $ENG_DIR "$ProjectName.props" -Resolve
 
@@ -94,6 +101,8 @@ function Reset-SourceTree {
         [Alias("y")] [switch] $Yes
     )
 
+    Write-Verbose "Resetting source tree."
+
     if ($Yes -or (Confirm-Yes "Hard clean the directory ""src""?")) {
         Say-Indent "Deleting ""bin"" and ""obj"" directories within ""src""."
         Remove-BinAndObj $SRC_DIR
@@ -107,6 +116,8 @@ function Reset-TestTree {
     param(
         [Alias("y")] [switch] $Yes
     )
+
+    Write-Verbose "Resetting test tree."
 
     if ($Yes -or (Confirm-Yes "Hard clean the directory ""test""?")) {
         Say-Indent "Deleting ""bin"" and ""obj"" directories within ""test""."
@@ -122,6 +133,8 @@ function Reset-PackageOutDir {
         [Alias("y")] [switch] $Yes
     )
 
+    Write-Verbose "Resetting output directory for packages."
+
     if ($Yes -or (Confirm-Yes "Reset output directory for packages?")) {
         Say-Indent "Clearing output directory for packages."
         Remove-Packages $PKG_OUTDIR
@@ -136,6 +149,8 @@ function Reset-PackageCIOutDir {
         [Alias("y")] [switch] $Yes
     )
 
+    Write-Verbose "Resetting output directory for CI packages."
+
     if ($Yes -or (Confirm-Yes "Reset output directory for CI packages?")) {
         Say-Indent "Clearing output directory for CI packages."
         Remove-Packages $PKG_CI_OUTDIR
@@ -149,6 +164,8 @@ function Reset-LocalNuGet {
     param(
         [Alias("y")] [switch] $Yes
     )
+
+    Write-Verbose "Resetting local NuGet feed/cache."
 
     if ($Yes -or (Confirm-Yes "Reset local NuGet feed/cache?")) {
         # When we reset the NuGet feed, better to clear the cache too, this is
@@ -329,6 +346,8 @@ function Assert-CmdSuccess {
         [string] $ErrMessage
     )
 
+    Write-Verbose "Checking exit code of the last external command that was run."
+
     if ($LastExitCode -ne 0) { Croak $ErrMessage }
 }
 
@@ -347,7 +366,7 @@ function Remove-Dir {
     Write-Verbose "Removing $Path."
 
     if (-not (Test-Path $Path)) {
-        Write-Verbose "Skipping ""$Path""; the path does NOT exist."
+        Carp "Skipping ""$Path""; the path does NOT exist."
         return
     }
     if (-not [System.IO.Path]::IsPathRooted($Path)) {
@@ -371,7 +390,7 @@ function Remove-Packages {
     Write-Verbose "Removing NuGet packages in $Path."
 
     if (-not (Test-Path $Path)) {
-        Write-Verbose "Skipping ""$Path""; the path does NOT exist."
+        Carp "Skipping ""$Path""; the path does NOT exist."
         return
     }
     if (-not [System.IO.Path]::IsPathRooted($Path)) {

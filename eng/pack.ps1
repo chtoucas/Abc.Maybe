@@ -88,7 +88,7 @@ function Reset-All {
     [CmdletBinding()]
     param()
 
-    Say "Cleanup."
+    Say "Resetting the repository."
 
     Reset-SourceTree -Yes:$true
     Reset-TestTree -Yes:$true
@@ -115,11 +115,11 @@ function Generate-Uids {
     [CmdletBinding()]
     param()
 
+    Write-Verbose "Generating Build IDs."
+
     $vswhere = Find-VsWhere
     $fsi = Find-Fsi $vswhere
     $fsx = Join-Path $PSScriptRoot "genuids.fsx" -Resolve
-
-    Write-Verbose "Executing genuids.fsx."
 
     $uids = & $fsi $fsx
 
@@ -142,6 +142,8 @@ function Get-PackageFile {
         [switch] $retail
     )
 
+    Write-Verbose "Getting package file."
+
     if ($retail) {
         return Join-Path $PKG_OUTDIR "$projectName.$version.nupkg"
     }
@@ -163,6 +165,8 @@ function Approve-PackageFile {
         [ValidateNotNullOrEmpty()]
         [string] $version
     )
+
+    Write-Verbose "Approving package file."
 
     # Is there a dangling package file?
     # NB: only meaningful when in retail mode; otherwise the filename is unique.
