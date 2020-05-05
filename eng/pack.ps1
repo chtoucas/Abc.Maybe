@@ -521,9 +521,10 @@ try {
     else {
         if ($isRetail) {
             # If we don't reset the local NuGet cache, Invoke-PushLocal won't
-            # update it with a new version of the package (the feed part is fine).
-
-            Remove-VersionFromLocalNuGet $projectName $version
+            # update it with a new version of the package (the feed part is fine,
+            # but we always remove cache and feed entry together, see
+            # Reset-LocalNuGet).
+            Remove-PackageFromLocalNuGet $projectName $version
 
             Confirm-Continue "Push the package to the local NuGet feed/cache?"
         }

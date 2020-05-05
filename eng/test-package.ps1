@@ -147,7 +147,8 @@ function Find-XunitRunner {
         ".nuget\packages\xunit.runner.console\$version\tools\$platform\xunit.console.exe"
 
     if (-not (Test-Path $path)) {
-        Croak "Couldn't find Xunit Console Runner v$version where I expected it to be."
+        Carp "Couldn't find Xunit Console Runner v$version where I expected it to be."
+        return $null
     }
 
     Write-Verbose "xunit.console.exe found here: ""$path""."
@@ -261,6 +262,10 @@ function Invoke-TestOldStyle {
     $vswhere = Find-VsWhere
     $msbuild = Find-MSBuild $vswhere
     $xunit   = Find-XunitRunner
+
+    if ($xunit -eq $null) {
+        return
+    }
 
     $projectName = $platform.ToUpper()
     $project = Join-Path $TEST_DIR $projectName -Resolve

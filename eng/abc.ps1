@@ -187,7 +187,7 @@ function Reset-LocalNuGet {
 
 # ------------------------------------------------------------------------------
 
-function Remove-VersionFromLocalNuGet {
+function Remove-PackageFromLocalNuGet {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, Position = 0)]
@@ -199,13 +199,12 @@ function Remove-VersionFromLocalNuGet {
         [string] $version
     )
 
-    Write-Verbose "Removing obsolete version ($version) from local NuGet feed/cache."
+    Indent "Removing obsolete package data from local NuGet feed/cache."
 
     $cacheEntry = Join-Path $projectName.ToLower() $version
-    $oldFilename = "$projectName.$version.nupkg"
-
-    Say-Indent "Removing obsolete entry from the local NuGet cache/feed."
     Remove-Dir (Join-Path $NUGET_LOCAL_CACHE $cacheEntry)
+
+    $oldFilename = "$projectName.$version.nupkg"
     rm -Force (Join-Path $NUGET_LOCAL_FEED $oldFilename)
 }
 

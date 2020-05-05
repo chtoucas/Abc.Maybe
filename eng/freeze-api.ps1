@@ -26,7 +26,7 @@ function Update-PublicAPI {
         [string] $dir
     )
 
-    SAY-LOUD "Processing $dir"
+    Chirp "Processing $dir"
 
     $shippedPath = Join-Path $dir "PublicAPI.Shipped.txt" -Resolve
     $shipped = Get-Content $shippedPath
