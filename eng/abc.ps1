@@ -366,7 +366,7 @@ function Remove-Dir {
     Write-Verbose "Deleting directory ""$Path""."
 
     if (-not (Test-Path $Path)) {
-        Carp "Skipping ""$Path""; the path does NOT exist."
+        Write-Verbose "Skipping ""$Path""; the path does NOT exist."
         return
     }
     if (-not [System.IO.Path]::IsPathRooted($Path)) {
@@ -390,7 +390,7 @@ function Remove-Packages {
     Write-Verbose "Deleting NuGet packages in ""$Path""."
 
     if (-not (Test-Path $Path)) {
-        Carp "Skipping ""$Path""; the path does NOT exist."
+        Write-Verbose "Skipping ""$Path""; the path does NOT exist."
         return
     }
     if (-not [System.IO.Path]::IsPathRooted($Path)) {
@@ -418,7 +418,7 @@ function Remove-BinAndObj {
 
     $PathList | %{
         if (-not (Test-Path $_)) {
-            Carp "Skipping ""$_""; the path does NOT exist."
+            Write-Verbose "Skipping ""$_""; the path does NOT exist."
             return
         }
         if (-not [System.IO.Path]::IsPathRooted($_)) {
