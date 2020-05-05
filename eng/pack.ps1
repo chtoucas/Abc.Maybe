@@ -293,7 +293,7 @@ function Invoke-Pack {
 
     if ($retail) { Approve-PackageFile $package $version }
 
-    $project = Join-Path $SRC_DIR "$projectName\$projectName.csproj" -Resolve
+    $project = Join-Path $SRC_DIR $projectName -Resolve
 
     Chirp "Packing version $version --- build $buildNumber, rev. $revisionNumber" -NoNewline
     if ($branch -and $commit) {
@@ -356,7 +356,7 @@ function Invoke-PushLocal {
     # This is not such a big problem, but I prefer not to pollute it with
     # CI packages (or versions we are going to publish).
     Say "Updating the local NuGet cache"
-    $project = Join-Path $TEST_DIR "Blank\Blank.csproj" -Resolve
+    $project = Join-Path $TEST_DIR "Blank" -Resolve
     & dotnet restore $project /p:AbcVersion=$version | Out-Host
     Assert-CmdSuccess -ErrMessage "Failed to update the local NuGet cache."
 

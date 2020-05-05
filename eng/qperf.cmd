@@ -3,9 +3,9 @@
 @echo off
 @setlocal
 
-@pushd %~dp0\..
+@pushd %~dp0\..\src
 
-@call dotnet run -c Release %* -p .\src\perf\
+@call dotnet run -c Release %* -p perf
 
 @popd
 

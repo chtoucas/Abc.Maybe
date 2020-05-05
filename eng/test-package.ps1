@@ -98,7 +98,7 @@ $ErrorActionPreference = "Stop"
 
 . (Join-Path $PSScriptRoot "abc.ps1")
 
-(Join-Path $TEST_DIR "NETSdk\NETSdk.csproj" -Resolve) `
+(Join-Path $TEST_DIR "NETSdk" -Resolve) `
     | New-Variable -Name "NETSdkProject" -Scope Script -Option Constant
 
 ################################################################################
@@ -257,7 +257,7 @@ function Invoke-TestOldStyle {
     $xunit   = Find-XunitRunner
 
     $projectName = $platform.ToUpper()
-    $project = Join-Path $TEST_DIR "$projectName\$projectName.csproj" -Resolve
+    $project = Join-Path $TEST_DIR $projectName -Resolve
 
     # https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2019
     & $msbuild $project -v:minimal /p:AbcVersion=$version /t:"Restore;Build" | Out-Host
@@ -435,10 +435,10 @@ $AllClassic = `
     "net472",
     "net48"
 
-$LTSCore =`
+$LTSCore = `
     "netcoreapp2.1",
     "netcoreapp3.1"
-$AllCore =`
+$AllCore = `
     "netcoreapp2.0",
     "netcoreapp2.1",
     "netcoreapp2.2",

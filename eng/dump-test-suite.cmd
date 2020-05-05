@@ -3,9 +3,9 @@
 @echo off
 @setlocal
 
-@pushd %~dp0\..
+@pushd %~dp0\..\src
 
-@call dotnet test .\src\Abc.Tests\ --nologo -v q --no-restore ^
+@call dotnet test Abc.Tests --nologo -v q --no-restore ^
   --list-tests -c Release ^
   > .\__\test-suite.txt
 

@@ -18,9 +18,9 @@
 @echo off
 @setlocal
 
-@pushd %~dp0\..
+@pushd %~dp0\..\src
 
-@call dotnet test .\src\Abc.Tests\ %* -c Release
+@call dotnet test Abc.Tests %* -c Release
 
 @popd
 
