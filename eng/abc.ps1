@@ -363,7 +363,7 @@ function Remove-Dir {
         [string] $Path
     )
 
-    Write-Verbose "Removing $Path."
+    Write-Verbose "Deleting directory ""$Path""."
 
     if (-not (Test-Path $Path)) {
         Carp "Skipping ""$Path""; the path does NOT exist."
@@ -387,7 +387,7 @@ function Remove-Packages {
         [string] $Path
     )
 
-    Write-Verbose "Removing NuGet packages in $Path."
+    Write-Verbose "Deleting NuGet packages in ""$Path""."
 
     if (-not (Test-Path $Path)) {
         Carp "Skipping ""$Path""; the path does NOT exist."
@@ -414,7 +414,7 @@ function Remove-BinAndObj {
         [string[]] $PathList
     )
 
-    Write-Verbose "Removing ""bin"" and ""obj"" directories."
+    Write-Verbose "Deleting ""bin"" and ""obj"" directories."
 
     $PathList | %{
         if (-not (Test-Path $_)) {
@@ -457,7 +457,11 @@ function Find-Git {
         return $null
     }
 
-    $cmd.Path
+    $path = $cmd.Path
+
+    Write-Verbose "git.exe found here: ""$path""."
+
+    $path
 }
 
 # ------------------------------------------------------------------------------
@@ -512,7 +516,11 @@ function Get-GitCommitHash {
     if ($Fatal) { $onError = "Croak" } else { $onError = "Carp" }
 
     try {
-        return & $Git log -1 --format="%H" 2>&1
+        $commit = & $Git log -1 --format="%H" 2>&1
+
+        Write-Verbose "Current git commit hash: ""$commit""."
+
+        return $commit
     }
     catch {
         . $onError """git log"" failed: $_"
@@ -537,7 +545,11 @@ function Get-GitBranch {
     if ($Fatal) { $onError = "Croak" } else { $onError = "Carp" }
 
     try {
-        return & $Git rev-parse --abbrev-ref HEAD 2>&1
+        $branch = & $Git rev-parse --abbrev-ref HEAD 2>&1
+
+        Write-Verbose "Current git branch: ""$branch""."
+
+        return $branch
     }
     catch {
         . $onError """git rev-parse"" failed: $_"
@@ -566,6 +578,8 @@ function Find-VsWhere {
 
     $path = Join-Path ${ENV:ProgramFiles(x86)} "\Microsoft Visual Studio\Installer\vswhere.exe"
     if (Test-Path $path) {
+        Write-Verbose "vswhere.exe found here: ""$path""."
+
         return $path
     }
     else {
@@ -591,6 +605,8 @@ function Find-MSBuild {
         Croak "Could not find MSBuild.exe."
     }
 
+    Write-Verbose "MSBuild.exe found here: ""$path""."
+
     $path
 }
 
@@ -610,6 +626,8 @@ function Find-Fsi {
 
     $path = Join-Path $vspath "\Common7\IDE\CommonExtensions\Microsoft\FSharp\fsi.exe"
     if (Test-Path $path) {
+        Write-Verbose "fsi.exe found here: ""$path""."
+
         return $path
     }
     else {

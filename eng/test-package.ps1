@@ -150,6 +150,8 @@ function Find-XunitRunner {
         Croak "Couldn't find Xunit Console Runner v$version where I expected it to be."
     }
 
+    Write-Verbose "xunit.console.exe found here: ""$path""."
+
     $path
 }
 

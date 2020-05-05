@@ -105,6 +105,8 @@ function Find-OpenCover {
         Croak "Couldn't find OpenCover v$version where I expected it to be."
     }
 
+    Write-Verbose "OpenCover.Console.exe found here: ""$path""."
+
     $path
 }
 
