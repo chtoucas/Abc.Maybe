@@ -102,7 +102,7 @@ $ErrorActionPreference = "Stop"
 . (Join-Path $PSScriptRoot "abc.ps1")
 
 (Join-Path $TEST_DIR "NETSdk" -Resolve) `
-    | New-Variable -Name "NETSdkProject" -Scope Script -Option Constant
+    | New-Variable -Name "NET_SDK_PROJECT" -Scope Script -Option Constant
 
 #endregion
 ################################################################################
@@ -198,7 +198,7 @@ function Invoke-Restore {
     }
     if ($allKnown) { $args += "/p:AllKnown=true" }
 
-    & dotnet restore $NETSdkProject $args /p:AbcVersion=$version | Out-Host
+    & dotnet restore $NET_SDK_PROJECT $args /p:AbcVersion=$version | Out-Host
     Assert-CmdSuccess -ErrMessage "Restore task failed."
 }
 
@@ -231,7 +231,7 @@ function Invoke-Build {
     if ($allKnown)  { $args += "/p:AllKnown=true" }
     if ($noRestore) { $args += "--no-restore" }
 
-    & dotnet build $NETSdkProject $args /p:AbcVersion=$version | Out-Host
+    & dotnet build $NET_SDK_PROJECT $args /p:AbcVersion=$version | Out-Host
     Assert-CmdSuccess -ErrMessage "Restore task failed."
 }
 
@@ -316,7 +316,7 @@ function Invoke-TestSingle {
     if ($noBuild)       { $args += "--no-build" }   # NB: no-build => no-restore
     elseif ($noRestore) { $args += "--no-restore" }
 
-    & dotnet test $NETSdkProject -f $platform $args `
+    & dotnet test $NET_SDK_PROJECT -f $platform $args `
         /p:AbcVersion=$version /p:AllKnown=true --nologo `
         | Out-Host
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting ""$platform""."
@@ -401,7 +401,7 @@ function Invoke-TestAll {
     if ($noCore)         { $args += "/p:NoCore=true" }
     if ($runtime -ne "") { $args += "--runtime:$runtime" }
 
-    & dotnet test $NETSdkProject --nologo $args /p:AbcVersion=$version | Out-Host
+    & dotnet test $NET_SDK_PROJECT --nologo $args /p:AbcVersion=$version | Out-Host
     Assert-CmdSuccess -ErrMessage "Test task failed."
 
     if ($allKnown -and (-not $noClassic)) {
