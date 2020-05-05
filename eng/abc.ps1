@@ -18,8 +18,11 @@ function Initialize-Script {
         Croak "The root path MUST be absolute."
     }
 
-    # See https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet
+    # Set language used by MSBuild, dotnet and VS. Does not work perfectly.
+    # See https://github.com/microsoft/msbuild/issues/1596
+    # and https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet
     [Environment]::SetEnvironmentVariable("DOTNET_CLI_UI_LANGUAGE", "en", "User")
+    [Environment]::SetEnvironmentVariable("VSLANG", "1033", "User")
 }
 
 ################################################################################
