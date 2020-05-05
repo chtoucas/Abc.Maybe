@@ -1,5 +1,8 @@
 #Requires -Version 4.0
 
+################################################################################
+#region Preamble.
+
 <#
 .SYNOPSIS
 Run the Code Coverage script and build human-readable reports.
@@ -58,6 +61,7 @@ $ErrorActionPreference = "Stop"
 
 New-Variable -Name "CONFIGURATION" -Value "Debug" -Scope Script -Option Constant
 
+#endregion
 ################################################################################
 #region Helpers.
 

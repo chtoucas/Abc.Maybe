@@ -1,5 +1,8 @@
 #Requires -Version 4.0
 
+################################################################################
+#region Preamble.
+
 <#
 .SYNOPSIS
 Create a NuGet package.
@@ -59,6 +62,7 @@ $ErrorActionPreference = "Stop"
 
 New-Variable -Name "CONFIGURATION" -Value "Release" -Scope Script -Option Constant
 
+#endregion
 ################################################################################
 #region Helpers
 
@@ -75,6 +79,30 @@ Usage: pack.ps1 [switches]
   -h|-Help        print this help and exit.
 
 "@
+}
+
+# ------------------------------------------------------------------------------
+
+# Reset the repository when -Final is set.
+function Reset-All {
+    [CmdletBinding()]
+    param()
+
+    Say "Cleanup."
+
+    Reset-SourceTree -Yes:$true
+    Reset-TestTree -Yes:$true
+
+    # Not necessary but I like to keep things clean.
+    Reset-PackageOutDir -Yes:$true
+    Reset-CIPackageOutDir -Yes:$true
+
+    # TODO: soft clean.
+    # We ensure that any temporary retail package is removed from the local
+    # NuGet cache/feed. Failing to do so would imply that after publication
+    # test-package.ps1 would test the package from the local NuGet cache/feed
+    # not the one from nuget.org.
+    Reset-LocalNuGet -Yes:$true
 }
 
 # ------------------------------------------------------------------------------
@@ -152,28 +180,6 @@ function Approve-PackageFile {
 #endregion
 ################################################################################
 #region Tasks.
-
-# Cleanup when -Final is set.
-function Invoke-CleanAll {
-    [CmdletBinding()]
-    param()
-
-    Say "Cleanup."
-
-    Reset-SourceTree -Yes:$true
-
-    # TODO: soft clean.
-    # We ensure that any temporary retail package is removed from the local
-    # NuGet cache/feed. Failing to do so would imply that after publication
-    # test-package.ps1 would test the package from the local NuGet cache/feed
-    # not the one from nuget.org.
-    Reset-LocalNuGet -Yes:$true
-
-    # We remove any retail package, thought it is not necessary.
-    Reset-PackageOutDir -Yes:$true
-}
-
-# ------------------------------------------------------------------------------
 
 # Find commit hash and branch.
 function Invoke-Git {
@@ -373,9 +379,9 @@ function Invoke-Publish {
         [string] $package
     )
 
-    SAY-LOUD "Publishing the package to the official NuGet repository."
+    SAY-LOUD "Publishing the package to the NuGet.Org."
 
-    # TODO: publish the package for us. --interactive?
+    # TODO: publish, --interactive?
     if (Confirm-Yes "Do you want me to publish the package for you?") {
         Carp "Not yet implemented."
     }
@@ -401,7 +407,7 @@ try {
     if ($Final) {
         $isRetail = $true
 
-        Invoke-CleanAll
+        Reset-All
     }
     else {
         $isRetail = $Retail.IsPresent

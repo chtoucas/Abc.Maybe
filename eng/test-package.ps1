@@ -1,5 +1,8 @@
 #Requires -Version 4.0
 
+################################################################################
+#region Preamble.
+
 <#
 .SYNOPSIS
 Test the package Abc.Maybe for net(4,5,6,7,8)x and netcoreapp(2,3).x.
@@ -101,6 +104,7 @@ $ErrorActionPreference = "Stop"
 (Join-Path $TEST_DIR "NETSdk" -Resolve) `
     | New-Variable -Name "NETSdkProject" -Scope Script -Option Constant
 
+#endregion
 ################################################################################
 #region Helpers.
 
