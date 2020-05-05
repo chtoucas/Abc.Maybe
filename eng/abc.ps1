@@ -199,13 +199,16 @@ function Remove-PackageFromLocalNuGet {
         [string] $version
     )
 
-    Indent "Removing obsolete package data from local NuGet feed/cache."
+    Say-Indent "Removing obsolete package data from local NuGet feed/cache."
 
     $cacheEntry = Join-Path $projectName.ToLower() $version
     Remove-Dir (Join-Path $NUGET_LOCAL_CACHE $cacheEntry)
 
     $oldFilename = "$projectName.$version.nupkg"
-    rm -Force (Join-Path $NUGET_LOCAL_FEED $oldFilename)
+    $oldFilepath = Join-Path $NUGET_LOCAL_FEED $oldFilename
+    if (Test-Path $oldFilepath) {
+        rm -Force $oldFilepath
+    }
 }
 
 #endregion
@@ -306,6 +309,19 @@ function Croak {
 #endregion
 ################################################################################
 #region Misc helpers.
+
+# See https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet
+function Set-DotNetUILang {
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $LangCode
+    )
+
+    [Environment]::SetEnvironmentVariable("DOTNET_CLI_UI_LANGUAGE", $LangCode, "User")
+}
+
+# ------------------------------------------------------------------------------
 
 # Request confirmation.
 function Confirm-Yes {
@@ -597,7 +613,7 @@ function Find-VsWhere {
 
     Write-Verbose "vswhere.exe could not be found in your PATH."
 
-    $path = Join-Path ${ENV:ProgramFiles(x86)} "\Microsoft Visual Studio\Installer\vswhere.exe"
+    $path = Join-Path ${Env:ProgramFiles(x86)} "\Microsoft Visual Studio\Installer\vswhere.exe"
     if (Test-Path $path) {
         Write-Verbose "vswhere.exe found here: ""$path""."
 

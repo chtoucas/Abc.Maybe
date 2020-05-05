@@ -16,6 +16,8 @@ $ErrorActionPreference = "Stop"
 
 . (Join-Path $PSScriptRoot "abc.ps1")
 
+Approve-RepositoryRoot
+
 ################################################################################
 
 function Update-PublicAPI {
@@ -65,8 +67,6 @@ function Update-PublicAPI {
 ################################################################################
 
 try {
-    Approve-RepositoryRoot
-
     pushd $SRC_DIR
 
     foreach ($file in Get-ChildItem -Recurse -Include "PublicApi.Shipped.txt") {

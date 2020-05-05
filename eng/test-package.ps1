@@ -101,8 +101,16 @@ $ErrorActionPreference = "Stop"
 
 . (Join-Path $PSScriptRoot "abc.ps1")
 
+Approve-RepositoryRoot
+Set-DotNetUILang "en"
+
+# ------------------------------------------------------------------------------
+
 (Join-Path $TEST_DIR "NETSdk" -Resolve) `
     | New-Variable -Name "NET_SDK_PROJECT" -Scope Script -Option Constant
+
+# Cumulative number of errors.
+New-Variable -Name "ExitCode" -Value 0 -Scope Script
 
 #endregion
 ################################################################################
@@ -143,11 +151,12 @@ function Find-XunitRunner {
     $version = "2.4.1"
     $platform = "net452"
 
-    $path = Join-Path ${ENV:USERPROFILE} `
+    $path = Join-Path ${Env:USERPROFILE} `
         ".nuget\packages\xunit.runner.console\$version\tools\$platform\xunit.console.exe"
 
     if (-not (Test-Path $path)) {
         Carp "Couldn't find Xunit Console Runner v$version where I expected it to be."
+        $ExitCode++
         return $null
     }
 
@@ -459,8 +468,6 @@ $AllCore = `
 # ------------------------------------------------------------------------------
 
 try {
-    Approve-RepositoryRoot
-
     pushd $TEST_DIR
 
     if ($Clean) {
@@ -538,10 +545,13 @@ catch {
     Write-Host $_
     Write-Host $_.Exception
     Write-Host $_.ScriptStackTrace
-    exit 1
+
+    $ExitCode++
 }
 finally {
     popd
+
+    exit $ExitCode
 }
 
 #endregion

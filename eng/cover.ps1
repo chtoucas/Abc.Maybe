@@ -59,6 +59,11 @@ $ErrorActionPreference = "Stop"
 
 . (Join-Path $PSScriptRoot "abc.ps1")
 
+Approve-RepositoryRoot
+Set-DotNetUILang "en"
+
+# ------------------------------------------------------------------------------
+
 New-Variable -Name "CONFIGURATION" -Value "Debug" -Scope Script -Option Constant
 
 #endregion
@@ -98,7 +103,7 @@ function Find-OpenCover {
         | Select -ExpandProperty Node `
         | Select -First 1 -ExpandProperty Version
 
-    $path = Join-Path ${ENV:USERPROFILE} `
+    $path = Join-Path ${Env:USERPROFILE} `
         ".nuget\packages\opencover\$version\tools\OpenCover.Console.exe"
 
     if (-not (Test-Path $path)) {
@@ -216,8 +221,6 @@ if ($Help) {
 }
 
 try {
-    Approve-RepositoryRoot
-
     pushd $ROOT_DIR
 
     if ($ReportOnly -and $NoReport) {

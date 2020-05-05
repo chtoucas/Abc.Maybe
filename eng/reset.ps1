@@ -17,9 +17,9 @@ $ErrorActionPreference = "Stop"
 
 . (Join-Path $PSScriptRoot "abc.ps1")
 
-try {
-    Approve-RepositoryRoot
+Approve-RepositoryRoot
 
+try {
     pushd $ROOT_DIR
 
     Reset-SourceTree      -Yes:$Yes.IsPresent

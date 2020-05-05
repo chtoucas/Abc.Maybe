@@ -65,6 +65,11 @@ $ErrorActionPreference = "Stop"
 
 . (Join-Path $PSScriptRoot "abc.ps1")
 
+Approve-RepositoryRoot
+Set-DotNetUILang "en"
+
+# ------------------------------------------------------------------------------
+
 New-Variable -Name "CONFIGURATION" -Value "Release" -Scope Script -Option Constant
 
 #endregion
@@ -472,8 +477,6 @@ if ($Help) {
 # TODO: do more w/ option Yes.
 
 try {
-    Approve-RepositoryRoot
-
     pushd $ROOT_DIR
 
     if ($Safe) {
