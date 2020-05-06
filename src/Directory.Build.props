@@ -30,10 +30,10 @@
     <PatchEquality>false</PatchEquality>
     <HideInternals>false</HideInternals>
     <!-- Meta-option -->
-    <Retail>false</Retail>
+    <Pack>false</Pack>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" $(Retail) == 'true' ">
+  <PropertyGroup Condition=" $(Pack) == 'true' ">
     <!--
       *** BE VERY, VERY CAREFUL, BEFORE CHANGING THIS ***
 
@@ -78,8 +78,8 @@
     <AssemblyOriginatorKeyFile>$(EngRoot)Abc.snk</AssemblyOriginatorKeyFile>
 
     <!--
-      Fake version only used during development. For retail builds of a package,
-      the version is set within eng\Retail.targets which is loaded later on.
+      Fake version only used during development. When building a package,
+      the version is taken from "eng\Pack.props" which is loaded later on.
     -->
     <VersionPrefix>1.0.0</VersionPrefix>
     <VersionSuffix>DUMMY</VersionSuffix>

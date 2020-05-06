@@ -24,7 +24,7 @@ Maintenance scripts.
 Other files.
 - abc.ps1               PowerShell common helpers.
 - Abc.Maybe.props       NuGet package props for Abc.Maybe.
-- Package.props         MSBuild props when building packages.
-- Package.tasks         MSBuild tasks when building packages (obsolete).
+- Pack.props            MSBuild props when building packages.
+- Pack.tasks            MSBuild tasks when building packages (obsolete).
 - Abc.snk               strong named key.
 - Abc.pk                public key.

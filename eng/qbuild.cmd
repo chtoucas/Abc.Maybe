@@ -30,7 +30,7 @@
 ::
 :: Local options (see Directory.Build.props):
 :: > qbuild /p:DisplaySettings=true
-:: > qbuild /p:Retail=true
+:: > qbuild /p:Pack=true
 :: > qbuild /p:PatchEquality=true
 :: > qbuild /p:HideInternals=true
 

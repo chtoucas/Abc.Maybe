@@ -1,11 +1,11 @@
 <Project>
 
-  <PropertyGroup Condition=" $(Retail) == 'true' ">
+  <PropertyGroup Condition=" $(Pack) == 'true' ">
     <!--
       Even if the following props are already set with the right value, we
-      override them here to be crystal about what to expect for retail builds.
-      Retail builds are actually only for Abc.Maybe but, if we wish to compile
-      the whole solution, we must be careful (this is the case w/ HideInternals).
+      override them here to be crystal about what to expect.
+      Packages are actually only created for Abc.Maybe but, if we wish to compile
+      the whole solution, we must be careful for instance w/ HideInternals.
     -->
     <SignAssembly>true</SignAssembly>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
