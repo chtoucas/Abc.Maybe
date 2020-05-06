@@ -36,13 +36,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eng", "eng", "{6D957FE8-23D
 		eng\genuids.fsx = eng\genuids.fsx
 		eng\genuids.ps1 = eng\genuids.ps1
 		eng\pack.ps1 = eng\pack.ps1
+		eng\Pack.props = eng\Pack.props
+		eng\Pack.tasks = eng\Pack.tasks
 		eng\qbuild.cmd = eng\qbuild.cmd
 		eng\qperf.cmd = eng\qperf.cmd
 		eng\qtest.cmd = eng\qtest.cmd
 		eng\README = eng\README
 		eng\reset.ps1 = eng\reset.ps1
-		eng\Retail.props = eng\Retail.props
-		eng\Retail.tasks = eng\Retail.tasks
 		eng\test-package.ps1 = eng\test-package.ps1
 	EndProjectSection
 EndProject
