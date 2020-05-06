@@ -122,6 +122,53 @@ function Reset-Repository {
 
 # ------------------------------------------------------------------------------
 
+# Find commit hash and branch.
+function Get-GitMetadata {
+    [CmdletBinding()]
+    param(
+        [switch] $force,
+        [switch] $fatal,
+        [switch] $yes
+    )
+
+    Say "Retrieving git metadata."
+
+    $branch = ""
+    $commit = ""
+
+    $git = Find-Git -Fatal:$fatal.IsPresent
+
+    if ($git -eq $null) {
+        if ($yes) {
+            Carp "The package description won't include any git metadata."
+        }
+        else {
+            Confirm-Continue "Continue even without any git metadata?"
+        }
+    }
+    else {
+        $ok = Approve-GitStatus -Git $git -Fatal:$fatal.IsPresent
+
+        # Keep Approve-GitStatus before $force: we always want to see a warning
+        # when there are uncommited changes.
+        if ($ok -or $force) {
+            $branch = Get-GitBranch     -Git $git -Fatal:$fatal.IsPresent
+            $commit = Get-GitCommitHash -Git $git -Fatal:$fatal.IsPresent
+        }
+
+        if ($branch -eq "") {
+            Carp "The branch name will be empty. Maybe use -Force?"
+        }
+        if ($commit -eq "") {
+            Carp "The commit hash will be empty. Maybe use -Force?"
+        }
+    }
+
+    return @($branch, $commit)
+}
+
+# ------------------------------------------------------------------------------
+
 # In the past, we used to generate the id's within MSBuild but then it is nearly
 # impossible to override the global properties PackageVersion and VersionSuffix.
 # Besides that, generating the id's outside ensures that all assemblies inherit
@@ -130,7 +177,7 @@ function Generate-UIDs {
     [CmdletBinding()]
     param()
 
-    Write-Verbose "Generating Build UIDs."
+    Say "Generating build UIDs."
 
     $vswhere = Find-VsWhere
     $fsi = Find-Fsi $vswhere
@@ -141,6 +188,64 @@ function Generate-UIDs {
     Write-Verbose "Build UIDs: ""$uids"""
 
     $uids.Split(";")
+}
+
+# ------------------------------------------------------------------------------
+
+function Get-ActualVersion {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [string] $projectName,
+
+        [Parameter(Mandatory = $true, Position = 1)]
+        [ValidateNotNullOrEmpty()]
+        [string] $timestamp,
+
+        [switch] $retail
+    )
+
+    Say "Getting package version."
+
+    $major, $minor, $patch, $precy, $preno = Get-PackageVersion $projectName
+
+    if ($retail) {
+        if ($precy -eq "") {
+            $suffix = ""
+        }
+        else {
+            $suffix = "$precy$preno"
+        }
+    }
+    else {
+        # For CI packages, we use SemVer 2.0.0, and we ensure that the package
+        # is seen as a prerelease of what could be the next version. Examples:
+        # - "1.2.3"       -> "1.2.4-ci-20201231-T121212".
+        # - "1.2.3-beta4" -> "1.2.3-beta5-ci-20201231-T121212".
+        if ($precy -eq "") {
+            # Without a prerelease label, we increase the patch number.
+            $patch  = 1 + [int]$patch
+            $suffix = "ci-$timestamp"
+        }
+        else {
+            # With a prerelease label, we increase the prerelease number.
+            $preno  = 1 + [int]$preno
+            $suffix = "$precy$preno-ci-$timestamp"
+        }
+    }
+
+    $prefix = "$major.$minor.$patch"
+
+    Write-Verbose "Version suffix: ""$suffix"""
+    Write-Verbose "Version prefix: ""$prefix"""
+
+    if ($suffix -eq "") {
+        return @($prefix, $prefix, "")
+    }
+    else {
+        return @("$prefix-$suffix", $prefix, $suffix)
+    }
 }
 
 # ------------------------------------------------------------------------------
@@ -206,112 +311,9 @@ function Approve-PackageFile {
     }
 }
 
-# ------------------------------------------------------------------------------
-
-function Get-ActualVersion {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true, Position = 0)]
-        [ValidateNotNullOrEmpty()]
-        [string] $projectName,
-
-        [Parameter(Mandatory = $true, Position = 1)]
-        [ValidateNotNullOrEmpty()]
-        [string] $timestamp,
-
-        [switch] $retail
-    )
-
-    $major, $minor, $patch, $precy, $preno = Get-PackageVersion $projectName
-
-    if ($retail) {
-        if ($precy -eq "") {
-            $suffix = ""
-        }
-        else {
-            $suffix = "$precy$preno"
-        }
-    }
-    else {
-        # For CI packages, we use SemVer 2.0.0, and we ensure that the package
-        # is seen as a prerelease of what could be the next version. Examples:
-        # - "1.2.3"       -> "1.2.4-ci-20201231-T121212".
-        # - "1.2.3-beta4" -> "1.2.3-beta5-ci-20201231-T121212".
-        if ($precy -eq "") {
-            # Without a prerelease label, we increase the patch number.
-            $patch  = 1 + [int]$patch
-            $suffix = "ci-$timestamp"
-        }
-        else {
-            # With a prerelease label, we increase the prerelease number.
-            $preno  = 1 + [int]$preno
-            $suffix = "$precy$preno-ci-$timestamp"
-        }
-    }
-
-    $prefix = "$major.$minor.$patch"
-
-    Write-Verbose "Version suffix: ""$suffix"""
-    Write-Verbose "Version prefix: ""$prefix"""
-
-    if ($suffix -eq "") {
-        return @($prefix, $prefix, "")
-    }
-    else {
-        return @("$prefix-$suffix", $prefix, $suffix)
-    }
-}
-
 #endregion
 ################################################################################
 #region Tasks.
-
-# Find commit hash and branch.
-function Invoke-Git {
-    [CmdletBinding()]
-    param(
-        [switch] $force,
-        [switch] $fatal,
-        [switch] $yes
-    )
-
-    Say "Retrieving git metadata."
-
-    $branch = ""
-    $commit = ""
-
-    $git = Find-Git -Fatal:$fatal.IsPresent
-
-    if ($git -eq $null) {
-        if ($yes) {
-            Carp "The package description won't include any git metadata."
-        }
-        else {
-            Confirm-Continue "Continue even without any git metadata?"
-        }
-    }
-    else {
-        $ok = Approve-GitStatus -Git $git -Fatal:$fatal.IsPresent
-
-        # Keep Approve-GitStatus before $force: we always want to see a warning
-        # when there are uncommited changes.
-        if ($ok -or $force) {
-            $branch = Get-GitBranch     -Git $git -Fatal:$fatal.IsPresent
-            $commit = Get-GitCommitHash -Git $git -Fatal:$fatal.IsPresent
-        }
-
-        if ($branch -eq "") {
-            Carp "The branch name will be empty. Maybe use -Force?"
-        }
-        if ($commit -eq "") {
-            Carp "The commit hash will be empty. Maybe use -Force?"
-        }
-    }
-
-    return @($branch, $commit)
-}
-
-# ------------------------------------------------------------------------------
 
 function Invoke-Pack {
     [CmdletBinding(PositionalBinding = $false)]
@@ -349,6 +351,13 @@ function Invoke-Pack {
         [switch] $myVerbose
     )
 
+    Chirp "Packing v$version --- build $buildNumber, rev. $revisionNumber" -NoNewline
+    if ($repositoryBranch -and $repositoryCommit) {
+        $abbrv = $repositoryCommit.Substring(0, 7)
+        Chirp " on branch ""$repositoryBranch"", commit ""$abbrv""."
+    }
+    else { Chirp " on branch ""???"", commit ""???""." }
+
     # VersionSuffix is for Retail.props, but it is not enough, we MUST
     # also specify --version-suffix (not sure it is necessary any more, but
     # I prefer to play safe).
@@ -374,13 +383,6 @@ function Invoke-Pack {
     }
 
     $project = Join-Path $SRC_DIR $projectName -Resolve
-
-    Chirp "Packing v$version --- build $buildNumber, rev. $revisionNumber" -NoNewline
-    if ($repositoryBranch -and $repositoryCommit) {
-        $abbrv = $repositoryCommit.Substring(0, 7)
-        Chirp " on branch ""$repositoryBranch"", commit ""$abbrv""."
-    }
-    else { Chirp " on branch ""???"", commit ""???""." }
 
     # Do NOT use --no-restore or --no-build (options -Clean/-Safe remove everything).
     # RepositoryCommit and RepositoryBranch are standard props, do not remove them.
@@ -421,10 +423,12 @@ function Invoke-PushLocal {
 
     Chirp "Pushing the package to the local NuGet feed/cache."
 
-    # We could have created the package directly in $NUGET_LOCAL_FEED
-    # but it seems cleaner to keep creation and publication separated.
-    # Also, if Microsoft ever decided to change the behaviour of "push",
-    # we won't have to update this script (but maybe reset.ps1).
+    # Local "push" doesn't store packages in a hierarchical folder structure;
+    # see https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-nuget-push
+    # It means that we could have created the package directly in
+    # $NUGET_LOCAL_FEED but it seems cleaner to keep creation and publication
+    # separated. Also, if Microsoft ever decided to change the behaviour of
+    # a local "push", we won't have to update this script (but maybe reset.ps1).
 
     & dotnet nuget push $packageFile -s $NUGET_LOCAL_FEED --force-english-output | Out-Host
     Assert-CmdSuccess -ErrMessage "Failed to publish package to local NuGet feed."
@@ -500,8 +504,8 @@ try {
     $projectName = "Abc.Maybe"
 
     # 1. Get git metadata.
-    $branch, $commit = Invoke-Git -Force:$force.IsPresent -Fatal:$Safe.IsPresent -Yes:$Yes.IsPresent
-    # 2. Get build UIDs.
+    $branch, $commit = Get-GitMetadata -Force:$force.IsPresent -Fatal:$Safe.IsPresent -Yes:$Yes.IsPresent
+    # 2. Generate build UIDs.
     $buildNumber, $revisionNumber, $timestamp = Generate-UIDs
     # 3. Get package version.
     $version, $prefix, $suffix = Get-ActualVersion $projectName $timestamp -Retail:$isRetail
