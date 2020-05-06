@@ -1,4 +1,4 @@
-#Requires -Version 4.0
+# See LICENSE in the project root for license information.
 
 # Adapted from https://github.com/dotnet/roslyn/tree/master/scripts/PublicApi
 

@@ -1,3 +1,5 @@
+# See LICENSE in the project root for license information.
+
 #Requires -Version 4.0
 
 # Dot sourcing this file ensures that it executes in the caller scope.
@@ -5,20 +7,15 @@
 Set-StrictMode -Version Latest
 $Script:ErrorActionPreference = "Stop"
 
-# ===============================================================
-# THIS FUNCTION IS AUTOMATICALLY EXECUTED AT THE END OF THIS FILE
-# ===============================================================
-function Initialize-Script {
+# UNUSED: does not seem to work for what I want: english messages, eg
+# "dotnet restore" continues to output french messages.
+function Initialize-Env {
     [CmdletBinding()]
     param()
 
     Write-Verbose "Initialization."
 
-    if (-not [System.IO.Path]::IsPathRooted($ROOT_DIR)) {
-        Croak "The root path MUST be absolute."
-    }
-
-    # Set language used by MSBuild, dotnet and VS. Does not work perfectly.
+    # Set language used by MSBuild, dotnet and VS.
     # See https://github.com/microsoft/msbuild/issues/1596
     # and https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet
     [Environment]::SetEnvironmentVariable("DOTNET_CLI_UI_LANGUAGE", "en", "User")
@@ -33,7 +30,9 @@ function Initialize-Script {
 # within the same dir. This is something that can happen for instance if we
 # define a variable $OutDir and call dotnet or MSBuild w/ "." and not "&".
 
-# Root directory.
+# All paths are ABSOLUTE.
+
+# Root directory = absolute path of the parent directory containing *this* file.
 (Get-Item $PSScriptRoot).Parent.FullName `
     | New-Variable -Name "ROOT_DIR" -Scope Local -Option Constant
 
@@ -697,8 +696,4 @@ function Get-PackageReferenceVersion {
 }
 
 #endregion
-################################################################################
-
-Initialize-Script
-
 ################################################################################
