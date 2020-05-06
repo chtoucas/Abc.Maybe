@@ -230,7 +230,8 @@ function Get-PackageFile {
         [ValidateNotNullOrEmpty()]
         [string] $version,
 
-        [switch] $ci
+        [switch] $ci,
+        [switch] $yes
     )
 
     Write-Verbose "Getting package file."
@@ -244,40 +245,21 @@ function Get-PackageFile {
 
     Write-Verbose "Package file: ""$path"""
 
-    $path
-}
-
-# ------------------------------------------------------------------------------
-
-function Approve-PackageFile {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true, Position = 0)]
-        [ValidateNotNullOrEmpty()]
-        [string] $packageFile,
-
-        [Parameter(Mandatory = $true, Position = 1)]
-        [ValidateNotNullOrEmpty()]
-        [string] $version,
-
-        [switch] $yes
-    )
-
-    Write-Verbose "Approving package file."
-
     # Is there a dangling package file?
-    # NB: only meaningful for non-CI packages; otherwise the filename is unique.
-    if (Test-Path $packageFile) {
-        Carp "A package with the same version ($version) already exists."
+    # NB: not necessary for CI packages, the filename is unique.
+    if (-not $ci -and (Test-Path $path)) {
         if (-not $yes) {
+            Carp "A package with the same version ($version) already exists."
             Confirm-Continue "Do you wish to proceed anyway?"
         }
 
         # Not necessary, dotnet will replace it, but to avoid any ambiguity
         # I prefer to remove it anyway.
         Say-Indent "The old package file will be removed now."
-        Remove-Item $packageFile
+        Remove-Item $path
     }
+
+    $path
 }
 
 #endregion
@@ -459,36 +441,25 @@ try {
 
     if ($Release) {
         $CI = $false
-
-        # This one is for "safety".
-        Reset-SourceTree -Yes:$true
-        # This one is to ensure a clean test tree after publication.
-        Reset-TestTree -Yes:$true
-        Reset-PackageOutDir -Yes:$true
+        $reset = $true
     }
     else {
-        $CI = -not $NoCI.IsPresent
-
-        if ($Clean.IsPresent) { Reset-SourceTree -Yes:$Yes.IsPresent }
+        $CI = -not $NoCI
+        $reset = $Clean
     }
 
     $projectName = "Abc.Maybe"
 
-    # 1. Get git metadata.
-    $branch, $commit = Get-GitMetadata -Force:$force.IsPresent -Fatal:$Release.IsPresent -Yes:$Yes.IsPresent
-    # 2. Generate build UIDs.
+    # 1. Reset the source tree.
+    if ($reset) { Reset-SourceTree -Yes:($Release -or $Yes) }
+    # 2. Get git metadata.
+    $branch, $commit = Get-GitMetadata -Force:$Force.IsPresent -Fatal:$Release.IsPresent -Yes:$Yes.IsPresent
+    # 3. Generate build UIDs.
     $buildNumber, $revisionNumber, $timestamp = Generate-UIDs
-    # 3. Get package version.
+    # 4. Get package version.
     $version, $prefix, $suffix = Get-ActualVersion $projectName $timestamp -CI:$CI
-    # 4. Get package file.
-    $packageFile = Get-PackageFile $projectName $version -CI:$CI
-    # 5. Approve package file.
-    if (-not $CI) {
-        # Not strictly necessary w/ option -Release on since we just deleted all
-        # files in the output directory with Reset-Repository.
-        $forceRemoval = $Release -or $Yes
-        Approve-PackageFile $packageFile $version -Yes:$forceRemoval
-    }
+    # 5. Get package file.
+    $packageFile = Get-PackageFile $projectName $version -Yes:($Release -or $Yes) -CI:$CI
 
     Invoke-Pack `
         -ProjectName $projectName `
@@ -502,20 +473,26 @@ try {
         -CI:$CI `
         -MyVerbose:$MyVerbose.IsPresent
 
-    if ($Release) {
-        # All CI packages are considered obsolete.
-        Reset-PackageCIOutDir -Yes:$true
-        # Reset the local NuGet cache/feed. Failing to do so would mean that,
-        # after publishing the package to NuGet.Org, test-package.ps1 could test
-        # a package from the local NuGet cache/feed not the one from NuGet.Org.
-        # Since we are at it, we go a bit further and remove everything.
-        # This is in line with our philosophy of keeping things clean.
-        Reset-LocalNuGet -Yes:$true
-
-        Invoke-Publish $packageFile
+    # Post-actions.
+    if ($CI) {
+        Invoke-PushLocal $packageFile $version
     }
     else {
-        if (-not $CI) {
+        if ($Release) {
+            # This one is to ensure a clean test tree after publication.
+            Reset-TestTree -Yes:$true
+            # All CI packages are considered obsolete.
+            Reset-PackageCIOutDir -Yes:$true
+            # Reset the local NuGet cache/feed. Failing to do so would mean that,
+            # after publishing the package to NuGet.Org, test-package.ps1 could test
+            # a package from the local NuGet cache/feed not the one from NuGet.Org.
+            # Since we are at it, we go a bit further and remove everything.
+            # This is in line with our philosophy of keeping things clean.
+            Reset-LocalNuGet -Yes:$true
+
+            Invoke-Publish $packageFile
+        }
+        else {
             # If we don't reset the local NuGet cache, Invoke-PushLocal won't
             # update it with a new version of the package (the feed part is fine,
             # but we always remove cache and feed entry together, see
@@ -525,11 +502,9 @@ try {
             if (-not $yes) {
                 Confirm-Continue "Push the package to the local NuGet feed/cache?"
             }
-        }
 
-        Invoke-PushLocal $packageFile $version
+            Invoke-PushLocal $packageFile $version
 
-        if (-not $CI) {
             Chirp "---`nNow, you can test the package. For instance,"
             Chirp "> eng\test-package.ps1 -a -y"
         }
