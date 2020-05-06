@@ -4,7 +4,7 @@
     <TargetFrameworks>$(MaxApiPlatform);netstandard2.0</TargetFrameworks>
   </PropertyGroup>
 
-  <Import Project="$(EngRoot)Retail.props" Condition=" $(Retail) == 'true' " />
+  <Import Project="$(EngRoot)Package.props" Condition=" $(Retail) == 'true' " />
 
   <PropertyGroup Condition=" $(Configuration) == 'Release' ">
     <GenerateDocumentationFile>true</GenerateDocumentationFile>

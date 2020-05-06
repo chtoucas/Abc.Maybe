@@ -92,7 +92,8 @@ Usage: pack.ps1 [switches]
 
 # ------------------------------------------------------------------------------
 
-# Reset the repository when -Safe is set (no confirmation).
+# Reset the repository, only used when -Safe is set.
+# Identical to reset.ps1 but with extended comments.
 function Reset-Repository {
     [CmdletBinding()]
     param()
@@ -358,7 +359,7 @@ function Invoke-Pack {
     }
     else { Chirp " on branch ""???"", commit ""???""." }
 
-    # VersionSuffix is for Retail.props, but it is not enough, we MUST
+    # VersionSuffix is for Package.props, but it is not enough, we MUST
     # also specify --version-suffix (not sure it is necessary any more, but
     # I prefer to play safe).
     # NB: this is not something that we have to do for retail builds (see

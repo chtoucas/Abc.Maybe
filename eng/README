@@ -19,11 +19,12 @@ alongside the supporting scripts (not meant to be called directly)
 Maintenance scripts.
 - dump-test-suite.cmd   dump the test suite.
 - freeze-api.ps1        update public API files.
-- reset.ps1             delete 'bin' and 'obj' directories, clear local NuGet feed/cache.
+- reset.ps1             reset repository.
 
 Other files.
+- abc.ps1               PowerShell common helpers.
 - Abc.Maybe.props       NuGet package props for Abc.Maybe.
-- Retail.props          MSBuild props for retail builds.
-- Retail.tasks          MSBuild tasks for retail builds (obsolete).
+- Package.props         MSBuild props when building packages.
+- Package.tasks         MSBuild tasks when building packages (obsolete).
 - Abc.snk               strong named key.
 - Abc.pk                public key.

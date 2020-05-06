@@ -2,7 +2,7 @@
 
 <#
 .SYNOPSIS
-Reset the solution.
+Reset the repository.
 
 .PARAMETER Yes
 Do not ask for confirmation.
