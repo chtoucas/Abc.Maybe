@@ -180,7 +180,6 @@ function Get-RuntimeString {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $false)]
-        [ValidateNotNull()]
         [string] $runtime = ""
     )
 
@@ -198,10 +197,9 @@ function Invoke-Restore {
     param(
         [Parameter(Mandatory = $true, Position = 0)]
         [ValidateNotNullOrEmpty()]
-        [string] $version = "",
+        [string] $version,
 
         [Parameter(Mandatory = $false, Position = 1)]
-        [ValidateNotNull()]
         [string] $runtime = "",
 
         [switch] $allKnown
@@ -229,10 +227,9 @@ function Invoke-Build {
     param(
         [Parameter(Mandatory = $true, Position = 0)]
         [ValidateNotNullOrEmpty()]
-        [string] $version = "",
+        [string] $version,
 
         [Parameter(Mandatory = $false, Position = 1)]
-        [ValidateNotNull()]
         [string] $runtime = "",
 
         [switch] $allKnown,
@@ -265,10 +262,9 @@ function Invoke-TestOldStyle {
 
         [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
-        [string] $version = "",
+        [string] $version,
 
         [Parameter(Mandatory = $false, Position = 2)]
-        [ValidateNotNull()]
         [string] $runtime = ""
     )
 
@@ -309,10 +305,9 @@ function Invoke-TestSingle {
 
         [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
-        [string] $version = "",
+        [string] $version,
 
         [Parameter(Mandatory = $false, Position = 2)]
-        [ValidateNotNull()]
         [string] $runtime = "",
 
         [switch] $noRestore,
@@ -354,10 +349,9 @@ function Invoke-TestMany {
 
         [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
-        [string] $version = "",
+        [string] $version,
 
         [Parameter(Mandatory = $false, Position = 2)]
-        [ValidateNotNull()]
         [string] $runtime = "",
 
         [switch] $noRestore,
@@ -390,10 +384,9 @@ function Invoke-TestAll {
     param(
         [Parameter(Mandatory = $true, Position = 0)]
         [ValidateNotNullOrEmpty()]
-        [string] $version = "",
+        [string] $version,
 
         [Parameter(Mandatory = $false, Position = 1)]
-        [ValidateNotNull()]
         [string] $runtime = "",
 
         [switch] $allKnown,

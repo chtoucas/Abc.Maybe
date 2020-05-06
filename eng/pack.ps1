@@ -314,38 +314,35 @@ function Invoke-Git {
 # ------------------------------------------------------------------------------
 
 function Invoke-Pack {
-    [CmdletBinding()]
+    [CmdletBinding(PositionalBinding = $false)]
     param(
-        [Parameter(Mandatory = $true, Position = 0)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $projectName,
 
-        [Parameter(Mandatory = $true, Position = 1)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $buildNumber,
 
-        [Parameter(Mandatory = $true, Position = 2)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $revisionNumber,
 
-        [Parameter(Mandatory = $true, Position = 3)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $version,
 
-        [Parameter(Mandatory = $true, Position = 4)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $versionPrefix = "",
+        [string] $versionPrefix,
 
-        [Parameter(Mandatory = $false, Position = 5)]
-        [ValidateNotNull()]
+        [Parameter(Mandatory = $false)]
         [string] $versionSuffix = "",
 
-        [Parameter(Mandatory = $false, Position = 6)]
-        [ValidateNotNull()]
+        [Parameter(Mandatory = $false)]
         [string] $repositoryBranch = "",
 
-        [Parameter(Mandatory = $false, Position = 7)]
-        [ValidateNotNull()]
+        [Parameter(Mandatory = $false)]
         [string] $repositoryCommit = "",
 
         [switch] $retail,
@@ -516,7 +513,8 @@ try {
         Approve-PackageFile $packageFile $version -Yes:$forceRemoval
     }
 
-    Invoke-Pack $projectName `
+    Invoke-Pack `
+        -ProjectName $projectName `
         -BuildNumber:$buildNumber `
         -RevisionNumber:$revisionNumber `
         -Version:$version `
