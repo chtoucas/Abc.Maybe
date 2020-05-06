@@ -349,10 +349,10 @@ function Invoke-Pack {
     Assert-CmdSuccess -ErrMessage "Pack task failed."
 
     if ($ci) {
-        Chirp "CI package successfully created."
+        Squeak "CI package successfully created."
     }
     else {
-        Chirp "Package successfully created."
+        Squeak "Package successfully created."
     }
 }
 
@@ -391,7 +391,7 @@ function Invoke-PushLocal {
     & dotnet restore $project /p:AbcVersion=$version | Out-Host
     Assert-CmdSuccess -ErrMessage "Failed to update the local NuGet cache."
 
-    Chirp "Package successfully installed."
+    Squeak "Package successfully installed."
 }
 
 # ------------------------------------------------------------------------------
@@ -439,19 +439,12 @@ if ($Help) {
 try {
     pushd $ROOT_DIR
 
-    if ($Release) {
-        $CI = $false
-        $reset = $true
-    }
-    else {
-        $CI = -not $NoCI
-        $reset = $Clean
-    }
+    $CI = -not ($Release -or $NoCI)
 
     $projectName = "Abc.Maybe"
 
     # 1. Reset the source tree.
-    if ($reset) { Reset-SourceTree -Yes:($Release -or $Yes) }
+    if ($Release -or $Clean) { Reset-SourceTree -Yes:($Release -or $Yes) }
     # 2. Get git metadata.
     $branch, $commit = Get-GitMetadata -Force:$Force.IsPresent -Fatal:$Release.IsPresent -Yes:$Yes.IsPresent
     # 3. Generate build UIDs.
@@ -462,14 +455,14 @@ try {
     $packageFile = Get-PackageFile $projectName $version -Yes:($Release -or $Yes) -CI:$CI
 
     Invoke-Pack `
-        -ProjectName $projectName `
-        -BuildNumber:$buildNumber `
-        -RevisionNumber:$revisionNumber `
-        -Version:$version `
-        -VersionPrefix:$prefix `
-        -VersionSuffix:$suffix `
-        -RepositoryBranch:$branch `
-        -RepositoryCommit:$commit `
+        -ProjectName      $projectName `
+        -BuildNumber      $buildNumber `
+        -RevisionNumber   $revisionNumber `
+        -Version          $version `
+        -VersionPrefix    $prefix `
+        -VersionSuffix    $suffix `
+        -RepositoryBranch $branch `
+        -RepositoryCommit $commit `
         -CI:$CI `
         -MyVerbose:$MyVerbose.IsPresent
 
@@ -479,16 +472,16 @@ try {
     }
     else {
         if ($Release) {
-            # This one is to ensure a clean test tree after publication.
-            Reset-TestTree -Yes:$true
-            # All CI packages are considered obsolete.
+            # Now, all CI packages should be obsoleted. Traces of them can be
+            # found within the directories "test" and "__\packages-ci", but also
+            # in the local NuGet cache/feed.
+            # We should also remove any reference to a release package with the
+            # same version. Failing to do so would mean that, after publishing
+            # the package to NuGet.Org, "test-package.ps1" could still test a
+            # package from the local NuGet cache/feed not the one from NuGet.Org.
+            Reset-TestTree        -Yes:$true
             Reset-PackageCIOutDir -Yes:$true
-            # Reset the local NuGet cache/feed. Failing to do so would mean that,
-            # after publishing the package to NuGet.Org, test-package.ps1 could test
-            # a package from the local NuGet cache/feed not the one from NuGet.Org.
-            # Since we are at it, we go a bit further and remove everything.
-            # This is in line with our philosophy of keeping things clean.
-            Reset-LocalNuGet -Yes:$true
+            Reset-LocalNuGet      -Yes:$true
 
             Invoke-Publish $packageFile
         }

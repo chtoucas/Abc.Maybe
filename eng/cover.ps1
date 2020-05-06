@@ -123,7 +123,7 @@ function Invoke-OpenCover {
         [string] $output
     )
 
-    SAY-LOUD "Running OpenCover."
+    YELL "Running OpenCover."
 
     $filters = `
         "+[Abc.Maybe]*",
@@ -158,7 +158,7 @@ function Invoke-Coverlet {
         [string] $output
     )
 
-    SAY-LOUD "Running Coverlet."
+    YELL "Running Coverlet."
 
     $excludes = `
         "[Abc*]System.Diagnostics.CodeAnalysis.*",
@@ -191,7 +191,7 @@ function Invoke-ReportGenerator {
         [string] $targetdir
     )
 
-    SAY-LOUD "Running ReportGenerator."
+    YELL "Running ReportGenerator."
 
     & dotnet tool run reportgenerator `
         -verbosity:Warning `

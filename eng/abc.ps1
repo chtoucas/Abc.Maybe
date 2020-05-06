@@ -227,7 +227,7 @@ function Remove-PackageFromLocalNuGet {
 ################################################################################
 #region Reporting.
 
-# Print a message.
+# Say something.
 function Say {
     [CmdletBinding()]
     param(
@@ -259,8 +259,8 @@ function Say-Indent {
 
 # ------------------------------------------------------------------------------
 
-# Say out loud a message; print it with emphasis.
-function Say-Loud {
+# Say something with great emphasis.
+function Yell {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -275,6 +275,7 @@ function Say-Loud {
 
 # ------------------------------------------------------------------------------
 
+# Say something with medium emphasis.
 function Chirp {
     [CmdletBinding()]
     param(
@@ -286,6 +287,21 @@ function Chirp {
     )
 
     Write-Host $Message -ForegroundColor Green -NoNewline:$NoNewline.IsPresent
+}
+
+# ------------------------------------------------------------------------------
+
+function Squeak {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $Message,
+
+        [switch] $NoNewline
+    )
+
+    Write-Host $Message -ForegroundColor Cyan -NoNewline:$NoNewline.IsPresent
 }
 
 # ------------------------------------------------------------------------------
