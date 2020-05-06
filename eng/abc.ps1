@@ -85,6 +85,7 @@ function Get-PackageVersion {
     $xml = [Xml] (Get-Content $proj)
     $node = (Select-Xml -Xml $xml -XPath "//Project/PropertyGroup/MajorVersion/..").Node
 
+    # NB: if one of the nodes does not actually exist, the function throws.
     $major = $node | Select -First 1 -ExpandProperty MajorVersion
     $minor = $node | Select -First 1 -ExpandProperty MinorVersion
     $patch = $node | Select -First 1 -ExpandProperty PatchVersion

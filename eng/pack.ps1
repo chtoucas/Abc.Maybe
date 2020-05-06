@@ -469,7 +469,7 @@ function Invoke-Publish {
         Carp "Not yet activated."
         Chirp "---`nTo publish the package:"
         Chirp "> dotnet nuget push $packageFile $args"
-        #& dotnet nuget push $packageFile $args
+        #& dotnet nuget push --force-english-output $packageFile $args
     }
     else {
         Chirp "---`nTo publish the package:"
