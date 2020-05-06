@@ -16,15 +16,14 @@ equality and ordering comparisons.
   * Maybe<Func<>>
   * delegates that return null.
 - Check published packages (upgrade, debugging experience).
-- Debugging: embedded, pdbonly or full...
-  https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/debug-compiler-option
-  https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/making-an-image-easier-to-debug
 
 Multitargeting: target net461/netstandard1.0.
 - We use TargetFrameworkIdentifier ('.NETFramework') and NETFRAMEWORK instead
   of TargetFramework and NET461, is it such a good idea?
-- Packaging: net461 -> no full pdb...
   https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives/preprocessor-if
+- Debugging: embedded, pdbonly or full...
+  https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/debug-compiler-option
+  https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/making-an-image-easier-to-debug
 - https://github.com/dotnet/announcements/issues/31
 - code coverage?
 - Build warning NU1701 (should be OK now)
@@ -93,8 +92,6 @@ Other tasks
   https://github.com/clairernovotny/DeterministicBuilds
 - Replace coverlet.msbuild by coverlet-console? Use runsettings.
   Add coverlet.collector to the test project. Coverity?
-- Publish dev packages to myget or github?
-- Cleanup scripts, dotnet nuget locals --clear all.
 - Local tools: find updates, dotnet-outdated.
   Remove refs to OpenCover and ReportGenerator in Abc.Tests.
   https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools
