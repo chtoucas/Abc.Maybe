@@ -15,6 +15,7 @@ Internal Changes
 - Upgraded packages:
   * Microsoft.CodeAnalysis.FxCopAnalyzers 2.9.8 -> 3.0.0.
   * Microsoft.CodeAnalysis.PublicApiAnalyzers 2.9.8 -> 3.0.0.
+  * ReportGenerator 4.5.6 -> 4.5.8.
 
 2020-04-27, version 1.0.0-beta4
 -------------------------------
