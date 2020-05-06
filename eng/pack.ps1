@@ -5,11 +5,11 @@
 
 <#
 .SYNOPSIS
-Create a NuGet package, retail or CI (the default).
+Create a NuGet package.
+The default behaviour is to build a CI package.
 
 .PARAMETER Retail
 Create a package, ready to be published to NuGet.Org.
-The default behaviour is to build CI packages.
 
 .PARAMETER Safe
 Create a package, safe mode and ready to be published to NuGet.Org.
@@ -204,22 +204,14 @@ function Get-ActualVersion {
         [ValidateNotNullOrEmpty()]
         [string] $timestamp,
 
-        [switch] $retail
+        [switch] $ci
     )
 
     Say "Getting package version."
 
     $major, $minor, $patch, $precy, $preno = Get-PackageVersion $projectName
 
-    if ($retail) {
-        if ($precy -eq "") {
-            $suffix = ""
-        }
-        else {
-            $suffix = "$precy$preno"
-        }
-    }
-    else {
+    if ($ci) {
         # For CI packages, we use SemVer 2.0.0, and we ensure that the package
         # is seen as a prerelease of what could be the next version. Examples:
         # - "1.2.3"       -> "1.2.4-ci-20201231-T121212".
@@ -233,6 +225,14 @@ function Get-ActualVersion {
             # With a prerelease label, we increase the prerelease number.
             $preno  = 1 + [int]$preno
             $suffix = "$precy$preno-ci-$timestamp"
+        }
+    }
+    else {
+        if ($precy -eq "") {
+            $suffix = ""
+        }
+        else {
+            $suffix = "$precy$preno"
         }
     }
 
@@ -262,16 +262,16 @@ function Get-PackageFile {
         [ValidateNotNullOrEmpty()]
         [string] $version,
 
-        [switch] $retail
+        [switch] $ci
     )
 
     Write-Verbose "Getting package file."
 
-    if ($retail) {
-        $path = Join-Path $PKG_OUTDIR "$projectName.$version.nupkg"
+    if ($ci) {
+        $path = Join-Path $PKG_CI_OUTDIR "$projectName.$version.nupkg"
     }
     else {
-        $path = Join-Path $PKG_CI_OUTDIR "$projectName.$version.nupkg"
+        $path = Join-Path $PKG_OUTDIR "$projectName.$version.nupkg"
     }
 
     Write-Verbose "Package file: ""$path"""
@@ -348,7 +348,7 @@ function Invoke-Pack {
         [Parameter(Mandatory = $false)]
         [string] $repositoryCommit = "",
 
-        [switch] $retail,
+        [switch] $ci,
         [switch] $myVerbose
     )
 
@@ -373,14 +373,14 @@ function Invoke-Pack {
         $args += "/p:DisplaySettings=true"
     }
 
-    if ($retail) {
-        $output = $PKG_OUTDIR
-    }
-    else {
+    if ($ci) {
         $output = $PKG_CI_OUTDIR
         $args += `
             "/p:AssemblyTitle=""$projectName (CI)""",
             "/p:NoWarnX=NU5105"
+    }
+    else {
+        $output = $PKG_OUTDIR
     }
 
     $project = Join-Path $SRC_DIR $projectName -Resolve
@@ -398,11 +398,11 @@ function Invoke-Pack {
 
     Assert-CmdSuccess -ErrMessage "Pack task failed."
 
-    if ($retail) {
-        Chirp "Package successfully created."
+    if ($ci) {
+        Chirp "CI package successfully created."
     }
     else {
-        Chirp "CI package successfully created."
+        Chirp "Package successfully created."
     }
 }
 
@@ -417,9 +417,7 @@ function Invoke-PushLocal {
 
         [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
-        [string] $version,
-
-        [switch] $retail
+        [string] $version
     )
 
     Chirp "Pushing the package to the local NuGet feed/cache."
@@ -492,12 +490,12 @@ try {
     pushd $ROOT_DIR
 
     if ($Safe) {
-        $isRetail = $true
+        $CI = $false
 
         Reset-Repository
     }
     else {
-        $isRetail = $Retail.IsPresent
+        $CI = -not $Retail.IsPresent
 
         if ($Clean.IsPresent) { Reset-SourceTree -Yes:$Yes.IsPresent }
     }
@@ -509,11 +507,11 @@ try {
     # 2. Generate build UIDs.
     $buildNumber, $revisionNumber, $timestamp = Generate-UIDs
     # 3. Get package version.
-    $version, $prefix, $suffix = Get-ActualVersion $projectName $timestamp -Retail:$isRetail
+    $version, $prefix, $suffix = Get-ActualVersion $projectName $timestamp -CI:$CI
     # 4. Get package file.
-    $packageFile = Get-PackageFile $projectName $version -Retail:$isRetail
+    $packageFile = Get-PackageFile $projectName $version -CI:$CI
     # 5. Approve package file.
-    if ($isRetail) {
+    if (-not $CI) {
         $forceRemoval = $Safe -or $Yes
         Approve-PackageFile $packageFile $version -Yes:$forceRemoval
     }
@@ -527,14 +525,14 @@ try {
         -VersionSuffix:$suffix `
         -RepositoryBranch:$branch `
         -RepositoryCommit:$commit `
-        -Retail:$isRetail `
+        -CI:$CI `
         -MyVerbose:$MyVerbose.IsPresent
 
     if ($Safe) {
         Invoke-Publish $packageFile
     }
     else {
-        if ($isRetail) {
+        if (-not $CI) {
             # If we don't reset the local NuGet cache, Invoke-PushLocal won't
             # update it with a new version of the package (the feed part is fine,
             # but we always remove cache and feed entry together, see
@@ -548,7 +546,7 @@ try {
 
         Invoke-PushLocal $packageFile $version
 
-        if ($isRetail) {
+        if (-not $CI) {
             Chirp "---`nNow, you can test the package. For instance,"
             Chirp "> eng\test-package.ps1 -a -y"
         }
