@@ -91,23 +91,6 @@ Usage: pack.ps1 [switches]
 
 # ------------------------------------------------------------------------------
 
-# Reset the repository, only used when -Release is set. See also reset.ps1.
-function Reset-Repository {
-    [CmdletBinding()]
-    param()
-
-    Say "Resetting the repository."
-
-    # This one is for "safety".
-    Reset-SourceTree -Yes:$true
-    # This one is to ensure a clean test tree after publication.
-    Reset-TestTree -Yes:$true
-
-    Reset-PackageOutDir -Yes:$true
-}
-
-# ------------------------------------------------------------------------------
-
 # Find commit hash and branch.
 function Get-GitMetadata {
     [CmdletBinding()]
@@ -370,7 +353,7 @@ function Invoke-Pack {
 
     $project = Join-Path $SRC_DIR $projectName -Resolve
 
-    # Do NOT use --no-restore or --no-build (options -Clean/-Release remove everything).
+    # Do NOT use --no-restore or --no-build (options -Clean/-Release erase bin/obj).
     # RepositoryCommit and RepositoryBranch are standard props, do not remove them.
     & dotnet pack $project -c $CONFIGURATION --nologo $args --output $output `
         /p:TargetFrameworks='\"netstandard2.1;netstandard2.0;netstandard1.0;net461\"' `
@@ -477,7 +460,11 @@ try {
     if ($Release) {
         $CI = $false
 
-        Reset-Repository
+        # This one is for "safety".
+        Reset-SourceTree -Yes:$true
+        # This one is to ensure a clean test tree after publication.
+        Reset-TestTree -Yes:$true
+        Reset-PackageOutDir -Yes:$true
     }
     else {
         $CI = -not $NoCI.IsPresent
