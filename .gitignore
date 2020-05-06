@@ -4,13 +4,13 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 xunit.trx
-__/coverlet
-__/nuget-cache
+__/coverlet/
+__/nuget-cache/
 __/nuget-feed/*
 !__/nuget-feed/_._
-__/opencover
-__/packages
-__/packages-edge
+__/opencover/
+__/packages/
+__/packages-ci/
 
 # User-specific files
 *.rsuser
