@@ -8,30 +8,30 @@
 Create a NuGet package.
 The default behaviour is to build a CI package.
 
-.PARAMETER Retail
-Create a package, ready to be published to NuGet.Org.
+.PARAMETER NoCI
+Create a non-CI package.
 
-.PARAMETER Safe
-Create a package, safe mode and ready to be published to NuGet.Org.
-This is a meta-option, it automatically sets -Retail.
+.PARAMETER Release
+Create a package ready to be published to NuGet.Org.
+This is a meta-option, it automatically sets -NoCI. by the way, the resulting
+package is no different from the one you would get using only -NoCI.
 In addition, the script resets the repository, and stops when there are
 uncommited changes or if it cannot retrieve git metadata.
-The resulting package is not different from the one you would get using -Retail.
-If this option is too strict and you are in a hurry, you can use:
-PS> pack.ps1 -Retail -Force
-In that event, do not forget to reset the repository after.
+If this behaviour happens to be too strict and you are in a hurry, you can use:
+PS> pack.ps1 -NoCI -Force
+In that event, do not forget to reset the repository thereafter.
 
 .PARAMETER Force
 Force retrieval of git metadata when there are uncommited changes.
-Ignored if -Safe is also set.
+Ignored if -Release is also set.
 
 .PARAMETER Clean
 Hard clean the source directory before anything else.
 
 .PARAMETER Yes
 Do not ask for confirmation, mostly.
-The only exception is after having created a retail package, safe mode, you will
-then be asked if you wish that the script attempts to publish the package for you.
+Only one exception: after having created a package w/ option -Release on, the
+script will enter in an interactive mode.
 
 .PARAMETER MyVerbose
 Verbose mode. We display the settings used before compiling each assembly.
@@ -44,18 +44,17 @@ PS> pack.ps1
 Create a CI package.
 
 .EXAMPLE
-PS> pack.ps1 -r -f
-Create a package, ready to be published to NuGet.Org, but it may contain
-obsolete git metadata or even none.
+PS> pack.ps1 -n -f
+Create a non-CI package, ignore uncommited changes.
 
 .EXAMPLE
-PS> pack.ps1 -s
-Create a package, safe mode and ready to be published to NuGet.Org.
+PS> pack.ps1 -r
+Create a package ready to be published to NuGet.Org.
 #>
 [CmdletBinding()]
 param(
-    [Alias("r")] [switch] $Retail,
-    [Alias("s")] [switch] $Safe,
+    [Alias("n")] [switch] $NoCI,
+    [Alias("r")] [switch] $Release,
     [Alias("f")] [switch] $Force,
     [Alias("c")] [switch] $Clean,
     [Alias("y")] [switch] $Yes,
@@ -79,8 +78,8 @@ function Write-Usage {
 Create a NuGet package for Abc.Maybe
 
 Usage: pack.ps1 [switches]
-  -r|-Retail      create a package, ready to be published to NuGet.Org.
-  -s|-Safe        create a package, safe mode and ready to be published to NuGet.Org.
+  -n|-NoCI        create a non-CI package.
+  -r|-Release     create a package ready to be published to NuGet.Org.
   -f|-Force       force retrieval of git metadata when there are uncommited changes.
   -c|-Clean       hard clean the solution before anything else.
   -y|-Yes         do not ask for confirmation, mostly.
@@ -92,8 +91,7 @@ Usage: pack.ps1 [switches]
 
 # ------------------------------------------------------------------------------
 
-# Reset the repository, only used when -Safe is set.
-# Identical to reset.ps1 but with extended comments.
+# Reset the repository, only used when -Release is set. See also reset.ps1.
 function Reset-Repository {
     [CmdletBinding()]
     param()
@@ -105,20 +103,7 @@ function Reset-Repository {
     # This one is to ensure a clean test tree after publication.
     Reset-TestTree -Yes:$true
 
-    # These two ensure that soon-to-be obsolete package files are removed.
-    # One advantage is that Approve-PackageFile won't ask for any confirmation
-    # since there is no dangling package file.
     Reset-PackageOutDir -Yes:$true
-    Reset-PackageCIOutDir -Yes:$true
-
-    # This is the only mandatory part.
-    # We ensure that any temporary retail package is removed from the local
-    # NuGet cache/feed. Failing to do so would mean that, after publishing the
-    # package to NuGet.Org, test-package.ps1 could test a package from the local
-    # NuGet cache/feed not the one from NuGet.Org.
-    # Since we are at it, we go a bit further and remove any temporary package.
-    # This is in line with our philosophy of keeping things clean.
-    Reset-LocalNuGet -Yes:$true
 }
 
 # ------------------------------------------------------------------------------
@@ -298,7 +283,7 @@ function Approve-PackageFile {
     Write-Verbose "Approving package file."
 
     # Is there a dangling package file?
-    # NB: only meaningful when in retail mode; otherwise the filename is unique.
+    # NB: only meaningful for non-CI packages; otherwise the filename is unique.
     if (Test-Path $packageFile) {
         Carp "A package with the same version ($version) already exists."
         if (-not $yes) {
@@ -362,8 +347,8 @@ function Invoke-Pack {
     # VersionSuffix is for Pack.props, but it is not enough, we MUST
     # also specify --version-suffix (not sure it is necessary any more, but
     # I prefer to play safe).
-    # NB: this is not something that we have to do for retail builds (see
-    # above), since in that case we don't patch the suffix, but let's not bother.
+    # NB: this is not something that we have to do for non-CI packages, since
+    # in that case we don't patch the suffix, but let's not bother.
     $args = `
         "/p:VersionPrefix=$versionPrefix",
         "/p:VersionSuffix=$versionSuffix",
@@ -385,7 +370,7 @@ function Invoke-Pack {
 
     $project = Join-Path $SRC_DIR $projectName -Resolve
 
-    # Do NOT use --no-restore or --no-build (options -Clean/-Safe remove everything).
+    # Do NOT use --no-restore or --no-build (options -Clean/-Release remove everything).
     # RepositoryCommit and RepositoryBranch are standard props, do not remove them.
     & dotnet pack $project -c $CONFIGURATION --nologo $args --output $output `
         /p:TargetFrameworks='\"netstandard2.1;netstandard2.0;netstandard1.0;net461\"' `
@@ -489,13 +474,13 @@ if ($Help) {
 try {
     pushd $ROOT_DIR
 
-    if ($Safe) {
+    if ($Release) {
         $CI = $false
 
         Reset-Repository
     }
     else {
-        $CI = -not $Retail.IsPresent
+        $CI = -not $NoCI.IsPresent
 
         if ($Clean.IsPresent) { Reset-SourceTree -Yes:$Yes.IsPresent }
     }
@@ -503,7 +488,7 @@ try {
     $projectName = "Abc.Maybe"
 
     # 1. Get git metadata.
-    $branch, $commit = Get-GitMetadata -Force:$force.IsPresent -Fatal:$Safe.IsPresent -Yes:$Yes.IsPresent
+    $branch, $commit = Get-GitMetadata -Force:$force.IsPresent -Fatal:$Release.IsPresent -Yes:$Yes.IsPresent
     # 2. Generate build UIDs.
     $buildNumber, $revisionNumber, $timestamp = Generate-UIDs
     # 3. Get package version.
@@ -512,7 +497,9 @@ try {
     $packageFile = Get-PackageFile $projectName $version -CI:$CI
     # 5. Approve package file.
     if (-not $CI) {
-        $forceRemoval = $Safe -or $Yes
+        # Not strictly necessary w/ option -Release on since we just deleted all
+        # files in the output directory with Reset-Repository.
+        $forceRemoval = $Release -or $Yes
         Approve-PackageFile $packageFile $version -Yes:$forceRemoval
     }
 
@@ -528,7 +515,16 @@ try {
         -CI:$CI `
         -MyVerbose:$MyVerbose.IsPresent
 
-    if ($Safe) {
+    if ($Release) {
+        # All CI packages are considered obsolete.
+        Reset-PackageCIOutDir -Yes:$true
+        # Reset the local NuGet cache/feed. Failing to do so would mean that,
+        # after publishing the package to NuGet.Org, test-package.ps1 could test
+        # a package from the local NuGet cache/feed not the one from NuGet.Org.
+        # Since we are at it, we go a bit further and remove everything.
+        # This is in line with our philosophy of keeping things clean.
+        Reset-LocalNuGet -Yes:$true
+
         Invoke-Publish $packageFile
     }
     else {
