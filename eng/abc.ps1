@@ -219,7 +219,7 @@ function Remove-PackageFromLocalNuGet {
     $oldFilename = "$projectName.$version.nupkg"
     $oldFilepath = Join-Path $NUGET_LOCAL_FEED $oldFilename
     if (Test-Path $oldFilepath) {
-        Remove-Item $oldFilepath -Force
+        Remove-Item $oldFilepath
     }
 }
 
@@ -410,7 +410,7 @@ function Remove-Dir {
         return
     }
 
-    Remove-Item $Path -Force -Recurse
+    Remove-Item $Path -Recurse
 }
 
 # ------------------------------------------------------------------------------
@@ -437,7 +437,7 @@ function Remove-Packages {
     ls $Path -Include "*.nupkg" -Recurse | ?{
         Write-Verbose "Deleting ""$_""."
 
-        Remove-Item $_.FullName -Force
+        Remove-Item $_.FullName
     }
 }
 
@@ -467,7 +467,7 @@ function Remove-BinAndObj {
         ls $_ -Include bin,obj -Recurse | ?{
             Write-Verbose "Deleting ""$_""."
 
-            Remove-Item $_.FullName -Force -Recurse
+            Remove-Item $_.FullName -Recurse
         }
     }
 }

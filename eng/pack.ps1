@@ -8,11 +8,11 @@
 Create a NuGet package, retail or CI (the default).
 
 .PARAMETER Retail
-Create a retail package, ready to be published to NuGet.Org.
+Create a package, ready to be published to NuGet.Org.
 The default behaviour is to build CI packages.
 
 .PARAMETER Safe
-Create a retail package, safe mode and ready to be published to NuGet.Org.
+Create a package, safe mode and ready to be published to NuGet.Org.
 This is a meta-option, it automatically sets -Retail.
 In addition, the script resets the repository, and stops when there are
 uncommited changes or if it cannot retrieve git metadata.
@@ -29,7 +29,9 @@ Ignored if -Safe is also set.
 Hard clean the source directory before anything else.
 
 .PARAMETER Yes
-Do not ask for confirmation (mostly).
+Do not ask for confirmation, mostly.
+The only exception is after having created a retail package, safe mode, you will
+then be asked if you wish that the script attempts to publish the package for you.
 
 .PARAMETER MyVerbose
 Verbose mode. We display the settings used before compiling each assembly.
@@ -43,11 +45,12 @@ Create a CI package.
 
 .EXAMPLE
 PS> pack.ps1 -r -f
-Fast packing, retail mode, maybe obsolete git metadata.
+Create a package, ready to be published to NuGet.Org, but it may contain
+obsolete git metadata or even none.
 
 .EXAMPLE
 PS> pack.ps1 -s
-Create a retail package, safe mode and ready to be published to NuGet.Org.
+Create a package, safe mode and ready to be published to NuGet.Org.
 #>
 [CmdletBinding()]
 param(
@@ -76,10 +79,11 @@ function Write-Usage {
 Create a NuGet package for Abc.Maybe
 
 Usage: pack.ps1 [switches]
-  -r|-Retail      create a retail package, ready to be published to NuGet.Org.
-  -s|-Safe        create a retail package, safe mode and ready to be published to NuGet.Org.
+  -r|-Retail      create a package, ready to be published to NuGet.Org.
+  -s|-Safe        create a package, safe mode and ready to be published to NuGet.Org.
   -f|-Force       force retrieval of git metadata when there are uncommited changes.
   -c|-Clean       hard clean the solution before anything else.
+  -y|-Yes         do not ask for confirmation, mostly.
   -v|-MyVerbose   display settings used to compile each DLL.
   -h|-Help        print this help and exit.
 
@@ -88,7 +92,7 @@ Usage: pack.ps1 [switches]
 
 # ------------------------------------------------------------------------------
 
-# Reset the repository when -Safe is set.
+# Reset the repository when -Safe is set (no confirmation).
 function Reset-Repository {
     [CmdletBinding()]
     param()
@@ -450,13 +454,27 @@ function Invoke-Publish {
         [string] $packageFile
     )
 
-    # TODO: publish, --interactive?
-    if (Confirm-Yes "Do you want me to publish the package for you?") {
-        Carp "Not yet implemented."
-    }
+    Chirp "Publishing the package -or- Preparing the command."
 
-    Chirp "---`nTo publish the package:"
-    Chirp "> dotnet nuget push $packageFile -s https://www.nuget.org/ -k MYKEY"
+    $args = @()
+
+    $source = Read-Host "Source [empty to push to the default source]"
+    if ($source -ne "") { $args += "-s $source" }
+
+    # TODO: --interactive?
+    $apiKey = Read-Host "API key [empty for no key]"
+    if ($apiKey -ne "") { $args += "-k $apiKey" }
+
+    if (Confirm-Yes "Do you want me to publish the package for you?") {
+        Carp "Not yet activated."
+        Chirp "---`nTo publish the package:"
+        Chirp "> dotnet nuget push $packageFile $args"
+        #& dotnet nuget push $packageFile $args
+    }
+    else {
+        Chirp "---`nTo publish the package:"
+        Chirp "> dotnet nuget push $packageFile $args"
+    }
 }
 
 #endregion
@@ -467,8 +485,6 @@ if ($Help) {
     Write-Usage
     exit 0
 }
-
-# TODO: do more w/ option Yes.
 
 try {
     pushd $ROOT_DIR
@@ -488,7 +504,7 @@ try {
 
     # 1. Get git metadata.
     $branch, $commit = Invoke-Git -Force:$force.IsPresent -Fatal:$Safe.IsPresent -Yes:$Yes.IsPresent
-    # 2. Get build numbers.
+    # 2. Get build UIDs.
     $buildNumber, $revisionNumber, $timestamp = Generate-UIDs
     # 3. Get package version.
     $version, $prefix, $suffix = Get-ActualVersion $projectName $timestamp -Retail:$isRetail
@@ -512,7 +528,6 @@ try {
         -MyVerbose:$MyVerbose.IsPresent
 
     if ($Safe) {
-        # TODO: reset repository, again?
         Invoke-Publish $packageFile
     }
     else {
@@ -523,7 +538,9 @@ try {
             # Reset-LocalNuGet).
             Remove-PackageFromLocalNuGet $projectName $version
 
-            Confirm-Continue "Push the package to the local NuGet feed/cache?"
+            if (-not $yes) {
+                Confirm-Continue "Push the package to the local NuGet feed/cache?"
+            }
         }
 
         Invoke-PushLocal $packageFile $version
