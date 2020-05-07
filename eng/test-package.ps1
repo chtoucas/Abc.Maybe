@@ -20,7 +20,8 @@ Specify a single platform for which to test the package.
 
 .PARAMETER Version
 Specify a version of the package Abc.Maybe.
-When no version is specified, we use the one found in Abc.Maybe.props.
+When no version is specified, we use the last one from the local NuGet feed.
+Ignored if -Current is also set.
 
 .PARAMETER Runtime
 The target runtime to test the package for.
@@ -30,6 +31,9 @@ Ignored by platforms "net45" or "net451".
 
 For instance, runtime can be "win10-x64" or "win10-x86".
 See https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
+
+.PARAMETER Current
+Use the package version found in Abc.Maybe.props.
 
 .PARAMETER AllKnown
 Test the package for ALL known platform versions (SLOW).
@@ -91,6 +95,7 @@ param(
     [Parameter(Mandatory = $false, Position = 2)]
     [Alias("r")] [string] $Runtime = "",
 
+                 [switch] $Current,
     [Alias("a")] [switch] $AllKnown,
                  [switch] $NoClassic,
                  [switch] $NoCore,
@@ -125,6 +130,7 @@ Usage: pack.ps1 [switches].
   -p|-Platform    specify a single platform for which to test the package.
   -v|-Version     specify a version of the package Abc.Maybe.
   -r|-Runtime     specify a target runtime to test for.
+    |-Current     use the package version found in Abc.Maybe.props.
   -a|-AllKnown    test the package for ALL known platform versions (SLOW).
     |-NoClassic   exclude .NET Framework from the tests.
     |-NoCore      exclude .NET Core from the tests.
@@ -134,54 +140,6 @@ Usage: pack.ps1 [switches].
   -h|-Help        print this help and exit.
 
 "@
-}
-
-# ------------------------------------------------------------------------------
-
-# .NET Framework 4.5/4.5.1 must be handled separately.
-# Since it's no longer officialy supported by Microsoft, we can remove them
-# if it ever becomes too much of a burden.
-
-function Find-XunitRunner {
-    [CmdletBinding()]
-    param()
-
-    Write-Verbose "Finding xunit.console.exe."
-
-    if ($NoXunitConsole) { Carp "No Xunit console runner." ; return $null }
-
-    $version = Get-PackageReferenceVersion $XUNIT_REF_PROJECT "xunit.runner.console"
-
-    if ($version -eq $null) {
-        Carp "Xunit console runner is not referenced in ""$XUNIT_REF_PROJECT""."
-        $Script:NoXunitConsole = $true
-        return $null
-    }
-
-    $path = Join-Path ${Env:USERPROFILE} `
-        ".nuget\packages\xunit.runner.console\$version\tools\$XUNIT_PLATFORM\xunit.console.exe"
-
-    if (-not (Test-Path $path)) {
-        Carp "Couldn't find Xunit Console Runner v$version where I expected it to be."
-        $Script:NoXunitConsole = $true
-        return $null
-    }
-
-    Write-Verbose "xunit.console.exe found here: ""$path""."
-
-    $path
-}
-
-# ------------------------------------------------------------------------------
-
-function Get-RuntimeLabel {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $false)]
-        [string] $runtime = ""
-    )
-
-    if ($runtime -eq "") { return "default runtime" } else { return "runtime ""$runtime""" }
 }
 
 # ------------------------------------------------------------------------------
@@ -229,6 +187,103 @@ function Validate-Version {
     if (-not $ok) {
         Croak "The specified version number is not well-formed: ""$version""."
     }
+}
+
+# ------------------------------------------------------------------------------
+
+# .NET Framework 4.5/4.5.1 must be handled separately.
+# Since it's no longer officialy supported by Microsoft, we can remove them
+# if it ever becomes too much of a burden.
+
+function Find-XunitRunner {
+    [CmdletBinding()]
+    param()
+
+    Write-Verbose "Finding xunit.console.exe."
+
+    if ($NoXunitConsole) { Carp "No Xunit console runner." ; return $null }
+
+    $version = Get-PackageReferenceVersion $XUNIT_REF_PROJECT "xunit.runner.console"
+
+    if ($version -eq $null) {
+        Carp "Xunit console runner is not referenced in ""$XUNIT_REF_PROJECT""."
+        $Script:NoXunitConsole = $true
+        return $null
+    }
+
+    $path = Join-Path ${Env:USERPROFILE} `
+        ".nuget\packages\xunit.runner.console\$version\tools\$XUNIT_PLATFORM\xunit.console.exe"
+
+    if (-not (Test-Path $path)) {
+        Carp "Couldn't find Xunit Console Runner v$version where I expected it to be."
+        $Script:NoXunitConsole = $true
+        return $null
+    }
+
+    Write-Verbose "xunit.console.exe found here: ""$path""."
+
+    $path
+}
+
+# ------------------------------------------------------------------------------
+
+# When there is a problem, we revert to -Current, nevertheless the process can
+# still fail in the end when the package is a release one and has not yet been
+# published to NuGet.Org.
+function Find-LastLocalVersion {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $projectName
+    )
+
+    Write-Verbose "Getting the last version from the local NuGet feed."
+
+    if (-not (Test-Path $NUGET_LOCAL_FEED)) {
+        Carp "The local NuGet feed is empty, reverting to -Current."
+        return Get-PackageVersion $projectName -AsString
+    }
+
+    # Don't remove the filter, the directory is never empty (file "_._").
+    $last = Get-ChildItem (Join-Path $NUGET_LOCAL_FEED "*") -Include "*.nupkg" `
+        | sort LastWriteTime | select -Last 1
+
+    if ($last -eq $null) {
+        Carp "The local NuGet feed is empty, reverting to -Current."
+        return Get-PackageVersion $projectName -AsString
+    }
+
+    $name = [IO.Path]::GetFileNameWithoutExtension($last)
+
+    # Substring is for the dot just before the version.
+    $version = $name.Replace($projectName, "").Substring(1)
+
+    $cacheEntry = Join-Path $NUGET_LOCAL_CACHE $projectName.ToLower() `
+        | Join-Path -ChildPath $version
+
+    if (-not (Test-Path $cacheEntry)) {
+        # If the cache entry does not exist, we stop the script, otherwise it
+        # will restore the CI package into the global, not what we want.
+        # Solutions: delete the "broken" package, create a new CI package, etc.
+        Carp "Local NuGet feed and cache are out of sync, reverting to -Current."
+        Carp "For the next time, the simplest solution is to recreate a package."
+        return Get-PackageVersion $projectName -AsString
+    }
+
+    $version
+}
+
+# ------------------------------------------------------------------------------
+
+function Get-RuntimeLabel {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $false)]
+        [string] $runtime = ""
+    )
+
+    if ($runtime -eq "") { return "default runtime" } else { return "runtime ""$runtime""" }
 }
 
 #endregion
@@ -487,8 +542,8 @@ if ($Help) {
 
 $NoXunitConsole = $false
 
-# Last minor version of each major version or all versions.
 # Keep in sync w/ test\NETSdk\NETSdk.csproj.
+
 $LastClassic = `
     "net452",
     "net462",
@@ -521,6 +576,8 @@ $AllCore = `
 try {
     pushd $TEST_DIR
 
+    New-Variable -Name "ProjectName" -Value "Abc.Maybe" -Option ReadOnly
+
     if ($Clean) {
         # Cleaning the "src" directory is only necessary when there are "dangling"
         # cs files in "src" that were created during a previous build. Now, it's
@@ -530,13 +587,16 @@ try {
         Reset-TestTree   -Yes:$Yes
     }
 
-    if ($Version -eq "") {
+    if ($Current) {
         # There were two options, use an explicit version or let the target
         # project decides for us. Both give the __same__ value, but I opted for
         # an explicit version, since I need its value for logging but also
         # because it is safer to do so (see the dicussion on "restore/build traps"
         # in "test\README").
-        $Version = Get-PackageVersion "Abc.Maybe" -AsString
+        $Version = Get-PackageVersion $ProjectName -AsString
+    }
+    elseif ($Version -eq "") {
+        $Version = Find-LastLocalVersion $ProjectName
     }
     else {
         Validate-Version $Version
