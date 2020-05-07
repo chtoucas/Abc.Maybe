@@ -514,13 +514,10 @@ function Find-Git {
 
     Write-Verbose "Finding git.exe."
 
-    if ($Fatal) { $onError = "Croak" } else { $onError = "Carp" }
-
     $cmd = Get-Command "git.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
 
     if ($cmd -eq $null) {
-        . $onError "Could not be find git.exe. Please ensure Git is installed."
-        return $null
+        Croak "Could not be find git.exe. Please ensure Git is installed."
     }
 
     $path = $cmd.Path

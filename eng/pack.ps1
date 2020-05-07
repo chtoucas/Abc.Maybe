@@ -64,10 +64,6 @@ param(
 
 . (Join-Path $PSScriptRoot "abc.ps1")
 
-# ------------------------------------------------------------------------------
-
-New-Variable -Name "CONFIGURATION" -Value "Release" -Scope Script -Option Constant
-
 #endregion
 ################################################################################
 #region Helpers
@@ -91,21 +87,21 @@ Usage: pack.ps1 [switches]
 
 # ------------------------------------------------------------------------------
 
-# Find commit hash and branch.
+# Find commit hash and branch name.
 function Get-GitMetadata {
     [CmdletBinding()]
     param(
-        [switch] $force,
         [switch] $fatal,
+        [switch] $force,
         [switch] $yes
     )
 
     Say "Retrieving git metadata."
 
+    $git = Find-Git
+
     $branch = ""
     $commit = ""
-
-    $git = Find-Git -Fatal:$fatal
 
     if ($git -eq $null) {
         if ($yes) {
@@ -337,7 +333,7 @@ function Invoke-Pack {
 
     # Do NOT use --no-restore or --no-build (options -Clean/-Release erase bin/obj).
     # RepositoryCommit and RepositoryBranch are standard props, do not remove them.
-    & dotnet pack $project -c $CONFIGURATION --nologo $args --output $output `
+    & dotnet pack $project -c Release --nologo $args --output $output `
         /p:TargetFrameworks='\"netstandard2.1;netstandard2.0;netstandard1.0;net461\"' `
         /p:BuildNumber=$buildNumber `
         /p:RevisionNumber=$revisionNumber `
@@ -446,7 +442,7 @@ try {
     # 1. Reset the source tree.
     if ($Release -or $Clean) { Reset-SourceTree -Yes:($Release -or $Yes) }
     # 2. Get git metadata.
-    $branch, $commit = Get-GitMetadata -Force:$Force -Fatal:$Release -Yes:$Yes
+    $branch, $commit = Get-GitMetadata -Fatal:$Release -Force:$Force -Yes:$Yes
     # 3. Generate build UIDs.
     $buildNumber, $revisionNumber, $timestamp = Generate-UIDs
     # 4. Get package version.
