@@ -17,7 +17,6 @@ it couldn't find the Xunit runner console.
 
 .PARAMETER Platform
 Specify a single platform for which to test the package.
-If the platform is not known, the script will fail silently.
 
 .PARAMETER Version
 Specify a version of the package Abc.Maybe.
@@ -185,6 +184,53 @@ function Get-RuntimeLabel {
     if ($runtime -eq "") { return "default runtime" } else { return "runtime ""$runtime""" }
 }
 
+# ------------------------------------------------------------------------------
+
+# NB: with PowerShell 6.1, there is something called dynamic validateSet, but
+# I prefer to stick with v5.1.
+function Validate-Platform {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [string] $platform,
+
+        [Parameter(Mandatory = $true, Position = 1)]
+        [ValidateNotNull()]
+        [string[]] $knownPlatforms
+    )
+
+    foreach ($p in $knownPlatforms) { if ($platform -eq $p) { return } }
+
+    Croak "The specified platform is not supported: ""$platform""."
+}
+
+# ------------------------------------------------------------------------------
+
+# Validate the package version.
+# Non-strict validation, and not following SemVer (eg no build metadata).
+function Validate-Version {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $version
+    )
+
+    $major = "(0|[1-9]\d*)"
+    $minor = $major
+    $patch = $major
+
+    $x = "\w+[\.\w]*"
+    $prere = "$x(\-$x)*"
+
+    $ok = $version -match "^$major\.$minor\.$patch(\-$prere)?$"
+
+    if (-not $ok) {
+        Croak "The specified version number is not well-formed: ""$version""."
+    }
+}
+
 #endregion
 ################################################################################
 #region Tasks.
@@ -345,6 +391,7 @@ function Invoke-TestMany {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateNotNull()]
         [string[]] $platformList,
 
         [Parameter(Mandatory = $true, Position = 1)]
@@ -491,6 +538,9 @@ try {
         # in "test\README").
         $Version = Get-PackageVersion "Abc.Maybe" -AsString
     }
+    else {
+        Validate-Version $Version
+    }
 
     if ($Platform -eq "") {
         if ($NoClassic -and $NoCore) {
@@ -546,6 +596,10 @@ try {
         }
     }
     else {
+        # Validating the platform name is not mandatory but, if we don't,
+        # the script fails silently when the platform is not supported here.
+        Validate-Platform -Platform $Platform -KnownPlatforms ($AllClassic + $AllCore)
+
         Invoke-TestSingle -Platform $Platform -Version $Version -Runtime $Runtime
     }
 }

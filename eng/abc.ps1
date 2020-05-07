@@ -477,6 +477,7 @@ function Remove-BinAndObj {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [ValidateNotNull()]
         [string[]] $PathList
     )
 
