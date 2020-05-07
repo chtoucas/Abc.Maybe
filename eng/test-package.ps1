@@ -44,8 +44,8 @@ Ignored if -Platform is also set.
 Exclude .NET Core from the tests.
 Ignored if -Platform is also set.
 
-.PARAMETER NoSpeedUp
-Do not attempt to speed up things when testing many platforms one at a time.
+.PARAMETER Optimise
+Attempt to speed up things a bit when testing many platforms one at a time.
 
 .PARAMETER Clean
 Hard clean the source and test directories before anything else.
@@ -95,7 +95,7 @@ param(
     [Alias("a")] [switch] $AllKnown,
                  [switch] $NoClassic,
                  [switch] $NoCore,
-                 [switch] $NoSpeedUp,
+    [Alias("o")] [switch] $Optimise,
     [Alias("c")] [switch] $Clean,
     [Alias("y")] [switch] $Yes,
     [Alias("h")] [switch] $Help
@@ -130,7 +130,7 @@ Usage: pack.ps1 [switches].
   -a|-AllKnown    test the package for ALL known platform versions (SLOW).
     |-NoClassic   exclude .NET Framework from the tests.
     |-NoCore      exclude .NET Core from the tests.
-    |-NoSpeedUp   do not attempt to speed up things when testing many platforms one at a time.
+  -o|-Optimise    attempt to speed up things a bit when testing many platforms one at a time.
   -c|-Clean       hard clean the solution before anything else.
   -y|-Yes         do not ask for confirmation before running any test.
   -h|-Help        print this help and exit.
@@ -359,19 +359,12 @@ function Invoke-TestMany {
         [switch] $noBuild
     )
 
-    if ($runtime -eq "") {
-        $args = @()
-    }
-    else {
-        $args = @("--runtime:$runtime")
-    }
-
     foreach ($platform in $platformList) {
         if (Confirm-Yes "Test the package for ""$platform""?") {
             Invoke-TestSingle `
                 -Platform $platform `
-                -Version $version `
-                -Runtime $runtime `
+                -Version  $version `
+                -Runtime  $runtime `
                 -NoRestore:$noRestore.IsPresent `
                 -NoBuild:$noBuild.IsPresent
         }
@@ -396,9 +389,9 @@ function Invoke-TestAll {
     )
 
     # Platform set.
-    if ($noClassic)  { $platformSet = ".NET Core" }
-    elseif ($noCore) { $platformSet = ".NET Framework" }
-    else             { $platformSet = ".NET Framework and .NET Core" }
+    if ($noClassic)     { $platformSet = ".NET Core" }
+    elseif ($noCore)    { $platformSet = ".NET Framework" }
+    else                { $platformSet = ".NET Framework and .NET Core" }
     # Platform versions.
     if ($allKnown)      { $platformVer = "ALL versions" }
     elseif ($noClassic) { $platformVer = "LTS versions" }
@@ -504,17 +497,15 @@ try {
         }
         else {
             # Building or restoring the solution only once should speed up things a bit.
-            if ($NoSpeedUp) {
-                $noBuild   = $true
-                $noRestore = $false
-
-                Invoke-Restore -Version $Version -Runtime $Runtime -AllKnown:$AllKnown.IsPresent
-            }
-            else {
-                $noBuild   = $false
-                $noRestore = $true
+            if ($Optimise) {
+                $noBuild = $true
 
                 Invoke-Build -Version $Version -Runtime $Runtime -AllKnown:$AllKnown.IsPresent
+            }
+            else {
+                $noBuild = $false
+
+                Invoke-Restore -Version $Version -Runtime $Runtime -AllKnown:$AllKnown.IsPresent
             }
 
             Say-LOUDLY "Now, you will have the opportunity to choose which platform to test the package for."
@@ -525,7 +516,7 @@ try {
 
                 Invoke-TestMany -PlatformList $platformList `
                     -Version $Version -Runtime $Runtime `
-                    -NoBuild:$noBuild -NoRestore:$noRestore
+                    -NoBuild:$noBuild -NoRestore:$true
             }
 
             if (-not $NoCore) {
@@ -534,7 +525,7 @@ try {
 
                 Invoke-TestMany -PlatformList $platformList `
                     -Version $Version -Runtime $Runtime `
-                    -NoBuild:$noBuild -NoRestore:$noRestore
+                    -NoBuild:$noBuild -NoRestore:$true
             }
         }
     }
