@@ -87,11 +87,11 @@ function Get-PackageVersion {
     $node = (Select-Xml -Xml $xml -XPath "//Project/PropertyGroup/MajorVersion/..").Node
 
     # NB: if one of the nodes does not actually exist, the function throws.
-    $major = $node | Select -First 1 -ExpandProperty MajorVersion
-    $minor = $node | Select -First 1 -ExpandProperty MinorVersion
-    $patch = $node | Select -First 1 -ExpandProperty PatchVersion
-    $precy = $node | Select -First 1 -ExpandProperty PreReleaseCycle
-    $preno = $node | Select -First 1 -ExpandProperty PreReleaseNumber
+    $major = $node | select -First 1 -ExpandProperty MajorVersion
+    $minor = $node | select -First 1 -ExpandProperty MinorVersion
+    $patch = $node | select -First 1 -ExpandProperty PatchVersion
+    $precy = $node | select -First 1 -ExpandProperty PreReleaseCycle
+    $preno = $node | select -First 1 -ExpandProperty PreReleaseNumber
 
     if ($AsString) {
         if ($precy -eq "") {
@@ -721,8 +721,8 @@ function Get-PackageReferenceVersion {
     $xpath = "//Project/ItemGroup/PackageReference[@Include='$package']"
 
     Select-Xml -Xml $xml -XPath $xpath `
-        | Select -ExpandProperty Node `
-        | Select -First 1 -ExpandProperty Version
+        | select -ExpandProperty Node `
+        | select -First 1 -ExpandProperty Version
 }
 
 #endregion
