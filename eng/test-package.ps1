@@ -205,7 +205,7 @@ function Invoke-Restore {
         [switch] $allKnown
     )
 
-    Chirp "Restoring dependencies for NETSdk, please wait..."
+    Say-LOUDLY "Restoring dependencies for NETSdk, please wait..."
 
     if ($runtime -eq "") {
         $args = @()
@@ -236,7 +236,7 @@ function Invoke-Build {
         [switch] $noRestore
     )
 
-    Chirp "Building NETSdk, please wait..."
+    Say-LOUDLY "Building NETSdk, please wait..."
 
     if ($runtime -eq "") {
         $args = @()
@@ -269,7 +269,7 @@ function Invoke-TestOldStyle {
     )
 
     $runtimeStr = Get-RuntimeString $runtime
-    Chirp "Testing the package v$version for ""$platform"" $runtimeStr."
+    Say-LOUDLY "Testing the package v$version for ""$platform"" $runtimeStr."
 
     if ($runtime -ne "") { Carp "Runtime parameter ""$runtime"" is ignored by ""$platform""." }
 
@@ -321,7 +321,7 @@ function Invoke-TestSingle {
     }
 
     $runtimeStr = Get-RuntimeString $runtime
-    Chirp "Testing the package v$version for ""$platform"" $runtimeStr."
+    Say-LOUDLY "Testing the package v$version for ""$platform"" $runtimeStr."
 
     if ($runtime -eq "") {
         $args = @()
@@ -395,18 +395,18 @@ function Invoke-TestAll {
     )
 
     $runtimeStr = Get-RuntimeString $runtime
-    Chirp "Batch testing the package v$version for" -NoNewline
+    Say-LOUDLY "Batch testing the package v$version for" -NoNewline
     # Platform set.
-    if ($noClassic)  { Chirp " .NET Core"  -NoNewline }
-    elseif ($noCore) { Chirp " .NET Framework"  -NoNewline }
-    else             { Chirp " .NET Framework and .NET Core"  -NoNewline }
+    if ($noClassic)  { Say-LOUDLY " .NET Core" -NoNewline }
+    elseif ($noCore) { Say-LOUDLY " .NET Framework" -NoNewline }
+    else             { Say-LOUDLY " .NET Framework and .NET Core" -NoNewline }
     # Versions.
-    if ($allKnown)      { Chirp ", ALL versions"  -NoNewline }
-    elseif ($noClassic) { Chirp ", LTS versions"  -NoNewline }
-    elseif ($noCore)    { Chirp ", last minor version of each major version"  -NoNewline }
-    else                { Chirp ", selected versions"  -NoNewline }
+    if ($allKnown)      { Say-LOUDLY ", ALL versions" -NoNewline }
+    elseif ($noClassic) { Say-LOUDLY ", LTS versions" -NoNewline }
+    elseif ($noCore)    { Say-LOUDLY ", last minor version of each major version" -NoNewline }
+    else                { Say-LOUDLY ", selected versions" -NoNewline }
     # Runtime.
-    Chirp " $runtimeStr."
+    Say-LOUDLY " $runtimeStr."
 
     $args = @()
 
@@ -516,7 +516,7 @@ try {
                 Invoke-Build -Version $Version -Runtime $Runtime -AllKnown:$AllKnown.IsPresent
             }
 
-            Chirp "Now, you will have the opportunity to choose which platform to test the package for."
+            Say-LOUDLY "Now, you will have the opportunity to choose which platform to test the package for."
 
             if (-not $NoClassic) {
                 if ($AllKnown) { $platformList = $AllClassic }

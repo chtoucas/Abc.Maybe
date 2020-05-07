@@ -302,12 +302,12 @@ function Invoke-Pack {
         [switch] $myVerbose
     )
 
-    Chirp "Packing v$version --- build $buildNumber, rev. $revisionNumber" -NoNewline
+    Say-LOUDLY "Packing v$version --- build $buildNumber, rev. $revisionNumber" -NoNewline
     if ($repositoryBranch -and $repositoryCommit) {
         $abbrv = $repositoryCommit.Substring(0, 7)
-        Chirp " on branch ""$repositoryBranch"", commit ""$abbrv""."
+        Say-LOUDLY " on branch ""$repositoryBranch"", commit ""$abbrv""."
     }
-    else { Chirp " on branch ""???"", commit ""???""." }
+    else { Say-LOUDLY " on branch ""???"", commit ""???""." }
 
     # VersionSuffix is for Pack.props, but it is not enough, we MUST
     # also specify --version-suffix (not sure it is necessary any more, but
@@ -349,10 +349,10 @@ function Invoke-Pack {
     Assert-CmdSuccess -ErrMessage "Pack task failed."
 
     if ($ci) {
-        Squeak "CI package successfully created."
+        Say-Softly "CI package successfully created."
     }
     else {
-        Squeak "Package successfully created."
+        Say-Softly "Package successfully created."
     }
 }
 
@@ -370,7 +370,7 @@ function Invoke-PushLocal {
         [string] $version
     )
 
-    Chirp "Pushing the package to the local NuGet feed/cache."
+    Say-LOUDLY "Pushing the package to the local NuGet feed/cache."
 
     # Local "push" doesn't store packages in a hierarchical folder structure;
     # see https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-nuget-push
@@ -391,7 +391,7 @@ function Invoke-PushLocal {
     & dotnet restore $project /p:AbcVersion=$version | Out-Host
     Assert-CmdSuccess -ErrMessage "Failed to update the local NuGet cache."
 
-    Squeak "Package successfully installed."
+    Say-Softly "Package successfully installed."
 }
 
 # ------------------------------------------------------------------------------
@@ -404,7 +404,7 @@ function Invoke-Publish {
         [string] $packageFile
     )
 
-    Chirp "Publishing the package -or- Preparing the command."
+    Say-LOUDLY "Publishing the package -or- Preparing the command."
 
     $args = @()
 
@@ -417,13 +417,13 @@ function Invoke-Publish {
 
     if (Confirm-Yes "Do you want me to publish the package for you?") {
         Carp "Not yet activated."
-        Chirp "---`nTo publish the package:"
-        Chirp "> dotnet nuget push $packageFile $args"
+        Say-LOUDLY "---`nTo publish the package:"
+        Say-LOUDLY "> dotnet nuget push $packageFile $args"
         #& dotnet nuget push --force-english-output $packageFile $args
     }
     else {
-        Chirp "---`nTo publish the package:"
-        Chirp "> dotnet nuget push $packageFile $args"
+        Say-LOUDLY "---`nTo publish the package:"
+        Say-LOUDLY "> dotnet nuget push $packageFile $args"
     }
 }
 
@@ -498,8 +498,8 @@ try {
 
             Invoke-PushLocal $packageFile $version
 
-            Chirp "---`nNow, you can test the package. For instance,"
-            Chirp "> eng\test-package.ps1 -a -y"
+            Say-LOUDLY "---`nNow, you can test the package. For instance,"
+            Say-LOUDLY "> eng\test-package.ps1 -a -y"
         }
     }
 }

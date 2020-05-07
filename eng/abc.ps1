@@ -227,7 +227,6 @@ function Remove-PackageFromLocalNuGet {
 ################################################################################
 #region Reporting.
 
-# Say something.
 function Say {
     [CmdletBinding()]
     param(
@@ -243,7 +242,6 @@ function Say {
 
 # ------------------------------------------------------------------------------
 
-# Print an indented (2 spaces) message.
 function Say-Indent {
     [CmdletBinding()]
     param(
@@ -259,8 +257,7 @@ function Say-Indent {
 
 # ------------------------------------------------------------------------------
 
-# Say something with great emphasis.
-function Yell {
+function Say-Softly {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -270,13 +267,12 @@ function Yell {
         [switch] $NoNewline
     )
 
-    Write-Host $Message -BackgroundColor DarkCyan -ForegroundColor Green -NoNewline:$NoNewline.IsPresent
+    Write-Host $Message -ForegroundColor Cyan -NoNewline:$NoNewline.IsPresent
 }
 
 # ------------------------------------------------------------------------------
 
-# Say something with medium emphasis.
-function Chirp {
+function Say-LOUDLY {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -291,7 +287,8 @@ function Chirp {
 
 # ------------------------------------------------------------------------------
 
-function Squeak {
+# Say something with great emphasis.
+function YELL {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -301,7 +298,7 @@ function Squeak {
         [switch] $NoNewline
     )
 
-    Write-Host $Message -ForegroundColor Cyan -NoNewline:$NoNewline.IsPresent
+    Write-Host $Message -BackgroundColor DarkCyan -ForegroundColor Green -NoNewline:$NoNewline.IsPresent
 }
 
 # ------------------------------------------------------------------------------
@@ -331,6 +328,26 @@ function Croak {
 
     # NB: we don't write the message to the error stream.
     Write-Host $Message -BackgroundColor Red -ForegroundColor Yellow
+
+    exit 1
+}
+
+# ------------------------------------------------------------------------------
+
+# Die of errors with stack backtrace.
+function Confess {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        $Error
+    )
+
+    # NB: we don't write the message to the error stream.
+    Write-Host "An unexpected error occured." -BackgroundColor Red -ForegroundColor Yellow
+    Write-Host $Error
+    Write-Host $Error.Exception
+    Write-Host $Error.ScriptStackTrace
+
     exit 1
 }
 
