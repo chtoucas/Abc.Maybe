@@ -238,7 +238,7 @@ function Say {
         [switch] $NoNewline
     )
 
-    Write-Host $Message -NoNewline:$NoNewline.IsPresent
+    Write-Host $Message -NoNewline:$NoNewline
 }
 
 # ------------------------------------------------------------------------------
@@ -253,7 +253,7 @@ function Say-Indent {
         [switch] $NoNewline
     )
 
-    Write-Host "  $Message" -NoNewline:$NoNewline.IsPresent
+    Write-Host "  $Message" -NoNewline:$NoNewline
 }
 
 # ------------------------------------------------------------------------------
@@ -268,7 +268,7 @@ function Say-Softly {
         [switch] $NoNewline
     )
 
-    Write-Host $Message -ForegroundColor Cyan -NoNewline:$NoNewline.IsPresent
+    Write-Host $Message -ForegroundColor Cyan -NoNewline:$NoNewline
 }
 
 # ------------------------------------------------------------------------------
@@ -285,10 +285,10 @@ function Say-LOUDLY {
     )
 
     if ($Invert) {
-        Write-Host $Message -ForegroundColor Green -NoNewline:$NoNewline.IsPresent -BackgroundColor DarkCyan
+        Write-Host $Message -ForegroundColor Green -NoNewline:$NoNewline -BackgroundColor DarkCyan
     }
     else {
-        Write-Host $Message -ForegroundColor Green -NoNewline:$NoNewline.IsPresent
+        Write-Host $Message -ForegroundColor Green -NoNewline:$NoNewline
     }
 }
 

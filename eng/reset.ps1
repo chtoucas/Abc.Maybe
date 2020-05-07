@@ -18,11 +18,11 @@ param(
 try {
     pushd $ROOT_DIR
 
-    Reset-SourceTree      -Yes:$Yes.IsPresent
-    Reset-TestTree        -Yes:$Yes.IsPresent
-    Reset-PackageOutDir   -Yes:$Yes.IsPresent
-    Reset-PackageCIOutDir -Yes:$Yes.IsPresent
-    Reset-LocalNuGet      -Yes:$Yes.IsPresent
+    Reset-SourceTree      -Yes:$Yes
+    Reset-TestTree        -Yes:$Yes
+    Reset-PackageOutDir   -Yes:$Yes
+    Reset-PackageCIOutDir -Yes:$Yes
+    Reset-LocalNuGet      -Yes:$Yes
 }
 catch {
     Confess $_

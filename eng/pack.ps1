@@ -105,7 +105,7 @@ function Get-GitMetadata {
     $branch = ""
     $commit = ""
 
-    $git = Find-Git -Fatal:$fatal.IsPresent
+    $git = Find-Git -Fatal:$fatal
 
     if ($git -eq $null) {
         if ($yes) {
@@ -116,13 +116,13 @@ function Get-GitMetadata {
         }
     }
     else {
-        $ok = Approve-GitStatus -Git $git -Fatal:$fatal.IsPresent
+        $ok = Approve-GitStatus -Git $git -Fatal:$fatal
 
         # Keep Approve-GitStatus before $force: we always want to see a warning
         # when there are uncommited changes.
         if ($ok -or $force) {
-            $branch = Get-GitBranch     -Git $git -Fatal:$fatal.IsPresent
-            $commit = Get-GitCommitHash -Git $git -Fatal:$fatal.IsPresent
+            $branch = Get-GitBranch     -Git $git -Fatal:$fatal
+            $commit = Get-GitCommitHash -Git $git -Fatal:$fatal
         }
 
         if ($branch -eq "") {
@@ -446,7 +446,7 @@ try {
     # 1. Reset the source tree.
     if ($Release -or $Clean) { Reset-SourceTree -Yes:($Release -or $Yes) }
     # 2. Get git metadata.
-    $branch, $commit = Get-GitMetadata -Force:$Force.IsPresent -Fatal:$Release.IsPresent -Yes:$Yes.IsPresent
+    $branch, $commit = Get-GitMetadata -Force:$Force -Fatal:$Release -Yes:$Yes
     # 3. Generate build UIDs.
     $buildNumber, $revisionNumber, $timestamp = Generate-UIDs
     # 4. Get package version.
@@ -463,8 +463,8 @@ try {
         -VersionSuffix    $suffix `
         -RepositoryBranch $branch `
         -RepositoryCommit $commit `
-        -CI:$CI `
-        -MyVerbose:$MyVerbose.IsPresent
+        -CI:              $CI `
+        -MyVerbose:       $MyVerbose
 
     # Post-actions.
     if ($CI) {

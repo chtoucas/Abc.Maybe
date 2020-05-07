@@ -365,8 +365,8 @@ function Invoke-TestMany {
                 -Platform $platform `
                 -Version  $version `
                 -Runtime  $runtime `
-                -NoRestore:$noRestore.IsPresent `
-                -NoBuild:$noBuild.IsPresent
+                -NoRestore:$noRestore `
+                -NoBuild:$noBuild
         }
     }
 }
@@ -423,6 +423,15 @@ function Invoke-TestAll {
 ################################################################################
 #region Main.
 
+function Test-Switch {
+    [CmdletBinding()]
+    param(
+        [switch] $param
+    )
+
+    if ($param) { Say "ok"} else { Say "KO" }
+}
+
 if ($Help) {
     Write-Usage
     exit 0
@@ -469,8 +478,8 @@ try {
         # cs files in "src" that were created during a previous build. Now, it's
         # no longer a problem (we explicitely exclude "bin" and "obj" in
         # "test\Directory.Build.targets"), but we never know.
-        Reset-SourceTree -Yes:$Yes.IsPresent
-        Reset-TestTree   -Yes:$Yes.IsPresent
+        Reset-SourceTree -Yes:$Yes
+        Reset-TestTree   -Yes:$Yes
     }
 
     if ($Version -eq "") {
@@ -489,23 +498,23 @@ try {
 
         if ($Yes -or (Confirm-Yes "Test the package for all selected platforms at once (SLOW)?")) {
             Invoke-TestAll `
-                -Version $Version `
-                -Runtime $Runtime `
-                -AllKnown:$AllKnown.IsPresent `
-                -NoClassic:$NoClassic.IsPresent `
-                -NoCore:$NoCore.IsPresent
+                -Version    $Version `
+                -Runtime    $Runtime `
+                -AllKnown:  $AllKnown `
+                -NoClassic: $NoClassic `
+                -NoCore:    $NoCore
         }
         else {
             # Building or restoring the solution only once should speed up things a bit.
             if ($Optimise) {
                 $noBuild = $true
 
-                Invoke-Build -Version $Version -Runtime $Runtime -AllKnown:$AllKnown.IsPresent
+                Invoke-Build -Version $Version -Runtime $Runtime -AllKnown:$AllKnown
             }
             else {
                 $noBuild = $false
 
-                Invoke-Restore -Version $Version -Runtime $Runtime -AllKnown:$AllKnown.IsPresent
+                Invoke-Restore -Version $Version -Runtime $Runtime -AllKnown:$AllKnown
             }
 
             Say-LOUDLY "Now, you will have the opportunity to choose which platform to test the package for."
@@ -514,18 +523,24 @@ try {
                 if ($AllKnown) { $platformList = $AllClassic }
                 else { $platformList = $LastClassic }
 
-                Invoke-TestMany -PlatformList $platformList `
-                    -Version $Version -Runtime $Runtime `
-                    -NoBuild:$noBuild -NoRestore:$true
+                Invoke-TestMany `
+                    -PlatformList   $platformList `
+                    -Version        $Version `
+                    -Runtime        $Runtime `
+                    -NoBuild:       $noBuild `
+                    -NoRestore:     $true
             }
 
             if (-not $NoCore) {
                 if ($AllKnown) { $platformList = $AllCore }
                 else { $platformList = $LTSCore }
 
-                Invoke-TestMany -PlatformList $platformList `
-                    -Version $Version -Runtime $Runtime `
-                    -NoBuild:$noBuild -NoRestore:$true
+                Invoke-TestMany `
+                    -PlatformList   $platformList `
+                    -Version        $Version `
+                    -Runtime        $Runtime `
+                    -NoBuild:       $noBuild `
+                    -NoRestore:     $true
             }
         }
     }
