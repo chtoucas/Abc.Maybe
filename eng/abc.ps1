@@ -305,6 +305,7 @@ function Carp {
         [string] $Message
     )
 
+    # NB: we don't write the message to the warning stream.
     Write-Host "WARNING: $Message" -ForegroundColor Yellow
 }
 
