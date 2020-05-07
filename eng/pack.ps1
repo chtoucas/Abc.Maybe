@@ -304,8 +304,8 @@ function Invoke-Pack {
 
     Say-LOUDLY "Packing v$version --- build $buildNumber, rev. $revisionNumber" -NoNewline
     if ($repositoryBranch -and $repositoryCommit) {
-        $abbrv = $repositoryCommit.Substring(0, 7)
-        Say-LOUDLY " on branch ""$repositoryBranch"", commit ""$abbrv""."
+        " on branch ""$repositoryBranch"", commit ""{0}""." -f $repositoryCommit.Substring(0, 7) `
+            | Say-LOUDLY
     }
     else { Say-LOUDLY " on branch ""???"", commit ""???""." }
 

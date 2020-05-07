@@ -176,15 +176,14 @@ function Find-XunitRunner {
 
 # ------------------------------------------------------------------------------
 
-function Get-RuntimeString {
+function Get-RuntimeLabel {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $false)]
         [string] $runtime = ""
     )
 
-    if ($runtime -eq "") { $runtime = "default" }
-    "(runtime = ""$runtime"")"
+    if ($runtime -eq "") { return "default runtime" } else { return "runtime ""$runtime""" }
 }
 
 #endregion
@@ -257,7 +256,7 @@ function Invoke-TestOldStyle {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, Position = 0)]
-        [ValidateNotNullOrEmpty()]
+        [ValidateSet("net45", "net451")]
         [string] $platform,
 
         [Parameter(Mandatory = $true, Position = 1)]
@@ -268,10 +267,12 @@ function Invoke-TestOldStyle {
         [string] $runtime = ""
     )
 
-    $runtimeStr = Get-RuntimeString $runtime
-    Say-LOUDLY "Testing the package v$version for ""$platform"" $runtimeStr."
+    "Testing the package v$version for ""$platform"" and {0}." -f (Get-RuntimeLabel $runtime) `
+        | Say-LOUDLY
 
-    if ($runtime -ne "") { Carp "Runtime parameter ""$runtime"" is ignored by ""$platform""." }
+    if ($runtime -ne "") {
+        Carp "Runtime parameter ""$runtime"" is ignored when targetting ""$platform""."
+    }
 
     $xunit = Find-XunitRunner
     if ($xunit -eq $null) { Say "Skipping." ; return }
@@ -320,8 +321,8 @@ function Invoke-TestSingle {
         return
     }
 
-    $runtimeStr = Get-RuntimeString $runtime
-    Say-LOUDLY "Testing the package v$version for ""$platform"" $runtimeStr."
+    "Testing the package v$version for ""$platform"" and {0}." -f (Get-RuntimeLabel $runtime) `
+        | Say-LOUDLY
 
     if ($runtime -eq "") {
         $args = @()
@@ -394,19 +395,19 @@ function Invoke-TestAll {
         [switch] $noCore
     )
 
-    $runtimeStr = Get-RuntimeString $runtime
-    Say-LOUDLY "Batch testing the package v$version for" -NoNewline
     # Platform set.
-    if ($noClassic)  { Say-LOUDLY " .NET Core" -NoNewline }
-    elseif ($noCore) { Say-LOUDLY " .NET Framework" -NoNewline }
-    else             { Say-LOUDLY " .NET Framework and .NET Core" -NoNewline }
-    # Versions.
-    if ($allKnown)      { Say-LOUDLY ", ALL versions" -NoNewline }
-    elseif ($noClassic) { Say-LOUDLY ", LTS versions" -NoNewline }
-    elseif ($noCore)    { Say-LOUDLY ", last minor version of each major version" -NoNewline }
-    else                { Say-LOUDLY ", selected versions" -NoNewline }
-    # Runtime.
-    Say-LOUDLY " $runtimeStr."
+    if ($noClassic)  { $platformSet = ".NET Core" }
+    elseif ($noCore) { $platformSet = ".NET Framework" }
+    else             { $platformSet = ".NET Framework and .NET Core" }
+    # Platform versions.
+    if ($allKnown)      { $platformVer = "ALL versions" }
+    elseif ($noClassic) { $platformVer = "LTS versions" }
+    elseif ($noCore)    { $platformVer = "last minor version of each major version" }
+    else                { $platformVer = "selected versions" }
+
+    "Batch testing the package v$version for $platformSet, $platformVer, and {0}." `
+        -f (Get-RuntimeLabel $runtime) `
+        | Say-LOUDLY
 
     $args = @()
 

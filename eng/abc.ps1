@@ -231,7 +231,7 @@ function Remove-PackageFromLocalNuGet {
 function Say {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $Message,
 
@@ -246,7 +246,7 @@ function Say {
 function Say-Indent {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $Message,
 
@@ -261,7 +261,7 @@ function Say-Indent {
 function Say-Softly {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $Message,
 
@@ -276,7 +276,7 @@ function Say-Softly {
 function Say-LOUDLY {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $Message,
 
@@ -300,7 +300,7 @@ function Say-LOUDLY {
 function Carp {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $Message
     )
@@ -314,7 +314,7 @@ function Carp {
 function Croak {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $Message
     )
@@ -331,7 +331,7 @@ function Croak {
 function Confess {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [System.Management.Automation.ErrorRecord] $Error
     )
 
