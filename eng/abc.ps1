@@ -1,6 +1,7 @@
 # See LICENSE in the project root for license information.
 
-#Requires -Version 4.0
+# Version 5.1 for ErrorRecord.
+#Requires -Version 5.1
 
 # Dot sourcing this file ensures that it executes in the caller scope.
 # For safety, we still add the $Script: prefix.
@@ -225,7 +226,7 @@ function Remove-PackageFromLocalNuGet {
 
 #endregion
 ################################################################################
-#region Reporting.
+#region Print.
 
 function Say {
     [CmdletBinding()]
@@ -279,29 +280,21 @@ function Say-LOUDLY {
         [ValidateNotNullOrEmpty()]
         [string] $Message,
 
-        [switch] $NoNewline
+        [switch] $NoNewline,
+        [switch] $Invert
     )
 
-    Write-Host $Message -ForegroundColor Green -NoNewline:$NoNewline.IsPresent
+    if ($Invert) {
+        Write-Host $Message -ForegroundColor Green -NoNewline:$NoNewline.IsPresent -BackgroundColor DarkCyan
+    }
+    else {
+        Write-Host $Message -ForegroundColor Green -NoNewline:$NoNewline.IsPresent
+    }
 }
 
-# ------------------------------------------------------------------------------
-
-# Say something with great emphasis.
-function YELL {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $Message,
-
-        [switch] $NoNewline
-    )
-
-    Write-Host $Message -BackgroundColor DarkCyan -ForegroundColor Green -NoNewline:$NoNewline.IsPresent
-}
-
-# ------------------------------------------------------------------------------
+#endregion
+################################################################################
+#region Error reporting.
 
 # Warn user.
 function Carp {
@@ -312,7 +305,7 @@ function Carp {
         [string] $Message
     )
 
-    Write-Warning $Message
+    Write-Host "WARNING: $Message" -ForegroundColor Yellow
 }
 
 # ------------------------------------------------------------------------------
@@ -334,19 +327,23 @@ function Croak {
 
 # ------------------------------------------------------------------------------
 
-# Die of errors with stack backtrace.
+# Die of errors with stack trace.
 function Confess {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
-        $Error
+        [System.Management.Automation.ErrorRecord] $Error
     )
 
     # NB: we don't write the message to the error stream.
     Write-Host "An unexpected error occured." -BackgroundColor Red -ForegroundColor Yellow
-    Write-Host $Error
-    Write-Host $Error.Exception
-    Write-Host $Error.ScriptStackTrace
+    if ($Error -ne $null) {
+        Write-Host $Error -ForegroundColor Red
+        Write-Host $Error.ScriptStackTrace
+    }
+    else {
+        Write-Host "Sorry, no further details about the error were given."
+    }
 
     exit 1
 }

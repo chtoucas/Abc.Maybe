@@ -150,12 +150,12 @@ function Find-XunitRunner {
 
     Write-Verbose "Finding xunit.console.exe."
 
-    if ($NoXunitConsole) { Carp "No Xunit Console Runner." ; return $null }
+    if ($NoXunitConsole) { Carp "No Xunit console runner." ; return $null }
 
     $version = Get-PackageReferenceVersion $XUNIT_REF_PROJECT "xunit.runner.console"
 
     if ($version -eq $null) {
-        Carp "Xunit Console Runner is not referenced in ""$XUNIT_REF_PROJECT""."
+        Carp "Xunit console runner is not referenced in ""$XUNIT_REF_PROJECT""."
         $Script:NoXunitConsole = $true
         return $null
     }
@@ -542,16 +542,18 @@ try {
     }
 }
 catch {
-    Write-Host "An unexpected error occured." -BackgroundColor Red -ForegroundColor Yellow
-    Write-Host $_
-    Write-Host $_.Exception
-    Write-Host $_.ScriptStackTrace
-    exit 1
+    Confess $_
 }
 finally {
     popd
 
-    if ($NoXunitConsole) { exit 2 } else { exit 0 }
+    if ($NoXunitConsole) {
+        Carp "Tests for .NET Framework 4.5 / 4.5.1 were skipped."
+        exit 2
+    }
+    else {
+        exit 0
+    }
 }
 
 #endregion

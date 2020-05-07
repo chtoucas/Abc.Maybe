@@ -123,7 +123,7 @@ function Invoke-OpenCover {
         [string] $output
     )
 
-    YELL "Running OpenCover."
+    Say-LOUDLY "Running OpenCover." -Invert
 
     $filters = `
         "+[Abc.Maybe]*",
@@ -158,7 +158,7 @@ function Invoke-Coverlet {
         [string] $output
     )
 
-    YELL "Running Coverlet."
+    Say-LOUDLY "Running Coverlet." -Invert
 
     $excludes = `
         "[Abc*]System.Diagnostics.CodeAnalysis.*",
@@ -191,7 +191,7 @@ function Invoke-ReportGenerator {
         [string] $targetdir
     )
 
-    YELL "Running ReportGenerator."
+    Say-LOUDLY "Running ReportGenerator." -Invert
 
     & dotnet tool run reportgenerator `
         -verbosity:Warning `
@@ -259,11 +259,7 @@ try {
     }
 }
 catch {
-    Write-Host "An unexpected error occured." -BackgroundColor Red -ForegroundColor Yellow
-    Write-Host $_
-    Write-Host $_.Exception
-    Write-Host $_.ScriptStackTrace
-    exit 1
+    Confess $_
 }
 finally {
     popd

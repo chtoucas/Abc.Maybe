@@ -70,11 +70,7 @@ try {
     }
 }
 catch {
-    Write-Host "An unexpected error occured." -BackgroundColor Red -ForegroundColor Yellow
-    Write-Host $_
-    Write-Host $_.Exception
-    Write-Host $_.ScriptStackTrace
-    exit 1
+    Confess $_
 }
 finally {
     popd

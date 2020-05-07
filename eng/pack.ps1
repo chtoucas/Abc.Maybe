@@ -439,9 +439,9 @@ if ($Help) {
 try {
     pushd $ROOT_DIR
 
-    $CI = -not ($Release -or $NoCI)
+    New-Variable -Name "ProjectName" -Value "Abc.Maybe" -Option ReadOnly
 
-    $projectName = "Abc.Maybe"
+    $CI = -not ($Release -or $NoCI)
 
     # 1. Reset the source tree.
     if ($Release -or $Clean) { Reset-SourceTree -Yes:($Release -or $Yes) }
@@ -450,12 +450,12 @@ try {
     # 3. Generate build UIDs.
     $buildNumber, $revisionNumber, $timestamp = Generate-UIDs
     # 4. Get package version.
-    $version, $prefix, $suffix = Get-ActualVersion $projectName $timestamp -CI:$CI
+    $version, $prefix, $suffix = Get-ActualVersion $ProjectName $timestamp -CI:$CI
     # 5. Get package file.
-    $packageFile = Get-PackageFile $projectName $version -Yes:($Release -or $Yes) -CI:$CI
+    $packageFile = Get-PackageFile $ProjectName $version -Yes:($Release -or $Yes) -CI:$CI
 
     Invoke-Pack `
-        -ProjectName      $projectName `
+        -ProjectName      $ProjectName `
         -BuildNumber      $buildNumber `
         -RevisionNumber   $revisionNumber `
         -Version          $version `
@@ -490,7 +490,7 @@ try {
             # update it with a new version of the package (the feed part is fine,
             # but we always remove cache and feed entry together, see
             # Reset-LocalNuGet).
-            Remove-PackageFromLocalNuGet $projectName $version
+            Remove-PackageFromLocalNuGet $ProjectName $version
 
             if (-not $yes) {
                 Confirm-Continue "Push the package to the local NuGet feed/cache?"
@@ -504,11 +504,7 @@ try {
     }
 }
 catch {
-    Write-Host "An unexpected error occured." -BackgroundColor Red -ForegroundColor Yellow
-    Write-Host $_
-    Write-Host $_.Exception
-    Write-Host $_.ScriptStackTrace
-    exit 1
+    Confess $_
 }
 finally {
     popd
