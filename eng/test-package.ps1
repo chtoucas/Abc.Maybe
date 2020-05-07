@@ -112,7 +112,6 @@ param(
     | New-Variable -Name "XUNIT_REF_PROJECT" -Scope Script -Option Constant
 
 New-Variable -Name "XUNIT_PLATFORM" -Value "net452" -Scope Script -Option Constant
-New-Variable -Name "NoXunitConsole" -Value $false   -Scope Script
 
 #endregion
 ################################################################################
@@ -438,6 +437,8 @@ if ($Help) {
 }
 
 # ------------------------------------------------------------------------------
+
+$NoXunitConsole = $false
 
 # Last minor version of each major version or all versions.
 # Keep in sync w/ test\NETSdk\NETSdk.csproj.

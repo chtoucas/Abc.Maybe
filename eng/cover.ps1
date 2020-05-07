@@ -58,9 +58,7 @@ param(
 
 # ------------------------------------------------------------------------------
 
-New-Variable -Name "CONFIGURATION" -Value "Debug" -Scope Script -Option Constant
-
-(Join-Path $SRC_DIR "Abc.Tests\Abc.Tests.csproj" -Resolve)
+(Join-Path $SRC_DIR "Abc.Tests\Abc.Tests.csproj" -Resolve) `
     | New-Variable -Name "OPENCOVER_REF_PROJECT" -Scope Script -Option Constant
 
 #endregion
@@ -120,6 +118,10 @@ function Invoke-OpenCover {
 
         [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
+        [string] $configuration,
+
+        [Parameter(Mandatory = $true, Position = 2)]
+        [ValidateNotNullOrEmpty()]
         [string] $output
     )
 
@@ -140,7 +142,7 @@ function Invoke-OpenCover {
         -showunvisited `
         -output:$output `
         -target:dotnet.exe `
-        -targetargs:"test -v quiet -c $CONFIGURATION --no-restore /p:DebugType=Full" `
+        -targetargs:"test -v quiet -c $configuration --no-restore /p:DebugType=Full" `
         -filter:$filter `
         -excludebyattribute:*.ExcludeFromCodeCoverageAttribute `
         | Out-Host
@@ -153,7 +155,11 @@ function Invoke-OpenCover {
 function Invoke-Coverlet {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [string] $configuration,
+
+        [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
         [string] $output
     )
@@ -166,7 +172,7 @@ function Invoke-Coverlet {
         "[Abc*]Microsoft.CodeAnalysis.*"
     $exclude = '\"' + ($excludes -Join ",") + '\"'
 
-    & dotnet test -c $CONFIGURATION --no-restore `
+    & dotnet test -c $configuration --no-restore `
         /p:CollectCoverage=true `
         /p:CoverletOutputFormat=opencover `
         /p:CoverletOutput=$output `
@@ -215,6 +221,8 @@ if ($Help) {
 try {
     pushd $ROOT_DIR
 
+    New-Variable -Name "Configuration" -Value "Debug" -Option ReadOnly
+
     if ($ReportOnly -and $NoReport) {
         Croak "You cannot set both options -ReportOnly and -NoReport at the same time."
     }
@@ -233,12 +241,12 @@ try {
         Carp "On your request, we do not run any Code Coverage tool."
     }
     elseif ($OpenCover) {
-        Find-OpenCover | Invoke-OpenCover -output $outxml
+        Find-OpenCover | Invoke-OpenCover -Configuration $Configuration -Output $outxml
     }
     else {
         # For coverlet.msbuild the path must be absolute if we want the result to be
         # put within the directory for artifacts and not below the test project.
-        Invoke-Coverlet $outxml
+        Invoke-Coverlet -Configuration $Configuration  -Output $outxml
     }
 
     if ($NoReport) {
