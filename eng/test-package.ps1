@@ -103,7 +103,7 @@ param(
                  [switch] $NoClassic,
                  [switch] $NoCore,
     [Alias("o")] [switch] $Optimise,
-    [Alias("c")] [switch] $Reset,
+                 [switch] $Reset,
     [Alias("y")] [switch] $Yes,
     [Alias("h")] [switch] $Help
 )
@@ -129,7 +129,7 @@ function Write-Usage {
 
 Test the package Abc.Maybe.
 
-Usage: test-package.ps1 [options]
+Usage: test-package.ps1 [arguments]
   -p|-Platform   specify a single platform for which to test the package.
   -v|-Version    specify a version of the package Abc.Maybe.
   -r|-Runtime    specify a target runtime to test for.
