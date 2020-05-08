@@ -28,3 +28,8 @@ Other files.
 - Pack.tasks            MSBuild tasks when building packages (obsolete).
 - Abc.snk               strong named key.
 - Abc.pk                public key.
+
+## Folder "tools" and project "Blank".
+
+To find outdated packages:
+> dotnet list Blank package --outdated

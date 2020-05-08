@@ -35,8 +35,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eng", "eng", "{6D957FE8-23D
 		eng\freeze-api.ps1 = eng\freeze-api.ps1
 		eng\genuids.fsx = eng\genuids.fsx
 		eng\genuids.ps1 = eng\genuids.ps1
-		eng\pack.ps1 = eng\pack.ps1
 		eng\Pack.props = eng\Pack.props
+		eng\pack.ps1 = eng\pack.ps1
 		eng\Pack.tasks = eng\Pack.tasks
 		eng\qbuild.cmd = eng\qbuild.cmd
 		eng\qperf.cmd = eng\qperf.cmd
@@ -62,6 +62,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Blank", "Blank", "{22206E77
 	ProjectSection(SolutionItems) = preProject
 		test\Blank\Blank.csproj = test\Blank\Blank.csproj
 		test\Blank\Directory.Build.targets = test\Blank\Directory.Build.targets
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Blank", "Blank", "{55D08DE8-125B-4CC6-A5C7-371C166C2D0E}"
+	ProjectSection(SolutionItems) = preProject
+		eng\Blank\Blank.csproj = eng\Blank\Blank.csproj
 	EndProjectSection
 EndProject
 Global
@@ -103,6 +108,7 @@ Global
 		{6D957FE8-23D0-4985-A91C-F1CC399AA453} = {4B926891-DAB0-4792-AB7B-E1A0C001843A}
 		{73C72FF8-FF25-49A3-A241-4959FEFC8C81} = {4B926891-DAB0-4792-AB7B-E1A0C001843A}
 		{22206E77-3EB9-4B73-BEC0-2A63201DA473} = {73C72FF8-FF25-49A3-A241-4959FEFC8C81}
+		{55D08DE8-125B-4CC6-A5C7-371C166C2D0E} = {6D957FE8-23D0-4985-A91C-F1CC399AA453}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1739E5AC-504C-40F8-968B-64F1F620D3C3}

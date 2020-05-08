@@ -12,6 +12,7 @@ __/nuget-feed/*
 __/opencover/
 __/packages/
 __/packages-ci/
+__/tools/
 
 # User-specific files
 *.rsuser
