@@ -5,6 +5,9 @@
 
 <#
 .SYNOPSIS
+Test the package Abc.Maybe.
+
+.DESCRIPTION
 Test the package Abc.Maybe for net(4,5,6,7,8)x and netcoreapp(2,3).x.
 Matching .NET Framework Developer Packs or Targeting Packs must be installed
 locally, the later should suffice. The script will fail with error MSB3644 when
@@ -48,10 +51,10 @@ Exclude .NET Core from the tests.
 Ignored if -Platform is also set and equals $true.
 
 .PARAMETER Optimise
-Attempt to speed up things a bit when testing many platforms one at a time.
+Attempt to speed up things a bit when testing many platforms, one at a time.
 
-.PARAMETER Clean
-Hard clean the source and test directories before anything else.
+.PARAMETER Reset
+Hard clean (reset) the source and test directories before anything else.
 
 .PARAMETER Yes
 Do not ask for confirmation.
@@ -95,12 +98,12 @@ param(
     [Parameter(Mandatory = $false, Position = 2)]
     [Alias("r")] [string] $Runtime = "",
 
-                 [switch] $Current,
+    [Alias("c")] [switch] $Current,
     [Alias("a")] [switch] $AllKnown,
                  [switch] $NoClassic,
                  [switch] $NoCore,
     [Alias("o")] [switch] $Optimise,
-    [Alias("c")] [switch] $Clean,
+    [Alias("c")] [switch] $Reset,
     [Alias("y")] [switch] $Yes,
     [Alias("h")] [switch] $Help
 )
@@ -130,12 +133,12 @@ Usage: pack.ps1 [switches].
   -p|-Platform   specify a single platform for which to test the package.
   -v|-Version    specify a version of the package Abc.Maybe.
   -r|-Runtime    specify a target runtime to test for.
-     -Current    use the package version found in Abc.Maybe.props.
+  -c|-Current    use the package version found in Abc.Maybe.props.
   -a|-AllKnown   test the package for ALL known platform versions (SLOW).
      -NoClassic  exclude .NET Framework from the tests.
      -NoCore     exclude .NET Core from the tests.
   -o|-Optimise   attempt to speed up things a bit when testing many platforms one at a time.
-  -c|-Clean      hard clean the solution before anything else.
+     -Reset      reset the solution before anything else.
   -y|-Yes        do not ask for confirmation before running any test.
   -h|-Help       print this help and exit.
 
@@ -578,7 +581,7 @@ try {
 
     New-Variable -Name "ProjectName" -Value "Abc.Maybe" -Option ReadOnly
 
-    if ($Clean) {
+    if ($Reset) {
         # Cleaning the "src" directory is only necessary when there are "dangling"
         # cs files in "src" that were created during a previous build. Now, it's
         # no longer a problem (we explicitely exclude "bin" and "obj" in

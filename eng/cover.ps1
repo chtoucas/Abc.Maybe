@@ -41,15 +41,15 @@ Print help.
 
 .EXAMPLE
 PS> cover.ps1
-Run Coverlet then build the human-readable reports.
+Run Coverlet then build reports and badges.
 
 .EXAMPLE
 PS> cover.ps1 -x
-Run OpenCover then build the human-readable reports.
+Run OpenCover then build reports and badges.
 
 .EXAMPLE
 PS> cover.ps1 -OpenCover -NoReport
-Run OpenCover, do NOT build human-readable reports and badges.
+Run OpenCover, do NOT build reports and badges.
 #>
 [CmdletBinding()]
 param(

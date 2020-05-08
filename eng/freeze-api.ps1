@@ -4,9 +4,12 @@
 
 <#
 .SYNOPSIS
-Update PublicAPI.Shipped.txt and PublicAPI.Unshipped.txt.
-Unshipped members are moved to Shipped.
-Obsolete members are moved from Shipped to Unshipped and prefixed w/ *REMOVED*.
+Update the PublicAPI files.
+
+.DESCRIPTION
+Update PublicAPI.Shipped.txt and PublicAPI.Unshipped.txt:
+- Unshipped members are moved to Shipped.
+- Obsolete members are moved from Shipped to Unshipped and prefixed w/ *REMOVED*.
 #>
 [CmdletBinding()]
 param()

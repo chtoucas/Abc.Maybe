@@ -6,6 +6,9 @@
 <#
 .SYNOPSIS
 Create a NuGet package.
+
+.DESCRIPTION
+Create a NuGet package.
 The default behaviour is to build a CI package.
 
 .PARAMETER NoCI
@@ -15,10 +18,11 @@ Create a non-CI package.
 Create a package ready to be published to NuGet.Org.
 NB: Release has nothing to do with the MSBuild configuration property.
 
-This is a meta-option, it automatically sets -NoCI. By the way, the resulting
-package is no different from the one you would get using only -NoCI.
-In addition, the script resets the repository, and stops when there are
-uncommited changes or if it cannot retrieve git metadata.
+This is a meta-option, it automatically sets -NoCI. The resulting package is no
+different from the one you would get using only -NoCI, but, in addition, the
+script resets the repository, and stops when there are uncommited changes or if
+it cannot retrieve git metadata.
+
 If this behaviour happens to be too strict and you are in a hurry, you can use:
 PS> pack.ps1 -NoCI -Force
 In that event, do not forget to reset the repository thereafter.
@@ -27,8 +31,8 @@ In that event, do not forget to reset the repository thereafter.
 Force retrieval of git metadata when there are uncommited changes.
 Ignored if -Release is also set and equals $true.
 
-.PARAMETER Clean
-Hard clean the source directory before anything else.
+.PARAMETER Reset
+Hard clean (reset) the source directory before anything else.
 
 .PARAMETER Yes
 Do not ask for confirmation, mostly.
@@ -58,7 +62,7 @@ param(
     [Alias("n")] [switch] $NoCI,
     [Alias("r")] [switch] $Release,
     [Alias("f")] [switch] $Force,
-    [Alias("c")] [switch] $Clean,
+    [Alias("c")] [switch] $Reset,
     [Alias("y")] [switch] $Yes,
     [Alias("v")] [switch] $MyVerbose,
     [Alias("h")] [switch] $Help
@@ -79,7 +83,7 @@ Usage: pack.ps1 [switches]
   -n|-NoCI       create a non-CI package.
   -r|-Release    create a package ready to be published to NuGet.Org.
   -f|-Force      force retrieval of git metadata when there are uncommited changes.
-  -c|-Clean      hard clean the solution before anything else.
+     -Reset      reset the solution before anything else.
   -y|-Yes        do not ask for confirmation, mostly.
   -v|-MyVerbose  display settings used to compile each DLL.
   -h|-Help       print this help and exit.
@@ -333,7 +337,7 @@ function Invoke-Pack {
 
     $project = Join-Path $SRC_DIR $projectName -Resolve
 
-    # Do NOT use --no-restore or --no-build (options -Clean/-Release erase bin/obj).
+    # Do NOT use --no-restore or --no-build (options -Reset/-Release erase bin/obj).
     # RepositoryCommit and RepositoryBranch are standard props, do not remove them.
     & dotnet pack $project -c Release --nologo $args --output $output `
         /p:TargetFrameworks='\"netstandard2.1;netstandard2.0;netstandard1.0;net461\"' `
@@ -442,7 +446,7 @@ try {
     $CI = -not ($Release -or $NoCI)
 
     # 1. Reset the source tree.
-    if ($Release -or $Clean) { Reset-SourceTree -Yes:($Release -or $Yes) }
+    if ($Release -or $Reset) { Reset-SourceTree -Yes:($Release -or $Yes) }
     # 2. Get git metadata.
     $branch, $commit = Get-GitMetadata -Fatal:$Release -Force:$Force -Yes:$Yes
     # 3. Generate build UIDs.
