@@ -11,8 +11,9 @@ Run the Code Coverage script and build human-readable reports.
 Run the Code Coverage script w/ either Coverlet (default) or OpenCover,
 then optionally build human-readable reports and badges.
 
-Prerequesites: NuGet packages and tools must have been restored before. If not
-the script may fail with not even a single warning... (eg w/ Coverlet).
+This script does NOT execute an implicit restore, therefore it may fail with not
+even a single warning... eg w/ Coverlet. If needed, use the option -Restore
+which instructs the script to explicitly restore the required dependencies.
 
 OpenCover is slow when compared to Coverlet, but we get risk hotspots
 (NPath complexity, crap score) and a list of unvisited methods.
@@ -22,14 +23,18 @@ that's just a detail.
 
 .PARAMETER OpenCover
 Use OpenCover instead of Coverlet.
+Ignored if -NoCoverage is also set and equals $true.
+
+.PARAMETER NoCoverage
+Do NOT run any Code Coverage tool.
+This option and -NoReport are mutually exclusive.
 
 .PARAMETER NoReport
 Do NOT build HTML/text reports and badges w/ ReportGenerator.
-This option and -ReportOnly are mutually exclusive.
+This option and -NoCoverage are mutually exclusive.
 
-.PARAMETER ReportOnly
-Do NOT run any Code Coverage tool.
-This option and -NoReport are mutually exclusive.
+.PARAMETER Restore
+Restore NuGet packages and tools before anything else.
 
 .PARAMETER Help
 Print help.
@@ -49,8 +54,9 @@ Run OpenCover, do NOT build human-readable reports and badges.
 [CmdletBinding()]
 param(
     [Alias("x")] [switch] $OpenCover,
+                 [switch] $NoCoverage,
                  [switch] $NoReport,
-                 [switch] $ReportOnly,
+                 [switch] $Restore,
     [Alias("h")] [switch] $Help
 )
 
@@ -71,10 +77,11 @@ function Write-Usage {
 Run the Code Coverage script and build human-readable reports.
 
 Usage: cover.ps1 [switches]
-  -x|-OpenCover    use OpenCover instead of Coverlet.
-     -NoReport     do NOT run ReportGenerator.
-     -ReportOnly   do NOT run any Code Coverage tool.
-  -h|-Help         print this help and exit.
+  -x|-OpenCover   use OpenCover instead of Coverlet.
+     -NoCoverage  do NOT run any Code Coverage tool.
+     -NoReport    do NOT run ReportGenerator.
+     -Restore     restore NuGet packages and tools before anything else.
+  -h|-Help        print this help and exit.
 
 "@
 }
@@ -108,6 +115,21 @@ function Find-OpenCover {
 #endregion
 ################################################################################
 #region Tasks.
+
+function Invoke-Restore {
+    [CmdletBinding()]
+    param()
+
+    Say-LOUDLY "Restoring dependencies, please wait..." -Invert
+
+    Write-Verbose "Restoring tools."
+    & dotnet tool restore | Out-Null
+
+    Write-Verbose "Restoring NuGet packages."
+    & dotnet restore | Out-Null
+}
+
+# ------------------------------------------------------------------------------
 
 function Invoke-OpenCover {
     [CmdletBinding()]
@@ -223,8 +245,8 @@ try {
 
     New-Variable -Name "Configuration" -Value "Debug" -Option ReadOnly
 
-    if ($ReportOnly -and $NoReport) {
-        Croak "You cannot set both options -ReportOnly and -NoReport at the same time."
+    if ($NoCoverage -and $NoReport) {
+        Croak "You cannot set both options -NoCoverage and -NoReport at the same time."
     }
 
     $tool = if ($OpenCover) { "opencover" } else { "coverlet" }
@@ -237,16 +259,20 @@ try {
         mkdir -Force -Path $outdir | Out-Null
     }
 
-    if ($ReportOnly) {
+    if ($Restore) { Invoke-Restore }
+
+    if ($NoCoverage) {
         Carp "On your request, we do not run any Code Coverage tool."
     }
-    elseif ($OpenCover) {
-        Find-OpenCover | Invoke-OpenCover -Configuration $Configuration -Output $outxml
-    }
     else {
-        # For coverlet.msbuild the path must be absolute if we want the result to be
-        # put within the directory for artifacts and not below the test project.
-        Invoke-Coverlet -Configuration $Configuration  -Output $outxml
+        if ($OpenCover) {
+            Find-OpenCover | Invoke-OpenCover -Configuration $Configuration -Output $outxml
+        }
+        else {
+            # For coverlet.msbuild the path must be absolute if we want the result to be
+            # put within the directory for artifacts and not below the test project.
+            Invoke-Coverlet -Configuration $Configuration -Output $outxml
+        }
     }
 
     if ($NoReport) {
