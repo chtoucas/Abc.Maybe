@@ -82,6 +82,7 @@ Create a NuGet package for Abc.Maybe.
 Usage: pack.ps1 [arguments]
   -n|-NoCI       create a non-CI package.
   -r|-Release    create a package ready to be published to NuGet.Org.
+
   -f|-Force      force retrieval of git metadata when there are uncommited changes.
      -Reset      reset the solution before anything else.
   -y|-Yes        do not ask for confirmation, mostly.

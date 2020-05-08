@@ -80,6 +80,7 @@ Usage: cover.ps1 [arguments]
   -x|-OpenCover   use OpenCover instead of Coverlet.
      -NoCoverage  do NOT run any Code Coverage tool.
      -NoReport    do NOT run ReportGenerator.
+
      -Restore     restore NuGet packages and tools before anything else.
   -h|-Help        print this help and exit.
 

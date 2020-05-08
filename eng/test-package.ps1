@@ -21,23 +21,6 @@ it couldn't find the Xunit runner console.
 .PARAMETER Platform
 Specify a single platform for which to test the package.
 
-.PARAMETER Version
-Specify a version of the package Abc.Maybe.
-When no version is specified, we use the last one from the local NuGet feed.
-Ignored if -Current is also set and equals $true.
-
-.PARAMETER Runtime
-The target runtime to test the package for.
-If the runtime is not known, the script will fail silently, and if it is not
-supported the script will abort.
-Ignored by platforms "net45" or "net451".
-
-For instance, runtime can be "win10-x64" or "win10-x86".
-See https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
-
-.PARAMETER Current
-Use the package version found in Abc.Maybe.props.
-
 .PARAMETER AllKnown
 Test the package for ALL known platform versions (SLOW).
 Ignored if -Platform is also set and equals $true.
@@ -49,6 +32,23 @@ Ignored if -Platform is also set and equals $true.
 .PARAMETER NoCore
 Exclude .NET Core from the tests.
 Ignored if -Platform is also set and equals $true.
+
+.PARAMETER Version
+Specify a version of the package Abc.Maybe.
+When no version is specified, we use the last one from the local NuGet feed.
+Ignored if -Current is also set and equals $true.
+
+.PARAMETER Current
+Use the package version found in Abc.Maybe.props.
+
+.PARAMETER Runtime
+The target runtime to test the package for.
+If the runtime is not known, the script will fail silently, and if it is not
+supported the script will abort.
+Ignored by platforms "net45" or "net451".
+
+For instance, runtime can be "win10-x64" or "win10-x86".
+See https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
 
 .PARAMETER Optimise
 Attempt to speed up things a bit when testing many platforms, one at a time.
@@ -89,19 +89,29 @@ Test the package for a specific platform and for the runtime "win10-x64".
 #>
 [CmdletBinding()]
 param(
+    # Platform selection.
+    #
     [Parameter(Mandatory = $false, Position = 0)]
     [Alias("p")] [string] $Platform = "",
 
-    [Parameter(Mandatory = $false, Position = 1)]
-    [Alias("v")] [string] $Version = "",
-
-    [Parameter(Mandatory = $false, Position = 2)]
-    [Alias("r")] [string] $Runtime = "",
-
-    [Alias("c")] [switch] $Current,
     [Alias("a")] [switch] $AllKnown,
                  [switch] $NoClassic,
                  [switch] $NoCore,
+
+    # Package version.
+    #
+    [Parameter(Mandatory = $false, Position = 1)]
+    [Alias("v")] [string] $Version = "",
+
+    [Alias("c")] [switch] $Current,
+
+    # Runtime selection.
+    #
+    [Parameter(Mandatory = $false, Position = 2)]
+    [Alias("r")] [string] $Runtime = "",
+
+    # Other parameters.
+    #
     [Alias("o")] [switch] $Optimise,
                  [switch] $Reset,
     [Alias("y")] [switch] $Yes,
@@ -131,12 +141,15 @@ Test the package Abc.Maybe.
 
 Usage: test-package.ps1 [arguments]
   -p|-Platform   specify a single platform for which to test the package.
-  -v|-Version    specify a version of the package Abc.Maybe.
-  -r|-Runtime    specify a target runtime to test for.
-  -c|-Current    use the package version found in Abc.Maybe.props.
   -a|-AllKnown   test the package for ALL known platform versions (SLOW).
      -NoClassic  exclude .NET Framework from the tests.
      -NoCore     exclude .NET Core from the tests.
+
+  -v|-Version    specify a version of the package Abc.Maybe.
+  -c|-Current    use the package version found in Abc.Maybe.props.
+
+  -r|-Runtime    specify a target runtime to test for.
+
   -o|-Optimise   attempt to speed up things a bit when testing many platforms one at a time.
      -Reset      reset the solution before anything else.
   -y|-Yes        do not ask for confirmation before running any test.
@@ -452,8 +465,7 @@ function Invoke-TestSingle {
 
 # ------------------------------------------------------------------------------
 
-# Interactive mode.
-function Invoke-TestMany {
+function Invoke-TestManyInteractive {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, Position = 0)]
@@ -481,6 +493,29 @@ function Invoke-TestMany {
                 -NoBuild:$noBuild
         }
     }
+}
+
+# ------------------------------------------------------------------------------
+
+function Invoke-TestMany {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [string] $filter,
+
+        [Parameter(Mandatory = $true, Position = 1)]
+        [ValidateNotNullOrEmpty()]
+        [string] $version,
+
+        [Parameter(Mandatory = $false, Position = 2)]
+        [string] $runtime = ""
+    )
+
+    "`nTesting the package v$version for ""$filter"" and {0}." -f (Get-RuntimeLabel $runtime) `
+        | Say-LOUDLY
+
+    Carp "Not yet implemented."
 }
 
 # ------------------------------------------------------------------------------
@@ -523,6 +558,8 @@ function Invoke-TestAll {
 
     & dotnet test $NET_SDK_PROJECT --nologo $args /p:AbcVersion=$version | Out-Host
     Assert-CmdSuccess -ErrMessage "Test task failed."
+
+    Say-Softly "Test completed successfully."
 
     if ($allKnown -and (-not $noClassic)) {
         # "net45" and "net451" must be handled separately.
@@ -640,7 +677,7 @@ try {
                 if ($AllKnown) { $platformList = $AllClassic }
                 else { $platformList = $LastClassic }
 
-                Invoke-TestMany `
+                Invoke-TestManyInteractive `
                     -PlatformList   $platformList `
                     -Version        $Version `
                     -Runtime        $Runtime `
@@ -652,7 +689,7 @@ try {
                 if ($AllKnown) { $platformList = $AllCore }
                 else { $platformList = $LTSCore }
 
-                Invoke-TestMany `
+                Invoke-TestManyInteractive `
                     -PlatformList   $platformList `
                     -Version        $Version `
                     -Runtime        $Runtime `
@@ -662,11 +699,16 @@ try {
         }
     }
     else {
-        # Validating the platform name is not mandatory but, if we don't,
-        # the script fails silently when the platform is not supported here.
-        Validate-Platform -Platform $Platform -KnownPlatforms ($AllClassic + $AllCore)
+        if ($Platform.EndsWith("*")) {
+            Invoke-TestMany -Filter $Platform -Version $Version -Runtime $Runtime
+        }
+        else {
+            # Validating the platform name is not mandatory but, if we don't,
+            # the script fails silently when the platform is not supported here.
+            Validate-Platform -Platform $Platform -KnownPlatforms ($AllClassic + $AllCore)
 
-        Invoke-TestSingle -Platform $Platform -Version $Version -Runtime $Runtime
+            Invoke-TestSingle -Platform $Platform -Version $Version -Runtime $Runtime
+        }
     }
 }
 catch {
