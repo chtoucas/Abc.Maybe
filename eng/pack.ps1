@@ -13,7 +13,9 @@ Create a non-CI package.
 
 .PARAMETER Release
 Create a package ready to be published to NuGet.Org.
-This is a meta-option, it automatically sets -NoCI. by the way, the resulting
+NB: Release has nothing to do with the MSBuild configuration property.
+
+This is a meta-option, it automatically sets -NoCI. By the way, the resulting
 package is no different from the one you would get using only -NoCI.
 In addition, the script resets the repository, and stops when there are
 uncommited changes or if it cannot retrieve git metadata.
@@ -23,7 +25,7 @@ In that event, do not forget to reset the repository thereafter.
 
 .PARAMETER Force
 Force retrieval of git metadata when there are uncommited changes.
-Ignored if -Release is also set.
+Ignored if -Release is also set and equals $true.
 
 .PARAMETER Clean
 Hard clean the source directory before anything else.
@@ -74,13 +76,13 @@ function Write-Usage {
 Create a NuGet package for Abc.Maybe
 
 Usage: pack.ps1 [switches]
-  -n|-NoCI        create a non-CI package.
-  -r|-Release     create a package ready to be published to NuGet.Org.
-  -f|-Force       force retrieval of git metadata when there are uncommited changes.
-  -c|-Clean       hard clean the solution before anything else.
-  -y|-Yes         do not ask for confirmation, mostly.
-  -v|-MyVerbose   display settings used to compile each DLL.
-  -h|-Help        print this help and exit.
+  -n|-NoCI       create a non-CI package.
+  -r|-Release    create a package ready to be published to NuGet.Org.
+  -f|-Force      force retrieval of git metadata when there are uncommited changes.
+  -c|-Clean      hard clean the solution before anything else.
+  -y|-Yes        do not ask for confirmation, mostly.
+  -v|-MyVerbose  display settings used to compile each DLL.
+  -h|-Help       print this help and exit.
 
 "@
 }

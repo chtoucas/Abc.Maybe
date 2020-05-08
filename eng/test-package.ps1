@@ -21,7 +21,7 @@ Specify a single platform for which to test the package.
 .PARAMETER Version
 Specify a version of the package Abc.Maybe.
 When no version is specified, we use the last one from the local NuGet feed.
-Ignored if -Current is also set.
+Ignored if -Current is also set and equals $true.
 
 .PARAMETER Runtime
 The target runtime to test the package for.
@@ -37,15 +37,15 @@ Use the package version found in Abc.Maybe.props.
 
 .PARAMETER AllKnown
 Test the package for ALL known platform versions (SLOW).
-Ignored if -Platform is also set.
+Ignored if -Platform is also set and equals $true.
 
 .PARAMETER NoClassic
 Exclude .NET Framework from the tests.
-Ignored if -Platform is also set.
+Ignored if -Platform is also set and equals $true.
 
 .PARAMETER NoCore
 Exclude .NET Core from the tests.
-Ignored if -Platform is also set.
+Ignored if -Platform is also set and equals $true.
 
 .PARAMETER Optimise
 Attempt to speed up things a bit when testing many platforms one at a time.
@@ -127,17 +127,17 @@ function Write-Usage {
 Test package Abc.Maybe
 
 Usage: pack.ps1 [switches].
-  -p|-Platform    specify a single platform for which to test the package.
-  -v|-Version     specify a version of the package Abc.Maybe.
-  -r|-Runtime     specify a target runtime to test for.
-    |-Current     use the package version found in Abc.Maybe.props.
-  -a|-AllKnown    test the package for ALL known platform versions (SLOW).
-    |-NoClassic   exclude .NET Framework from the tests.
-    |-NoCore      exclude .NET Core from the tests.
-  -o|-Optimise    attempt to speed up things a bit when testing many platforms one at a time.
-  -c|-Clean       hard clean the solution before anything else.
-  -y|-Yes         do not ask for confirmation before running any test.
-  -h|-Help        print this help and exit.
+  -p|-Platform   specify a single platform for which to test the package.
+  -v|-Version    specify a version of the package Abc.Maybe.
+  -r|-Runtime    specify a target runtime to test for.
+     -Current    use the package version found in Abc.Maybe.props.
+  -a|-AllKnown   test the package for ALL known platform versions (SLOW).
+     -NoClassic  exclude .NET Framework from the tests.
+     -NoCore     exclude .NET Core from the tests.
+  -o|-Optimise   attempt to speed up things a bit when testing many platforms one at a time.
+  -c|-Clean      hard clean the solution before anything else.
+  -y|-Yes        do not ask for confirmation before running any test.
+  -h|-Help       print this help and exit.
 
 "@
 }
