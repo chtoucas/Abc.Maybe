@@ -34,6 +34,8 @@ Usage: reset.ps1 [arguments]
     exit 0
 }
 
+Say "This is the reset script.`n"
+
 try {
     pushd $ROOT_DIR
 
@@ -44,9 +46,12 @@ try {
     Reset-LocalNuGet      -Yes:$Yes
 
     if ($Restore) {
-        Say-LOUDLY "Restoring dependencies, please wait..."
+        Say-LOUDLY "`nRestoring dependencies, please wait..."
+
         & dotnet tool restore
         & dotnet restore
+
+        Say-Softly "Dependencies successfully restored."
     }
 }
 catch {

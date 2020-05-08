@@ -26,7 +26,7 @@ function Update-PublicAPI {
         [string] $dir
     )
 
-    Say-LOUDLY "Processing $dir"
+    Say-LOUDLY "`nProcessing $dir"
 
     $shippedPath = Join-Path $dir "PublicAPI.Shipped.txt" -Resolve
     $shipped = Get-Content $shippedPath
@@ -60,9 +60,13 @@ function Update-PublicAPI {
 
     Say-Indent "Writing PublicAPI.Unshipped.txt."
     "" | Out-File $unshippedPath -Encoding UTF8
+
+    Say-Softly "Directory successfully processed."
 }
 
 # ------------------------------------------------------------------------------
+
+Say "This is the script to update the PublicAPI files."
 
 try {
     pushd $SRC_DIR

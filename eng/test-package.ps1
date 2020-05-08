@@ -307,7 +307,7 @@ function Invoke-Restore {
         [switch] $allKnown
     )
 
-    Say-LOUDLY "Restoring dependencies for NETSdk, please wait..."
+    Say-LOUDLY "`nRestoring dependencies for NETSdk, please wait..."
 
     if ($runtime -eq "") {
         $args = @()
@@ -319,6 +319,8 @@ function Invoke-Restore {
 
     & dotnet restore $NET_SDK_PROJECT $args /p:AbcVersion=$version | Out-Host
     Assert-CmdSuccess -ErrMessage "Restore task failed."
+
+    Say-Softly "Dependencies successfully restored."
 }
 
 # ------------------------------------------------------------------------------
@@ -338,7 +340,7 @@ function Invoke-Build {
         [switch] $noRestore
     )
 
-    Say-LOUDLY "Building NETSdk, please wait..."
+    Say-LOUDLY "`nBuilding NETSdk, please wait..."
 
     if ($runtime -eq "") {
         $args = @()
@@ -351,6 +353,8 @@ function Invoke-Build {
 
     & dotnet build $NET_SDK_PROJECT $args /p:AbcVersion=$version | Out-Host
     Assert-CmdSuccess -ErrMessage "Restore task failed."
+
+    Say-Softly "Project successfully built."
 }
 
 # ------------------------------------------------------------------------------
@@ -370,7 +374,7 @@ function Invoke-TestOldStyle {
         [string] $runtime = ""
     )
 
-    "Testing the package v$version for ""$platform"" and {0}." -f (Get-RuntimeLabel $runtime) `
+    "`nTesting the package v$version for ""$platform"" and {0}." -f (Get-RuntimeLabel $runtime) `
         | Say-LOUDLY
 
     if ($runtime -ne "") {
@@ -395,6 +399,8 @@ function Invoke-TestOldStyle {
 
     & $xunit $asm | Out-Host
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting ""$platform""."
+
+    Say-Softly "Test completed successfully."
 }
 
 # ------------------------------------------------------------------------------
@@ -424,7 +430,7 @@ function Invoke-TestSingle {
         return
     }
 
-    "Testing the package v$version for ""$platform"" and {0}." -f (Get-RuntimeLabel $runtime) `
+    "`nTesting the package v$version for ""$platform"" and {0}." -f (Get-RuntimeLabel $runtime) `
         | Say-LOUDLY
 
     if ($runtime -eq "") {
@@ -440,6 +446,8 @@ function Invoke-TestSingle {
         /p:AbcVersion=$version /p:AllKnown=true --nologo `
         | Out-Host
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting ""$platform""."
+
+    Say-Softly "Test completed successfully."
 }
 
 # ------------------------------------------------------------------------------
@@ -464,7 +472,7 @@ function Invoke-TestMany {
     )
 
     foreach ($platform in $platformList) {
-        if (Confirm-Yes "Test the package for ""$platform""?") {
+        if (Confirm-Yes "`nTest the package for ""$platform""?") {
             Invoke-TestSingle `
                 -Platform $platform `
                 -Version  $version `
@@ -502,7 +510,7 @@ function Invoke-TestAll {
     elseif ($noCore)    { $platformVer = "last minor version of each major version" }
     else                { $platformVer = "selected versions" }
 
-    "Batch testing the package v$version for $platformSet, $platformVer, and {0}." `
+    "`nBatch testing the package v$version for $platformSet, $platformVer, and {0}." `
         -f (Get-RuntimeLabel $runtime) `
         | Say-LOUDLY
 
@@ -531,6 +539,8 @@ if ($Help) {
     Write-Usage
     exit 0
 }
+
+Say "This is the test script for the package Abc.Maybe."
 
 # ------------------------------------------------------------------------------
 
@@ -573,6 +583,8 @@ try {
     New-Variable -Name "ProjectName" -Value "Abc.Maybe" -Option ReadOnly
 
     if ($Reset) {
+        Say-LOUDLY "`nResetting repository."
+
         # Cleaning the "src" directory is only necessary when there are "dangling"
         # cs files in "src" that were created during a previous build. Now, it's
         # no longer a problem (we explicitely exclude "bin" and "obj" in
@@ -601,7 +613,7 @@ try {
             Croak "You set both -NoClassic and -NoCore... There is nothing left to be done."
         }
 
-        if ($Yes -or (Confirm-Yes "Test the package for all selected platforms at once (SLOW)?")) {
+        if ($Yes -or (Confirm-Yes "`nTest the package for all selected platforms at once (SLOW)?")) {
             Invoke-TestAll `
                 -Version    $Version `
                 -Runtime    $Runtime `
@@ -622,7 +634,7 @@ try {
                 Invoke-Restore -Version $Version -Runtime $Runtime -AllKnown:$AllKnown
             }
 
-            Say-LOUDLY "Now, you will have the opportunity to choose which platform to test the package for."
+            Say-LOUDLY "`nNow, you will have the opportunity to choose which platform to test the package for."
 
             if (-not $NoClassic) {
                 if ($AllKnown) { $platformList = $AllClassic }

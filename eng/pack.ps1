@@ -439,10 +439,10 @@ if ($Help) {
 }
 
 if ($Release -or $NoCI) {
-    Say "This is the NuGet package creation tool for Abc.Maybe.`n"
+    Say "This is the NuGet package creation script for Abc.Maybe.`n"
 }
 else {
-    Say "This is the NuGet package creation tool for Abc.Maybe" -NoNewline
+    Say "This is the NuGet package creation script for Abc.Maybe" -NoNewline
     Say-LOUDLY " (CI mode).`n"
 }
 
@@ -453,7 +453,7 @@ try {
 
     $CI = -not ($Release -or $NoCI)
 
-    Say-LOUDLY "Intialization."
+    Say-LOUDLY "Initialisation."
 
     # 1. Reset the source tree.
     if ($Release -or $Reset) { Reset-SourceTree -Yes:($Release -or $Yes) }

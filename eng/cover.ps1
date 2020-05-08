@@ -120,13 +120,15 @@ function Invoke-Restore {
     [CmdletBinding()]
     param()
 
-    Say-LOUDLY "Restoring dependencies, please wait..." -Invert
+    Say-LOUDLY "`nRestoring dependencies, please wait..."
 
     Write-Verbose "Restoring tools."
     & dotnet tool restore | Out-Host
 
     Write-Verbose "Restoring NuGet packages."
     & dotnet restore | Out-Host
+
+    Say-Softly "Dependencies successfully restored."
 }
 
 # ------------------------------------------------------------------------------
@@ -147,7 +149,7 @@ function Invoke-OpenCover {
         [string] $output
     )
 
-    Say-LOUDLY "Running OpenCover." -Invert
+    Say-LOUDLY "`nRunning OpenCover."
 
     $filters = `
         "+[Abc.Maybe]*",
@@ -170,6 +172,8 @@ function Invoke-OpenCover {
         | Out-Host
 
     Assert-CmdSuccess -ErrMessage "OpenCover failed."
+
+    Say-Softly "OpenCover completed successfully."
 }
 
 # ------------------------------------------------------------------------------
@@ -186,7 +190,7 @@ function Invoke-Coverlet {
         [string] $output
     )
 
-    Say-LOUDLY "Running Coverlet." -Invert
+    Say-LOUDLY "`nRunning Coverlet."
 
     $excludes = `
         "[Abc*]System.Diagnostics.CodeAnalysis.*",
@@ -203,6 +207,8 @@ function Invoke-Coverlet {
         | Out-Host
 
     Assert-CmdSuccess -ErrMessage "Coverlet failed."
+
+    Say-Softly "Coverlet completed successfully."
 }
 
 # ------------------------------------------------------------------------------
@@ -219,7 +225,7 @@ function Invoke-ReportGenerator {
         [string] $targetdir
     )
 
-    Say-LOUDLY "Running ReportGenerator." -Invert
+    Say-LOUDLY "`nRunning ReportGenerator."
 
     & dotnet tool run reportgenerator `
         -verbosity:Warning `
@@ -229,6 +235,8 @@ function Invoke-ReportGenerator {
         | Out-Host
 
     Assert-CmdSuccess -ErrMessage "ReportGenerator failed."
+
+    Say-Softly "ReportGenerator completed successfully."
 }
 
 #endregion
@@ -239,6 +247,8 @@ if ($Help) {
     Write-Usage
     exit 0
 }
+
+Say "This is the Code Coverage script."
 
 try {
     pushd $ROOT_DIR
@@ -260,10 +270,9 @@ try {
     }
 
     if ($Restore) { Invoke-Restore }
-    exit
 
     if ($NoCoverage) {
-        Carp "On your request, we do not run any Code Coverage tool."
+        Carp "`nOn your request, we do not run any Code Coverage tool."
     }
     else {
         if ($OpenCover) {
@@ -277,7 +286,7 @@ try {
     }
 
     if ($NoReport) {
-        Carp "On your request, we do not run ReportGenerator."
+        Carp "`nOn your request, we do not run ReportGenerator."
     }
     else {
         Invoke-ReportGenerator $outxml $outdir
