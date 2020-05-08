@@ -1,4 +1,4 @@
-# See LICENSE in the project root for license information.
+# See LICENSE.dotnet in the project root for license information.
 
 # Adapted from https://github.com/dotnet/roslyn/tree/master/scripts/PublicApi
 
@@ -13,7 +13,7 @@ param()
 
 . (Join-Path $PSScriptRoot "abc.ps1")
 
-################################################################################
+# ------------------------------------------------------------------------------
 
 function Update-PublicAPI {
     [CmdletBinding()]
@@ -59,7 +59,7 @@ function Update-PublicAPI {
     "" | Out-File $unshippedPath -Encoding UTF8
 }
 
-################################################################################
+# ------------------------------------------------------------------------------
 
 try {
     pushd $SRC_DIR
