@@ -8,7 +8,7 @@
 Test the package Abc.Maybe.
 
 .DESCRIPTION
-Test the package Abc.Maybe for net(4,5,6,7,8)x and netcoreapp(2,3).x.
+Test the package Abc.Maybe for net4(5,6,7,8)x and netcoreapp(2,3).x.
 Matching .NET Framework Developer Packs or Targeting Packs must be installed
 locally, the later should suffice. The script will fail with error MSB3644 when
 it is not the case.
@@ -19,7 +19,12 @@ The script exits with a code 2 when -Platform is equal "net45" or "net451", and
 it couldn't find the Xunit runner console.
 
 .PARAMETER Platform
-Specify a single platform for which to test the package.
+Specify the platform(s) for which to test the package.
+Unless there is one trailing asterisk (*), this parameter expects a single
+platform name. Otherwise, all platform whose name starts with the specified
+value (without the asterisk) will be selected. For instance, "net46*" is
+translated to "net46", "net461" and "net462". There limit case ("*") is a
+synonym for "-AllKnown -NoClassic:$false -NoCore:$false".
 
 .PARAMETER AllKnown
 Test the package for ALL known platform versions (SLOW).
@@ -140,7 +145,7 @@ function Write-Usage {
 Test the package Abc.Maybe.
 
 Usage: test-package.ps1 [arguments]
-  -p|-Platform   specify a single platform for which to test the package.
+  -p|-Platform   specify the platform(s) for which to test the package.
   -a|-AllKnown   test the package for ALL known platform versions (SLOW).
      -NoClassic  exclude .NET Framework from the tests.
      -NoCore     exclude .NET Core from the tests.
@@ -698,7 +703,11 @@ try {
     }
 
     if (($Platform -eq "") -or ($Platform -eq "*")) {
-        if ($NoClassic -and $NoCore) {
+        if ($Platform -eq "*") {
+            # "*" really means ALL platforms.
+            $AllKnown = $true ; $NoClassic = $false ; $NoCore = $false
+        }
+        elseif ($NoClassic -and $NoCore) {
             Croak "You set both -NoClassic and -NoCore... There is nothing left to be done."
         }
 
