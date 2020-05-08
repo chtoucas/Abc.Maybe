@@ -24,7 +24,7 @@ if ($Help) {
 
 Reset the repository.
 
-Usage: reset.ps1 [options]
+Usage: reset.ps1 [arguments]
   -r|-Restore  restore NuGet packages and tools thereafter.
   -y|-Yes      do not ask for confirmation.
   -h|-Help     print this help and exit.

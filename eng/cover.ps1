@@ -76,7 +76,7 @@ function Write-Usage {
 
 Run the Code Coverage script and build human-readable reports.
 
-Usage: cover.ps1 [options]
+Usage: cover.ps1 [arguments]
   -x|-OpenCover   use OpenCover instead of Coverlet.
      -NoCoverage  do NOT run any Code Coverage tool.
      -NoReport    do NOT run ReportGenerator.
