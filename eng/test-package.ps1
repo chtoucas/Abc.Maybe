@@ -256,14 +256,14 @@ function Find-LastLocalVersion {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $projectName
+        [string] $packageName
     )
 
     Write-Verbose "Getting the last version from the local NuGet feed."
 
     if (-not (Test-Path $NUGET_LOCAL_FEED)) {
         Carp "The local NuGet feed is empty, reverting to -Current."
-        return Get-PackageVersion $projectName -AsString
+        return Get-PackageVersion $packageName -AsString
     }
 
     # Don't remove the filter, the directory is never empty (file "_._").
@@ -272,24 +272,24 @@ function Find-LastLocalVersion {
 
     if ($last -eq $null) {
         Carp "The local NuGet feed is empty, reverting to -Current."
-        return Get-PackageVersion $projectName -AsString
+        return Get-PackageVersion $packageName -AsString
     }
 
     $name = [IO.Path]::GetFileNameWithoutExtension($last)
 
     # Substring is for the dot just before the version.
-    $version = $name.Replace($projectName, "").Substring(1)
+    $version = $name.Replace($packageName, "").Substring(1)
 
-    $cacheEntry = Join-Path $NUGET_LOCAL_CACHE $projectName.ToLower() `
+    $cachedVersion = Join-Path $NUGET_LOCAL_CACHE $packageName.ToLower() `
         | Join-Path -ChildPath $version
 
-    if (-not (Test-Path $cacheEntry)) {
+    if (-not (Test-Path $cachedVersion)) {
         # If the cache entry does not exist, we stop the script, otherwise it
         # will restore the CI package into the global, not what we want.
         # Solutions: delete the "broken" package, create a new CI package, etc.
         Carp "Local NuGet feed and cache are out of sync, reverting to -Current."
         Carp "For the next time, the simplest solution is to recreate a package."
-        return Get-PackageVersion $projectName -AsString
+        return Get-PackageVersion $packageName -AsString
     }
 
     $version
@@ -674,7 +674,7 @@ $AllCore = `
 try {
     pushd $TEST_DIR
 
-    New-Variable -Name "ProjectName" -Value "Abc.Maybe" -Option ReadOnly
+    New-Variable -Name "PackageName" -Value "Abc.Maybe" -Option ReadOnly
 
     if ($Reset) {
         Say-LOUDLY "`nResetting repository."
@@ -693,10 +693,10 @@ try {
         # an explicit version, since I need its value for logging but also
         # because it is safer to do so (see the dicussion on "restore/build traps"
         # in "test\README").
-        $Version = Get-PackageVersion $ProjectName -AsString
+        $Version = Get-PackageVersion $PackageName -AsString
     }
     elseif ($Version -eq "") {
-        $Version = Find-LastLocalVersion $ProjectName
+        $Version = Find-LastLocalVersion $PackageName
     }
     else {
         Validate-Version $Version

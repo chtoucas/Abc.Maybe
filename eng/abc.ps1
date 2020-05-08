@@ -74,14 +74,14 @@ function Get-PackageVersion {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $projectName,
+        [string] $packageName,
 
         [switch] $asString
     )
 
     Write-Verbose "Getting package version."
 
-    $proj = Join-Path $ENG_DIR "$projectName.props" -Resolve
+    $proj = Join-Path $ENG_DIR "$packageName.props" -Resolve
 
     $xml = [Xml] (Get-Content $proj)
     $node = (Select-Xml -Xml $xml -XPath "//Project/PropertyGroup/MajorVersion/..").Node
@@ -117,7 +117,7 @@ function Reset-SourceTree {
     Write-Verbose "Resetting source tree."
 
     if ($yes -or (Confirm-Yes "Hard clean the directory ""src""?")) {
-        Say-Indent "Deleting ""bin"" and ""obj"" directories within ""src""."
+        Say "Deleting ""bin"" and ""obj"" directories within ""src""."
         Remove-BinAndObj $SRC_DIR
     }
 }
@@ -133,7 +133,7 @@ function Reset-TestTree {
     Write-Verbose "Resetting test tree."
 
     if ($yes -or (Confirm-Yes "Hard clean the directory ""test""?")) {
-        Say-Indent "Deleting ""bin"" and ""obj"" directories within ""test""."
+        Say "Deleting ""bin"" and ""obj"" directories within ""test""."
         Remove-BinAndObj $TEST_DIR
     }
 }
@@ -149,7 +149,7 @@ function Reset-PackageOutDir {
     Write-Verbose "Resetting output directory for packages."
 
     if ($yes -or (Confirm-Yes "Reset output directory for packages?")) {
-        Say-Indent "Clearing output directory for packages."
+        Say "Clearing output directory for packages."
         Remove-Packages $PKG_OUTDIR
     }
 }
@@ -165,7 +165,7 @@ function Reset-PackageCIOutDir {
     Write-Verbose "Resetting output directory for CI packages."
 
     if ($yes -or (Confirm-Yes "Reset output directory for CI packages?")) {
-        Say-Indent "Clearing output directory for CI packages."
+        Say "Clearing output directory for CI packages."
         Remove-Packages $PKG_CI_OUTDIR
     }
 }
@@ -187,14 +187,15 @@ function Reset-LocalNuGet {
         # If we clear the cache but don't reset the feed, things will continue
         # to work but packages from the local NuGet feed will then be restored
         # to the global cache, exactly what we wanted to avoid.
+        #
+        # We can't delete the directories, otherwise "dotnet restore" will fail.
 
-        # We can't delete the directory, otherwise "dotnet restore" will fail.
-        Say-Indent "Resetting local NuGet feed."
+        Say "Resetting local NuGet feed."
         Remove-Packages $NUGET_LOCAL_FEED
 
-        # "dotnet restore" will recreate the directory if needed.
-        Say-Indent "Clearing local NuGet cache."
-        Remove-Dir $NUGET_LOCAL_CACHE
+        Say "Clearing local NuGet cache."
+        Get-ChildItem $NUGET_LOCAL_CACHE -Exclude "_._" `
+            | % { Remove-Item $_ -Recurse }
     }
 }
 
@@ -205,20 +206,20 @@ function Remove-PackageFromLocalNuGet {
     param(
         [Parameter(Mandatory = $true, Position = 0)]
         [ValidateNotNullOrEmpty()]
-        [string] $projectName,
+        [string] $packageName,
 
         [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
         [string] $version
     )
 
-    Say-Indent "Removing obsolete package data from local NuGet feed/cache."
+    Say "Removing obsolete package data from local NuGet feed/cache."
 
-    $cacheEntry = Join-Path $projectName.ToLower() $version
-    Remove-Dir (Join-Path $NUGET_LOCAL_CACHE $cacheEntry)
+    Join-Path $NUGET_LOCAL_CACHE $packageName.ToLower() `
+        | Join-Path -ChildPath $version `
+        | Remove-Dir
 
-    $oldFilename = "$projectName.$version.nupkg"
-    $oldFilepath = Join-Path $NUGET_LOCAL_FEED $oldFilename
+    $oldFilepath = Join-Path $NUGET_LOCAL_FEED "$packageName.$version.nupkg"
     if (Test-Path $oldFilepath) {
         Remove-Item $oldFilepath
     }
