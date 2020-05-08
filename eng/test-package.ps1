@@ -404,7 +404,7 @@ function Invoke-TestOldStyle {
     $project = Join-Path $TEST_DIR $projectName -Resolve
 
     # https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2019
-    & $msbuild $project -v:minimal /p:AbcVersion=$version /t:"Restore;Build" | Out-Host
+    & $msbuild $project -nologo -v:minimal /p:AbcVersion=$version /t:"Restore;Build" | Out-Host
     Assert-CmdSuccess -ErrMessage "Build task failed when targeting ""$platform""."
 
     # NB: Release, not Debug, this is hard-coded within the project file.
@@ -455,8 +455,8 @@ function Invoke-TestSingle {
     if ($noBuild)       { $args += "--no-build" }   # NB: no-build => no-restore
     elseif ($noRestore) { $args += "--no-restore" }
 
-    & dotnet test $NET_SDK_PROJECT -f $platform $args `
-        /p:AbcVersion=$version /p:AllKnown=true --nologo `
+    & dotnet test $NET_SDK_PROJECT --nologo -f $platform $args `
+        /p:AbcVersion=$version /p:AllKnown=true `
         | Out-Host
     Assert-CmdSuccess -ErrMessage "Test task failed when targeting ""$platform""."
 
@@ -520,20 +520,15 @@ function Invoke-TestMany {
         | Say-LOUDLY
 
     $pattern = $filter.Substring(0, $filter.Length - 1)
+    $filteredList = $platformList | where { $_.StartsWith($pattern) }
 
-    # TODO: handle "net45" & "net451".
-    $targets = @()
-    foreach ($platform in $platformList) {
-        if ($platform.StartsWith($pattern)) { $targets += $platform }
-    }
-
-    $count = $targets.Length
-
+    # Fast track.
+    $count = $filteredList.Length
     if ($count -eq 0) {
         Croak "After filtering the list of known platforms w/ $filter, there is nothing left to be done."
     }
     if ($count -eq 1) {
-        $platform = $targets[0]
+        $platform = $filteredList[0]
 
         Say "Only ""$platform"" was left after filtering the list of known platforms."
 
@@ -541,12 +536,22 @@ function Invoke-TestMany {
         return
     }
 
-    "Remaining platorms after filtering: ""{0}""." -f ($targets -join '", "') `
+    "Remaining platorms after filtering: ""{0}""." -f ($filteredList -join '", "') `
         | Say-LOUDLY
 
-    $targetFrameworks = $targets -join ";"
+    # "net45" and "net451" must be handled separately.
+    $net45 = $false
+    $net451 = $false
+    $targetList = @()
+    foreach ($item in $filteredList) {
+        switch -Exact ($item) {
+            "net45"  { $net45  = $true }
+            "net451" { $net451 = $true }
+            Default  { $targetList += $item }
+        }
+    }
 
-    $args = @("/p:TargetFrameworks=" + '\"' + ($targets -join ";") + '\"')
+    $args = @("/p:TargetFrameworks=" + '\"' + ($targetList -join ";") + '\"')
     if ($runtime -ne "") { $args += "--runtime:$runtime" }
 
     & dotnet test $NET_SDK_PROJECT --nologo $args `
@@ -556,6 +561,13 @@ function Invoke-TestMany {
     Assert-CmdSuccess -ErrMessage "Test task failed."
 
     Say-Softly "Test completed successfully."
+
+    if ($net45) {
+        Invoke-TestOldStyle -Platform "net45" -Version $version -Runtime $runtime
+    }
+    if ($net451) {
+        Invoke-TestOldStyle -Platform "net451" -Version $version -Runtime $runtime
+    }
 }
 
 # ------------------------------------------------------------------------------

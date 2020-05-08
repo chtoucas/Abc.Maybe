@@ -199,7 +199,7 @@ function Invoke-Coverlet {
         "[Abc*]Microsoft.CodeAnalysis.*"
     $exclude = '\"' + ($excludes -Join ",") + '\"'
 
-    & dotnet test -c $configuration --no-restore `
+    & dotnet test -c $configuration --nologo --no-restore `
         /p:CollectCoverage=true `
         /p:CoverletOutputFormat=opencover `
         /p:CoverletOutput=$output `
