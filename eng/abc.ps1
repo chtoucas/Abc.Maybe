@@ -74,14 +74,14 @@ function Get-PackageVersion {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $ProjectName,
+        [string] $projectName,
 
-        [switch] $AsString
+        [switch] $asString
     )
 
     Write-Verbose "Getting package version."
 
-    $proj = Join-Path $ENG_DIR "$ProjectName.props" -Resolve
+    $proj = Join-Path $ENG_DIR "$projectName.props" -Resolve
 
     $xml = [Xml] (Get-Content $proj)
     $node = (Select-Xml -Xml $xml -XPath "//Project/PropertyGroup/MajorVersion/..").Node
@@ -93,7 +93,7 @@ function Get-PackageVersion {
     $precy = $node | select -First 1 -ExpandProperty PreReleaseCycle
     $preno = $node | select -First 1 -ExpandProperty PreReleaseNumber
 
-    if ($AsString) {
+    if ($asString) {
         if ($precy -eq "") {
             return "$major.$minor.$patch"
         }
@@ -111,12 +111,12 @@ function Get-PackageVersion {
 function Reset-SourceTree {
     [CmdletBinding()]
     param(
-        [Alias("y")] [switch] $Yes
+        [Alias("y")] [switch] $yes
     )
 
     Write-Verbose "Resetting source tree."
 
-    if ($Yes -or (Confirm-Yes "Hard clean the directory ""src""?")) {
+    if ($yes -or (Confirm-Yes "Hard clean the directory ""src""?")) {
         Say-Indent "Deleting ""bin"" and ""obj"" directories within ""src""."
         Remove-BinAndObj $SRC_DIR
     }
@@ -127,12 +127,12 @@ function Reset-SourceTree {
 function Reset-TestTree {
     [CmdletBinding()]
     param(
-        [Alias("y")] [switch] $Yes
+        [Alias("y")] [switch] $yes
     )
 
     Write-Verbose "Resetting test tree."
 
-    if ($Yes -or (Confirm-Yes "Hard clean the directory ""test""?")) {
+    if ($yes -or (Confirm-Yes "Hard clean the directory ""test""?")) {
         Say-Indent "Deleting ""bin"" and ""obj"" directories within ""test""."
         Remove-BinAndObj $TEST_DIR
     }
@@ -143,12 +143,12 @@ function Reset-TestTree {
 function Reset-PackageOutDir {
     [CmdletBinding()]
     param(
-        [Alias("y")] [switch] $Yes
+        [Alias("y")] [switch] $yes
     )
 
     Write-Verbose "Resetting output directory for packages."
 
-    if ($Yes -or (Confirm-Yes "Reset output directory for packages?")) {
+    if ($yes -or (Confirm-Yes "Reset output directory for packages?")) {
         Say-Indent "Clearing output directory for packages."
         Remove-Packages $PKG_OUTDIR
     }
@@ -159,12 +159,12 @@ function Reset-PackageOutDir {
 function Reset-PackageCIOutDir {
     [CmdletBinding()]
     param(
-        [Alias("y")] [switch] $Yes
+        [Alias("y")] [switch] $yes
     )
 
     Write-Verbose "Resetting output directory for CI packages."
 
-    if ($Yes -or (Confirm-Yes "Reset output directory for CI packages?")) {
+    if ($yes -or (Confirm-Yes "Reset output directory for CI packages?")) {
         Say-Indent "Clearing output directory for CI packages."
         Remove-Packages $PKG_CI_OUTDIR
     }
@@ -175,12 +175,12 @@ function Reset-PackageCIOutDir {
 function Reset-LocalNuGet {
     [CmdletBinding()]
     param(
-        [Alias("y")] [switch] $Yes
+        [Alias("y")] [switch] $yes
     )
 
     Write-Verbose "Resetting local NuGet feed/cache."
 
-    if ($Yes -or (Confirm-Yes "Reset local NuGet feed/cache?")) {
+    if ($yes -or (Confirm-Yes "Reset local NuGet feed/cache?")) {
         # When we reset the NuGet feed, better to clear the cache too, this is
         # not mandatory but it keeps cache and feed in sync.
         # The inverse is also true.
@@ -233,12 +233,12 @@ function Say {
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $Message,
+        [string] $message,
 
-        [switch] $NoNewline
+        [switch] $noNewline
     )
 
-    Write-Host $Message -NoNewline:$NoNewline
+    Write-Host $message -NoNewline:$noNewline
 }
 
 # ------------------------------------------------------------------------------
@@ -248,12 +248,12 @@ function Say-Indent {
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $Message,
+        [string] $message,
 
-        [switch] $NoNewline
+        [switch] $noNewline
     )
 
-    Write-Host "  $Message" -NoNewline:$NoNewline
+    Write-Host "  $message" -NoNewline:$noNewline
 }
 
 # ------------------------------------------------------------------------------
@@ -263,12 +263,12 @@ function Say-Softly {
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $Message,
+        [string] $message,
 
-        [switch] $NoNewline
+        [switch] $noNewline
     )
 
-    Write-Host $Message -ForegroundColor Cyan -NoNewline:$NoNewline
+    Write-Host $message -ForegroundColor Cyan -NoNewline:$noNewline
 }
 
 # ------------------------------------------------------------------------------
@@ -278,17 +278,17 @@ function Say-LOUDLY {
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $Message,
+        [string] $message,
 
-        [switch] $NoNewline,
-        [switch] $Invert
+        [switch] $noNewline,
+        [switch] $invert
     )
 
-    if ($Invert) {
-        Write-Host $Message -ForegroundColor Green -NoNewline:$NoNewline -BackgroundColor DarkCyan
+    if ($invert) {
+        Write-Host $message -ForegroundColor Green -NoNewline:$noNewline -BackgroundColor DarkCyan
     }
     else {
-        Write-Host $Message -ForegroundColor Green -NoNewline:$NoNewline
+        Write-Host $message -ForegroundColor Green -NoNewline:$noNewline
     }
 }
 
@@ -302,11 +302,11 @@ function Carp {
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $Message
+        [string] $message
     )
 
     # NB: we don't write the message to the warning stream.
-    Write-Host "WARNING: $Message" -ForegroundColor Yellow
+    Write-Host "WARNING: $message" -ForegroundColor Yellow
 }
 
 # ------------------------------------------------------------------------------
@@ -317,11 +317,11 @@ function Croak {
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $Message
+        [string] $message
     )
 
     # NB: we don't write the message to the error stream.
-    Write-Host $Message -BackgroundColor Red -ForegroundColor Yellow
+    Write-Host $message -BackgroundColor Red -ForegroundColor Yellow
 
     exit 1
 }
@@ -333,14 +333,14 @@ function Confess {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
-        [System.Management.Automation.ErrorRecord] $Error
+        [System.Management.Automation.ErrorRecord] $error
     )
 
     # NB: we don't write the message to the error stream.
     Write-Host "An unexpected error occured." -BackgroundColor Red -ForegroundColor Yellow
-    if ($Error -ne $null) {
-        Write-Host $Error -ForegroundColor Red
-        Write-Host $Error.ScriptStackTrace
+    if ($error -ne $null) {
+        Write-Host $error -ForegroundColor Red
+        Write-Host $error.ScriptStackTrace
     }
     else {
         Write-Host "Sorry, no further details about the error were given."
@@ -358,11 +358,11 @@ function Confirm-Yes {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $Question
+        [string] $question
     )
 
     while ($true) {
-        $answer = (Read-Host $Question, "[y/N/q]")
+        $answer = (Read-Host $question, "[y/N/q]")
 
         if ($answer -eq "" -or $answer -eq "n") {
             Say-Indent "Discarding on your request."
@@ -386,11 +386,11 @@ function Confirm-Continue {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $Question
+        [string] $question
     )
 
     while ($true) {
-        $answer = (Read-Host $Question, "[y/N]")
+        $answer = (Read-Host $question, "[y/N]")
 
         if ($answer -eq "" -or $answer -eq "n") {
             Say-Indent "Stopping on your request."
@@ -410,12 +410,12 @@ function Assert-CmdSuccess {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $ErrMessage
+        [string] $errMessage
     )
 
     Write-Verbose "Checking exit code of the last external command that was run."
 
-    if ($LastExitCode -ne 0) { Croak $ErrMessage }
+    if ($LastExitCode -ne 0) { Croak $errMessage }
 }
 
 #endregion
@@ -427,21 +427,21 @@ function Remove-Dir {
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $Path
+        [string] $path
     )
 
-    Write-Verbose "Deleting directory ""$Path""."
+    Write-Verbose "Deleting directory ""$path""."
 
-    if (-not (Test-Path $Path)) {
-        Write-Verbose "Skipping ""$Path""; the path does NOT exist."
+    if (-not (Test-Path $path)) {
+        Write-Verbose "Skipping ""$path""; the path does NOT exist."
         return
     }
-    if (-not [System.IO.Path]::IsPathRooted($Path)) {
-        Carp "Skipping ""$Path""; the path MUST be absolute."
+    if (-not [System.IO.Path]::IsPathRooted($path)) {
+        Carp "Skipping ""$path""; the path MUST be absolute."
         return
     }
 
-    Remove-Item $Path -Recurse
+    Remove-Item $path -Recurse
 }
 
 # ------------------------------------------------------------------------------
@@ -451,21 +451,21 @@ function Remove-Packages {
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $Path
+        [string] $path
     )
 
-    Write-Verbose "Deleting NuGet packages in ""$Path""."
+    Write-Verbose "Deleting NuGet packages in ""$path""."
 
-    if (-not (Test-Path $Path)) {
-        Write-Verbose "Skipping ""$Path""; the path does NOT exist."
+    if (-not (Test-Path $path)) {
+        Write-Verbose "Skipping ""$path""; the path does NOT exist."
         return
     }
-    if (-not [System.IO.Path]::IsPathRooted($Path)) {
-        Carp "Skipping ""$Path""; the path MUST be absolute."
+    if (-not [System.IO.Path]::IsPathRooted($path)) {
+        Carp "Skipping ""$path""; the path MUST be absolute."
         return
     }
 
-    ls $Path -Include "*.nupkg" -Recurse | ?{
+    ls $path -Include "*.nupkg" -Recurse | ?{
         Write-Verbose "Deleting ""$_""."
 
         Remove-Item $_.FullName
@@ -479,12 +479,12 @@ function Remove-BinAndObj {
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNull()]
-        [string[]] $PathList
+        [string[]] $pathList
     )
 
     Write-Verbose "Deleting ""bin"" and ""obj"" directories."
 
-    $PathList | %{
+    $pathList | %{
         if (-not (Test-Path $_)) {
             Write-Verbose "Skipping ""$_""; the path does NOT exist."
             return
@@ -510,9 +510,7 @@ function Remove-BinAndObj {
 
 function Find-Git {
     [CmdletBinding()]
-    param(
-        [switch] $Fatal
-    )
+    param()
 
     Write-Verbose "Finding git.exe."
 
@@ -537,18 +535,18 @@ function Approve-GitStatus {
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $Git,
+        [string] $git,
 
-        [switch] $Fatal
+        [switch] $fatal
     )
 
     Write-Verbose "Getting the git status."
 
-    if ($Fatal) { $onError = "Croak" } else { $onError = "Carp" }
+    if ($fatal) { $onError = "Croak" } else { $onError = "Carp" }
 
     try {
         # If there no uncommitted changes, the result is null, not empty.
-        $status = & $Git status -s 2>&1
+        $status = & $git status -s 2>&1
 
         if ($status -eq $null) {
             return $true
@@ -571,17 +569,17 @@ function Get-GitCommitHash {
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $Git,
+        [string] $git,
 
-        [switch] $Fatal
+        [switch] $fatal
     )
 
     Write-Verbose "Getting the last git commit hash."
 
-    if ($Fatal) { $onError = "Croak" } else { $onError = "Carp" }
+    if ($fatal) { $onError = "Croak" } else { $onError = "Carp" }
 
     try {
-        $commit = & $Git log -1 --format="%H" 2>&1
+        $commit = & $git log -1 --format="%H" 2>&1
 
         Write-Verbose "Current git commit hash: ""$commit""."
 
@@ -600,17 +598,17 @@ function Get-GitBranch {
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $Git,
+        [string] $git,
 
-        [switch] $Fatal
+        [switch] $fatal
     )
 
     Write-Verbose "Getting the git branch."
 
-    if ($Fatal) { $onError = "Croak" } else { $onError = "Carp" }
+    if ($fatal) { $onError = "Croak" } else { $onError = "Carp" }
 
     try {
-        $branch = & $Git rev-parse --abbrev-ref HEAD 2>&1
+        $branch = & $git rev-parse --abbrev-ref HEAD 2>&1
 
         Write-Verbose "Current git branch: ""$branch""."
 
@@ -659,12 +657,12 @@ function Find-MSBuild {
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $VSWhere
+        [string] $vswhere
     )
 
     Write-Verbose "Finding MSBuild.exe."
 
-    $path = & $VSWhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe | select-object -first 1
+    $path = & $vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe | select-object -first 1
 
     if (-not $path) {
         Croak "Could not find MSBuild.exe."
@@ -682,12 +680,12 @@ function Find-Fsi {
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $VSWhere
+        [string] $vswhere
     )
 
     Write-Verbose "Finding fsi.exe."
 
-    $vspath = & $VSWhere -legacy -latest -property installationPath
+    $vspath = & $vswhere -legacy -latest -property installationPath
 
     $path = Join-Path $vspath "\Common7\IDE\CommonExtensions\Microsoft\FSharp\fsi.exe"
     if (Test-Path $path) {
