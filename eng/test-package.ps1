@@ -501,21 +501,61 @@ function Invoke-TestMany {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, Position = 0)]
-        [ValidateNotNullOrEmpty()]
-        [string] $filter,
+        [ValidateNotNull()]
+        [string[]] $platformList,
 
         [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
+        [string] $filter,
+
+        [Parameter(Mandatory = $true, Position = 2)]
+        [ValidateNotNullOrEmpty()]
         [string] $version,
 
-        [Parameter(Mandatory = $false, Position = 2)]
+        [Parameter(Mandatory = $false, Position = 3)]
         [string] $runtime = ""
     )
 
     "`nTesting the package v$version for ""$filter"" and {0}." -f (Get-RuntimeLabel $runtime) `
         | Say-LOUDLY
 
-    Carp "Not yet implemented."
+    $pattern = $filter.Substring(0, $filter.Length - 1)
+
+    # TODO: handle "net45" & "net451".
+    $targets = @()
+    foreach ($platform in $platformList) {
+        if ($platform.StartsWith($pattern)) { $targets += $platform }
+    }
+
+    $count = $targets.Length
+
+    if ($count -eq 0) {
+        Croak "After filtering the list of known platforms w/ $filter, there is nothing left to be done."
+    }
+    if ($count -eq 1) {
+        $platform = $targets[0]
+
+        Say "Only ""$platform"" was left after filtering the list of known platforms."
+
+        Invoke-TestSingle -Platform $platform -Version  $version -Runtime  $runtime
+        return
+    }
+
+    "Remaining platorms after filtering: ""{0}""." -f ($targets -join '", "') `
+        | Say-LOUDLY
+
+    $targetFrameworks = $targets -join ";"
+
+    $args = @("/p:TargetFrameworks=" + '\"' + ($targets -join ";") + '\"')
+    if ($runtime -ne "") { $args += "--runtime:$runtime" }
+
+    & dotnet test $NET_SDK_PROJECT --nologo $args `
+        /p:AllKnown=true `
+        /p:AbcVersion=$version `
+        | Out-Host
+    Assert-CmdSuccess -ErrMessage "Test task failed."
+
+    Say-Softly "Test completed successfully."
 }
 
 # ------------------------------------------------------------------------------
@@ -645,7 +685,7 @@ try {
         Validate-Version $Version
     }
 
-    if ($Platform -eq "") {
+    if (($Platform -eq "") -or ($Platform -eq "*")) {
         if ($NoClassic -and $NoCore) {
             Croak "You set both -NoClassic and -NoCore... There is nothing left to be done."
         }
@@ -673,39 +713,38 @@ try {
 
             Say-LOUDLY "`nNow, you will have the opportunity to choose which platform to test the package for."
 
-            if (-not $NoClassic) {
-                if ($AllKnown) { $platformList = $AllClassic }
-                else { $platformList = $LastClassic }
+            $platformList = @()
 
-                Invoke-TestManyInteractive `
-                    -PlatformList   $platformList `
-                    -Version        $Version `
-                    -Runtime        $Runtime `
-                    -NoBuild:       $noBuild `
-                    -NoRestore:     $true
-            }
+            if ($NoClassic)    { $platformList = @() }
+            elseif ($AllKnown) { $platformList = $AllClassic }
+            else               { $platformList = $LastClassic }
 
             if (-not $NoCore) {
-                if ($AllKnown) { $platformList = $AllCore }
-                else { $platformList = $LTSCore }
-
-                Invoke-TestManyInteractive `
-                    -PlatformList   $platformList `
-                    -Version        $Version `
-                    -Runtime        $Runtime `
-                    -NoBuild:       $noBuild `
-                    -NoRestore:     $true
+                if ($AllKnown) { $platformList += $AllCore }
+                else { $platformList += $LTSCore }
             }
+
+            Invoke-TestManyInteractive `
+                -PlatformList   $platformList `
+                -Version        $Version `
+                -Runtime        $Runtime `
+                -NoBuild:       $noBuild `
+                -NoRestore:     $true
         }
     }
     else {
+        $knownPlatforms = $AllClassic + $AllCore
+
         if ($Platform.EndsWith("*")) {
-            Invoke-TestMany -Filter $Platform -Version $Version -Runtime $Runtime
+            Invoke-TestMany `
+                -PlatformList $knownPlatforms -Filter $Platform `
+                -Version $Version `
+                -Runtime $Runtime
         }
         else {
             # Validating the platform name is not mandatory but, if we don't,
             # the script fails silently when the platform is not supported here.
-            Validate-Platform -Platform $Platform -KnownPlatforms ($AllClassic + $AllCore)
+            Validate-Platform -Platform $Platform -KnownPlatforms $knownPlatforms
 
             Invoke-TestSingle -Platform $Platform -Version $Version -Runtime $Runtime
         }
