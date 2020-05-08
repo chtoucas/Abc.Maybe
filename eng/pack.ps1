@@ -62,7 +62,7 @@ param(
     [Alias("n")] [switch] $NoCI,
     [Alias("r")] [switch] $Release,
     [Alias("f")] [switch] $Force,
-    [Alias("c")] [switch] $Reset,
+                 [switch] $Reset,
     [Alias("y")] [switch] $Yes,
     [Alias("v")] [switch] $MyVerbose,
     [Alias("h")] [switch] $Help
@@ -79,7 +79,7 @@ function Write-Usage {
 
 Create a NuGet package for Abc.Maybe.
 
-Usage: pack.ps1 [options]
+Usage: pack.ps1 [arguments]
   -n|-NoCI       create a non-CI package.
   -r|-Release    create a package ready to be published to NuGet.Org.
   -f|-Force      force retrieval of git metadata when there are uncommited changes.
@@ -236,7 +236,7 @@ function Get-PackageFile {
         [switch] $yes
     )
 
-    Write-Verbose "Getting package file."
+    Say "Getting package file."
 
     if ($ci) {
         $path = Join-Path $PKG_CI_OUTDIR "$projectName.$version.nupkg"
@@ -304,7 +304,7 @@ function Invoke-Pack {
         [switch] $myVerbose
     )
 
-    Say-LOUDLY "Packing v$version --- build $buildNumber, rev. $revisionNumber" -NoNewline
+    Say-LOUDLY "`nPacking v$version --- build $buildNumber, rev. $revisionNumber" -NoNewline
     if ($repositoryBranch -and $repositoryCommit) {
         " on branch ""$repositoryBranch"", commit ""{0}""." -f $repositoryCommit.Substring(0, 7) `
             | Say-LOUDLY
@@ -372,7 +372,7 @@ function Invoke-PushLocal {
         [string] $version
     )
 
-    Say-LOUDLY "Pushing the package to the local NuGet feed/cache."
+    Say-LOUDLY "`nPushing the package to the local NuGet feed/cache."
 
     # Local "push" doesn't store packages in a hierarchical folder structure;
     # see https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-nuget-push
@@ -406,7 +406,7 @@ function Invoke-Publish {
         [string] $packageFile
     )
 
-    Say-LOUDLY "Publishing the package -or- Preparing the command."
+    Say-LOUDLY "`nPublishing the package -or- Preparing the command to do so."
 
     $args = @()
 
@@ -438,12 +438,22 @@ if ($Help) {
     exit 0
 }
 
+if ($Release -or $NoCI) {
+    Say "This is the NuGet package creation tool for Abc.Maybe.`n"
+}
+else {
+    Say "This is the NuGet package creation tool for Abc.Maybe" -NoNewline
+    Say-LOUDLY " (CI mode).`n"
+}
+
 try {
     pushd $ROOT_DIR
 
     New-Variable -Name "ProjectName" -Value "Abc.Maybe" -Option ReadOnly
 
     $CI = -not ($Release -or $NoCI)
+
+    Say-LOUDLY "Intialization."
 
     # 1. Reset the source tree.
     if ($Release -or $Reset) { Reset-SourceTree -Yes:($Release -or $Yes) }
