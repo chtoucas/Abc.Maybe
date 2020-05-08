@@ -127,9 +127,9 @@ New-Variable -Name "XUNIT_PLATFORM" -Value "net452" -Scope Script -Option Consta
 function Write-Usage {
     Say @"
 
-Test package Abc.Maybe
+Test the package Abc.Maybe.
 
-Usage: pack.ps1 [switches].
+Usage: test-package.ps1 [options]
   -p|-Platform   specify a single platform for which to test the package.
   -v|-Version    specify a version of the package Abc.Maybe.
   -r|-Runtime    specify a target runtime to test for.
@@ -526,15 +526,6 @@ function Invoke-TestAll {
 #endregion
 ################################################################################
 #region Main.
-
-function Test-Switch {
-    [CmdletBinding()]
-    param(
-        [switch] $param
-    )
-
-    if ($param) { Say "ok"} else { Say "KO" }
-}
 
 if ($Help) {
     Write-Usage

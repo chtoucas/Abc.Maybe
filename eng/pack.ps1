@@ -77,9 +77,9 @@ param(
 function Write-Usage {
     Say @"
 
-Create a NuGet package for Abc.Maybe
+Create a NuGet package for Abc.Maybe.
 
-Usage: pack.ps1 [switches]
+Usage: pack.ps1 [options]
   -n|-NoCI       create a non-CI package.
   -r|-Release    create a package ready to be published to NuGet.Org.
   -f|-Force      force retrieval of git metadata when there are uncommited changes.
