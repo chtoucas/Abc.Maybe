@@ -123,10 +123,10 @@ function Invoke-Restore {
     Say-LOUDLY "Restoring dependencies, please wait..." -Invert
 
     Write-Verbose "Restoring tools."
-    & dotnet tool restore | Out-Null
+    & dotnet tool restore | Out-Host
 
     Write-Verbose "Restoring NuGet packages."
-    & dotnet restore | Out-Null
+    & dotnet restore | Out-Host
 }
 
 # ------------------------------------------------------------------------------
@@ -260,6 +260,7 @@ try {
     }
 
     if ($Restore) { Invoke-Restore }
+    exit
 
     if ($NoCoverage) {
         Carp "On your request, we do not run any Code Coverage tool."

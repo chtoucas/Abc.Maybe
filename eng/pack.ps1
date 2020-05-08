@@ -421,7 +421,7 @@ function Invoke-Publish {
         Carp "Not yet activated."
         Say-LOUDLY "---`nTo publish the package:"
         Say-LOUDLY "> dotnet nuget push $packageFile $args"
-        #& dotnet nuget push --force-english-output $packageFile $args
+        #& dotnet nuget push --force-english-output $packageFile $args | Out-Host
     }
     else {
         Say-LOUDLY "---`nTo publish the package:"
