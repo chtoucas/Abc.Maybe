@@ -106,10 +106,7 @@ function Get-GitMetadata {
 
     Say "Retrieving git metadata."
 
-    $git = Find-Git
-
-    $branch = ""
-    $commit = ""
+    $git = Find-Git -Fatal:$fatal
 
     if ($git -eq $null) {
         if ($yes) {
@@ -118,23 +115,25 @@ function Get-GitMetadata {
         else {
             Confirm-Continue "Continue even without any git metadata?"
         }
+
+        return @("", "")
     }
-    else {
-        $ok = Approve-GitStatus -Git $git -Fatal:$fatal
 
-        # Keep Approve-GitStatus before $force: we always want to see a warning
-        # when there are uncommited changes.
-        if ($ok -or $force) {
-            $branch = Get-GitBranch     -Git $git -Fatal:$fatal
-            $commit = Get-GitCommitHash -Git $git -Fatal:$fatal
-        }
+    # Keep Approve-GitStatus before $force: we always want to see a warning
+    # when there are uncommited changes.
+    $ok = Approve-GitStatus -Git $git -Fatal:$fatal
 
-        if ($branch -eq "") {
-            Carp "The branch name will be empty. Maybe use -Force?"
-        }
-        if ($commit -eq "") {
-            Carp "The commit hash will be empty. Maybe use -Force?"
-        }
+    $branch = "" ; $commit = ""
+    if ($ok -or $force) {
+        $branch = Get-GitBranch     -Git $git -Fatal:$fatal
+        $commit = Get-GitCommitHash -Git $git -Fatal:$fatal
+    }
+
+    if ($branch -eq "") {
+        Carp "The branch name will be empty. Maybe use -Force?"
+    }
+    if ($commit -eq "") {
+        Carp "The commit hash will be empty. Maybe use -Force?"
     }
 
     return @($branch, $commit)

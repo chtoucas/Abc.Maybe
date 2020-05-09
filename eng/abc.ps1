@@ -649,14 +649,20 @@ function Remove-BinAndObj {
 
 function Find-Git {
     [CmdletBinding()]
-    param()
+    param(
+        [switch] $fatal
+    )
 
     Write-Verbose "Finding git.exe."
+
+    if ($fatal) { $onError = "Croak" } else { $onError = "Carp" }
 
     $cmd = Get-Command "git.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
 
     if ($cmd -eq $null) {
-        Croak "Could not be find git.exe. Please ensure Git is installed."
+        . $onError "Could not be find git.exe. Please ensure git.exe is installed."
+
+        return $null
     }
 
     $path = $cmd.Path
@@ -687,17 +693,15 @@ function Approve-GitStatus {
         # If there no uncommitted changes, the result is null, not empty.
         $status = & $git status -s 2>&1
 
-        if ($status -eq $null) {
-            return $true
-        }
-        else {
-            . $onError "Uncommitted changes are pending."
-            return $false
-        }
+        if ($status -eq $null) { return $true }
+
+        . $onError "Uncommitted changes are pending."
     }
     catch {
         . $onError """git status"" failed: $_"
     }
+
+    return $false
 }
 
 # ------------------------------------------------------------------------------
@@ -726,6 +730,8 @@ function Get-GitCommitHash {
     }
     catch {
         . $onError """git log"" failed: $_"
+
+        return ""
     }
 }
 
@@ -755,6 +761,8 @@ function Get-GitBranch {
     }
     catch {
         . $onError """git rev-parse"" failed: $_"
+
+        return ""
     }
 }
 
