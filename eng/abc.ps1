@@ -182,12 +182,12 @@ function Restore-Solution {
 function Find-OpenCover {
     [CmdletBinding()]
     param(
-        [switch] $fatal
+        [switch] $exitOnError
     )
 
     Write-Verbose "Finding OpenCover.Console.exe."
 
-    if ($fatal) { $onError = "Croak" } else { $onError = "Carp" }
+    if ($exitOnError) { $onError = "Croak" } else { $onError = "Carp" }
 
     $version = Get-PackageReferenceVersion $NET_FRAMEWORK_TOOLS_PROJECT "OpenCover"
 
@@ -217,12 +217,12 @@ function Find-XunitRunner {
         [ValidateNotNullOrEmpty()]
         [string] $platform,
 
-        [switch] $fatal
+        [switch] $exitOnError
     )
 
     Write-Verbose "Finding xunit.console.exe."
 
-    if ($fatal) { $onError = "Croak" } else { $onError = "Carp" }
+    if ($exitOnError) { $onError = "Croak" } else { $onError = "Carp" }
 
     $version = Get-PackageReferenceVersion $NET_FRAMEWORK_TOOLS_PROJECT "xunit.runner.console"
 
@@ -552,9 +552,7 @@ function Assert-CmdSuccess {
 
     if ($LastExitCode -ne 0) { Croak $error }
 
-    if ($success -ne "") {
-        Say-Softly $success
-    }
+    if ($success -ne "") { Say-Softly $success }
 }
 
 #endregion
@@ -650,12 +648,12 @@ function Remove-BinAndObj {
 function Find-Git {
     [CmdletBinding()]
     param(
-        [switch] $fatal
+        [switch] $exitOnError
     )
 
     Write-Verbose "Finding git.exe."
 
-    if ($fatal) { $onError = "Croak" } else { $onError = "Carp" }
+    if ($exitOnError) { $onError = "Croak" } else { $onError = "Carp" }
 
     $cmd = Get-Command "git.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
 
@@ -682,12 +680,12 @@ function Approve-GitStatus {
         [ValidateNotNullOrEmpty()]
         [string] $git,
 
-        [switch] $fatal
+        [switch] $exitOnError
     )
 
     Write-Verbose "Getting the git status."
 
-    if ($fatal) { $onError = "Croak" } else { $onError = "Carp" }
+    if ($exitOnError) { $onError = "Croak" } else { $onError = "Carp" }
 
     try {
         # If there no uncommitted changes, the result is null, not empty.
@@ -714,12 +712,12 @@ function Get-GitCommitHash {
         [ValidateNotNullOrEmpty()]
         [string] $git,
 
-        [switch] $fatal
+        [switch] $exitOnError
     )
 
     Write-Verbose "Getting the last git commit hash."
 
-    if ($fatal) { $onError = "Croak" } else { $onError = "Carp" }
+    if ($exitOnError) { $onError = "Croak" } else { $onError = "Carp" }
 
     try {
         $commit = & $git log -1 --format="%H" 2>&1
@@ -745,12 +743,12 @@ function Get-GitBranch {
         [ValidateNotNullOrEmpty()]
         [string] $git,
 
-        [switch] $fatal
+        [switch] $exitOnError
     )
 
     Write-Verbose "Getting the git branch."
 
-    if ($fatal) { $onError = "Croak" } else { $onError = "Carp" }
+    if ($exitOnError) { $onError = "Croak" } else { $onError = "Carp" }
 
     try {
         $branch = & $git rev-parse --abbrev-ref HEAD 2>&1

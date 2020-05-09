@@ -165,16 +165,20 @@ Useful tools.
 Tools
 -----
 
-Common parameters:
+Common script/function parameters:
    -NoCI
    -Reset
    -Restore
+   -DryRun
 -a|-AllXXX
 -o|-Optimise
 -f|-Force
 -y|-Yes
 -v|-MyVerbose
 -h|-Help
+
+Common function parameters:
+   -ExitOnError
 
 Maintenance
 -----------

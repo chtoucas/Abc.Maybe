@@ -99,14 +99,14 @@ Usage: pack.ps1 [arguments]
 function Get-GitMetadata {
     [CmdletBinding()]
     param(
-        [switch] $fatal,
         [switch] $force,
-        [switch] $yes
+        [switch] $yes,
+        [switch] $exitOnError
     )
 
     Say "Retrieving git metadata."
 
-    $git = Find-Git -Fatal:$fatal
+    $git = Find-Git -ExitOnError:$exitOnError
 
     if ($git -eq $null) {
         if ($yes) {
@@ -121,12 +121,12 @@ function Get-GitMetadata {
 
     # Keep Approve-GitStatus before $force: we always want to see a warning
     # when there are uncommited changes.
-    $ok = Approve-GitStatus -Git $git -Fatal:$fatal
+    $ok = Approve-GitStatus -Git $git -ExitOnError:$exitOnError
 
     $branch = "" ; $commit = ""
     if ($ok -or $force) {
-        $branch = Get-GitBranch     -Git $git -Fatal:$fatal
-        $commit = Get-GitCommitHash -Git $git -Fatal:$fatal
+        $branch = Get-GitBranch     -Git $git -ExitOnError:$exitOnError
+        $commit = Get-GitCommitHash -Git $git -ExitOnError:$exitOnError
     }
 
     if ($branch -eq "") {
@@ -463,7 +463,7 @@ try {
     # 1. Reset the source tree.
     if ($Release -or $Reset) { Reset-SourceTree -Yes:($Release -or $Yes) }
     # 2. Get git metadata.
-    $branch, $commit = Get-GitMetadata -Fatal:$Release -Force:$Force -Yes:$Yes
+    $branch, $commit = Get-GitMetadata -Force:$Force -Yes:$Yes -ExitOnError:$Release
     # 3. Generate build UIDs.
     $buildNumber, $revisionNumber, $timestamp = Generate-UIDs
     # 4. Get package version.

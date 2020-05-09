@@ -44,7 +44,7 @@ PS> cover.ps1
 Run Coverlet then build reports and badges.
 
 .EXAMPLE
-PS> cover.ps1 -x
+PS> cover.ps1 -OpenCover
 Run OpenCover then build reports and badges.
 
 .EXAMPLE
@@ -53,7 +53,7 @@ Run OpenCover, do NOT build reports and badges.
 #>
 [CmdletBinding()]
 param(
-    [Alias("x")] [switch] $OpenCover,
+                 [switch] $OpenCover,
                  [switch] $NoCoverage,
                  [switch] $NoReport,
 
@@ -243,7 +243,7 @@ try {
     }
     else {
         if ($OpenCover) {
-            Find-OpenCover -Fatal `
+            Find-OpenCover -ExitOnError `
                 | Invoke-OpenCover -Configuration $Configuration -Output $outxml
         }
         else {
