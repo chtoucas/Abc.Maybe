@@ -7,7 +7,7 @@
 
 @call dotnet test Abc.Tests --nologo -v q --no-restore ^
   --list-tests -c Release ^
-  > .\__\test-suite.txt
+  > ..\__\test-suite.txt
 
 @popd
 
