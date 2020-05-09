@@ -180,6 +180,8 @@ function Get-ActualVersion {
 
     Say "Getting package version."
 
+    # TODO: make it non-fatal when $timestamp is $null and $ci = $false.
+
     $major, $minor, $patch, $precy, $preno = Get-PackageVersion $projectName
 
     if ($ci) {
@@ -304,6 +306,8 @@ function Invoke-Pack {
         [switch] $ci,
         [switch] $myVerbose
     )
+
+    # TODO: allow $buildNumber and $revisionNumber to be empty.
 
     Say-LOUDLY "`nPacking v$version --- build $buildNumber, rev. $revisionNumber" -NoNewline
     if ($repositoryBranch -and $repositoryCommit) {

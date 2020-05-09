@@ -93,3 +93,4 @@ Other tasks
 - Replace coverlet.msbuild by coverlet-console? Use runsettings.
   Add coverlet.collector to the test project. Coverity?
   xunit.runner.console -> core app
+- https://www.nuget.org/packages/Microsoft.NETFramework.ReferenceAssemblies/

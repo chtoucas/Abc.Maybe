@@ -376,6 +376,7 @@ function Invoke-TestOldStyle {
     $xunit = Find-XunitRunnerOnce
     if ($xunit -eq $null) { Say "Skipping." ; return }
 
+    # TODO: skip if $msbuild is not found.
     $vswhere = Find-VsWhere
     $msbuild = Find-MSBuild $vswhere
 
