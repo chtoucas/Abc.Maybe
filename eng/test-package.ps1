@@ -217,7 +217,8 @@ function Find-XunitRunnerOnce {
 
     if ($NoXunitConsole) { Carp "No Xunit console runner." ; return $null }
 
-    # TODO: restore .NET Framework tools?
+    Restore-NETFrameworkTools
+
     $path = Find-XunitRunner -Platform $XUNIT_PLATFORM
 
     if ($path -eq $null) { $Script:NoXunitConsole = $true ; return $null }
@@ -504,11 +505,12 @@ function Invoke-TestMany {
     $pattern = $filter.Substring(0, $filter.Length - 1)
     $filteredList = $platformList | where { $_.StartsWith($pattern) }
 
-    # Fast track.
     $count = $filteredList.Length
     if ($count -eq 0) {
         Croak "After filtering the list of known platforms w/ $filter, there is nothing left to be done."
     }
+
+    # Fast track.
     if ($count -eq 1) {
         $platform = $filteredList[0]
 
