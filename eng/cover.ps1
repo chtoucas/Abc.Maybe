@@ -56,6 +56,7 @@ param(
     [Alias("x")] [switch] $OpenCover,
                  [switch] $NoCoverage,
                  [switch] $NoReport,
+
                  [switch] $Restore,
     [Alias("h")] [switch] $Help
 )

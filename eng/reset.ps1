@@ -39,6 +39,12 @@ Say "This is the reset script.`n"
 try {
     pushd $ROOT_DIR
 
+    # Folders that we do NOT reset:
+    # 1) __\coverlet\
+    # 2) __\opencover\
+    # 3) __\tools\
+    # 4) eng\NETFrameworkTools\
+
     Reset-SourceTree      -Yes:$Yes
     Reset-TestTree        -Yes:$Yes
     Reset-PackageOutDir   -Yes:$Yes
