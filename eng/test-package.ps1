@@ -41,10 +41,10 @@ Ignored if -Platform is also set and equals $true.
 .PARAMETER Version
 Specify a version of the package Abc.Maybe.
 When no version is specified, we use the last one from the local NuGet feed.
-If the latter is empty, we use the one found in Abc.Maybe.props.
-Ignored if -Current is also set and equals $true.
+If the later is empty, we use the one found in Abc.Maybe.props.
+Ignored if -NoCI is also set and equals $true.
 
-.PARAMETER Current
+.PARAMETER NoCI
 Force using the package version found in Abc.Maybe.props.
 
 .PARAMETER Runtime
@@ -109,7 +109,7 @@ param(
     [Parameter(Mandatory = $false, Position = 1)]
     [Alias("v")] [string] $Version = "",
 
-    [Alias("c")] [switch] $Current,
+    [Alias("c")] [switch] $NoCI,
 
     # Runtime selection.
     #
@@ -149,7 +149,7 @@ Usage: test-package.ps1 [arguments]
      -NoCore     exclude .NET Core from the tests.
 
   -v|-Version    specify a version of the package Abc.Maybe.
-  -c|-Current    force using the package version found in Abc.Maybe.props.
+  -c|-NoCI       force using the package version found in Abc.Maybe.props.
 
   -r|-Runtime    specify a target runtime to test for.
 
@@ -229,7 +229,7 @@ function Find-XunitRunnerOnce {
 
 # ------------------------------------------------------------------------------
 
-# When there is a problem, we revert to -Current, nevertheless the process can
+# When there is a problem, we revert to -NoCI, nevertheless the process can
 # still fail in the end when the package is a release one and has not yet been
 # published to NuGet.Org.
 function Find-LastLocalVersion {
@@ -247,7 +247,7 @@ function Find-LastLocalVersion {
         | sort LastWriteTime | select -Last 1
 
     if ($last -eq $null) {
-        Carp "The local NuGet feed is empty, reverting to -Current."
+        Carp "The local NuGet feed is empty, reverting to -NoCI."
         return Get-PackageVersion $packageName -AsString
     }
 
@@ -263,7 +263,7 @@ function Find-LastLocalVersion {
         # If the cache entry does not exist, we stop the script, otherwise it
         # will restore the CI package into the global, not what we want.
         # Solutions: delete the "broken" package, create a new CI package, etc.
-        Carp "Local NuGet feed and cache are out of sync, reverting to -Current."
+        Carp "Local NuGet feed and cache are out of sync, reverting to -NoCI."
         Carp "The simplest solution to fix this is to recreate a package."
         return Get-PackageVersion $packageName -AsString
     }
@@ -303,13 +303,9 @@ function Invoke-Restore {
 
     Say-LOUDLY "`nRestoring dependencies for NETSdk, please wait..."
 
-    if ($runtime -eq "") {
-        $args = @()
-    }
-    else {
-        $args = @("--runtime:$runtime")
-    }
-    if ($allKnown) { $args += "/p:AllKnown=true" }
+    $args = @()
+    if ($runtime -ne "") { $args += "--runtime:$runtime" }
+    if ($allKnown)       { $args += "/p:AllKnown=true" }
 
     & dotnet restore $NET_SDK_PROJECT $args /p:AbcVersion=$version | Out-Host
 
@@ -336,14 +332,10 @@ function Invoke-Build {
 
     Say-LOUDLY "`nBuilding NETSdk, please wait..."
 
-    if ($runtime -eq "") {
-        $args = @()
-    }
-    else {
-        $args = @("--runtime:$runtime")
-    }
-    if ($allKnown)  { $args += "/p:AllKnown=true" }
-    if ($noRestore) { $args += "--no-restore" }
+    $args = @()
+    if ($runtime -ne "") { $args += "--runtime:$runtime" }
+    if ($allKnown)       { $args += "/p:AllKnown=true" }
+    if ($noRestore)      { $args += "--no-restore" }
 
     & dotnet build $NET_SDK_PROJECT $args /p:AbcVersion=$version | Out-Host
 
@@ -421,7 +413,7 @@ function Invoke-TestSingle {
         [switch] $noBuild
     )
 
-    if (($platform -eq "net45") -or ($platform -eq "net451")) {
+    if ($platform -in "net45", "net451") {
         # "net45" and "net451" must be handled separately.
         Invoke-TestOldStyle -Platform $platform -Version $version -Runtime $runtime
         return
@@ -430,14 +422,10 @@ function Invoke-TestSingle {
     "`nTesting the package v$version for ""$platform"" and {0}." -f (Get-RuntimeLabel $runtime) `
         | Say-LOUDLY
 
-    if ($runtime -eq "") {
-        $args = @()
-    }
-    else {
-        $args = @("--runtime:$runtime")
-    }
-    if ($noBuild)       { $args += "--no-build" }   # NB: no-build => no-restore
-    elseif ($noRestore) { $args += "--no-restore" }
+    $args = @()
+    if ($runtime -ne "") { $args += "--runtime:$runtime" }
+    if ($noBuild)        { $args += "--no-build" }   # NB: no-build => no-restore
+    elseif ($noRestore)  { $args += "--no-restore" }
 
     & dotnet test $NET_SDK_PROJECT --nologo -f $platform $args `
         /p:AbcVersion=$version /p:AllKnown=true `
@@ -504,16 +492,16 @@ function Invoke-TestMany {
         | Say-LOUDLY
 
     $pattern = $filter.Substring(0, $filter.Length - 1)
-    $filteredList = $platformList | where { $_.StartsWith($pattern) }
+    $platforms = $platformList | where { $_.StartsWith($pattern) }
 
-    $count = $filteredList.Length
+    $count = $platforms.Length
     if ($count -eq 0) {
         Croak "After filtering the list of known platforms w/ $filter, there is nothing left to be done."
     }
 
     # Fast track.
     if ($count -eq 1) {
-        $platform = $filteredList[0]
+        $platform = $platforms[0]
 
         Say "Only ""$platform"" was left after filtering the list of known platforms."
 
@@ -521,22 +509,13 @@ function Invoke-TestMany {
         return
     }
 
-    "Remaining platorms after filtering: ""{0}""." -f ($filteredList -join '", "') `
+    "Remaining platorms after filtering: ""{0}""." -f ($platforms -join '", "') `
         | Say-LOUDLY
 
     # "net45" and "net451" must be handled separately.
-    $net45 = $false
-    $net451 = $false
-    $targetList = @()
-    foreach ($item in $filteredList) {
-        switch -Exact ($item) {
-            "net45"  { $net45  = $true }
-            "net451" { $net451 = $true }
-            Default  { $targetList += $item }
-        }
-    }
+    $targetFrameworks = ($platforms | where { $_ -notin "net45", "net451" }) -join ";"
 
-    $args = @("/p:TargetFrameworks=" + '\"' + ($targetList -join ";") + '\"')
+    $args = @("/p:TargetFrameworks=" + '\"' + $targetFrameworks + '\"')
     if ($runtime -ne "") { $args += "--runtime:$runtime" }
 
     & dotnet test $NET_SDK_PROJECT --nologo $args `
@@ -546,10 +525,10 @@ function Invoke-TestMany {
 
     Assert-CmdSuccess -Error "Test task failed." -Success "Test completed successfully."
 
-    if ($net45) {
+    if ("net45" -in $platforms) {
         Invoke-TestOldStyle -Platform "net45" -Version $version -Runtime $runtime
     }
-    if ($net451) {
+    if ("net451" -in $platforms) {
         Invoke-TestOldStyle -Platform "net451" -Version $version -Runtime $runtime
     }
 }
@@ -665,7 +644,7 @@ try {
         Reset-TestTree   -Yes:$Yes
     }
 
-    if ($Current) {
+    if ($NoCI) {
         # There were two options, use an explicit version or let the target
         # project decides for us. Both give the __same__ value, but I opted for
         # an explicit version, since I need its value for logging but also
@@ -680,7 +659,7 @@ try {
         Validate-Version $Version
     }
 
-    if (($Platform -eq "") -or ($Platform -eq "*")) {
+    if ($Platform -in "", "*") {
         if ($Platform -eq "*") {
             # "*" really means ALL platforms.
             $AllKnown = $true ; $NoClassic = $false ; $NoCore = $false
