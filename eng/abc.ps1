@@ -8,20 +8,32 @@
 Set-StrictMode -Version Latest
 $Script:ErrorActionPreference = "Stop"
 
-# UNUSED: does not seem to work for what I want: english messages, eg
-# "dotnet restore" continues to output french messages.
+# We change some global values... We could be smarter though.
+$Host.PrivateData.ErrorBackgroundColor = "Red"
+$Host.PrivateData.ErrorForegroundColor = "Yellow"
+$Host.PrivateData.WarningForegroundColor = "Yellow"
+
+# THIS FUNCTION IS AUTOMATICALLY EXECUTED THEREAFTER.
+# NB: changes do not survive when the script ends, which is good.
 function Initialize-Env {
     [CmdletBinding()]
     param()
 
-    Write-Verbose "Initialization."
+    Write-Verbose "Initializing environment."
+
+    [CultureInfo]::CurrentCulture = "en"
+    [CultureInfo]::CurrentUICulture = "en"
 
     # Set language used by MSBuild, dotnet and VS.
+    # UNUSED: does not seem to work for what I want: english messages, eg
+    # "dotnet restore" continues to output french messages.
     # See https://github.com/microsoft/msbuild/issues/1596
     # and https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet
-    [Environment]::SetEnvironmentVariable("DOTNET_CLI_UI_LANGUAGE", "en", "User")
-    [Environment]::SetEnvironmentVariable("VSLANG", "1033", "User")
+    #[Environment]::SetEnvironmentVariable("DOTNET_CLI_UI_LANGUAGE", "en", "User")
+    #[Environment]::SetEnvironmentVariable("VSLANG", "1033", "User")
 }
+
+Initialize-Env
 
 ################################################################################
 #region Project-specific constants.
@@ -345,7 +357,7 @@ function Remove-PackageFromLocalNuGet {
 
 #endregion
 ################################################################################
-#region Print.
+#region Write to the Information stream.
 
 function Say {
     [CmdletBinding()]
@@ -399,21 +411,17 @@ function Say-LOUDLY {
         [ValidateNotNullOrEmpty()]
         [string] $message,
 
-        [switch] $noNewline,
-        [switch] $invert
+        [switch] $noNewline
     )
 
-    if ($invert) {
-        Write-Host $message -ForegroundColor Green -NoNewline:$noNewline -BackgroundColor DarkCyan
-    }
-    else {
-        Write-Host $message -ForegroundColor Green -NoNewline:$noNewline
-    }
+    Write-Host $message -ForegroundColor Green -NoNewline:$noNewline
 }
 
 #endregion
 ################################################################################
 #region Error reporting.
+
+# TODO: not sure that they write to the warning or error streams.
 
 # Warn user.
 function Carp {
@@ -424,8 +432,7 @@ function Carp {
         [string] $message
     )
 
-    # NB: we don't write the message to the warning stream.
-    Write-Host "WARNING: $message" -ForegroundColor Yellow
+    $Host.UI.WriteWarningLine($message)
 }
 
 # ------------------------------------------------------------------------------
@@ -439,8 +446,7 @@ function Croak {
         [string] $message
     )
 
-    # NB: we don't write the message to the error stream.
-    Write-Host $message -BackgroundColor Red -ForegroundColor Yellow
+    $Host.UI.WriteErrorLine($message)
 
     exit 1
 }
@@ -455,14 +461,13 @@ function Confess {
         [System.Management.Automation.ErrorRecord] $error
     )
 
-    # NB: we don't write the message to the error stream.
-    Write-Host "An unexpected error occured." -BackgroundColor Red -ForegroundColor Yellow
+    $Host.UI.WriteErrorLine("An unexpected error occured: $error.")
+
     if ($error -ne $null) {
-        Write-Host $error -ForegroundColor Red
-        Write-Host $error.ScriptStackTrace
+        Write-Host $error.ScriptStackTrace -Foreground Yellow
     }
     else {
-        Write-Host "Sorry, no further details about the error were given."
+        Write-Host "Sorry, no further details about the error were given." -Foreground Yellow
     }
 
     exit 1
