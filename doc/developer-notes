@@ -67,8 +67,8 @@ Pre action, for beta -or- production packages.
 3. Run eng\pack.ps1 -n -f -y          Create the package
 4. Run eng\test-package.ps1 -a -y     Test the result
 6. Git commit
-7. Run script eng\pack.ps1 -r         Recreate then publish the package
-8. Publish package
+7. Run script eng\pack.ps1 -r         Recreate, and maybe publish the package
+8. Publish package                    Only if not yet done
 
 Post actions.
 a. For production packages, git tag (??? before, to get the correct branch ???)
@@ -166,11 +166,11 @@ Maintenance
 -----------
 
 .NET Framework tools (see "eng\NETFrameworkTools"):
-- OpenCover
-- xunit.runner.console
+- OpenCover, used by cover.ps1
+- xunit.runner.console, used by test-package.ps1
 
 .NET Core (local) tools:
-- ReportGenerator
+- ReportGenerator, used by cover.ps1
 
 To find outdated .NET Framework tools:
 > dotnet list eng\NETFrameworkTools package --outdated
@@ -184,7 +184,7 @@ Right now, we only have to do:
 > dotnet tool update dotnet-reportgenerator-globaltool
 
 To find outdated NuGet references in supporting projects:
-> dotnet list test\Blank package --outdated
 > dotnet list test\NETSdk package --framework net48 --outdated
 NB: these commands will fail if the package were not restored before.
 NB: we used net48, but any other would do the job (and you can remove this).
+NB: Project test\Blank has no external references.
