@@ -139,9 +139,7 @@ function Invoke-OpenCover {
         -excludebyattribute:*.ExcludeFromCodeCoverageAttribute `
         | Out-Host
 
-    Assert-CmdSuccess -ErrMessage "OpenCover failed."
-
-    Say-Softly "OpenCover completed successfully."
+    Assert-CmdSuccess -Error "OpenCover failed." -Success "OpenCover completed successfully."
 }
 
 # ------------------------------------------------------------------------------
@@ -174,9 +172,7 @@ function Invoke-Coverlet {
         /p:Exclude=$exclude `
         | Out-Host
 
-    Assert-CmdSuccess -ErrMessage "Coverlet failed."
-
-    Say-Softly "Coverlet completed successfully."
+    Assert-CmdSuccess -Error "Coverlet failed." -Success "Coverlet completed successfully."
 }
 
 # ------------------------------------------------------------------------------
@@ -202,9 +198,8 @@ function Invoke-ReportGenerator {
         -targetdir:$targetdir `
         | Out-Host
 
-    Assert-CmdSuccess -ErrMessage "ReportGenerator failed."
-
-    Say-Softly "ReportGenerator completed successfully."
+    Assert-CmdSuccess -Error "ReportGenerator failed." `
+        -Success "ReportGenerator completed successfully."
 }
 
 #endregion

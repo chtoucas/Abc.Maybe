@@ -527,14 +527,21 @@ function Confirm-Continue {
 function Assert-CmdSuccess {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, Position = 0)]
         [ValidateNotNullOrEmpty()]
-        [string] $errMessage
+        [string] $error,
+
+        [Parameter(Mandatory = $false, Position = 1)]
+        [string] $success = ""
     )
 
     Write-Verbose "Checking exit code of the last external command that was run."
 
-    if ($LastExitCode -ne 0) { Croak $errMessage }
+    if ($LastExitCode -ne 0) { Croak $error }
+
+    if ($success -ne "") {
+        Say-Softly $success
+    }
 }
 
 #endregion

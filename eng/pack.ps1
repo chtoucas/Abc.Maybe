@@ -349,7 +349,7 @@ function Invoke-Pack {
         /p:Pack=true `
         | Out-Host
 
-    Assert-CmdSuccess -ErrMessage "Pack task failed."
+    Assert-CmdSuccess -Error "Pack task failed."
 
     if ($ci) {
         Say-Softly "CI package successfully created."
@@ -383,7 +383,8 @@ function Invoke-PushLocal {
     # a local "push", we won't have to update this script (but maybe reset.ps1).
 
     & dotnet nuget push $packageFile -s $NUGET_LOCAL_FEED --force-english-output | Out-Host
-    Assert-CmdSuccess -ErrMessage "Failed to publish package to local NuGet feed."
+
+    Assert-CmdSuccess -Error "Failed to publish package to local NuGet feed."
 
     # If the following task fails, we should remove the package from the feed,
     # otherwise, later on, the package will be restored to the global cache.
@@ -392,7 +393,8 @@ function Invoke-PushLocal {
     Say "Updating the local NuGet cache"
     $project = Join-Path $TEST_DIR "Blank" -Resolve
     & dotnet restore $project /p:AbcVersion=$version | Out-Host
-    Assert-CmdSuccess -ErrMessage "Failed to update the local NuGet cache."
+
+    Assert-CmdSuccess -Error "Failed to update the local NuGet cache."
 
     Say-Softly "Package successfully installed."
 }
