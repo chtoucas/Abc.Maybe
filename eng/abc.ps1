@@ -8,23 +8,25 @@
 Set-StrictMode -Version Latest
 $Script:ErrorActionPreference = "Stop"
 
-# We change some global values... We could be smarter though.
+# We change some global values... We could be smarter though: do nothing and
+#rely on the PowerShell profile, or restore things afterwards.
 $Host.PrivateData.ErrorBackgroundColor = "Red"
 $Host.PrivateData.ErrorForegroundColor = "Yellow"
 $Host.PrivateData.WarningForegroundColor = "Yellow"
 
 # THIS FUNCTION IS AUTOMATICALLY EXECUTED THEREAFTER.
-# NB: changes do not survive when the script ends, which is good.
 function Initialize-Env {
     [CmdletBinding()]
     param()
 
     Write-Verbose "Initializing environment."
 
+    # These two changes won't survive when the script ends, which is good.
     [CultureInfo]::CurrentCulture = "en"
     [CultureInfo]::CurrentUICulture = "en"
 
     # Set language used by MSBuild, dotnet and VS.
+    # These changes are global...
     # UNUSED: does not seem to work for what I want: english messages, eg
     # "dotnet restore" continues to output french messages.
     # See https://github.com/microsoft/msbuild/issues/1596

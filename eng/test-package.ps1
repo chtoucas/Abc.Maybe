@@ -41,10 +41,11 @@ Ignored if -Platform is also set and equals $true.
 .PARAMETER Version
 Specify a version of the package Abc.Maybe.
 When no version is specified, we use the last one from the local NuGet feed.
+If the latter is empty, we use the one found in Abc.Maybe.props.
 Ignored if -Current is also set and equals $true.
 
 .PARAMETER Current
-Use the package version found in Abc.Maybe.props.
+Force using the package version found in Abc.Maybe.props.
 
 .PARAMETER Runtime
 The target runtime to test the package for.
@@ -148,7 +149,7 @@ Usage: test-package.ps1 [arguments]
      -NoCore     exclude .NET Core from the tests.
 
   -v|-Version    specify a version of the package Abc.Maybe.
-  -c|-Current    use the package version found in Abc.Maybe.props.
+  -c|-Current    force using the package version found in Abc.Maybe.props.
 
   -r|-Runtime    specify a target runtime to test for.
 
@@ -263,7 +264,7 @@ function Find-LastLocalVersion {
         # will restore the CI package into the global, not what we want.
         # Solutions: delete the "broken" package, create a new CI package, etc.
         Carp "Local NuGet feed and cache are out of sync, reverting to -Current."
-        Carp "For the next time, the simplest solution is to recreate a package."
+        Carp "The simplest solution to fix this is to recreate a package."
         return Get-PackageVersion $packageName -AsString
     }
 
