@@ -90,6 +90,7 @@ Initialize-Env
 ################################################################################
 #region Project-specific functions.
 
+# Throws if the property file does not exist, or if its content is not valid.
 function Get-PackageVersion {
     [CmdletBinding()]
     param(
@@ -102,10 +103,15 @@ function Get-PackageVersion {
 
     Write-Verbose "Getting package version."
 
-    $proj = Join-Path $ENG_DIR "$packageName.props" -Resolve
+    $projectPath = Join-Path $ENG_DIR "$packageName.props" -Resolve
 
-    $xml = [Xml] (Get-Content $proj)
-    $node = (Select-Xml -Xml $xml -XPath "//Project/PropertyGroup/MajorVersion/..").Node
+    $node = [Xml] (Get-Content $projectPath) `
+        | Select-Xml -XPath "//Project/PropertyGroup/MajorVersion/.." `
+        | select -ExpandProperty Node
+
+    if ($node -eq $null) {
+        Croak "The property file for ""$packageName"" is not valid."
+    }
 
     # NB: if one of the nodes does not actually exist, the function throws.
     $major = $node | select -First 1 -ExpandProperty MajorVersion
@@ -834,7 +840,7 @@ function Find-Fsi {
 
 # ------------------------------------------------------------------------------
 
-# Return $null if the XML node does not exist.
+# Returns $null if the package is not referenced.
 function Get-PackageReferenceVersion {
     [CmdletBinding()]
     param(
@@ -849,10 +855,8 @@ function Get-PackageReferenceVersion {
 
     Write-Verbose "Getting version for ""$package"" from ""$projectPath""."
 
-    $xml = [Xml] (Get-Content $projectPath)
-    $xpath = "//Project/ItemGroup/PackageReference[@Include='$package']"
-
-    Select-Xml -Xml $xml -XPath $xpath `
+    [Xml] (Get-Content $projectPath) `
+        | Select-Xml -XPath "//Project/ItemGroup/PackageReference[@Include='$package']" `
         | select -ExpandProperty Node `
         | select -First 1 -ExpandProperty Version
 }

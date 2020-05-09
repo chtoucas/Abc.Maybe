@@ -632,6 +632,10 @@ try {
 
     New-Variable -Name "PackageName" -Value "Abc.Maybe" -Option ReadOnly
 
+    $Version = Get-PackageVersion $PackageName -AsString
+    Say "Version = $Version"
+    exit
+
     if ($Reset) {
         Say-LOUDLY "`nResetting repository."
 
