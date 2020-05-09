@@ -64,6 +64,13 @@ function Initialize-Env {
 # Local NuGet cache.
 (Join-Path $ARTIFACTS_DIR "nuget-cache") `
     | New-Variable -Name "NUGET_LOCAL_CACHE" -Scope Script -Option Constant
+# .NET Framework tools.
+(Join-Path $ARTIFACTS_DIR "tools") `
+    | New-Variable -Name "NET_FRAMEWORK_TOOLS_DIR" -Scope Script -Option Constant
+
+# Reference project used to restore .NET Framework tools.
+(Join-Path $ENG_DIR "NETFrameworkTools\NETFrameworkTools.csproj") `
+    | New-Variable -Name "NET_FRAMEWORK_TOOLS_PROJECT" -Scope Script -Option Constant
 
 #endregion
 ################################################################################
@@ -104,6 +111,117 @@ function Get-PackageVersion {
     else {
         @($major, $minor, $patch, $precy, $preno)
     }
+}
+
+# ------------------------------------------------------------------------------
+
+function Restore-NETFrameworkTools {
+    [CmdletBinding()]
+    param()
+
+    Say "Restoring .NET Framework tools."
+    & dotnet restore $NET_FRAMEWORK_TOOLS_PROJECT | Out-Host
+}
+
+# ------------------------------------------------------------------------------
+
+function Restore-NETCoreTools {
+    [CmdletBinding()]
+    param()
+
+    try {
+        pushd $ROOT_DIR
+
+        Say "Restoring .NET Core tools."
+        & dotnet tool restore | Out-Host
+    }
+    finally {
+        popd
+    }
+}
+
+# ------------------------------------------------------------------------------
+
+function Restore-Solution {
+    [CmdletBinding()]
+    param()
+
+    try {
+        pushd $ROOT_DIR
+
+        Say "Restoring NuGet packages."
+        & dotnet restore | Out-Host
+    }
+    finally {
+        popd
+    }
+}
+
+# ------------------------------------------------------------------------------
+
+function Find-OpenCover {
+    [CmdletBinding()]
+    param(
+        [switch] $fatal
+    )
+
+    Write-Verbose "Finding OpenCover.Console.exe."
+
+    if ($fatal) { $onError = "Croak" } else { $onError = "Carp" }
+
+    $version = Get-PackageReferenceVersion $NET_FRAMEWORK_TOOLS_PROJECT "OpenCover"
+
+    if ($version -eq $null) {
+        . $onError "OpenCover is not referenced in ""$NET_FRAMEWORK_TOOLS_PROJECT""."
+        return $null
+    }
+
+    $path = Join-Path $NET_FRAMEWORK_TOOLS_DIR "opencover\$version\tools\OpenCover.Console.exe"
+
+    if (-not (Test-Path $path)) {
+        . $onError "Couldn't find OpenCover v$version where I expected it to be. Maybe use -Restore?"
+        return $null
+    }
+
+    Write-Verbose "OpenCover.Console.exe found here: ""$path""."
+
+    $path
+}
+
+# ------------------------------------------------------------------------------
+
+function Find-XunitRunner {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $platform,
+
+        [switch] $fatal
+    )
+
+    Write-Verbose "Finding xunit.console.exe."
+
+    if ($fatal) { $onError = "Croak" } else { $onError = "Carp" }
+
+    $version = Get-PackageReferenceVersion $NET_FRAMEWORK_TOOLS_PROJECT "xunit.runner.console"
+
+    if ($version -eq $null) {
+        . $onError "Xunit console runner is not referenced in ""$NET_FRAMEWORK_TOOLS_PROJECT""."
+        return $null
+    }
+
+    $path = Join-Path $NET_FRAMEWORK_TOOLS_DIR `
+        "xunit.runner.console\$version\tools\$platform\xunit.console.exe"
+
+    if (-not (Test-Path $path)) {
+        . $onError "Couldn't find Xunit Console Runner v$version where I expected it to be. Maybe use -Restore?"
+        return $null
+    }
+
+    Write-Verbose "xunit.console.exe found here: ""$path""."
+
+    $path
 }
 
 # ------------------------------------------------------------------------------
@@ -663,7 +781,8 @@ function Find-MSBuild {
 
     Write-Verbose "Finding MSBuild.exe."
 
-    $path = & $vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe | select-object -first 1
+    $path = & $vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe `
+        | select-object -first 1
 
     if (-not $path) {
         Croak "Could not find MSBuild.exe."

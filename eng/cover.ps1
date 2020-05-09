@@ -62,11 +62,6 @@ param(
 
 . (Join-Path $PSScriptRoot "abc.ps1")
 
-# ------------------------------------------------------------------------------
-
-(Join-Path $SRC_DIR "Abc.Tests\Abc.Tests.csproj" -Resolve) `
-    | New-Variable -Name "OPENCOVER_REF_PROJECT" -Scope Script -Option Constant
-
 #endregion
 ################################################################################
 #region Helpers.
@@ -87,32 +82,6 @@ Usage: cover.ps1 [arguments]
 "@
 }
 
-# ------------------------------------------------------------------------------
-
-function Find-OpenCover {
-    [CmdletBinding()]
-    param()
-
-    Write-Verbose "Finding OpenCover.Console.exe."
-
-    $version = Get-PackageReferenceVersion $OPENCOVER_REF_PROJECT "OpenCover"
-
-    if ($version -eq $null) {
-        Croak "OpenCover is not referenced in ""$OPENCOVER_REF_PROJECT""."
-    }
-
-    $path = Join-Path ${Env:USERPROFILE} `
-        ".nuget\packages\opencover\$version\tools\OpenCover.Console.exe"
-
-    if (-not (Test-Path $path)) {
-        Croak "Couldn't find OpenCover v$version where I expected it to be."
-    }
-
-    Write-Verbose "OpenCover.Console.exe found here: ""$path""."
-
-    $path
-}
-
 #endregion
 ################################################################################
 #region Tasks.
@@ -123,11 +92,9 @@ function Invoke-Restore {
 
     Say-LOUDLY "`nRestoring dependencies, please wait..."
 
-    Write-Verbose "Restoring tools."
-    & dotnet tool restore | Out-Host
-
-    Write-Verbose "Restoring NuGet packages."
-    & dotnet restore | Out-Host
+    Restore-NETFrameworkTools
+    Restore-NETCoreTools
+    Restore-Solution
 
     Say-Softly "Dependencies successfully restored."
 }
@@ -167,7 +134,7 @@ function Invoke-OpenCover {
         -showunvisited `
         -output:$output `
         -target:dotnet.exe `
-        -targetargs:"test -v quiet -c $configuration --no-restore /p:DebugType=Full" `
+        -targetargs:"test -v quiet -c $configuration --nologo --no-restore /p:DebugType=Full" `
         -filter:$filter `
         -excludebyattribute:*.ExcludeFromCodeCoverageAttribute `
         | Out-Host
@@ -277,7 +244,8 @@ try {
     }
     else {
         if ($OpenCover) {
-            Find-OpenCover | Invoke-OpenCover -Configuration $Configuration -Output $outxml
+            Find-OpenCover -Fatal `
+                | Invoke-OpenCover -Configuration $Configuration -Output $outxml
         }
         else {
             # For coverlet.msbuild the path must be absolute if we want the result to be

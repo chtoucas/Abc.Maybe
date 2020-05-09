@@ -48,8 +48,9 @@ try {
     if ($Restore) {
         Say-LOUDLY "`nRestoring dependencies, please wait..."
 
-        & dotnet tool restore
-        & dotnet restore
+        Restore-NETFrameworkTools
+        Restore-NETCoreTools
+        Restore-Solution
 
         Say-Softly "Dependencies successfully restored."
     }

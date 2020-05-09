@@ -161,3 +161,9 @@ From time to time, we should review our usage of
 Useful tools.
 - NuGet Package Explorer
 - ILDasm, ILSpy, dotPeek
+
+Maintenance
+-----------
+
+To find outdated .NET Framework tools:
+> dotnet list NETTools package --outdated

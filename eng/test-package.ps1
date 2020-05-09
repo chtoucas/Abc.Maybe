@@ -130,9 +130,6 @@ param(
 (Join-Path $TEST_DIR "NETSdk" -Resolve) `
     | New-Variable -Name "NET_SDK_PROJECT" -Scope Script -Option Constant
 
-(Join-Path $TEST_DIR "Directory.Build.targets" -Resolve) `
-    | New-Variable -Name "XUNIT_REF_PROJECT" -Scope Script -Option Constant
-
 New-Variable -Name "XUNIT_PLATFORM" -Value "net452" -Scope Script -Option Constant
 
 #endregion
@@ -212,11 +209,7 @@ function Validate-Version {
 
 # ------------------------------------------------------------------------------
 
-# .NET Framework 4.5/4.5.1 must be handled separately.
-# Since it's no longer officialy supported by Microsoft, we can remove them
-# if it ever becomes too much of a burden.
-
-function Find-XunitRunner {
+function Find-XunitRunnerOnce {
     [CmdletBinding()]
     param()
 
@@ -224,24 +217,9 @@ function Find-XunitRunner {
 
     if ($NoXunitConsole) { Carp "No Xunit console runner." ; return $null }
 
-    $version = Get-PackageReferenceVersion $XUNIT_REF_PROJECT "xunit.runner.console"
+    $path = Find-XunitRunner -Platform $XUNIT_PLATFORM
 
-    if ($version -eq $null) {
-        Carp "Xunit console runner is not referenced in ""$XUNIT_REF_PROJECT""."
-        $Script:NoXunitConsole = $true
-        return $null
-    }
-
-    $path = Join-Path ${Env:USERPROFILE} `
-        ".nuget\packages\xunit.runner.console\$version\tools\$XUNIT_PLATFORM\xunit.console.exe"
-
-    if (-not (Test-Path $path)) {
-        Carp "Couldn't find Xunit Console Runner v$version where I expected it to be."
-        $Script:NoXunitConsole = $true
-        return $null
-    }
-
-    Write-Verbose "xunit.console.exe found here: ""$path""."
+    if ($path -eq $null) { $Script:NoXunitConsole = $true ; return $null }
 
     $path
 }
@@ -260,11 +238,6 @@ function Find-LastLocalVersion {
     )
 
     Write-Verbose "Getting the last version from the local NuGet feed."
-
-    if (-not (Test-Path $NUGET_LOCAL_FEED)) {
-        Carp "The local NuGet feed is empty, reverting to -Current."
-        return Get-PackageVersion $packageName -AsString
-    }
 
     # Don't remove the filter, the directory is never empty (file "_._").
     $last = Get-ChildItem (Join-Path $NUGET_LOCAL_FEED "*") -Include "*.nupkg" `
@@ -377,6 +350,9 @@ function Invoke-Build {
 
 # ------------------------------------------------------------------------------
 
+# .NET Framework 4.5/4.5.1 must be handled separately.
+# Since it's no longer officialy supported by Microsoft, we can remove them
+# if it ever becomes too much of a burden.
 function Invoke-TestOldStyle {
     [CmdletBinding()]
     param(
@@ -399,7 +375,7 @@ function Invoke-TestOldStyle {
         Carp "Runtime parameter ""$runtime"" is ignored when targetting ""$platform""."
     }
 
-    $xunit = Find-XunitRunner
+    $xunit = Find-XunitRunnerOnce
     if ($xunit -eq $null) { Say "Skipping." ; return }
 
     $vswhere = Find-VsWhere
