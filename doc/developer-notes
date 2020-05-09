@@ -64,11 +64,11 @@ Pre action, for beta -or- production packages.
 
 1. New version in eng\Abc.Maybe.props
 2. Update CHANGELOG
-3. Run eng\pack.ps1 -n -f -y          Create the package
-4. Run eng\test-package.ps1 -a -y     Test the result
+3. Run eng\pack.ps1 -NoCI -f -y           Create the package
+4. Run eng\test-package.ps1 -NoCI -a -y   Test the result
 6. Git commit
-7. Run script eng\pack.ps1 -r         Recreate, and maybe publish the package
-8. Publish package                    Only if not yet done
+7. Run script eng\pack.ps1 -Release       Recreate, and maybe publish the package
+8. Publish package                        Only if not yet done
 
 Post actions.
 a. For production packages, git tag (??? before, to get the correct branch ???)
@@ -161,6 +161,20 @@ From time to time, we should review our usage of
 Useful tools.
 - NuGet Package Explorer
 - ILDasm, ILSpy, dotPeek
+
+Tools
+-----
+
+Common parameters:
+   -NoCI
+   -Reset
+   -Restore
+-a|-AllXXX
+-o|-Optimise
+-f|-Force
+-y|-Yes
+-v|-MyVerbose
+-h|-Help
 
 Maintenance
 -----------

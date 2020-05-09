@@ -12,7 +12,7 @@ Do not ask for confirmation.
 #>
 [CmdletBinding()]
 param(
-    [Alias("r")] [switch] $Restore,
+                 [switch] $Restore,
     [Alias("y")] [switch] $Yes,
     [Alias("h")] [switch] $Help
 )
@@ -25,7 +25,7 @@ if ($Help) {
 Reset the repository.
 
 Usage: reset.ps1 [arguments]
-  -r|-Restore  restore NuGet packages and tools thereafter.
+     -Restore  restore NuGet packages and tools thereafter.
   -y|-Yes      do not ask for confirmation.
   -h|-Help     print this help and exit.
 

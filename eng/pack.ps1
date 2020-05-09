@@ -27,12 +27,12 @@ If this behaviour happens to be too strict and you are in a hurry, you can use:
 PS> pack.ps1 -NoCI -Force
 In that event, do not forget to reset the repository thereafter.
 
+.PARAMETER Reset
+Hard clean (reset) the source directory before anything else.
+
 .PARAMETER Force
 Force retrieval of git metadata when there are uncommited changes.
 Ignored if -Release is also set and equals $true.
-
-.PARAMETER Reset
-Hard clean (reset) the source directory before anything else.
 
 .PARAMETER Yes
 Do not ask for confirmation, mostly.
@@ -50,20 +50,20 @@ PS> pack.ps1
 Create a CI package.
 
 .EXAMPLE
-PS> pack.ps1 -n -f
+PS> pack.ps1 -NoCI -Force
 Create a non-CI package, ignore uncommited changes.
 
 .EXAMPLE
-PS> pack.ps1 -r
+PS> pack.ps1 -Release
 Create a package ready to be published to NuGet.Org.
 #>
 [CmdletBinding()]
 param(
-    [Alias("n")] [switch] $NoCI,
-    [Alias("r")] [switch] $Release,
+                 [switch] $NoCI,
+                 [switch] $Release,
 
-    [Alias("f")] [switch] $Force,
                  [switch] $Reset,
+    [Alias("f")] [switch] $Force,
     [Alias("y")] [switch] $Yes,
     [Alias("v")] [switch] $MyVerbose,
     [Alias("h")] [switch] $Help
@@ -81,11 +81,11 @@ function Write-Usage {
 Create a NuGet package for Abc.Maybe.
 
 Usage: pack.ps1 [arguments]
-  -n|-NoCI       create a non-CI package.
-  -r|-Release    create a package ready to be published to NuGet.Org.
+     -NoCI       create a non-CI package.
+     -Release    create a package ready to be published to NuGet.Org.
 
-  -f|-Force      force retrieval of git metadata when there are uncommited changes.
      -Reset      reset the solution before anything else.
+  -f|-Force      force retrieval of git metadata when there are uncommited changes.
   -y|-Yes        do not ask for confirmation, mostly.
   -v|-MyVerbose  display settings used to compile each DLL.
   -h|-Help       print this help and exit.
@@ -323,9 +323,7 @@ function Invoke-Pack {
         "/p:VersionSuffix=$versionSuffix",
         "--version-suffix:$versionSuffix"
 
-    if ($myVerbose) {
-        $args += "/p:DisplaySettings=true"
-    }
+    if ($myVerbose) { $args += "/p:DisplaySettings=true" }
 
     if ($ci) {
         $output = $PKG_CI_OUTDIR

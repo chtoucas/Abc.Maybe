@@ -42,10 +42,14 @@ Ignored if -Platform is also set and equals $true.
 Specify a version of the package Abc.Maybe.
 When no version is specified, we use the last one from the local NuGet feed.
 If the later is empty, we use the one found in Abc.Maybe.props.
+If the matching package is not public and does NOT exist in the local NuGet
+cache/feed, the script will fail.
 Ignored if -NoCI is also set and equals $true.
 
 .PARAMETER NoCI
 Force using the package version found in Abc.Maybe.props.
+If the matching package is not public and does NOT exist in the local NuGet
+cache/feed, the script will fail.
 
 .PARAMETER Runtime
 The target runtime to test the package for.
@@ -56,11 +60,11 @@ Ignored by platforms "net45" or "net451".
 For instance, runtime can be "win10-x64" or "win10-x86".
 See https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
 
-.PARAMETER Optimise
-Attempt to speed up things a bit when testing many platforms, one at a time.
-
 .PARAMETER Reset
 Hard clean (reset) the source and test directories before anything else.
+
+.PARAMETER Optimise
+Attempt to speed up things a bit when testing many platforms, one at a time.
 
 .PARAMETER Yes
 Do not ask for confirmation.
@@ -98,7 +102,7 @@ param(
     # Platform selection.
     #
     [Parameter(Mandatory = $false, Position = 0)]
-    [Alias("p")] [string] $Platform = "",
+                 [string] $Platform = "",
 
     [Alias("a")] [switch] $AllKnown,
                  [switch] $NoClassic,
@@ -107,19 +111,19 @@ param(
     # Package version.
     #
     [Parameter(Mandatory = $false, Position = 1)]
-    [Alias("v")] [string] $Version = "",
+                 [string] $Version = "",
 
-    [Alias("c")] [switch] $NoCI,
+                 [switch] $NoCI,
 
     # Runtime selection.
     #
     [Parameter(Mandatory = $false, Position = 2)]
-    [Alias("r")] [string] $Runtime = "",
+                 [string] $Runtime = "",
 
     # Other parameters.
     #
-    [Alias("o")] [switch] $Optimise,
                  [switch] $Reset,
+    [Alias("o")] [switch] $Optimise,
     [Alias("y")] [switch] $Yes,
     [Alias("h")] [switch] $Help
 )
@@ -143,18 +147,18 @@ function Write-Usage {
 Test the package Abc.Maybe.
 
 Usage: test-package.ps1 [arguments]
-  -p|-Platform   specify the platform(s) for which to test the package.
+     -Platform   specify the platform(s) for which to test the package.
   -a|-AllKnown   test the package for ALL known platform versions (SLOW).
      -NoClassic  exclude .NET Framework from the tests.
      -NoCore     exclude .NET Core from the tests.
 
-  -v|-Version    specify a version of the package Abc.Maybe.
-  -c|-NoCI       force using the package version found in Abc.Maybe.props.
+     -Version    specify a version of the package Abc.Maybe.
+     -NoCI       force using the package version found in Abc.Maybe.props.
 
-  -r|-Runtime    specify a target runtime to test for.
+     -Runtime    specify a target runtime to test for.
 
-  -o|-Optimise   attempt to speed up things a bit when testing many platforms one at a time.
      -Reset      reset the solution before anything else.
+  -o|-Optimise   attempt to speed up things a bit when testing many platforms one at a time.
   -y|-Yes        do not ask for confirmation before running any test.
   -h|-Help       print this help and exit.
 

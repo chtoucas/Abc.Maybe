@@ -130,7 +130,9 @@ function Invoke-OpenCover {
     $filter = "$filters"
 
     # See https://github.com/opencover/opencover/wiki/Usage
-    & $openCover -oldStyle -register:user `
+    & $openCover `
+        -oldStyle `
+        -register:user `
         -hideskipped:All `
         -showunvisited `
         -output:$output `
@@ -165,7 +167,8 @@ function Invoke-Coverlet {
         "[Abc*]Microsoft.CodeAnalysis.*"
     $exclude = '\"' + ($excludes -Join ",") + '\"'
 
-    & dotnet test -c $configuration --nologo --no-restore `
+    & dotnet test --nologo --no-restore `
+        -c $configuration `
         /p:CollectCoverage=true `
         /p:CoverletOutputFormat=opencover `
         /p:CoverletOutput=$output `
