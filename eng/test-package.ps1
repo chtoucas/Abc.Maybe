@@ -303,11 +303,11 @@ function Invoke-Restore {
 
     Say-LOUDLY "`nRestoring dependencies for NETSdk, please wait..."
 
-    $args = @()
+    $args = @("/p:AbcVersion=$version")
     if ($runtime -ne "") { $args += "--runtime:$runtime" }
     if ($allKnown)       { $args += "/p:AllKnown=true" }
 
-    & dotnet restore $NET_SDK_PROJECT $args /p:AbcVersion=$version | Out-Host
+    & dotnet restore $NET_SDK_PROJECT $args | Out-Host
 
     Assert-CmdSuccess -Error "Restore task failed." `
         -Success "Dependencies successfully restored."
@@ -332,12 +332,12 @@ function Invoke-Build {
 
     Say-LOUDLY "`nBuilding NETSdk, please wait..."
 
-    $args = @()
+    $args = @("/p:AbcVersion=$version")
     if ($runtime -ne "") { $args += "--runtime:$runtime" }
     if ($allKnown)       { $args += "/p:AllKnown=true" }
     if ($noRestore)      { $args += "--no-restore" }
 
-    & dotnet build $NET_SDK_PROJECT $args /p:AbcVersion=$version | Out-Host
+    & dotnet build $NET_SDK_PROJECT $args | Out-Host
 
     Assert-CmdSuccess -Error "Build task failed." -Success "Project successfully built."
 }
@@ -422,14 +422,12 @@ function Invoke-TestSingle {
     "`nTesting the package v$version for ""$platform"" and {0}." -f (Get-RuntimeLabel $runtime) `
         | Say-LOUDLY
 
-    $args = @()
+    $args = "/p:AbcVersion=$version", "/p:AllKnown=true", "-f:$platform"
     if ($runtime -ne "") { $args += "--runtime:$runtime" }
     if ($noBuild)        { $args += "--no-build" }   # NB: no-build => no-restore
     elseif ($noRestore)  { $args += "--no-restore" }
 
-    & dotnet test $NET_SDK_PROJECT --nologo -f $platform $args `
-        /p:AbcVersion=$version /p:AllKnown=true `
-        | Out-Host
+    & dotnet test $NET_SDK_PROJECT --nologo $args | Out-Host
 
     Assert-CmdSuccess -Error "Test task failed when targeting ""$platform""." `
         -Success "Test completed successfully."
@@ -515,13 +513,11 @@ function Invoke-TestMany {
     # "net45" and "net451" must be handled separately.
     $targetFrameworks = ($platforms | where { $_ -notin "net45", "net451" }) -join ";"
 
-    $args = @("/p:TargetFrameworks=" + '\"' + $targetFrameworks + '\"')
+    $args = "/p:AbcVersion=$version", "/p:AllKnown=true",
+        ("/p:TargetFrameworks=" + '\"' + $targetFrameworks + '\"')
     if ($runtime -ne "") { $args += "--runtime:$runtime" }
 
-    & dotnet test $NET_SDK_PROJECT --nologo $args `
-        /p:AllKnown=true `
-        /p:AbcVersion=$version `
-        | Out-Host
+    & dotnet test $NET_SDK_PROJECT --nologo $args | Out-Host
 
     Assert-CmdSuccess -Error "Test task failed." -Success "Test completed successfully."
 
@@ -564,14 +560,13 @@ function Invoke-TestAll {
         -f (Get-RuntimeLabel $runtime) `
         | Say-LOUDLY
 
-    $args = @()
-
+    $args = @("/p:AbcVersion=$version")
     if ($allKnown)       { $args += "/p:AllKnown=true" }
     if ($noClassic)      { $args += "/p:NoClassic=true" }
     if ($noCore)         { $args += "/p:NoCore=true" }
     if ($runtime -ne "") { $args += "--runtime:$runtime" }
 
-    & dotnet test $NET_SDK_PROJECT --nologo $args /p:AbcVersion=$version | Out-Host
+    & dotnet test $NET_SDK_PROJECT --nologo $args | Out-Host
 
     Assert-CmdSuccess -Error "Test task failed." -Success "Test completed successfully."
 
