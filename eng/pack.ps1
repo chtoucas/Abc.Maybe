@@ -151,8 +151,9 @@ function Generate-UIDs {
 
     Say "Generating build UIDs."
 
-    $vswhere = Find-VsWhere
-    $fsi = Find-Fsi $vswhere
+    $fsi = Find-Fsi (Find-VsWhere)
+    if ($fsi -eq $null) { return @("", "", "") }
+
     $fsx = Join-Path $PSScriptRoot "genuids.fsx" -Resolve
 
     $uids = & $fsi $fsx
@@ -171,8 +172,7 @@ function Get-ActualVersion {
         [ValidateNotNullOrEmpty()]
         [string] $projectName,
 
-        [Parameter(Mandatory = $true, Position = 1)]
-        [ValidateNotNullOrEmpty()]
+        [Parameter(Mandatory = $false, Position = 1)]
         [string] $timestamp,
 
         [switch] $ci
@@ -180,11 +180,13 @@ function Get-ActualVersion {
 
     Say "Getting package version."
 
-    # TODO: make it non-fatal when $timestamp is $null and $ci = $false.
-
     $major, $minor, $patch, $precy, $preno = Get-PackageVersion $projectName
 
     if ($ci) {
+        if (-not $timestamp) {
+            Croak "For CI packages, the timestamp cannot be empty."
+        }
+
         # For CI packages, we use SemVer 2.0.0, and we ensure that the package
         # is seen as a prerelease of what could be the next version. Examples:
         # - "1.2.3"       -> "1.2.4-ci-20201231-T121212".
@@ -280,14 +282,6 @@ function Invoke-Pack {
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $buildNumber,
-
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $revisionNumber,
-
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
         [string] $version,
 
         [Parameter(Mandatory = $true)]
@@ -303,13 +297,25 @@ function Invoke-Pack {
         [Parameter(Mandatory = $false)]
         [string] $repositoryCommit = "",
 
+        [Parameter(Mandatory = $false)]
+        [ValidateNotNullOrEmpty()]
+        [string] $buildNumber = "",
+
+        [Parameter(Mandatory = $false)]
+        [ValidateNotNullOrEmpty()]
+        [string] $revisionNumber = "",
+
         [switch] $ci,
         [switch] $myVerbose
     )
 
     # TODO: allow $buildNumber and $revisionNumber to be empty.
 
-    Say-LOUDLY "`nPacking v$version --- build $buildNumber, rev. $revisionNumber" -NoNewline
+    Say-LOUDLY "`nPacking v$version" -NoNewline
+    if ($buildNumber -and $repositoryCommit) {
+        Say-LOUDLY " --- build $buildNumber, rev. $revisionNumber" -NoNewline
+    }
+    else { Say-LOUDLY " --- build ""???"", rev. ""???""" -NoNewline }
     if ($repositoryBranch -and $repositoryCommit) {
         " on branch ""$repositoryBranch"", commit ""{0}""." -f $repositoryCommit.Substring(0, 7) `
             | Say-LOUDLY
@@ -473,13 +479,13 @@ try {
 
     Invoke-Pack `
         -ProjectName      $ProjectName `
-        -BuildNumber      $buildNumber `
-        -RevisionNumber   $revisionNumber `
         -Version          $version `
         -VersionPrefix    $prefix `
         -VersionSuffix    $suffix `
         -RepositoryBranch $branch `
         -RepositoryCommit $commit `
+        -BuildNumber      $buildNumber `
+        -RevisionNumber   $revisionNumber `
         -CI:              $CI `
         -MyVerbose:       $MyVerbose
 

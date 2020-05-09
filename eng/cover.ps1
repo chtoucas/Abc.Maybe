@@ -22,7 +22,7 @@ makes the two tools complementary --- line counts may differ too but
 that's just a detail.
 
 .PARAMETER OpenCover
-Use OpenCover instead of Coverlet.
+Use OpenCover instead of Coverlet. *Only works on Windows*
 Ignored if -NoCoverage is also set and equals $true.
 
 .PARAMETER NoCoverage
@@ -247,8 +247,9 @@ try {
                 | Invoke-OpenCover -Configuration $Configuration -Output $outxml
         }
         else {
-            # For coverlet.msbuild the path must be absolute if we want the result to be
-            # put within the directory for artifacts and not below the test project.
+            # For coverlet.msbuild the path must be absolute if we want the
+            # result to be put within the directory for artifacts and not below
+            # the test project.
             Invoke-Coverlet -Configuration $Configuration -Output $outxml
         }
     }

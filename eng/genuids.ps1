@@ -3,8 +3,7 @@
 . (Join-Path $PSScriptRoot "abc.ps1")
 
 try {
-    $vswhere = Find-VsWhere
-    $fsi = Find-Fsi $vswhere
+    $fsi = Find-Fsi (Find-VsWhere) -ExitOnError
     $fsx = Join-Path $PSScriptRoot "genuids.fsx" -Resolve
 
     $uids = & $fsi $fsx

@@ -351,6 +351,7 @@ function Invoke-Build {
 # .NET Framework 4.5/4.5.1 must be handled separately.
 # Since it's no longer officialy supported by Microsoft, we can remove them
 # if it ever becomes too much of a burden.
+# __Only works on Windows__
 function Invoke-TestOldStyle {
     [CmdletBinding()]
     param(
@@ -376,9 +377,7 @@ function Invoke-TestOldStyle {
     $xunit = Find-XunitRunnerOnce
     if ($xunit -eq $null) { Say "Skipping." ; return }
 
-    # TODO: skip if $msbuild is not found.
-    $vswhere = Find-VsWhere
-    $msbuild = Find-MSBuild $vswhere
+    $msbuild = Find-MSBuild (Find-VsWhere) -ExitOnError
 
     $projectName = $platform.ToUpper()
     $project = Join-Path $TEST_DIR $projectName -Resolve

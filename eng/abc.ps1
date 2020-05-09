@@ -9,7 +9,7 @@ Set-StrictMode -Version Latest
 $Script:ErrorActionPreference = "Stop"
 
 # We change some global values... We could be smarter though: do nothing and
-#rely on the PowerShell profile, or restore things afterwards.
+# rely on the PowerShell profile, or restore things afterwards.
 $Host.PrivateData.ErrorBackgroundColor = "Red"
 $Host.PrivateData.ErrorForegroundColor = "Yellow"
 $Host.PrivateData.WarningForegroundColor = "Yellow"
@@ -772,15 +772,14 @@ function Get-GitBranch {
 # https://aka.ms/vs/workloads for a list of workload (-requires)
 function Find-VsWhere {
     [CmdletBinding()]
-    param()
+    param(
+        [switch] $exitOnError
+    )
 
     Write-Verbose "Finding vswhere.exe."
 
     $cmd = Get-Command "vswhere.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
-
-    if ($cmd -ne $null) {
-        return $cmd.Path
-    }
+    if ($cmd -ne $null) { return $cmd.Path }
 
     Write-Verbose "vswhere.exe could not be found in your PATH."
 
@@ -791,7 +790,11 @@ function Find-VsWhere {
         return $path
     }
     else {
-        Croak "Could not find vswhere.exe."
+        if ($exitOnError) { $onError = "Croak" } else { $onError = "Carp" }
+
+        . $onError "Could not find vswhere.exe."
+
+        return $null
     }
 }
 
@@ -800,23 +803,29 @@ function Find-VsWhere {
 function Find-MSBuild {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $vswhere
+        [Parameter(Mandatory = $false, ValueFromPipeline = $true)]
+        [string] $vswhere,
+
+        [switch] $exitOnError
     )
 
     Write-Verbose "Finding MSBuild.exe."
 
-    $path = & $vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe `
-        | select-object -first 1
+    if ($exitOnError) { $onError = "Croak" } else { $onError = "Carp" }
 
-    if (-not $path) {
-        Croak "Could not find MSBuild.exe."
+    if ($vswhere -eq $null) {
+        $cmd = Get-Command "MSBuild.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
+
+        if ($cmd -ne $null) { return $cmd.Path }
+        else { . $onError "MSBuild.exe could not be found in your PATH." ; return $null }
     }
+    else {
+        $path = & $vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe `
+            | select-object -first 1
 
-    Write-Verbose "MSBuild.exe found here: ""$path""."
-
-    $path
+        if ($path) { Write-Verbose "MSBuild.exe found here: ""$path""." ;  return $path }
+        else { . $onError "Could not find MSBuild.exe." ; return $null }
+    }
 }
 
 # ------------------------------------------------------------------------------
@@ -824,23 +833,28 @@ function Find-MSBuild {
 function Find-Fsi {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $vswhere
+        [Parameter(Mandatory = $false, ValueFromPipeline = $true)]
+        [string] $vswhere,
+
+        [switch] $exitOnError
     )
 
     Write-Verbose "Finding fsi.exe."
 
-    $vspath = & $vswhere -legacy -latest -property installationPath
+    if ($exitOnError) { $onError = "Croak" } else { $onError = "Carp" }
 
-    $path = Join-Path $vspath "\Common7\IDE\CommonExtensions\Microsoft\FSharp\fsi.exe"
-    if (Test-Path $path) {
-        Write-Verbose "fsi.exe found here: ""$path""."
+    if ($vswhere -eq $null) {
+        $cmd = Get-Command "fsi.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
 
-        return $path
+        if ($cmd -ne $null) { return $cmd.Path }
+        else { . $onError "fsi.exe could not be found in your PATH." ; return $null }
     }
     else {
-        Croak "Could not find fsi.exe."
+        $vspath = & $vswhere -legacy -latest -property installationPath
+
+        $path = Join-Path $vspath "\Common7\IDE\CommonExtensions\Microsoft\FSharp\fsi.exe"
+        if (Test-Path $path) { Write-Verbose "fsi.exe found here: ""$path""." ; return $path }
+        else { . $onError "Could not find fsi.exe." ; return $null }
     }
 }
 
