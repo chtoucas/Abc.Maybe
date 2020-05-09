@@ -658,7 +658,7 @@ function Find-Git {
     $cmd = Get-Command "git.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
 
     if ($cmd -eq $null) {
-        . $onError "Could not be find git.exe. Please ensure git.exe is installed."
+        . $onError "Could not find git.exe. Please ensure git.exe is installed."
 
         return $null
     }
