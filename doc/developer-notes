@@ -173,7 +173,7 @@ Maintenance
 - ReportGenerator
 
 To find outdated .NET Framework tools:
-> dotnet list NETFrameworkTools package --outdated
+> dotnet list eng\NETFrameworkTools package --outdated
 
 There seems to be no built-in way to find outdated .NET Core tools, but
 > dotnet tool update <packagename>
@@ -182,3 +182,9 @@ To find the <packagename>:
 > dotnet tool list
 Right now, we only have to do:
 > dotnet tool update dotnet-reportgenerator-globaltool
+
+To find outdated NuGet references in supporting projects:
+> dotnet list test\Blank package --outdated
+> dotnet list test\NETSdk package --framework net48 --outdated
+NB: these commands will fail if the package were not restored before.
+NB: we used net48, but any other would do the job (and you can remove this).
