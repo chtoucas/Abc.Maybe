@@ -165,5 +165,20 @@ Useful tools.
 Maintenance
 -----------
 
+.NET Framework tools (see "eng\NETFrameworkTools"):
+- OpenCover
+- xunit.runner.console
+
+.NET Core (local) tools:
+- ReportGenerator
+
 To find outdated .NET Framework tools:
-> dotnet list NETTools package --outdated
+> dotnet list NETFrameworkTools package --outdated
+
+There seems to be no built-in way to find outdated .NET Core tools, but
+> dotnet tool update <packagename>
+updates the tool with the latest stable version.
+To find the <packagename>:
+> dotnet tool list
+Right now, we only have to do:
+> dotnet tool update dotnet-reportgenerator-globaltool

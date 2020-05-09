@@ -92,6 +92,3 @@ Other tasks
   https://github.com/clairernovotny/DeterministicBuilds
 - Replace coverlet.msbuild by coverlet-console? Use runsettings.
   Add coverlet.collector to the test project. Coverity?
-- Local tools: find updates, dotnet-outdated.
-  Remove refs to OpenCover and ReportGenerator in Abc.Tests.
-  https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools

@@ -217,6 +217,7 @@ function Find-XunitRunnerOnce {
 
     if ($NoXunitConsole) { Carp "No Xunit console runner." ; return $null }
 
+    # TODO: restore .NET Framework tools?
     $path = Find-XunitRunner -Platform $XUNIT_PLATFORM
 
     if ($path -eq $null) { $Script:NoXunitConsole = $true ; return $null }

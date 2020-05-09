@@ -119,7 +119,7 @@ function Restore-NETFrameworkTools {
     [CmdletBinding()]
     param()
 
-    Say "Restoring .NET Framework tools."
+    Say "Restoring local .NET Framework tools."
     & dotnet restore $NET_FRAMEWORK_TOOLS_PROJECT | Out-Host
 }
 
@@ -132,7 +132,7 @@ function Restore-NETCoreTools {
     try {
         pushd $ROOT_DIR
 
-        Say "Restoring .NET Core tools."
+        Say "Restoring local .NET Core tools."
         & dotnet tool restore | Out-Host
     }
     finally {
@@ -149,7 +149,7 @@ function Restore-Solution {
     try {
         pushd $ROOT_DIR
 
-        Say "Restoring NuGet packages."
+        Say "Restoring solution."
         & dotnet restore | Out-Host
     }
     finally {
