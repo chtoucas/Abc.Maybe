@@ -458,6 +458,8 @@ else {
 }
 
 try {
+    Initialize-Env
+
     pushd $ROOT_DIR
 
     New-Variable -Name "ProjectName" -Value "Abc.Maybe" -Option ReadOnly
@@ -531,6 +533,8 @@ catch {
 }
 finally {
     popd
+
+    Restore-Env
 }
 
 #endregion

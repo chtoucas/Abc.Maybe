@@ -628,6 +628,8 @@ $AllCore = `
 # ------------------------------------------------------------------------------
 
 try {
+    Initialize-Env
+
     pushd $TEST_DIR
 
     New-Variable -Name "PackageName" -Value "Abc.Maybe" -Option ReadOnly
@@ -732,6 +734,8 @@ catch {
 }
 finally {
     popd
+
+    Restore-Env
 
     if ($NoXunitConsole) {
         Carp "Tests for .NET Framework 4.5 / 4.5.1 were skipped."

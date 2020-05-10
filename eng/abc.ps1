@@ -8,18 +8,23 @@
 Set-StrictMode -Version Latest
 $Script:ErrorActionPreference = "Stop"
 
-# We change some global values... We could be smarter though: do nothing and
-# rely on the PowerShell profile, or restore things afterwards.
-$Host.PrivateData.ErrorBackgroundColor = "Red"
-$Host.PrivateData.ErrorForegroundColor = "Yellow"
-$Host.PrivateData.WarningForegroundColor = "Yellow"
+# ------------------------------------------------------------------------------
 
-# THIS FUNCTION IS AUTOMATICALLY EXECUTED THEREAFTER.
+$Script:___EnvInitialized = $false
+$Script:___ErrorBackgroundColor = $Host.PrivateData.ErrorBackgroundColor
+$Script:___ErrorForegroundColor = $Host.PrivateData.ErrorForegroundColor
+
 function Initialize-Env {
     [CmdletBinding()]
     param()
 
     Write-Verbose "Initializing environment."
+
+    $Script:___EnvInitialized = $true
+
+    # These changes are global...
+    $Host.PrivateData.ErrorBackgroundColor = "Red"
+    $Host.PrivateData.ErrorForegroundColor = "Yellow"
 
     # These changes won't survive when the script ends, which is good.
     [CultureInfo]::CurrentCulture = "en"
@@ -35,7 +40,12 @@ function Initialize-Env {
     #[Environment]::SetEnvironmentVariable("VSLANG", "1033", "User")
 }
 
-Initialize-Env
+function Restore-Env {
+    if ($Script:___EnvInitialized) {
+        $Host.PrivateData.ErrorBackgroundColor = $Script:___ErrorBackgroundColor
+        $Host.PrivateData.ErrorForegroundColor = $Script:___ErrorForegroundColor
+    }
+}
 
 ################################################################################
 #region Project-specific constants.
@@ -521,14 +531,14 @@ function Confirm-Yes {
         $answer = (Read-Host $question, "[y/N/q]")
 
         if ($answer -eq "" -or $answer -eq "n") {
-            Say-Indent "Discarding on your request."
+            Say-Softly "Discarding on your request."
             return $false
         }
         elseif ($answer -eq "y") {
             return $true
         }
         elseif ($answer -eq "q") {
-            Say-Indent "Terminating the script on your request."
+            Say-Softly "Terminating the script on your request."
             exit 0
         }
     }
@@ -549,7 +559,7 @@ function Confirm-Continue {
         $answer = (Read-Host $question, "[y/N]")
 
         if ($answer -eq "" -or $answer -eq "n") {
-            Say-Indent "Stopping on your request."
+            Say-Softly "Stopping on your request."
             exit 0
         }
         elseif ($answer -eq "y") {

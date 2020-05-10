@@ -69,6 +69,8 @@ function Update-PublicAPI {
 Say "This is the script to update the PublicAPI files."
 
 try {
+    Initialize-Env
+
     pushd $SRC_DIR
 
     foreach ($file in Get-ChildItem -Recurse -Include "PublicApi.Shipped.txt") {
@@ -81,6 +83,8 @@ catch {
 }
 finally {
     popd
+
+    Restore-Env
 }
 
 ################################################################################

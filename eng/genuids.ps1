@@ -3,6 +3,8 @@
 . (Join-Path $PSScriptRoot "abc.ps1")
 
 try {
+    Initialize-Env
+
     $fsi = Find-Fsi (Find-VsWhere) -ExitOnError
     $fsx = Join-Path $PSScriptRoot "genuids.fsx" -Resolve
 
@@ -12,4 +14,7 @@ try {
 }
 catch {
     Confess $_
+}
+finally {
+    Restore-Env
 }
