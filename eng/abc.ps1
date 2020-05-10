@@ -488,6 +488,15 @@ function Say-LOUDLY {
     Write-Host $message -ForegroundColor Green -NoNewline:$noNewline
 }
 
+# ------------------------------------------------------------------------------
+
+function Goodbye {
+    [CmdletBinding()]
+    param()
+
+    Write-Host "`nBye bye." -ForegroundColor Magenta
+}
+
 #endregion
 ################################################################################
 #region Error reporting.
@@ -507,6 +516,7 @@ function Carp {
 # ------------------------------------------------------------------------------
 
 # Die of errors.
+# Not seen as a terminating error, it does not set $?.
 function Croak {
     [CmdletBinding()]
     param(
@@ -568,7 +578,7 @@ function Confirm-Yes {
             return $true
         }
         elseif ($answer -eq "q") {
-            Say-Softly "Terminating the script on your request."
+            Say-Softly "Aborting the script on your request."
             exit 0
         }
     }
