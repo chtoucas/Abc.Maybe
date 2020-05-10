@@ -48,16 +48,16 @@ function Restore-Env {
 }
 
 function ___BEGIN___ {
-    [CmdletBinding()]
+    [CmdletBinding(PositionalBinding = $false)]
     param(
         [Parameter(Mandatory = $false)]
-        [string] $dir
+        [string] $in
     )
 
     Write-Verbose "BEGIN code block."
 
     Initialize-Env
-    if ($dir) { pushd $dir } else { pushd $ROOT_DIR }
+    if ($in) { pushd $in } else { pushd $ROOT_DIR }
 }
 
 function ___END___ {
