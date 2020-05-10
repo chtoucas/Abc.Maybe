@@ -37,19 +37,7 @@ This option and -NoCoverage are mutually exclusive.
 Restore NuGet packages and tools before anything else.
 
 .PARAMETER Help
-Print help.
-
-.EXAMPLE
-PS> cover.ps1
-Run Coverlet then build reports and badges.
-
-.EXAMPLE
-PS> cover.ps1 -OpenCover
-Run OpenCover then build reports and badges.
-
-.EXAMPLE
-PS> cover.ps1 -OpenCover -NoReport
-Run OpenCover, do NOT build reports and badges.
+Print help text then exit.
 #>
 [CmdletBinding()]
 param(
@@ -78,7 +66,12 @@ Usage: cover.ps1 [arguments]
      -NoReport    do NOT run ReportGenerator.
 
      -Restore     restore NuGet packages and tools before anything else.
-  -h|-Help        print this help and exit.
+  -h|-Help        print this help then exit.
+
+Examples.
+> cover.ps1                       # Run Coverlet then build reports and badges
+> cover.ps1 -OpenCover            # Run OpenCover then build reports and badges
+> cover.ps1 -OpenCover -NoReport  # Run OpenCover, do NOT build reports and badges
 
 "@
 }

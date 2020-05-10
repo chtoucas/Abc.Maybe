@@ -39,19 +39,7 @@ script will enter in an interactive mode.
 Verbose mode. We display the settings used before compiling each assembly.
 
 .PARAMETER Help
-Print help.
-
-.EXAMPLE
-PS> pack.ps1
-Create a CI package.
-
-.EXAMPLE
-PS> pack.ps1 -NoCI -Yes
-Create a non-CI package, ignore uncommited changes.
-
-.EXAMPLE
-PS> pack.ps1 -Release
-Create a package ready to be published to NuGet.Org.
+Print help text then exit.
 #>
 [CmdletBinding()]
 param(
@@ -82,7 +70,12 @@ Usage: pack.ps1 [arguments]
      -Reset      reset the solution before anything else.
   -y|-Yes        do not ask for confirmation, mostly.
   -v|-MyVerbose  display settings used to compile each DLL.
-  -h|-Help       print this help and exit.
+  -h|-Help       print this help then exit.
+
+Examples.
+> pack.ps1                # Create a CI package
+> pack.ps1 -NoCI -Yes     # Create a non-CI package, ignore uncommited changes
+> pack.ps1 -Release       # Create a package ready to be published to NuGet.Org
 
 "@
 }

@@ -69,33 +69,8 @@ Attempt to speed up things a bit when testing many platforms, one at a time.
 .PARAMETER Yes
 Do not ask for confirmation.
 
-.EXAMPLE
-PS> test-package.ps1
-Test the package for selected versions of .NET Core and .NET Framework
-
-.EXAMPLE
-PS> test-package.ps1 -NoClassic
-Test the package for the LTS versions of .NET Core.
-
-.EXAMPLE
-PS> test-package.ps1 -NoCore
-Test the package for the last minor version of each major version of .NET Framework.
-
-.EXAMPLE
-PS> test-package.ps1 -AllKnown
-Test the package for ALL versions of .NET Core and .NET Framework.
-
-.EXAMPLE
-PS> test-package.ps1 -AllKnown -NoClassic
-Test the package for ALL versions of .NET Core.
-
-.EXAMPLE
-PS> test-package.ps1 -AllKnown -NoCore
-Test the package for ALL versions of .NET Framework.
-
-.EXAMPLE
-PS> test-package.ps1 net452 -Runtime win10-x64
-Test the package for a specific platform and for the runtime "win10-x64".
+.PARAMETER Help
+Print help text then exit.
 #>
 [CmdletBinding()]
 param(
@@ -160,7 +135,16 @@ Usage: test-package.ps1 [arguments]
      -Reset      reset the solution before anything else.
   -o|-Optimise   attempt to speed up things a bit when testing many platforms one at a time.
   -y|-Yes        do not ask for confirmation before running any test.
-  -h|-Help       print this help and exit.
+  -h|-Help       print this help then exit.
+
+Examples.
+> test-package.ps1                              # selected versions of .NET Core and .NET Framework
+> test-package.ps1 -NoClassic                   # LTS versions of .NET Core
+> test-package.ps1 -NoCore                      # last minor version of each major version of .NET Framework
+> test-package.ps1 -AllKnown                    # ALL versions of .NET Core and .NET Framework
+> test-package.ps1 -AllKnown -NoClassic         # ALL versions of .NET Core
+> test-package.ps1 -AllKnown -NoCore            # ALL versions of .NET Framework
+> test-package.ps1 net452 -Runtime win10-x64    # net452 and for the runtime "win10-x64"
 
 "@
 }
