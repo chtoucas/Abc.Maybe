@@ -6,47 +6,6 @@ Towards version 1.0.0
 
 Currently, the only thing blocking us for a 1.0.0 release is proper testing of
 equality and ordering comparisons.
-- Testing is well underway but there is still a lot to be done.
-  * Split tests.
-  * More functional tests.
-  * Expand comparison tests (order and equality).
-    See NONGENERIC_MAYBE
-    Structural comparisons w/ structural types.
-    https://stackoverflow.com/questions/4968580/why-arent-istructuralequatable-and-istructuralcomparable-generic
-  * Maybe<Func<>>
-  * delegates that return null.
-- Check published packages (upgrade, debugging experience).
-
-Multitargeting: target net461/netstandard1.0.
-- We use TargetFrameworkIdentifier ('.NETFramework') and NETFRAMEWORK instead
-  of TargetFramework and NET461, is it such a good idea?
-  https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives/preprocessor-if
-- Debugging: embedded, pdbonly or full...
-  https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/debug-compiler-option
-  https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/making-an-image-easier-to-debug
-- https://github.com/dotnet/announcements/issues/31
-- code coverage?
-- Build warning NU1701 (should be OK now)
-  https://docs.microsoft.com/en-us/dotnet/core/porting/third-party-deps#net-framework-compatibility-mode
-  https://docs.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files
-
-Documentation (README)
-- A bit of marketing, compare to other option types.
-- Struct really? Explain and compare to ValueTuple.
-  https://docs.microsoft.com/en-gb/dotnet/csharp/tuples
-  http://mustoverride.com/tuples_structs/
-  https://docs.microsoft.com/en-us/archive/msdn-magazine/2018/june/csharp-tuple-trouble-why-csharp-tuples-get-to-break-the-guidelines
-  https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/value-options
-  https://github.com/fsharp/fslang-design/blob/master/FSharp.Core-4.5.0.0/FS-1057-valueoption.md
-- Nullable attributes and notnull constraint.
-  It would make a lot of sense to add a notnull constraint on the T of Maybe<T>,
-  but it worries me a bit (I need to gain more experience with the new NRT). It
-  would allow to warn a user trying to create a Maybe<int?> or a Maybe<string?>.
-  https://docs.microsoft.com/en-us/dotnet/csharp/nullable-attributes
-  https://devblogs.microsoft.com/dotnet/try-out-nullable-reference-types/
-  https://devblogs.microsoft.com/dotnet/nullable-reference-types-in-csharp/
-  https://devblogs.microsoft.com/dotnet/embracing-nullable-reference-types/
-- https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets
 
 vNEXT
 -----
@@ -66,19 +25,28 @@ vNEXT
   * SelectMany(), ZipWith(), Bind().
 - Serialization (XML)
 
-Main tasks
+Misc tasks.
 - FIXME, TODO and REVIEW within the code.
-- XML comments with complete examples.
-  https://github.com/dotnet/dotnet-api-docs/wiki
-  When done, filter out Abc.Maybe in Directory.Build.targets (NoWarn), and add
-  <NoWarn /> for Retail builds?
 - Localise user messages (ExceptionFactory)?
 
-Other tasks
-- Naming tests: explain rules in this doc and fix the tests themselves if necessary.
-- Perf tool (LINQ, nulls, iterable).
-- Sample code w/ C#, VB and F#.
-- BannedApiAnalyzers?
+Building & Packaging
+--------------------
+
+Multitargeting.
+- We use TargetFrameworkIdentifier ('.NETFramework') and NETFRAMEWORK instead
+  of TargetFramework and NET461, is it such a good idea?
+  https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives/preprocessor-if
+- Debugging: embedded, pdbonly or full...
+  https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/debug-compiler-option
+  https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/making-an-image-easier-to-debug
+- https://github.com/dotnet/announcements/issues/31
+- code coverage?
+- Build warning NU1701 (should be OK now)
+  https://docs.microsoft.com/en-us/dotnet/core/porting/third-party-deps#net-framework-compatibility-mode
+  https://docs.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files
+
+Misc tasks.
+- https://www.nuget.org/packages/Microsoft.NETFramework.ReferenceAssemblies/
 - Deterministic build? Disabled as it seems to conflict with the fact that we
   change the assembly file version and the description on every build.
 - SourceLink? Right now, the answer is no as it requires that the customer changes
@@ -90,7 +58,52 @@ Other tasks
   ContinuousIntegrationBuild.
   https://github.com/NuGet/Home/issues/4142
   https://github.com/clairernovotny/DeterministicBuilds
+
+Testing
+-------
+
+Testing is well underway but there is still a lot to be done.
+
+- Naming tests: explain rules in this doc and fix the tests themselves if necessary.
+- Split tests.
+- More functional tests.
+- Expand comparison tests (order and equality).
+  See NONGENERIC_MAYBE
+  Structural comparisons w/ structural types.
+  https://stackoverflow.com/questions/4968580/why-arent-istructuralequatable-and-istructuralcomparable-generic
+- Maybe<Func<>>
+- delegates that return null.
+- Check published packages (upgrade, debugging experience).
+
+Misc tasks.
+- Perf tool (LINQ, nulls, iterable), .NET Core tool for benchmarkdotnet.
+- BannedApiAnalyzers?
 - Replace coverlet.msbuild by coverlet-console? Use runsettings.
   Add coverlet.collector to the test project. Coverity?
   xunit.runner.console -> core app
-- https://www.nuget.org/packages/Microsoft.NETFramework.ReferenceAssemblies/
+
+Documentation
+-------------
+
+- XML comments with complete examples.
+  https://github.com/dotnet/dotnet-api-docs/wiki
+  When done, filter out Abc.Maybe in Directory.Build.targets (NoWarn), and add
+  <NoWarn /> for Retail builds?
+- Sample code w/ C#, VB and F#.
+
+- A bit of marketing, compare to other option types.
+- Struct really? Explain and compare to ValueTuple.
+  https://docs.microsoft.com/en-gb/dotnet/csharp/tuples
+  http://mustoverride.com/tuples_structs/
+  https://docs.microsoft.com/en-us/archive/msdn-magazine/2018/june/csharp-tuple-trouble-why-csharp-tuples-get-to-break-the-guidelines
+  https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/value-options
+  https://github.com/fsharp/fslang-design/blob/master/FSharp.Core-4.5.0.0/FS-1057-valueoption.md
+- Nullable attributes and notnull constraint.
+  It would make a lot of sense to add a notnull constraint on the T of Maybe<T>,
+  but it worries me a bit (I need to gain more experience with the new NRT). It
+  would allow to warn a user trying to create a Maybe<int?> or a Maybe<string?>.
+  https://docs.microsoft.com/en-us/dotnet/csharp/nullable-attributes
+  https://devblogs.microsoft.com/dotnet/try-out-nullable-reference-types/
+  https://devblogs.microsoft.com/dotnet/nullable-reference-types-in-csharp/
+  https://devblogs.microsoft.com/dotnet/embracing-nullable-reference-types/
+- https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets
