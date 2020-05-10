@@ -20,7 +20,7 @@ param(
 . (Join-Path $PSScriptRoot "abc.ps1")
 
 if ($Help) {
-    Say @"
+    say @"
 
 Reset the repository.
 
@@ -37,8 +37,7 @@ Usage: reset.ps1 [arguments]
 Hello "this is the reset script.`n"
 
 try {
-    Initialize-Env
-    pushd $ROOT_DIR
+    ___BEGIN___
 
     # Folders that we do NOT reset:
     # 1) __\coverlet\
@@ -53,20 +52,18 @@ try {
     Reset-LocalNuGet      -Yes:$Yes
 
     if ($Restore) {
-        Say-LOUDLY "`nRestoring dependencies, please wait..."
+        SAY-LOUDLY "`nRestoring dependencies, please wait..."
 
         Restore-NETFrameworkTools
         Restore-NETCoreTools
         Restore-Solution
 
-        Say-Softly "Dependencies successfully restored."
+        say-softly "Dependencies successfully restored."
     }
 }
 catch {
-    Confess $_
+    confess $_
 }
 finally {
-    popd
-    Restore-Env
-    Goodbye
+    ___END___
 }

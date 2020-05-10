@@ -67,8 +67,8 @@ param(
 ################################################################################
 #region Helpers.
 
-function Write-Usage {
-    Say @"
+function Print-Help {
+    say @"
 
 Run the Code Coverage script and build human-readable reports.
 
@@ -91,13 +91,13 @@ function Invoke-Restore {
     [CmdletBinding()]
     param()
 
-    Say-LOUDLY "`nRestoring dependencies, please wait..."
+    SAY-LOUDLY "`nRestoring dependencies, please wait..."
 
     Restore-NETFrameworkTools
     Restore-NETCoreTools
     Restore-Solution
 
-    Say-Softly "Dependencies successfully restored."
+    say-softly "Dependencies successfully restored."
 }
 
 # ------------------------------------------------------------------------------
@@ -118,7 +118,7 @@ function Invoke-OpenCover {
         [string] $output
     )
 
-    Say-LOUDLY "`nRunning OpenCover."
+    SAY-LOUDLY "`nRunning OpenCover."
 
     $filters = `
         "+[Abc.Maybe]*",
@@ -159,7 +159,7 @@ function Invoke-Coverlet {
         [string] $output
     )
 
-    Say-LOUDLY "`nRunning Coverlet."
+    SAY-LOUDLY "`nRunning Coverlet."
 
     $excludes = `
         "[Abc*]System.Diagnostics.CodeAnalysis.*",
@@ -193,7 +193,7 @@ function Invoke-ReportGenerator {
         [string] $targetdir
     )
 
-    Say-LOUDLY "`nRunning ReportGenerator."
+    SAY-LOUDLY "`nRunning ReportGenerator."
 
     & dotnet tool run reportgenerator `
         -verbosity:Warning `
@@ -210,21 +210,17 @@ function Invoke-ReportGenerator {
 ################################################################################
 #region Main.
 
-if ($Help) {
-    Write-Usage
-    exit 0
-}
+if ($Help) { Print-Help ; exit 0 }
 
 Hello "this is the Code Coverage script."
 
 try {
-    Initialize-Env
-    pushd $ROOT_DIR
+    ___BEGIN___
 
     New-Variable -Name "Configuration" -Value "Debug" -Option ReadOnly
 
     if ($NoCoverage -and $NoReport) {
-        Croak "You cannot set both options -NoCoverage and -NoReport at the same time."
+        croak "You cannot set both options -NoCoverage and -NoReport at the same time."
     }
 
     $tool = if ($OpenCover) { "opencover" } else { "coverlet" }
@@ -240,7 +236,7 @@ try {
     if ($Restore) { Invoke-Restore }
 
     if ($NoCoverage) {
-        Carp "`nOn your request, we do not run any Code Coverage tool."
+        carp "`nOn your request, we do not run any Code Coverage tool."
     }
     else {
         if ($OpenCover) {
@@ -256,7 +252,7 @@ try {
     }
 
     if ($NoReport) {
-        Carp "`nOn your request, we do not run ReportGenerator."
+        carp "`nOn your request, we do not run ReportGenerator."
     }
     else {
         Invoke-ReportGenerator $outxml $outdir
@@ -273,12 +269,10 @@ try {
     }
 }
 catch {
-    Confess $_
+    confess $_
 }
 finally {
-    popd
-    Restore-Env
-    Goodbye
+    ___END___
 }
 
 #endregion

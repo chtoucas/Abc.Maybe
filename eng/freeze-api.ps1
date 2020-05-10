@@ -26,7 +26,7 @@ function Update-PublicAPI {
         [string] $dir
     )
 
-    Say-LOUDLY "`nProcessing $dir"
+    SAY-LOUDLY "`nProcessing $dir"
 
     $shippedPath = Join-Path $dir "PublicAPI.Shipped.txt" -Resolve
     $shipped = Get-Content $shippedPath
@@ -52,16 +52,16 @@ function Update-PublicAPI {
         }
     }
 
-    Say-Indent "Writing PublicAPI.Shipped.txt."
+    say "  Writing PublicAPI.Shipped.txt."
     $shipped `
         | Sort-Object `
         | ?{ -not $removed.Contains($_) } `
         | Out-File $shippedPath -Encoding UTF8
 
-    Say-Indent "Writing PublicAPI.Unshipped.txt."
+    say "  Writing PublicAPI.Unshipped.txt."
     "" | Out-File $unshippedPath -Encoding UTF8
 
-    Say-Softly "Directory successfully processed."
+    say-softly "Directory successfully processed."
 }
 
 # ------------------------------------------------------------------------------
@@ -69,8 +69,7 @@ function Update-PublicAPI {
 Hello "this is the script to update the PublicAPI files."
 
 try {
-    Initialize-Env
-    pushd $SRC_DIR
+    ___BEGIN___
 
     foreach ($file in Get-ChildItem -Recurse -Include "PublicApi.Shipped.txt") {
         $dir = Split-Path -Parent $file
@@ -78,12 +77,10 @@ try {
     }
 }
 catch {
-    Confess $_
+    confess $_
 }
 finally {
-    popd
-    Restore-Env
-    Goodbye
+    ___END___
 }
 
 ################################################################################

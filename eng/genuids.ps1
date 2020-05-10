@@ -10,10 +10,10 @@ try {
 
     $uids = & $fsi $fsx
 
-    Say $uids
+    say $uids
 }
 catch {
-    Confess $_
+    confess $_
 }
 finally {
     Restore-Env

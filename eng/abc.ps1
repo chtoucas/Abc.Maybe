@@ -47,6 +47,31 @@ function Restore-Env {
     }
 }
 
+function ___BEGIN___ {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $false)]
+        [string] $dir
+    )
+
+    Write-Verbose "BEGIN code block."
+
+    Initialize-Env
+    if ($dir) { pushd $dir } else { pushd $ROOT_DIR }
+}
+
+function ___END___ {
+    [CmdletBinding()]
+    param()
+
+    Write-Verbose "END code block."
+
+    popd
+    Restore-Env
+
+    Write-Host "`nGoodbye." -ForegroundColor Magenta
+}
+
 ################################################################################
 #region Project-specific constants.
 
@@ -120,7 +145,7 @@ function Get-PackageVersion {
         | select -ExpandProperty Node
 
     if ($node -eq $null) {
-        Croak "The property file for ""$packageName"" is not valid."
+        croak "The property file for ""$packageName"" is not valid."
     }
 
     # NB: if one of the nodes does not actually exist, the function throws.
@@ -149,7 +174,7 @@ function Restore-NETFrameworkTools {
     [CmdletBinding()]
     param()
 
-    Say "Restoring local .NET Framework tools."
+    say "Restoring local .NET Framework tools."
     & dotnet restore $NET_FRAMEWORK_TOOLS_PROJECT | Out-Host
 }
 
@@ -162,7 +187,7 @@ function Restore-NETCoreTools {
     try {
         pushd $ROOT_DIR
 
-        Say "Restoring local .NET Core tools."
+        say "Restoring local .NET Core tools."
         & dotnet tool restore | Out-Host
     }
     finally {
@@ -179,7 +204,7 @@ function Restore-Solution {
     try {
         pushd $ROOT_DIR
 
-        Say "Restoring solution."
+        say "Restoring solution."
         & dotnet restore | Out-Host
     }
     finally {
@@ -197,7 +222,7 @@ function Find-OpenCover {
 
     Write-Verbose "Finding OpenCover.Console.exe."
 
-    if ($exitOnError) { $onError = "Croak" } else { $onError = "Carp" }
+    if ($exitOnError) { $onError = "croak" } else { $onError = "carp" }
 
     $version = Get-PackageReferenceVersion $NET_FRAMEWORK_TOOLS_PROJECT "OpenCover"
 
@@ -232,7 +257,7 @@ function Find-XunitRunner {
 
     Write-Verbose "Finding xunit.console.exe."
 
-    if ($exitOnError) { $onError = "Croak" } else { $onError = "Carp" }
+    if ($exitOnError) { $onError = "croak" } else { $onError = "carp" }
 
     $version = Get-PackageReferenceVersion $NET_FRAMEWORK_TOOLS_PROJECT "xunit.runner.console"
 
@@ -288,7 +313,7 @@ function Reset-SourceTree {
     Write-Verbose "Resetting source tree."
 
     if ($yes -or (Confirm-Yes "Hard clean the directory ""src""?")) {
-        Say "Deleting ""bin"" and ""obj"" directories within ""src""."
+        say "Deleting ""bin"" and ""obj"" directories within ""src""."
         Remove-BinAndObj $SRC_DIR
     }
 }
@@ -304,7 +329,7 @@ function Reset-TestTree {
     Write-Verbose "Resetting test tree."
 
     if ($yes -or (Confirm-Yes "Hard clean the directory ""test""?")) {
-        Say "Deleting ""bin"" and ""obj"" directories within ""test""."
+        say "Deleting ""bin"" and ""obj"" directories within ""test""."
         Remove-BinAndObj $TEST_DIR
     }
 }
@@ -320,7 +345,7 @@ function Reset-PackageOutDir {
     Write-Verbose "Resetting output directory for packages."
 
     if ($yes -or (Confirm-Yes "Reset output directory for packages?")) {
-        Say "Clearing output directory for packages."
+        say "Clearing output directory for packages."
         Remove-Packages $PKG_OUTDIR
     }
 }
@@ -336,7 +361,7 @@ function Reset-PackageCIOutDir {
     Write-Verbose "Resetting output directory for CI packages."
 
     if ($yes -or (Confirm-Yes "Reset output directory for CI packages?")) {
-        Say "Clearing output directory for CI packages."
+        say "Clearing output directory for CI packages."
         Remove-Packages $PKG_CI_OUTDIR
     }
 }
@@ -361,10 +386,10 @@ function Reset-LocalNuGet {
         #
         # We can't delete the directories, otherwise "dotnet restore" will fail.
 
-        Say "Resetting local NuGet feed."
+        say "Resetting local NuGet feed."
         Remove-Packages $NUGET_LOCAL_FEED
 
-        Say "Clearing local NuGet cache."
+        say "Clearing local NuGet cache."
         Get-ChildItem $NUGET_LOCAL_CACHE -Exclude "_._" `
             | % { Remove-Item $_ -Recurse }
     }
@@ -384,7 +409,7 @@ function Remove-PackageFromLocalNuGet {
         [string] $version
     )
 
-    Say "Removing obsolete package data from local NuGet feed/cache."
+    say "Removing obsolete package data from local NuGet feed/cache."
 
     Join-Path $NUGET_LOCAL_CACHE $packageName.ToLower() `
         | Join-Path -ChildPath $version `
@@ -415,7 +440,7 @@ function Hello {
 
 # ------------------------------------------------------------------------------
 
-function Say {
+function say {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
@@ -430,22 +455,7 @@ function Say {
 
 # ------------------------------------------------------------------------------
 
-function Say-Indent {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $message,
-
-        [switch] $noNewline
-    )
-
-    Write-Host "  $message" -NoNewline:$noNewline
-}
-
-# ------------------------------------------------------------------------------
-
-function Say-Softly {
+function say-softly {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
@@ -460,7 +470,7 @@ function Say-Softly {
 
 # ------------------------------------------------------------------------------
 
-function Say-LOUDLY {
+function SAY-LOUDLY {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
@@ -473,18 +483,12 @@ function Say-LOUDLY {
     Write-Host $message -ForegroundColor Green -NoNewline:$noNewline
 }
 
-# ------------------------------------------------------------------------------
-
-function Goodbye {
-    Write-Host "`nGoodbye." -ForegroundColor Magenta
-}
-
 #endregion
 ################################################################################
 #region Warn or die.
 
 # Warn user.
-function Carp {
+function carp {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
@@ -499,7 +503,7 @@ function Carp {
 
 # Die of errors.
 # Not seen as a terminating error, it does not set $?.
-function Croak {
+function croak {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
@@ -515,7 +519,7 @@ function Croak {
 # ------------------------------------------------------------------------------
 
 # Die of errors with stack trace.
-function Confess {
+function confess {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
@@ -554,14 +558,14 @@ function Confirm-Yes {
         $answer = (Read-Host $question, "[y/N/q]")
 
         if ($answer -eq "" -or $answer -eq "n") {
-            Say-Softly "Discarding on your request."
+            say-softly "Discarding on your request."
             return $false
         }
         elseif ($answer -eq "y") {
             return $true
         }
         elseif ($answer -eq "q") {
-            Say-Softly "Aborting the script on your request."
+            say-softly "Aborting the script on your request."
             exit 0
         }
     }
@@ -582,7 +586,7 @@ function Confirm-Continue {
         $answer = (Read-Host $question, "[y/N]")
 
         if ($answer -eq "" -or $answer -eq "n") {
-            Say-Softly "Stopping on your request."
+            say-softly "Stopping on your request."
             exit 0
         }
         elseif ($answer -eq "y") {
@@ -607,9 +611,9 @@ function Assert-CmdSuccess {
 
     Write-Verbose "Checking exit code of the last external command that was run."
 
-    if ($LastExitCode -ne 0) { Croak $error }
+    if ($LastExitCode -ne 0) { croak $error }
 
-    if ($success -ne "") { Say-Softly $success }
+    if ($success -ne "") { say-softly $success }
 }
 
 #endregion
@@ -631,7 +635,7 @@ function Remove-Dir {
         return
     }
     if (-not [System.IO.Path]::IsPathRooted($path)) {
-        Carp "Skipping ""$path""; the path MUST be absolute."
+        carp "Skipping ""$path""; the path MUST be absolute."
         return
     }
 
@@ -655,7 +659,7 @@ function Remove-Packages {
         return
     }
     if (-not [System.IO.Path]::IsPathRooted($path)) {
-        Carp "Skipping ""$path""; the path MUST be absolute."
+        carp "Skipping ""$path""; the path MUST be absolute."
         return
     }
 
@@ -684,7 +688,7 @@ function Remove-BinAndObj {
             return
         }
         if (-not [System.IO.Path]::IsPathRooted($_)) {
-            Carp "Skipping ""$_""; the path MUST be absolute."
+            carp "Skipping ""$_""; the path MUST be absolute."
             return
         }
 
@@ -710,7 +714,7 @@ function Find-Git {
 
     Write-Verbose "Finding git.exe."
 
-    if ($exitOnError) { $onError = "Croak" } else { $onError = "Carp" }
+    if ($exitOnError) { $onError = "croak" } else { $onError = "carp" }
 
     $cmd = Get-Command "git.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
 
@@ -742,7 +746,7 @@ function Approve-GitStatus {
 
     Write-Verbose "Getting the git status."
 
-    if ($exitOnError) { $onError = "Croak" } else { $onError = "Carp" }
+    if ($exitOnError) { $onError = "croak" } else { $onError = "carp" }
 
     try {
         # If there no uncommitted changes, the result is null, not empty.
@@ -774,7 +778,7 @@ function Get-GitCommitHash {
 
     Write-Verbose "Getting the last git commit hash."
 
-    if ($exitOnError) { $onError = "Croak" } else { $onError = "Carp" }
+    if ($exitOnError) { $onError = "croak" } else { $onError = "carp" }
 
     try {
         $commit = & $git log -1 --format="%H" 2>&1
@@ -805,7 +809,7 @@ function Get-GitBranch {
 
     Write-Verbose "Getting the git branch."
 
-    if ($exitOnError) { $onError = "Croak" } else { $onError = "Carp" }
+    if ($exitOnError) { $onError = "croak" } else { $onError = "carp" }
 
     try {
         $branch = & $git rev-parse --abbrev-ref HEAD 2>&1
@@ -847,7 +851,7 @@ function Find-VsWhere {
         return $path
     }
     else {
-        if ($exitOnError) { $onError = "Croak" } else { $onError = "Carp" }
+        if ($exitOnError) { $onError = "croak" } else { $onError = "carp" }
 
         . $onError "Could not find vswhere.exe."
 
@@ -868,7 +872,7 @@ function Find-MSBuild {
 
     Write-Verbose "Finding MSBuild.exe."
 
-    if ($exitOnError) { $onError = "Croak" } else { $onError = "Carp" }
+    if ($exitOnError) { $onError = "croak" } else { $onError = "carp" }
 
     if (-not $vswhere) {
         $cmd = Get-Command "MSBuild.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
@@ -898,7 +902,7 @@ function Find-Fsi {
 
     Write-Verbose "Finding fsi.exe."
 
-    if ($exitOnError) { $onError = "Croak" } else { $onError = "Carp" }
+    if ($exitOnError) { $onError = "croak" } else { $onError = "carp" }
 
     if (-not $vswhere) {
         $cmd = Get-Command "fsi.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue

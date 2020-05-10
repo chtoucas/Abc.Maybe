@@ -70,8 +70,8 @@ param(
 ################################################################################
 #region Helpers
 
-function Write-Usage {
-    Say @"
+function Print-Help {
+    say @"
 
 Create a NuGet package for Abc.Maybe.
 
@@ -97,13 +97,13 @@ function Get-GitMetadata {
         [switch] $exitOnError
     )
 
-    Say "Retrieving git metadata."
+    say "Retrieving git metadata."
 
     $git = Find-Git -ExitOnError:$exitOnError
 
     if ($git -eq $null) {
         if ($yes) {
-            Carp "The package description won't include any git metadata."
+            carp "The package description won't include any git metadata."
         }
         else {
             Confirm-Continue "Continue even without any git metadata?"
@@ -123,10 +123,10 @@ function Get-GitMetadata {
     }
 
     if ($branch -eq "") {
-        Carp "The branch name will be empty. Maybe use -Yes?"
+        carp "The branch name will be empty. Maybe use -Yes?"
     }
     if ($commit -eq "") {
-        Carp "The commit hash will be empty. Maybe use -Yes?"
+        carp "The commit hash will be empty. Maybe use -Yes?"
     }
 
     return @($branch, $commit)
@@ -142,7 +142,7 @@ function Generate-UIDs {
     [CmdletBinding()]
     param()
 
-    Say "Generating build UIDs."
+    say "Generating build UIDs."
 
     $fsi = Find-Fsi (Find-VsWhere)
     if ($fsi -eq $null) { return @("", "", "") }
@@ -171,13 +171,13 @@ function Get-ActualVersion {
         [switch] $ci
     )
 
-    Say "Getting package version."
+    say "Getting package version."
 
     $major, $minor, $patch, $precy, $preno = Get-PackageVersion $projectName
 
     if ($ci) {
         if (-not $timestamp) {
-            Croak "For CI packages, the timestamp cannot be empty."
+            croak "For CI packages, the timestamp cannot be empty."
         }
 
         # For CI packages, we use SemVer 2.0.0, and we ensure that the package
@@ -234,7 +234,7 @@ function Get-PackageFile {
         [switch] $yes
     )
 
-    Say "Getting package file."
+    say "Getting package file."
 
     if ($ci) {
         $path = Join-Path $PKG_CI_OUTDIR "$projectName.$version.nupkg"
@@ -249,13 +249,13 @@ function Get-PackageFile {
     # NB: not necessary for CI packages, the filename is unique.
     if (-not $ci -and (Test-Path $path)) {
         if (-not $yes) {
-            Carp "A package with the same version ($version) already exists."
+            carp "A package with the same version ($version) already exists."
             Confirm-Continue "Do you wish to proceed anyway?"
         }
 
         # Not necessary, dotnet will replace it, but to avoid any ambiguity
         # I prefer to remove it anyway.
-        Say-Indent "The old package file will be removed now."
+        say "  The old package file will be removed now."
         Remove-Item $path
     }
 
@@ -304,16 +304,16 @@ function Invoke-Pack {
 
     # TODO: allow $buildNumber and $revisionNumber to be empty.
 
-    Say-LOUDLY "`nPacking v$version" -NoNewline
+    SAY-LOUDLY "`nPacking v$version" -NoNewline
     if ($buildNumber -and $repositoryCommit) {
-        Say-LOUDLY " --- build $buildNumber, rev. $revisionNumber" -NoNewline
+        SAY-LOUDLY " --- build $buildNumber, rev. $revisionNumber" -NoNewline
     }
-    else { Say-LOUDLY " --- build ???, rev. ???" -NoNewline }
+    else { SAY-LOUDLY " --- build ???, rev. ???" -NoNewline }
     if ($repositoryBranch -and $repositoryCommit) {
         " on branch ""$repositoryBranch"", commit ""{0}""." -f $repositoryCommit.Substring(0, 7) `
-            | Say-LOUDLY
+            | SAY-LOUDLY
     }
-    else { Say-LOUDLY " on branch ""???"", commit ""???""." }
+    else { SAY-LOUDLY " on branch ""???"", commit ""???""." }
 
     # VersionSuffix is for Pack.props, but it is not enough, we MUST
     # also specify --version-suffix (not sure it is necessary any more, but
@@ -353,10 +353,10 @@ function Invoke-Pack {
     Assert-CmdSuccess -Error "Pack task failed."
 
     if ($ci) {
-        Say-Softly "CI package successfully created."
+        say-softly "CI package successfully created."
     }
     else {
-        Say-Softly "Package successfully created."
+        say-softly "Package successfully created."
     }
 }
 
@@ -374,7 +374,7 @@ function Invoke-PushLocal {
         [string] $version
     )
 
-    Say-LOUDLY "`nPushing the package to the local NuGet feed/cache."
+    SAY-LOUDLY "`nPushing the package to the local NuGet feed/cache."
 
     # Local "push" doesn't store packages in a hierarchical folder structure;
     # see https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-nuget-push
@@ -391,13 +391,13 @@ function Invoke-PushLocal {
     # otherwise, later on, the package will be restored to the global cache.
     # This is not such a big problem, but I prefer not to pollute it with
     # CI packages (or versions we are going to publish).
-    Say "Updating the local NuGet cache"
+    say "Updating the local NuGet cache"
     $project = Join-Path $TEST_DIR "Blank" -Resolve
     & dotnet restore $project /p:AbcVersion=$version | Out-Host
 
     Assert-CmdSuccess -Error "Failed to update the local NuGet cache."
 
-    Say-Softly "Package successfully installed."
+    say-softly "Package successfully installed."
 }
 
 # ------------------------------------------------------------------------------
@@ -410,7 +410,7 @@ function Invoke-Publish {
         [string] $packageFile
     )
 
-    Say-LOUDLY "`nPublishing the package -or- Preparing the command to do so."
+    SAY-LOUDLY "`nPublishing the package -or- Preparing the command to do so."
 
     $args = @()
 
@@ -422,14 +422,14 @@ function Invoke-Publish {
     if ($apiKey -ne "") { $args += "-k $apiKey" }
 
     if (Confirm-Yes "Do you want me to publish the package for you?") {
-        Carp "Not yet activated."
-        Say-LOUDLY "`n---`nTo publish the package:"
-        Say-LOUDLY "> dotnet nuget push $packageFile $args"
+        carp "Not yet activated."
+        SAY-LOUDLY "`n---`nTo publish the package:"
+        SAY-LOUDLY "> dotnet nuget push $packageFile $args"
         #& dotnet nuget push --force-english-output $packageFile $args | Out-Host
     }
     else {
-        Say-LOUDLY "`n---`nTo publish the package:"
-        Say-LOUDLY "> dotnet nuget push $packageFile $args"
+        SAY-LOUDLY "`n---`nTo publish the package:"
+        SAY-LOUDLY "> dotnet nuget push $packageFile $args"
     }
 }
 
@@ -437,10 +437,7 @@ function Invoke-Publish {
 ################################################################################
 #region Main.
 
-if ($Help) {
-    Write-Usage
-    exit 0
-}
+if ($Help) { Print-Help ; exit 0 }
 
 if ($Release -or $NoCI) {
     Hello "this is the NuGet package creation script for Abc.Maybe."
@@ -450,14 +447,13 @@ else {
 }
 
 try {
-    Initialize-Env
-    pushd $ROOT_DIR
+    ___BEGIN___
 
     New-Variable -Name "ProjectName" -Value "Abc.Maybe" -Option ReadOnly
 
     $CI = -not ($Release -or $NoCI)
 
-    Say-LOUDLY "`nInitialisation."
+    SAY-LOUDLY "`nInitialisation."
 
     # 1. Reset the source tree.
     if ($Release -or $Reset) { Reset-SourceTree -Yes:($Release -or $Yes) }
@@ -514,18 +510,16 @@ try {
 
             Invoke-PushLocal $packageFile $version
 
-            Say-LOUDLY "`n---`nNow, you can test the package. For instance,"
-            Say-LOUDLY "> eng\test-package.ps1 -NoCI -a -y"
+            SAY-LOUDLY "`n---`nNow, you can test the package. For instance,"
+            SAY-LOUDLY "> eng\test-package.ps1 -NoCI -a -y"
         }
     }
 }
 catch {
-    Confess $_
+    confess $_
 }
 finally {
-    popd
-    Restore-Env
-    Goodbye
+    ___END___
 }
 
 #endregion

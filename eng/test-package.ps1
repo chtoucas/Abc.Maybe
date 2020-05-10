@@ -141,8 +141,8 @@ New-Variable -Name "XUNIT_PLATFORM" -Value "net452" -Scope Script -Option Consta
 ################################################################################
 #region Helpers.
 
-function Write-Usage {
-    Say @"
+function Print-Help {
+    say @"
 
 Test the package Abc.Maybe.
 
@@ -182,7 +182,7 @@ function Validate-Platform {
     )
 
     if ($platform -notin $knownPlatforms) {
-        Croak "The specified platform is not supported: ""$platform""."
+        croak "The specified platform is not supported: ""$platform""."
     }
 }
 
@@ -208,7 +208,7 @@ function Validate-Version {
     $ok = $version -match "^$major\.$minor\.$patch(\-$prere)?$"
 
     if (-not $ok) {
-        Croak "The specified version number is not well-formed: ""$version""."
+        croak "The specified version number is not well-formed: ""$version""."
     }
 }
 
@@ -220,7 +220,7 @@ function Find-XunitRunnerOnce {
 
     Write-Verbose "Finding xunit.console.exe."
 
-    if ($NoXunitConsole) { Carp "No Xunit console runner." ; return $null }
+    if ($NoXunitConsole) { carp "No Xunit console runner." ; return $null }
 
     Restore-NETFrameworkTools
 
@@ -251,7 +251,7 @@ function Find-LastLocalVersion {
         | sort LastWriteTime | select -Last 1
 
     if ($last -eq $null) {
-        Carp "The local NuGet feed is empty, reverting to -NoCI."
+        carp "The local NuGet feed is empty, reverting to -NoCI."
         return Get-PackageVersion $packageName -AsString
     }
 
@@ -267,8 +267,8 @@ function Find-LastLocalVersion {
         # If the cache entry does not exist, we stop the script, otherwise it
         # will restore the CI package into the global, not what we want.
         # Solutions: delete the "broken" package, create a new CI package, etc.
-        Carp "Local NuGet feed and cache are out of sync, reverting to -NoCI."
-        Carp "The simplest solution to fix this is to recreate a package."
+        carp "Local NuGet feed and cache are out of sync, reverting to -NoCI."
+        carp "The simplest solution to fix this is to recreate a package."
         return Get-PackageVersion $packageName -AsString
     }
 
@@ -305,7 +305,7 @@ function Invoke-Restore {
         [switch] $allKnown
     )
 
-    Say-LOUDLY "`nRestoring dependencies for NETSdk, please wait..."
+    SAY-LOUDLY "`nRestoring dependencies for NETSdk, please wait..."
 
     $args = @("/p:AbcVersion=$version")
     if ($runtime -ne "") { $args += "--runtime:$runtime" }
@@ -334,7 +334,7 @@ function Invoke-Build {
         [switch] $noRestore
     )
 
-    Say-LOUDLY "`nBuilding NETSdk, please wait..."
+    SAY-LOUDLY "`nBuilding NETSdk, please wait..."
 
     $args = @("/p:AbcVersion=$version")
     if ($runtime -ne "") { $args += "--runtime:$runtime" }
@@ -368,14 +368,14 @@ function Invoke-TestOldStyle {
     )
 
     "`nTesting the package for ""$platform"" and {0}." -f (Get-RuntimeLabel $runtime) `
-        | Say-LOUDLY
+        | SAY-LOUDLY
 
     if ($runtime -ne "") {
-        Carp "Runtime parameter ""$runtime"" is ignored when targetting ""$platform""."
+        carp "Runtime parameter ""$runtime"" is ignored when targetting ""$platform""."
     }
 
     $xunit = Find-XunitRunnerOnce
-    if ($xunit -eq $null) { Say "Skipping." ; return }
+    if ($xunit -eq $null) { say "Skipping." ; return }
 
     $msbuild = Find-MSBuild (Find-VsWhere) -ExitOnError
 
@@ -424,7 +424,7 @@ function Invoke-TestSingle {
     }
 
     "`nTesting the package for ""$platform"" and {0}." -f (Get-RuntimeLabel $runtime) `
-        | Say-LOUDLY
+        | SAY-LOUDLY
 
     $args = "/p:AbcVersion=$version", "/p:AllKnown=true", "-f:$platform"
     if ($runtime -ne "") { $args += "--runtime:$runtime" }
@@ -491,28 +491,28 @@ function Invoke-TestMany {
     )
 
     "`nTesting the package for ""$filter"" and {0}." -f (Get-RuntimeLabel $runtime) `
-        | Say-LOUDLY
+        | SAY-LOUDLY
 
     $pattern = $filter.Substring(0, $filter.Length - 1)
     $platforms = $platformList | where { $_.StartsWith($pattern) }
 
     $count = $platforms.Length
     if ($count -eq 0) {
-        Croak "After filtering the list of known platforms w/ $filter, there is nothing left to be done."
+        croak "After filtering the list of known platforms w/ $filter, there is nothing left to be done."
     }
 
     # Fast track.
     if ($count -eq 1) {
         $platform = $platforms[0]
 
-        Say "Only ""$platform"" was left after filtering the list of known platforms."
+        say "Only ""$platform"" was left after filtering the list of known platforms."
 
         Invoke-TestSingle -Platform $platform -Version  $version -Runtime  $runtime
         return
     }
 
     "Remaining platorms after filtering: ""{0}""." -f ($platforms -join '", "') `
-        | Say-LOUDLY
+        | SAY-LOUDLY
 
     # "net45" and "net451" must be handled separately.
     $targetFrameworks = ($platforms | where { $_ -notin "net45", "net451" }) -join ";"
@@ -562,7 +562,7 @@ function Invoke-TestAll {
 
     "`nBatch testing the package for $platformSet, $platformVer, and {0}." `
         -f (Get-RuntimeLabel $runtime) `
-        | Say-LOUDLY
+        | SAY-LOUDLY
 
     $args = @("/p:AbcVersion=$version")
     if ($allKnown)       { $args += "/p:AllKnown=true" }
@@ -585,10 +585,7 @@ function Invoke-TestAll {
 ################################################################################
 #region Main.
 
-if ($Help) {
-    Write-Usage
-    exit 0
-}
+if ($Help) { Print-Help ; exit 0 }
 
 Hello "this is the script to test the package Abc.Maybe."
 
@@ -628,13 +625,12 @@ $AllCore = `
 # ------------------------------------------------------------------------------
 
 try {
-    Initialize-Env
-    pushd $TEST_DIR
+    ___BEGIN___ $TEST_DIR
 
     New-Variable -Name "PackageName" -Value "Abc.Maybe" -Option ReadOnly
 
     if ($Reset) {
-        Say-LOUDLY "`nResetting repository."
+        SAY-LOUDLY "`nResetting repository."
 
         # Cleaning the "src" directory is only necessary when there are "dangling"
         # cs files in "src" that were created during a previous build. Now, it's
@@ -659,7 +655,7 @@ try {
         Validate-Version $Version
     }
 
-    Say-LOUDLY "`nThe selected package version is ""$Version""."
+    SAY-LOUDLY "`nThe selected package version is ""$Version""."
 
     if ($Platform -in "", "*") {
         if ($Platform -eq "*") {
@@ -667,7 +663,7 @@ try {
             $AllKnown = $true ; $NoClassic = $false ; $NoCore = $false
         }
         elseif ($NoClassic -and $NoCore) {
-            Croak "You set both -NoClassic and -NoCore... There is nothing left to be done."
+            croak "You set both -NoClassic and -NoCore... There is nothing left to be done."
         }
 
         if ($Yes -or (Confirm-Yes "`nTest the package for all selected platforms at once (SLOW)?")) {
@@ -691,7 +687,7 @@ try {
                 Invoke-Restore -Version $Version -Runtime $Runtime -AllKnown:$AllKnown
             }
 
-            Say-LOUDLY "`nNow, you will have the opportunity to choose which platform to test the package for."
+            SAY-LOUDLY "`nNow, you will have the opportunity to choose which platform to test the package for."
 
             $platformList = @()
 
@@ -731,16 +727,14 @@ try {
     }
 
     if ($NoXunitConsole) {
-        Say-LOUDLY "`n---`nTests for .NET Framework 4.5 / 4.5.1 were skipped."
+        SAY-LOUDLY "`n---`nTests for .NET Framework 4.5 / 4.5.1 were skipped."
     }
 }
 catch {
-    Confess $_
+    confess $_
 }
 finally {
-    popd
-    Restore-Env
-    Goodbye
+    ___END___
 }
 
 #endregion
