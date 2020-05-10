@@ -21,7 +21,7 @@ function Initialize-Env {
 
     Write-Verbose "Initializing environment."
 
-    # These two changes won't survive when the script ends, which is good.
+    # These changes won't survive when the script ends, which is good.
     [CultureInfo]::CurrentCulture = "en"
     [CultureInfo]::CurrentUICulture = "en"
 
@@ -246,6 +246,29 @@ function Find-XunitRunner {
 
 # ------------------------------------------------------------------------------
 
+# Returns $null if the package is not referenced.
+function Get-PackageReferenceVersion {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [string] $projectPath,
+
+        [Parameter(Mandatory = $true, Position = 1)]
+        [ValidateNotNullOrEmpty()]
+        [string] $package
+    )
+
+    Write-Verbose "Getting version for ""$package"" from ""$projectPath""."
+
+    [Xml] (Get-Content $projectPath) `
+        | Select-Xml -XPath "//Project/ItemGroup/PackageReference[@Include='$package']" `
+        | select -ExpandProperty Node `
+        | select -First 1 -ExpandProperty Version
+}
+
+# ------------------------------------------------------------------------------
+
 function Reset-SourceTree {
     [CmdletBinding()]
     param(
@@ -429,8 +452,6 @@ function Say-LOUDLY {
 ################################################################################
 #region Error reporting.
 
-# TODO: not sure that they write to the warning or error streams.
-
 # Warn user.
 function Carp {
     [CmdletBinding()]
@@ -440,7 +461,7 @@ function Carp {
         [string] $message
     )
 
-    $Host.UI.WriteWarningLine($message)
+    Write-Warning $message
 }
 
 # ------------------------------------------------------------------------------
@@ -469,13 +490,16 @@ function Confess {
         [System.Management.Automation.ErrorRecord] $error
     )
 
-    $Host.UI.WriteErrorLine("An unexpected error occured: $error.")
+    $Host.UI.WriteErrorLine("An unexpected error occurred.")
 
     if ($error -ne $null) {
-        Write-Host $error.ScriptStackTrace -Foreground Yellow
+        $Host.UI.WriteErrorLine($error.ScriptStackTrace.ToString())
+
+        # Write a terminating error.
+        $PSCmdlet.WriteError($error)
     }
     else {
-        Write-Host "Sorry, no further details about the error were given." -Foreground Yellow
+        $Host.UI.WriteErrorLine("Sorry, no further details are available.")
     }
 
     exit 1
@@ -813,7 +837,7 @@ function Find-MSBuild {
 
     if ($exitOnError) { $onError = "Croak" } else { $onError = "Carp" }
 
-    if ($vswhere -eq $null) {
+    if (-not $vswhere) {
         $cmd = Get-Command "MSBuild.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
 
         if ($cmd -ne $null) { return $cmd.Path }
@@ -843,7 +867,7 @@ function Find-Fsi {
 
     if ($exitOnError) { $onError = "Croak" } else { $onError = "Carp" }
 
-    if ($vswhere -eq $null) {
+    if (-not $vswhere) {
         $cmd = Get-Command "fsi.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
 
         if ($cmd -ne $null) { return $cmd.Path }
@@ -856,29 +880,6 @@ function Find-Fsi {
         if (Test-Path $path) { Write-Verbose "fsi.exe found here: ""$path""." ; return $path }
         else { . $onError "Could not find fsi.exe." ; return $null }
     }
-}
-
-# ------------------------------------------------------------------------------
-
-# Returns $null if the package is not referenced.
-function Get-PackageReferenceVersion {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true, Position = 0)]
-        [ValidateNotNullOrEmpty()]
-        [string] $projectPath,
-
-        [Parameter(Mandatory = $true, Position = 1)]
-        [ValidateNotNullOrEmpty()]
-        [string] $package
-    )
-
-    Write-Verbose "Getting version for ""$package"" from ""$projectPath""."
-
-    [Xml] (Get-Content $projectPath) `
-        | Select-Xml -XPath "//Project/ItemGroup/PackageReference[@Include='$package']" `
-        | select -ExpandProperty Node `
-        | select -First 1 -ExpandProperty Version
 }
 
 #endregion
