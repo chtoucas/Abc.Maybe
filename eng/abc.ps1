@@ -491,9 +491,6 @@ function Say-LOUDLY {
 # ------------------------------------------------------------------------------
 
 function Goodbye {
-    [CmdletBinding()]
-    param()
-
     Write-Host "`nBye bye." -ForegroundColor Magenta
 }
 

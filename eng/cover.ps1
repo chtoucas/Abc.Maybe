@@ -280,6 +280,8 @@ finally {
     popd
 
     Restore-Env
+
+    Goodbye
 }
 
 #endregion

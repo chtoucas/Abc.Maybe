@@ -456,7 +456,7 @@ else {
     Hello "This is the NuGet package creation script for Abc.Maybe" -NoNewline
     Hello-Emph " (CI mode).`n"
 }
-exit
+
 try {
     Initialize-Env
 
@@ -535,6 +535,8 @@ finally {
     popd
 
     Restore-Env
+
+    Goodbye
 }
 
 #endregion

@@ -739,9 +739,11 @@ finally {
 
     if ($NoXunitConsole) {
         Carp "Tests for .NET Framework 4.5 / 4.5.1 were skipped."
+        Goodbye
         exit 2
     }
     else {
+        Goodbye
         exit 0
     }
 }

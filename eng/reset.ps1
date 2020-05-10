@@ -70,4 +70,6 @@ finally {
     popd
 
     Restore-Env
+
+    Goodbye
 }
