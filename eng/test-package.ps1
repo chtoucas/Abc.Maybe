@@ -367,7 +367,7 @@ function Invoke-TestOldStyle {
         [string] $runtime = ""
     )
 
-    "`nTesting the package v$version for ""$platform"" and {0}." -f (Get-RuntimeLabel $runtime) `
+    "`nTesting the package for ""$platform"" and {0}." -f (Get-RuntimeLabel $runtime) `
         | Say-LOUDLY
 
     if ($runtime -ne "") {
@@ -423,7 +423,7 @@ function Invoke-TestSingle {
         return
     }
 
-    "`nTesting the package v$version for ""$platform"" and {0}." -f (Get-RuntimeLabel $runtime) `
+    "`nTesting the package for ""$platform"" and {0}." -f (Get-RuntimeLabel $runtime) `
         | Say-LOUDLY
 
     $args = "/p:AbcVersion=$version", "/p:AllKnown=true", "-f:$platform"
@@ -490,7 +490,7 @@ function Invoke-TestMany {
         [string] $runtime = ""
     )
 
-    "`nTesting the package v$version for ""$filter"" and {0}." -f (Get-RuntimeLabel $runtime) `
+    "`nTesting the package for ""$filter"" and {0}." -f (Get-RuntimeLabel $runtime) `
         | Say-LOUDLY
 
     $pattern = $filter.Substring(0, $filter.Length - 1)
@@ -560,7 +560,7 @@ function Invoke-TestAll {
     elseif ($noCore)    { $platformVer = "last minor version of each major version" }
     else                { $platformVer = "selected versions" }
 
-    "`nBatch testing the package v$version for $platformSet, $platformVer, and {0}." `
+    "`nBatch testing the package for $platformSet, $platformVer, and {0}." `
         -f (Get-RuntimeLabel $runtime) `
         | Say-LOUDLY
 
@@ -590,7 +590,7 @@ if ($Help) {
     exit 0
 }
 
-Hello "This is the test script for the package Abc.Maybe."
+Hello "this is the script to test the package Abc.Maybe."
 
 # ------------------------------------------------------------------------------
 
@@ -629,7 +629,6 @@ $AllCore = `
 
 try {
     Initialize-Env
-
     pushd $TEST_DIR
 
     New-Variable -Name "PackageName" -Value "Abc.Maybe" -Option ReadOnly
@@ -659,6 +658,8 @@ try {
     else {
         Validate-Version $Version
     }
+
+    Say-LOUDLY "`nThe selected package version is ""$Version""."
 
     if ($Platform -in "", "*") {
         if ($Platform -eq "*") {
@@ -734,12 +735,10 @@ catch {
 }
 finally {
     popd
-
     Restore-Env
 
     if ($NoXunitConsole) {
-        Carp "Tests for .NET Framework 4.5 / 4.5.1 were skipped."
-        Goodbye
+        Goodbye-Warn "Tests for .NET Framework 4.5 / 4.5.1 were skipped."
         exit 2
     }
     else {

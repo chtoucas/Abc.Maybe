@@ -450,23 +450,21 @@ if ($Help) {
 }
 
 if ($Release -or $NoCI) {
-    Hello "This is the NuGet package creation script for Abc.Maybe.`n"
+    Hello "this is the NuGet package creation script for Abc.Maybe."
 }
 else {
-    Hello "This is the NuGet package creation script for Abc.Maybe" -NoNewline
-    Hello-Emph " (CI mode).`n"
+    Hello "this is the NuGet package creation script for Abc.Maybe (CI mode)."
 }
 
 try {
     Initialize-Env
-
     pushd $ROOT_DIR
 
     New-Variable -Name "ProjectName" -Value "Abc.Maybe" -Option ReadOnly
 
     $CI = -not ($Release -or $NoCI)
 
-    Say-LOUDLY "Initialisation."
+    Say-LOUDLY "`nInitialisation."
 
     # 1. Reset the source tree.
     if ($Release -or $Reset) { Reset-SourceTree -Yes:($Release -or $Yes) }
@@ -533,9 +531,7 @@ catch {
 }
 finally {
     popd
-
     Restore-Env
-
     Goodbye
 }
 

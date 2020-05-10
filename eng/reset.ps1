@@ -34,11 +34,10 @@ Usage: reset.ps1 [arguments]
     exit 0
 }
 
-Hello "This is the reset script.`n"
+Hello "this is the reset script.`n"
 
 try {
     Initialize-Env
-
     pushd $ROOT_DIR
 
     # Folders that we do NOT reset:
@@ -68,8 +67,6 @@ catch {
 }
 finally {
     popd
-
     Restore-Env
-
     Goodbye
 }

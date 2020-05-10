@@ -410,22 +410,7 @@ function Hello {
         [switch] $noNewline
     )
 
-    Write-Host $message -ForegroundColor Magenta -NoNewline:$noNewline
-}
-
-# ------------------------------------------------------------------------------
-
-function Hello-Emph {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $message,
-
-        [switch] $noNewline
-    )
-
-    Write-Host $message -ForegroundColor Yellow -NoNewline:$noNewline
+    Write-Host "Hello, $message" -ForegroundColor Magenta -NoNewline:$noNewline
 }
 
 # ------------------------------------------------------------------------------
@@ -491,12 +476,25 @@ function Say-LOUDLY {
 # ------------------------------------------------------------------------------
 
 function Goodbye {
-    Write-Host "`nBye bye." -ForegroundColor Magenta
+    Write-Host "`nGoodbye." -ForegroundColor Magenta
+}
+
+# ------------------------------------------------------------------------------
+
+function Goodbye-Warn {
+    [CmdletBinding(PositionalBinding = $false)]
+    param(
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $message
+    )
+
+    Write-Host "`nGoodbye. $warnings" -ForegroundColor Yellow -NoNewline
 }
 
 #endregion
 ################################################################################
-#region Error reporting.
+#region Warn or die.
 
 # Warn user.
 function Carp {
@@ -543,10 +541,11 @@ function Confess {
         $Host.UI.WriteErrorLine($error.ScriptStackTrace.ToString())
 
         # Write a terminating error.
+        # This will be displayed as a post-mortem stack trace.
         $PSCmdlet.WriteError($error)
     }
     else {
-        $Host.UI.WriteErrorLine("Sorry, no further details are available.")
+        $Host.UI.WriteErrorLine("Sorry, no further details on the error were given.")
     }
 
     exit 1

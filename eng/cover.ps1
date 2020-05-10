@@ -215,11 +215,10 @@ if ($Help) {
     exit 0
 }
 
-Hello "This is the Code Coverage script."
+Hello "this is the Code Coverage script."
 
 try {
     Initialize-Env
-
     pushd $ROOT_DIR
 
     New-Variable -Name "Configuration" -Value "Debug" -Option ReadOnly
@@ -278,9 +277,7 @@ catch {
 }
 finally {
     popd
-
     Restore-Env
-
     Goodbye
 }
 
