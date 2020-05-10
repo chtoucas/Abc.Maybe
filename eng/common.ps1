@@ -70,7 +70,7 @@ function SAY-LOUDLY {
 ################################################################################
 #region Warn or die.
 
-$Script:___ExitCode = 0
+$Script:___DieCode = 0
 
 # ------------------------------------------------------------------------------
 
@@ -79,12 +79,12 @@ function die {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $false)]
-        [int] $exitCode = 1
+        [int] $dieCode = 1
     )
 
-    $Script:___ExitCode = $exitCode
+    $Script:___DieCode = $dieCode
 
-    exit $exitCode
+    exit $dieCode
 }
 
 # ------------------------------------------------------------------------------
@@ -133,7 +133,8 @@ function confess {
     if ($error -ne $null) {
         $Host.UI.WriteErrorLine($error.ScriptStackTrace.ToString())
 
-        $Script:___ExitCode = 255
+        # "die" at the end may be never called, depends on $ErrorActionPreference.
+        $Script:___DieCode = 255
 
         # Write a terminating error.
         # This will be displayed as a post-mortem stack trace.

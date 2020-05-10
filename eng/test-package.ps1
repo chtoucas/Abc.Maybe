@@ -569,7 +569,7 @@ function Invoke-TestAll {
 ################################################################################
 #region Main.
 
-if ($Help) { Print-Help ; exit 0 }
+if ($Help) { Print-Help ; exit }
 
 Hello "this is the script to test the package Abc.Maybe."
 

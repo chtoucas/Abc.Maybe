@@ -123,10 +123,11 @@ function ___END___ {
     popd
     Restore-Env
 
-    switch ($Script:___ExitCode) {
+    switch ($Script:___DieCode) {
         0       { Write-Host "`nGoodbye." -ForegroundColor Magenta }
-        255     { Write-Host "`nGoodbye.`n`n---" -ForegroundColor Red }
-        default { Write-Host "`nGoodbye." -ForegroundColor Yellow }
+        # 255 is what we get when "confess" was called.
+        255     { Write-Host "`n--- Post-mortem." -ForegroundColor Red }
+        default { Write-Host "`nExecution aborted ($_)." -ForegroundColor Red }
     }
 }
 

@@ -203,7 +203,7 @@ function Invoke-ReportGenerator {
 ################################################################################
 #region Main.
 
-if ($Help) { Print-Help ; exit 0 }
+if ($Help) { Print-Help ; exit }
 
 Hello "this is the Code Coverage script."
 

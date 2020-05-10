@@ -430,7 +430,7 @@ function Invoke-Publish {
 ################################################################################
 #region Main.
 
-if ($Help) { Print-Help ; exit 0 }
+if ($Help) { Print-Help ; exit }
 
 if ($Release -or $NoCI) {
     Hello "this is the NuGet package creation script for Abc.Maybe."
