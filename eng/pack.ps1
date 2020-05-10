@@ -24,15 +24,11 @@ script resets the repository, and stops when there are uncommited changes or if
 it cannot retrieve git metadata.
 
 If this behaviour happens to be too strict and you are in a hurry, you can use:
-PS> pack.ps1 -NoCI -Force
+PS> pack.ps1 -NoCI -Yes
 In that event, do not forget to reset the repository thereafter.
 
 .PARAMETER Reset
 Hard clean (reset) the source directory before anything else.
-
-.PARAMETER Force
-Force retrieval of git metadata when there are uncommited changes.
-Ignored if -Release is also set and equals $true.
 
 .PARAMETER Yes
 Do not ask for confirmation, mostly.
@@ -50,7 +46,7 @@ PS> pack.ps1
 Create a CI package.
 
 .EXAMPLE
-PS> pack.ps1 -NoCI -Force
+PS> pack.ps1 -NoCI -Yes
 Create a non-CI package, ignore uncommited changes.
 
 .EXAMPLE
@@ -63,7 +59,6 @@ param(
                  [switch] $Release,
 
                  [switch] $Reset,
-    [Alias("f")] [switch] $Force,
     [Alias("y")] [switch] $Yes,
     [Alias("v")] [switch] $MyVerbose,
     [Alias("h")] [switch] $Help
@@ -85,7 +80,6 @@ Usage: pack.ps1 [arguments]
      -Release    create a package ready to be published to NuGet.Org.
 
      -Reset      reset the solution before anything else.
-  -f|-Force      force retrieval of git metadata when there are uncommited changes.
   -y|-Yes        do not ask for confirmation, mostly.
   -v|-MyVerbose  display settings used to compile each DLL.
   -h|-Help       print this help and exit.
@@ -99,7 +93,6 @@ Usage: pack.ps1 [arguments]
 function Get-GitMetadata {
     [CmdletBinding()]
     param(
-        [switch] $force,
         [switch] $yes,
         [switch] $exitOnError
     )
@@ -119,21 +112,21 @@ function Get-GitMetadata {
         return @("", "")
     }
 
-    # Keep Approve-GitStatus before $force: we always want to see a warning
+    # Keep Approve-GitStatus before $yes: we always want to see a warning
     # when there are uncommited changes.
     $ok = Approve-GitStatus -Git $git -ExitOnError:$exitOnError
 
     $branch = "" ; $commit = ""
-    if ($ok -or $force) {
+    if ($ok -or $yes -or (Confirm-Yes "There are uncommited changes, force retrieval of git metadata?")) {
         $branch = Get-GitBranch     -Git $git -ExitOnError:$exitOnError
         $commit = Get-GitCommitHash -Git $git -ExitOnError:$exitOnError
     }
 
     if ($branch -eq "") {
-        Carp "The branch name will be empty. Maybe use -Force?"
+        Carp "The branch name will be empty. Maybe use -Yes?"
     }
     if ($commit -eq "") {
-        Carp "The commit hash will be empty. Maybe use -Force?"
+        Carp "The commit hash will be empty. Maybe use -Yes?"
     }
 
     return @($branch, $commit)
@@ -430,12 +423,12 @@ function Invoke-Publish {
 
     if (Confirm-Yes "Do you want me to publish the package for you?") {
         Carp "Not yet activated."
-        Say-LOUDLY "---`nTo publish the package:"
+        Say-LOUDLY "`n---`nTo publish the package:"
         Say-LOUDLY "> dotnet nuget push $packageFile $args"
         #& dotnet nuget push --force-english-output $packageFile $args | Out-Host
     }
     else {
-        Say-LOUDLY "---`nTo publish the package:"
+        Say-LOUDLY "`n---`nTo publish the package:"
         Say-LOUDLY "> dotnet nuget push $packageFile $args"
     }
 }
@@ -469,7 +462,7 @@ try {
     # 1. Reset the source tree.
     if ($Release -or $Reset) { Reset-SourceTree -Yes:($Release -or $Yes) }
     # 2. Get git metadata.
-    $branch, $commit = Get-GitMetadata -Force:$Force -Yes:$Yes -ExitOnError:$Release
+    $branch, $commit = Get-GitMetadata -Yes:$Yes -ExitOnError:$Release
     # 3. Generate build UIDs.
     $buildNumber, $revisionNumber, $timestamp = Generate-UIDs
     # 4. Get package version.
@@ -521,8 +514,8 @@ try {
 
             Invoke-PushLocal $packageFile $version
 
-            Say-LOUDLY "---`nNow, you can test the package. For instance,"
-            Say-LOUDLY "> eng\test-package.ps1 -a -y"
+            Say-LOUDLY "`n---`nNow, you can test the package. For instance,"
+            Say-LOUDLY "> eng\test-package.ps1 -NoCI -a -y"
         }
     }
 }
