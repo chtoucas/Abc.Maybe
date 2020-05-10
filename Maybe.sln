@@ -30,6 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eng", "eng", "{6D957FE8-23D
 	ProjectSection(SolutionItems) = preProject
 		eng\Abc.Maybe.props = eng\Abc.Maybe.props
 		eng\abc.ps1 = eng\abc.ps1
+		eng\common.ps1 = eng\common.ps1
 		eng\cover.ps1 = eng\cover.ps1
 		eng\dump-test-suite.cmd = eng\dump-test-suite.cmd
 		eng\freeze-api.ps1 = eng\freeze-api.ps1

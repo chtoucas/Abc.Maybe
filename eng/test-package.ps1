@@ -625,7 +625,7 @@ $AllCore = `
 # ------------------------------------------------------------------------------
 
 try {
-    ___BEGIN___ -In $TEST_DIR
+    ___BEGIN___ -FromLocation $TEST_DIR
 
     New-Variable -Name "PackageName" -Value "Abc.Maybe" -Option ReadOnly
 
