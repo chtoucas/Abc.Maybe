@@ -64,7 +64,7 @@ Pre action, for beta -or- production packages.
 
 1. New version in eng\Abc.Maybe.props
 2. Update CHANGELOG
-3. Run eng\pack.ps1 -NoCI -f -y           Create the package
+3. Run eng\pack.ps1 -NoCI -y              Create the package
 4. Run eng\test-package.ps1 -NoCI -a -y   Test the result
 6. Git commit
 7. Run script eng\pack.ps1 -Release       Recreate, and maybe publish the package
