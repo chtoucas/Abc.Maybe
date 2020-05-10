@@ -181,9 +181,9 @@ function Validate-Platform {
         [string[]] $knownPlatforms
     )
 
-    foreach ($p in $knownPlatforms) { if ($platform -eq $p) { return } }
-
-    Croak "The specified platform is not supported: ""$platform""."
+    if ($platform -notin $knownPlatforms) {
+        Croak "The specified platform is not supported: ""$platform""."
+    }
 }
 
 # ------------------------------------------------------------------------------
