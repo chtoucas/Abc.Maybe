@@ -729,6 +729,10 @@ try {
             Invoke-TestSingle -Platform $Platform -Version $Version -Runtime $Runtime
         }
     }
+
+    if ($NoXunitConsole) {
+        Say-LOUDLY "`n---`nTests for .NET Framework 4.5 / 4.5.1 were skipped."
+    }
 }
 catch {
     Confess $_
@@ -736,15 +740,7 @@ catch {
 finally {
     popd
     Restore-Env
-
-    if ($NoXunitConsole) {
-        Goodbye-Warn "Tests for .NET Framework 4.5 / 4.5.1 were skipped."
-        exit 2
-    }
-    else {
-        Goodbye
-        exit 0
-    }
+    Goodbye
 }
 
 #endregion

@@ -479,19 +479,6 @@ function Goodbye {
     Write-Host "`nGoodbye." -ForegroundColor Magenta
 }
 
-# ------------------------------------------------------------------------------
-
-function Goodbye-Warn {
-    [CmdletBinding(PositionalBinding = $false)]
-    param(
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $message
-    )
-
-    Write-Host "`nGoodbye. $warnings" -ForegroundColor Yellow -NoNewline
-}
-
 #endregion
 ################################################################################
 #region Warn or die.
@@ -548,7 +535,7 @@ function Confess {
         $Host.UI.WriteErrorLine("Sorry, no further details on the error were given.")
     }
 
-    exit 1
+    exit -1
 }
 
 #endregion
