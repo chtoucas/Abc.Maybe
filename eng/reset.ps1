@@ -34,7 +34,7 @@ Usage: reset.ps1 [arguments]
     exit 0
 }
 
-Say "This is the reset script.`n"
+Hello "This is the reset script.`n"
 
 try {
     Initialize-Env

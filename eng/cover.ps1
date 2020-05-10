@@ -215,7 +215,7 @@ if ($Help) {
     exit 0
 }
 
-Say "This is the Code Coverage script."
+Hello "This is the Code Coverage script."
 
 try {
     Initialize-Env

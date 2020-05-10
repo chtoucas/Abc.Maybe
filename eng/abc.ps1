@@ -400,6 +400,36 @@ function Remove-PackageFromLocalNuGet {
 ################################################################################
 #region Write to the Information stream.
 
+function Hello {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $message,
+
+        [switch] $noNewline
+    )
+
+    Write-Host $message -ForegroundColor Magenta -NoNewline:$noNewline
+}
+
+# ------------------------------------------------------------------------------
+
+function Hello-Emph {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $message,
+
+        [switch] $noNewline
+    )
+
+    Write-Host $message -ForegroundColor Yellow -NoNewline:$noNewline
+}
+
+# ------------------------------------------------------------------------------
+
 function Say {
     [CmdletBinding()]
     param(

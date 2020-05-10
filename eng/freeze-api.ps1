@@ -66,7 +66,7 @@ function Update-PublicAPI {
 
 # ------------------------------------------------------------------------------
 
-Say "This is the script to update the PublicAPI files."
+Hello "This is the script to update the PublicAPI files."
 
 try {
     Initialize-Env

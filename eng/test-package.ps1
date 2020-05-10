@@ -590,7 +590,7 @@ if ($Help) {
     exit 0
 }
 
-Say "This is the test script for the package Abc.Maybe."
+Hello "This is the test script for the package Abc.Maybe."
 
 # ------------------------------------------------------------------------------
 

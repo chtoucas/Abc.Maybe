@@ -450,13 +450,13 @@ if ($Help) {
 }
 
 if ($Release -or $NoCI) {
-    Say "This is the NuGet package creation script for Abc.Maybe.`n"
+    Hello "This is the NuGet package creation script for Abc.Maybe.`n"
 }
 else {
-    Say "This is the NuGet package creation script for Abc.Maybe" -NoNewline
-    Say-LOUDLY " (CI mode).`n"
+    Hello "This is the NuGet package creation script for Abc.Maybe" -NoNewline
+    Hello-Emph " (CI mode).`n"
 }
-
+exit
 try {
     Initialize-Env
 
