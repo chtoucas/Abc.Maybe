@@ -73,9 +73,8 @@ function Initialize-Env {
     [CultureInfo]::CurrentUICulture = "en"
 
     # Set language used by MSBuild, dotnet and VS.
-    # These changes are global...
     # UNUSED: does not seem to work for what I want: english messages, eg
-    # "dotnet restore" continues to output french messages.
+    # "dotnet restore" continues to output messages in french.
     # See https://github.com/microsoft/msbuild/issues/1596
     # and https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet
     #$Env:DOTNET_CLI_UI_LANGUAGE = "en"

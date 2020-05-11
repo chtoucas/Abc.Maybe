@@ -1,5 +1,7 @@
 # See LICENSE in the project root for license information.
 
+#Requires -Version 6
+
 ################################################################################
 #region Preamble.
 
@@ -112,6 +114,8 @@ function Invoke-OpenCover {
     )
 
     SAY-LOUDLY "`nRunning OpenCover."
+
+    if (-not $IsWindows) { die "OpenCover only works on Windows." }
 
     $filters = `
         "+[Abc.Maybe]*",

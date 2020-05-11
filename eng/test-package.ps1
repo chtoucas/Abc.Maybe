@@ -1,5 +1,7 @@
 # See LICENSE in the project root for license information.
 
+#Requires -Version 6
+
 ################################################################################
 #region Preamble.
 
@@ -354,12 +356,14 @@ function Invoke-TestOldStyle {
     "`nTesting the package for ""$platform"" and {0}." -f (Get-RuntimeLabel $runtime) `
         | SAY-LOUDLY
 
+    if (-not $IsWindows) { warn """$platform"" can only be tested on Windows." ; return }
+
     if ($runtime -ne "") {
         warn "Runtime parameter ""$runtime"" is ignored when targetting ""$platform""."
     }
 
     $xunit = Find-XunitRunnerOnce
-    if ($xunit -eq $null) { say "Skipping." ; return }
+    if ($xunit -eq $null) { warn "Skipping." ; return }
 
     $msbuild = Find-MSBuild (Find-VsWhere) -ExitOnError
 
@@ -708,10 +712,6 @@ try {
 
             Invoke-TestSingle -Platform $Platform -Version $Version -Runtime $Runtime
         }
-    }
-
-    if ($NoXunitConsole) {
-        SAY-LOUDLY "`n---`nTests for .NET Framework 4.5 / 4.5.1 were skipped."
     }
 }
 catch {
