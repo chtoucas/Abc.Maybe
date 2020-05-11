@@ -7,10 +7,15 @@ $Script:ErrorActionPreference = "Stop"
 
 . (Join-Path $PSScriptRoot "common.ps1")
 
-New-Alias "say" Write-Host -Scope Script
-
 ################################################################################
-#region Project-specific constants.
+#region Aliases / Constants.
+
+New-Alias "Hello"      Write-Hello -Scope Script
+New-Alias "say"        Write-Host  -Scope Script
+New-Alias "say-softly" Write-Cyan  -Scope Script
+New-Alias "SAY-LOUDLY" Write-Green -Scope Script
+
+# ------------------------------------------------------------------------------
 
 # Note to myself: do not use a separate directory for build.
 # Build warnings MSB3277, the problem is that we then build all platforms
@@ -60,13 +65,13 @@ New-Alias "say" Write-Host -Scope Script
 
 #endregion
 ################################################################################
-#region Begin/End.
+#region Begin / End.
 
 function Initialize-Env {
     [CmdletBinding()]
     param()
 
-    Write-Verbose "Initializing environment."
+    Write-Verbose "Initialising environment."
 
     # These changes won't survive when the script ends, which is good.
     [CultureInfo]::CurrentCulture = "en"
@@ -145,7 +150,7 @@ function ___END___ {
 ################################################################################
 #region UI.
 
-function Hello {
+function Write-Hello {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
@@ -160,7 +165,7 @@ function Hello {
 
 # ------------------------------------------------------------------------------
 
-function say-softly {
+function Write-Cyan {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
@@ -175,7 +180,7 @@ function say-softly {
 
 # ------------------------------------------------------------------------------
 
-function SAY-LOUDLY {
+function Write-Green {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
@@ -262,7 +267,7 @@ function Assert-CmdSuccess {
 
 #endregion
 ################################################################################
-#region Project-specific functions.
+#region Tools.
 
 # Throws if the property file does not exist, or if its content is not valid.
 function Get-PackageVersion {
