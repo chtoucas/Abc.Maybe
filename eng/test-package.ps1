@@ -1,6 +1,6 @@
 # See LICENSE in the project root for license information.
 
-#Requires -Version 6
+#Requires -Version 7
 
 ################################################################################
 #region Preamble.
@@ -79,7 +79,7 @@ param(
     # Platform selection.
     #
     [Parameter(Mandatory = $false, Position = 0)]
-                 [string] $Platform = "",
+                 [string] $Platform,
 
     [Alias("a")] [switch] $AllKnown,
                  [switch] $NoClassic,
@@ -88,14 +88,14 @@ param(
     # Package version.
     #
     [Parameter(Mandatory = $false, Position = 1)]
-                 [string] $Version = "",
+                 [string] $Version,
 
                  [switch] $NoCI,
 
     # Runtime selection.
     #
     [Parameter(Mandatory = $false, Position = 2)]
-                 [string] $Runtime = "",
+                 [string] $Runtime,
 
     # Other parameters.
     #
@@ -269,10 +269,10 @@ function Get-RuntimeLabel {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $false)]
-        [string] $runtime = ""
+        [string] $runtime
     )
 
-    if ($runtime -eq "") { return "default runtime" } else { return "runtime ""$runtime""" }
+    $runtime ? "runtime ""$runtime""" : "default runtime"
 }
 
 #endregion
@@ -288,7 +288,7 @@ function Invoke-Restore {
         [string] $version,
 
         [Parameter(Mandatory = $false, Position = 1)]
-        [string] $runtime = "",
+        [string] $runtime,
 
         [switch] $allKnown
     )
@@ -296,8 +296,8 @@ function Invoke-Restore {
     SAY-LOUDLY "`nRestoring dependencies for NETSdk, please wait..."
 
     $args = @("/p:AbcVersion=$version")
-    if ($runtime -ne "") { $args += "--runtime:$runtime" }
-    if ($allKnown)       { $args += "/p:AllKnown=true" }
+    if ($runtime)  { $args += "--runtime:$runtime" }
+    if ($allKnown) { $args += "/p:AllKnown=true" }
 
     & dotnet restore $NET_SDK_PROJECT $args | Out-Host
 
@@ -316,7 +316,7 @@ function Invoke-Build {
         [string] $version,
 
         [Parameter(Mandatory = $false, Position = 1)]
-        [string] $runtime = "",
+        [string] $runtime,
 
         [switch] $allKnown,
         [switch] $noRestore
@@ -325,9 +325,9 @@ function Invoke-Build {
     SAY-LOUDLY "`nBuilding NETSdk, please wait..."
 
     $args = @("/p:AbcVersion=$version")
-    if ($runtime -ne "") { $args += "--runtime:$runtime" }
-    if ($allKnown)       { $args += "/p:AllKnown=true" }
-    if ($noRestore)      { $args += "--no-restore" }
+    if ($runtime)   { $args += "--runtime:$runtime" }
+    if ($allKnown)  { $args += "/p:AllKnown=true" }
+    if ($noRestore) { $args += "--no-restore" }
 
     & dotnet build $NET_SDK_PROJECT $args | Out-Host
 
@@ -352,7 +352,7 @@ function Invoke-TestOldStyle {
         [string] $version,
 
         [Parameter(Mandatory = $false, Position = 2)]
-        [string] $runtime = ""
+        [string] $runtime
     )
 
     "`nTesting the package for ""$platform"" and {0}." -f (Get-RuntimeLabel $runtime) `
@@ -360,7 +360,7 @@ function Invoke-TestOldStyle {
 
     if (-not $IsWindows) { warn """$platform"" can only be tested on Windows." ; return }
 
-    if ($runtime -ne "") {
+    if ($runtime) {
         warn "Runtime parameter ""$runtime"" is ignored when targetting ""$platform""."
     }
 
@@ -401,7 +401,7 @@ function Invoke-TestSingle {
         [string] $version,
 
         [Parameter(Mandatory = $false, Position = 2)]
-        [string] $runtime = "",
+        [string] $runtime,
 
         [switch] $noRestore,
         [switch] $noBuild
@@ -417,9 +417,9 @@ function Invoke-TestSingle {
         | SAY-LOUDLY
 
     $args = "/p:AbcVersion=$version", "/p:AllKnown=true", "-f:$platform"
-    if ($runtime -ne "") { $args += "--runtime:$runtime" }
-    if ($noBuild)        { $args += "--no-build" }   # NB: no-build => no-restore
-    elseif ($noRestore)  { $args += "--no-restore" }
+    if ($runtime)       { $args += "--runtime:$runtime" }
+    if ($noBuild)       { $args += "--no-build" }   # NB: no-build => no-restore
+    elseif ($noRestore) { $args += "--no-restore" }
 
     & dotnet test $NET_SDK_PROJECT --nologo $args | Out-Host
 
@@ -441,7 +441,7 @@ function Invoke-TestManyInteractive {
         [string] $version,
 
         [Parameter(Mandatory = $false, Position = 2)]
-        [string] $runtime = "",
+        [string] $runtime,
 
         [switch] $noRestore,
         [switch] $noBuild
@@ -477,7 +477,7 @@ function Invoke-TestMany {
         [string] $version,
 
         [Parameter(Mandatory = $false, Position = 3)]
-        [string] $runtime = ""
+        [string] $runtime
     )
 
     "`nTesting the package for ""$filter"" and {0}." -f (Get-RuntimeLabel $runtime) `
@@ -509,7 +509,7 @@ function Invoke-TestMany {
 
     $args = "/p:AbcVersion=$version", "/p:AllKnown=true",
         ("/p:TargetFrameworks=" + '\"' + $targetFrameworks + '\"')
-    if ($runtime -ne "") { $args += "--runtime:$runtime" }
+    if ($runtime) { $args += "--runtime:$runtime" }
 
     & dotnet test $NET_SDK_PROJECT --nologo $args | Out-Host
 
@@ -533,7 +533,7 @@ function Invoke-TestAll {
         [string] $version,
 
         [Parameter(Mandatory = $false, Position = 1)]
-        [string] $runtime = "",
+        [string] $runtime,
 
         [switch] $allKnown,
         [switch] $noClassic,
@@ -541,24 +541,24 @@ function Invoke-TestAll {
     )
 
     # Platform set.
-    if ($noClassic)     { $platformSet = ".NET Core" }
-    elseif ($noCore)    { $platformSet = ".NET Framework" }
-    else                { $platformSet = ".NET Framework and .NET Core" }
+    $platformSet = $noClassic ? ".NET Core"
+        : $noCore ? ".NET Framework"
+        : ".NET Framework and .NET Core"
     # Platform versions.
-    if ($allKnown)      { $platformVer = "ALL versions" }
-    elseif ($noClassic) { $platformVer = "LTS versions" }
-    elseif ($noCore)    { $platformVer = "last minor version of each major version" }
-    else                { $platformVer = "selected versions" }
+    $platformVer = $allKnown ? "ALL versions"
+        : $noClassic ? "LTS versions"
+        : $noCore ? "last minor version of each major version"
+        : "selected versions"
 
     "`nBatch testing the package for $platformSet, $platformVer, and {0}." `
         -f (Get-RuntimeLabel $runtime) `
         | SAY-LOUDLY
 
     $args = @("/p:AbcVersion=$version")
-    if ($allKnown)       { $args += "/p:AllKnown=true" }
-    if ($noClassic)      { $args += "/p:NoClassic=true" }
-    if ($noCore)         { $args += "/p:NoCore=true" }
-    if ($runtime -ne "") { $args += "--runtime:$runtime" }
+    if ($allKnown)  { $args += "/p:AllKnown=true" }
+    if ($noClassic) { $args += "/p:NoClassic=true" }
+    if ($noCore)    { $args += "/p:NoCore=true" }
+    if ($runtime)   { $args += "--runtime:$runtime" }
 
     & dotnet test $NET_SDK_PROJECT --nologo $args | Out-Host
 
@@ -677,16 +677,8 @@ try {
 
             SAY-LOUDLY "`nNow, you will have the opportunity to choose which platform to test the package for."
 
-            $platformList = @()
-
-            if ($NoClassic)    { $platformList = @() }
-            elseif ($AllKnown) { $platformList = $AllClassic }
-            else               { $platformList = $LastClassic }
-
-            if (-not $NoCore) {
-                if ($AllKnown) { $platformList += $AllCore }
-                else { $platformList += $LTSCore }
-            }
+            $platformList  = $NoClassic ? @() : $AllKnown ? $AllClassic : $LastClassic
+            $platformList += $NoCore    ? @() : $AllKnown ? $AllCore    : $LTSCore
 
             Invoke-TestManyInteractive `
                 -PlatformList   $platformList `
