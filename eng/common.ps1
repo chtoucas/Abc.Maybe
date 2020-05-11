@@ -65,10 +65,10 @@ function SAY-LOUDLY {
 
 #endregion
 ################################################################################
-#region Warn or die.
+#region Warn or die (inspired by Perl).
 
-$Script:___ExitCode = 0
-$Script:___Warned   = $false
+$Script:___Warned = $false
+$Script:___Died   = $false
 
 # ------------------------------------------------------------------------------
 
@@ -84,6 +84,25 @@ function warn {
     $Script:___Warned = $true
 
     Write-Warning $message
+}
+
+# ------------------------------------------------------------------------------
+
+# Die of errors.
+# Not seen as a terminating error, it does not set $?.
+function die {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $message
+    )
+
+    $Script:___Died = $true
+
+    $Host.UI.WriteErrorLine($message)
+
+    exit 1
 }
 
 # ------------------------------------------------------------------------------
@@ -118,52 +137,15 @@ function croak {
         [string] $message
     )
 
-    $Script:___ExitCode = 1
-
-    $Host.UI.WriteErrorLine($message)
+    $Script:___Died = $true
 
     # The first element is for "croak", let's remove it.
     $x, $callstack = Get-PSCallStack
-    $Host.UI.WriteErrorLine("  " + ($callstack -join "`n  "))
+    $msg = $message + "`n  " + ($callstack -join "`n  ")
+
+    $Host.UI.WriteErrorLine($msg)
 
     exit 1
-}
-
-# ------------------------------------------------------------------------------
-
-# Die of errors with stack trace.
-# Meant to be used within the top-level catch.
-function confess {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
-        [System.Management.Automation.ErrorRecord] $error
-    )
-
-    $Host.UI.WriteErrorLine("An unexpected error occurred.")
-
-    if ($error -ne $null) {
-        $Script:___ExitCode = 255
-
-        $Host.UI.WriteErrorLine($error.ScriptStackTrace.ToString())
-
-        # Write a terminating error.
-        # This will be displayed as a post-mortem stack trace when
-        # $ErrorActionPreference = "Stop"
-        $PSCmdlet.WriteError($error)
-
-        # Depending on $ErrorActionPreference, the script may never reach this line.
-        exit 255
-    }
-    else {
-        # Very unlikely to happen, but we never know.
-        $Script:___ExitCode = 1
-
-        $Host.UI.WriteErrorLine("Sorry, no further details on the error were given.")
-        $Host.UI.WriteErrorLine("  " + ((Get-PSCallStack) -join "`n  "))
-
-        exit 1
-    }
 }
 
 # ------------------------------------------------------------------------------

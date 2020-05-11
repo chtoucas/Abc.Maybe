@@ -11,5 +11,5 @@ try {
     say $uids
 }
 catch {
-    confess $_
+    ___ERR___ $_
 }

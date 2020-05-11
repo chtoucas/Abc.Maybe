@@ -97,18 +97,57 @@ function ___BEGIN___ {
 
 # ------------------------------------------------------------------------------
 
+# Meant to be used within the top-level catch.
+function ___ERR___ {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [System.Management.Automation.ErrorRecord] $error
+    )
+
+    $Host.UI.WriteErrorLine("An unexpected error occurred.")
+
+    if ($error -ne $null) {
+        $Host.UI.WriteErrorLine($error.ScriptStackTrace.ToString())
+    }
+    else {
+        # Very unlikely to happen, but we never know.
+        $Host.UI.WriteErrorLine("Sorry, no further details on the error were given.")
+    }
+
+    exit 255
+}
+
+# ------------------------------------------------------------------------------
+
 function ___END___ {
+    # Do not remove this, we want a nice output with $PSCmdlet.WriteError().
+    [CmdletBinding()]
+    param()
+
     popd
 
-    switch ($Script:___ExitCode) {
+    if ($Script:___Warned)   { $color = "Yellow" }
+    elseif ($Script:___Died) { $color = "Red" }
+    else                     { $color = "Green" }
+
+    Write-Host "`nGoodbye." -ForegroundColor $color
+
+    return
+
+    # TODO: $LastExitCode
+    switch ($LastExitCode) {
         0 {
             if ($Script:___Warned) { $color = "Yellow" } else { $color = "Green" }
             Write-Host "`nGoodbye." -ForegroundColor $color
         }
 
-        # 255 is what we get when "confess" was called.
+        # 255 is what we get when "___ERR___" was called.
         255 {
             Write-Host "`n--- Post-mortem." -ForegroundColor Red
+
+            # Write a terminating error.
+            #$PSCmdlet.WriteError($Error[0])
         }
 
         default { Write-Host "`nExecution aborted ($_)." -ForegroundColor Red }

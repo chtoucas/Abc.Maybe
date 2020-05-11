@@ -509,7 +509,7 @@ try {
     }
 }
 catch {
-    confess $_
+    ___ERR___ $_
 }
 finally {
     ___END___
