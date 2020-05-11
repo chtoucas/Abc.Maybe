@@ -7,6 +7,8 @@ $Script:ErrorActionPreference = "Stop"
 
 . (Join-Path $PSScriptRoot "common.ps1")
 
+New-Alias "say" Write-Host -Scope Script
+
 ################################################################################
 #region Project-specific constants.
 
@@ -60,8 +62,6 @@ $Script:ErrorActionPreference = "Stop"
 ################################################################################
 #region Begin/End.
 
-# ------------------------------------------------------------------------------
-
 function Initialize-Env {
     [CmdletBinding()]
     param()
@@ -103,8 +103,7 @@ function ___ERR___ {
 
     $Host.UI.WriteErrorLine("An unexpected error occurred.")
 
-    $err = $Error[0]
-    if ($err -is [System.Management.Automation.ErrorRecord]) {
+    if ($Error -and ($err = $Error[0]) -is [System.Management.Automation.ErrorRecord]) {
         $Host.UI.WriteErrorLine($err.ScriptStackTrace.ToString())
     }
     else {
@@ -134,13 +133,131 @@ function ___END___ {
         Write-Host "`nGoodbye." -ForegroundColor Green
     }
 
-    $err = $Error[0]
-    if ($err -is [System.Management.Automation.ErrorRecord]) {
+    if ($Error -and ($err = $Error[0]) -is [System.Management.Automation.ErrorRecord]) {
         Write-Host "`n--- Post-mortem." -ForegroundColor Red
 
         # Write a terminating error.
         $PSCmdlet.WriteError($err)
     }
+}
+
+#endregion
+################################################################################
+#region UI.
+
+function Hello {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $message,
+
+        [switch] $noNewline
+    )
+
+    say "Hello, $message" -ForegroundColor Magenta -NoNewline:$noNewline
+}
+
+# ------------------------------------------------------------------------------
+
+function say-softly {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $message,
+
+        [switch] $noNewline
+    )
+
+    say $message -ForegroundColor Cyan -NoNewline:$noNewline
+}
+
+# ------------------------------------------------------------------------------
+
+function SAY-LOUDLY {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $message,
+
+        [switch] $noNewline
+    )
+
+    say $message -ForegroundColor Green -NoNewline:$noNewline
+}
+
+# ------------------------------------------------------------------------------
+
+# Request confirmation.
+function Confirm-Yes {
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $question
+    )
+
+    while ($true) {
+        $answer = (Read-Host $question, "[y/N/q]")
+
+        if ($answer -eq "" -or $answer -eq "n") {
+            say-softly "Discarding on your request."
+            return $false
+        }
+        elseif ($answer -eq "y") {
+            return $true
+        }
+        elseif ($answer -eq "q") {
+            say-softly "Aborting the script on your request."
+            exit
+        }
+    }
+}
+
+# ------------------------------------------------------------------------------
+
+# Request confirmation to continue, terminate the script if not.
+function Confirm-Continue {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $question
+    )
+
+    while ($true) {
+        $answer = (Read-Host $question, "[y/N]")
+
+        if ($answer -eq "" -or $answer -eq "n") {
+            say-softly "Stopping on your request."
+            exit
+        }
+        elseif ($answer -eq "y") {
+            break
+        }
+    }
+}
+
+# ------------------------------------------------------------------------------
+
+# Die if the exit code of the last external command that was run is not equal to zero.
+function Assert-CmdSuccess {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [string] $error,
+
+        [Parameter(Mandatory = $false, Position = 1)]
+        [string] $success
+    )
+
+    Write-Verbose "Checking exit code of the last external command that was run."
+
+    if ($LastExitCode -ne 0) { croak $error }
+
+    if ($success) { say-softly $success }
 }
 
 #endregion
