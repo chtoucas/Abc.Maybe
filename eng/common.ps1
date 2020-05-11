@@ -159,14 +159,14 @@ function Assert-CmdSuccess {
         [string] $error,
 
         [Parameter(Mandatory = $false, Position = 1)]
-        [string] $success = ""
+        [string] $success
     )
 
     Write-Verbose "Checking exit code of the last external command that was run."
 
     if ($LastExitCode -ne 0) { croak $error }
 
-    if ($success -ne "") { say-softly $success }
+    if ($success) { say-softly $success }
 }
 
 #endregion
@@ -322,7 +322,7 @@ function Find-Git {
 
     if ($exitOnError) { $onError = "croak" } else { $onError = "carp" }
 
-    $cmd = Get-Command "git.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
+    $cmd = Get-Command "git.exe" -CommandType Application -TotalCount 1 -ErrorAction Ignore
 
     if ($cmd -eq $null) {
         . $onError "Could not find git.exe. Please ensure git.exe is installed."
@@ -468,7 +468,7 @@ function Find-VsWhere {
 
     Write-Verbose "Finding vswhere.exe."
 
-    $cmd = Get-Command "vswhere.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
+    $cmd = Get-Command "vswhere.exe" -CommandType Application -TotalCount 1 -ErrorAction Ignore
     if ($cmd -ne $null) { return $cmd.Path }
 
     Write-Verbose "vswhere.exe could not be found in your PATH."
@@ -504,7 +504,7 @@ function Find-MSBuild {
     if ($exitOnError) { $onError = "croak" } else { $onError = "carp" }
 
     if (-not $vswhere) {
-        $cmd = Get-Command "MSBuild.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
+        $cmd = Get-Command "MSBuild.exe" -CommandType Application -TotalCount 1 -ErrorAction Ignore
 
         if ($cmd -ne $null) { return $cmd.Path }
         else { . $onError "MSBuild.exe could not be found in your PATH." ; return $null }
@@ -534,7 +534,7 @@ function Find-Fsi {
     if ($exitOnError) { $onError = "croak" } else { $onError = "carp" }
 
     if (-not $vswhere) {
-        $cmd = Get-Command "fsi.exe" -CommandType Application -TotalCount 1 -ErrorAction SilentlyContinue
+        $cmd = Get-Command "fsi.exe" -CommandType Application -TotalCount 1 -ErrorAction Ignore
 
         if ($cmd -ne $null) { return $cmd.Path }
         else { . $onError "fsi.exe could not be found in your PATH." ; return $null }
