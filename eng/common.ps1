@@ -1,9 +1,6 @@
 # See LICENSE in the project root for license information.
 
-# Version 5.1 for ErrorRecord.
 #Requires -Version 5.1
-
-Set-StrictMode -Version Latest
 
 ################################################################################
 #region Say something.
@@ -70,26 +67,28 @@ function SAY-LOUDLY {
 ################################################################################
 #region Warn or die.
 
-$Script:___DieCode = 0
+$Script:___ExitCode = 0
+$Script:___Warned   = $false
 
 # ------------------------------------------------------------------------------
 
 # Warn user.
-function die {
+function warn {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $false)]
-        [int] $dieCode = 1
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $message
     )
 
-    $Script:___DieCode = $dieCode
+    $Script:___Warned = $true
 
-    exit $dieCode
+    Write-Warning $message
 }
 
 # ------------------------------------------------------------------------------
 
-# Warn user.
+# Warn user (from perspective of caller).
 function carp {
     [CmdletBinding()]
     param(
@@ -98,12 +97,18 @@ function carp {
         [string] $message
     )
 
-    Write-Warning $message
+    $Script:___Warned = $true
+
+    # The first element is for "carp", let's remove it.
+    $x, $callstack = Get-PSCallStack
+    $msg = $message + "`n  " + ($callstack -join "`n  ")
+
+    Write-Warning $msg
 }
 
 # ------------------------------------------------------------------------------
 
-# Die of errors.
+# Die of errors (from perspective of caller).
 # Not seen as a terminating error, it does not set $?.
 function croak {
     [CmdletBinding()]
@@ -113,14 +118,21 @@ function croak {
         [string] $message
     )
 
+    $Script:___ExitCode = 1
+
     $Host.UI.WriteErrorLine($message)
 
-    die
+    # The first element is for "croak", let's remove it.
+    $x, $callstack = Get-PSCallStack
+    $Host.UI.WriteErrorLine("  " + ($callstack -join "`n  "))
+
+    exit 1
 }
 
 # ------------------------------------------------------------------------------
 
 # Die of errors with stack trace.
+# Meant to be used within the top-level catch.
 function confess {
     [CmdletBinding()]
     param(
@@ -131,20 +143,27 @@ function confess {
     $Host.UI.WriteErrorLine("An unexpected error occurred.")
 
     if ($error -ne $null) {
+        $Script:___ExitCode = 255
+
         $Host.UI.WriteErrorLine($error.ScriptStackTrace.ToString())
 
-        # "die" at the end may be never called, depends on $ErrorActionPreference.
-        $Script:___DieCode = 255
-
         # Write a terminating error.
-        # This will be displayed as a post-mortem stack trace.
+        # This will be displayed as a post-mortem stack trace when
+        # $ErrorActionPreference = "Stop"
         $PSCmdlet.WriteError($error)
+
+        # Depending on $ErrorActionPreference, the script may never reach this line.
+        exit 255
     }
     else {
-        $Host.UI.WriteErrorLine("Sorry, no further details on the error were given.")
-    }
+        # Very unlikely to happen, but we never know.
+        $Script:___ExitCode = 1
 
-    die 255
+        $Host.UI.WriteErrorLine("Sorry, no further details on the error were given.")
+        $Host.UI.WriteErrorLine("  " + ((Get-PSCallStack) -join "`n  "))
+
+        exit 1
+    }
 }
 
 # ------------------------------------------------------------------------------

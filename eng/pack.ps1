@@ -96,7 +96,7 @@ function Get-GitMetadata {
 
     if ($git -eq $null) {
         if ($yes) {
-            carp "The package description won't include any git metadata."
+            warn "The package description won't include any git metadata."
         }
         else {
             Confirm-Continue "Continue even without any git metadata?"
@@ -116,10 +116,10 @@ function Get-GitMetadata {
     }
 
     if ($branch -eq "") {
-        carp "The branch name will be empty. Maybe use -Yes?"
+        warn "The branch name will be empty. Maybe use -Yes?"
     }
     if ($commit -eq "") {
-        carp "The commit hash will be empty. Maybe use -Yes?"
+        warn "The commit hash will be empty. Maybe use -Yes?"
     }
 
     return @($branch, $commit)
@@ -242,7 +242,7 @@ function Get-PackageFile {
     # NB: not necessary for CI packages, the filename is unique.
     if (-not $ci -and (Test-Path $path)) {
         if (-not $yes) {
-            carp "A package with the same version ($version) already exists."
+            warn "A package with the same version ($version) already exists."
             Confirm-Continue "Do you wish to proceed anyway?"
         }
 
@@ -415,7 +415,7 @@ function Invoke-Publish {
     if ($apiKey -ne "") { $args += "-k $apiKey" }
 
     if (Confirm-Yes "Do you want me to publish the package for you?") {
-        carp "Not yet activated."
+        warn "Not yet activated."
         SAY-LOUDLY "`n---`nTo publish the package:"
         SAY-LOUDLY "> dotnet nuget push $packageFile $args"
         #& dotnet nuget push --force-english-output $packageFile $args | Out-Host

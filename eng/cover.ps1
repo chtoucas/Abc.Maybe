@@ -229,7 +229,7 @@ try {
     if ($Restore) { Invoke-Restore }
 
     if ($NoCoverage) {
-        carp "`nOn your request, we do not run any Code Coverage tool."
+        warn "`nOn your request, we do not run any Code Coverage tool."
     }
     else {
         if ($OpenCover) {
@@ -245,7 +245,7 @@ try {
     }
 
     if ($NoReport) {
-        carp "`nOn your request, we do not run ReportGenerator."
+        warn "`nOn your request, we do not run ReportGenerator."
     }
     else {
         Invoke-ReportGenerator $outxml $outdir

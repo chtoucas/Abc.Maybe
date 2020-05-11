@@ -1,8 +1,5 @@
 # See LICENSE in the project root for license information.
 
-# Version 5.1 for ErrorRecord.
-#Requires -Version 5.1
-
 # Dot sourcing this file ensures that it executes in the caller scope.
 # For safety, we still add the $Script: prefix.
 Set-StrictMode -Version Latest
@@ -63,10 +60,6 @@ $Script:ErrorActionPreference = "Stop"
 ################################################################################
 #region Begin/End.
 
-$Script:___EnvInitialized = $false
-$Script:___ErrorBackgroundColor = $Host.PrivateData.ErrorBackgroundColor
-$Script:___ErrorForegroundColor = $Host.PrivateData.ErrorForegroundColor
-
 # ------------------------------------------------------------------------------
 
 function Initialize-Env {
@@ -74,12 +67,6 @@ function Initialize-Env {
     param()
 
     Write-Verbose "Initializing environment."
-
-    $Script:___EnvInitialized = $true
-
-    # These changes are global...
-    $Host.PrivateData.ErrorBackgroundColor = "Red"
-    $Host.PrivateData.ErrorForegroundColor = "Yellow"
 
     # These changes won't survive when the script ends, which is good.
     [CultureInfo]::CurrentCulture = "en"
@@ -91,17 +78,8 @@ function Initialize-Env {
     # "dotnet restore" continues to output french messages.
     # See https://github.com/microsoft/msbuild/issues/1596
     # and https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet
-    #[Environment]::SetEnvironmentVariable("DOTNET_CLI_UI_LANGUAGE", "en", "User")
-    #[Environment]::SetEnvironmentVariable("VSLANG", "1033", "User")
-}
-
-# ------------------------------------------------------------------------------
-
-function Restore-Env {
-    if ($Script:___EnvInitialized) {
-        $Host.PrivateData.ErrorBackgroundColor = $Script:___ErrorBackgroundColor
-        $Host.PrivateData.ErrorForegroundColor = $Script:___ErrorForegroundColor
-    }
+    #$Env:DOTNET_CLI_UI_LANGUAGE = "en"
+    #$Env:VSLANG = "1033"
 }
 
 # ------------------------------------------------------------------------------
@@ -121,12 +99,18 @@ function ___BEGIN___ {
 
 function ___END___ {
     popd
-    Restore-Env
 
-    switch ($Script:___DieCode) {
-        0       { Write-Host "`nGoodbye." -ForegroundColor Magenta }
+    switch ($Script:___ExitCode) {
+        0 {
+            if ($Script:___Warned) { $color = "Yellow" } else { $color = "Green" }
+            Write-Host "`nGoodbye." -ForegroundColor $color
+        }
+
         # 255 is what we get when "confess" was called.
-        255     { Write-Host "`n--- Post-mortem." -ForegroundColor Red }
+        255 {
+            Write-Host "`n--- Post-mortem." -ForegroundColor Red
+        }
+
         default { Write-Host "`nExecution aborted ($_)." -ForegroundColor Red }
     }
 }

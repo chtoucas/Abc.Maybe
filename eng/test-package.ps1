@@ -204,7 +204,7 @@ function Find-XunitRunnerOnce {
 
     Write-Verbose "Finding xunit.console.exe."
 
-    if ($NoXunitConsole) { carp "No Xunit console runner." ; return $null }
+    if ($NoXunitConsole) { warn "No Xunit console runner." ; return $null }
 
     Restore-NETFrameworkTools
 
@@ -235,7 +235,7 @@ function Find-LastLocalVersion {
         | sort LastWriteTime | select -Last 1
 
     if ($last -eq $null) {
-        carp "The local NuGet feed is empty, reverting to -NoCI."
+        warn "The local NuGet feed is empty, reverting to -NoCI."
         return Get-PackageVersion $packageName -AsString
     }
 
@@ -251,8 +251,8 @@ function Find-LastLocalVersion {
         # If the cache entry does not exist, we stop the script, otherwise it
         # will restore the CI package into the global, not what we want.
         # Solutions: delete the "broken" package, create a new CI package, etc.
-        carp "Local NuGet feed and cache are out of sync, reverting to -NoCI."
-        carp "The simplest solution to fix this is to recreate a package."
+        warn "Local NuGet feed and cache are out of sync, reverting to -NoCI."
+        warn "The simplest solution to fix this is to recreate a package."
         return Get-PackageVersion $packageName -AsString
     }
 
@@ -355,7 +355,7 @@ function Invoke-TestOldStyle {
         | SAY-LOUDLY
 
     if ($runtime -ne "") {
-        carp "Runtime parameter ""$runtime"" is ignored when targetting ""$platform""."
+        warn "Runtime parameter ""$runtime"" is ignored when targetting ""$platform""."
     }
 
     $xunit = Find-XunitRunnerOnce
