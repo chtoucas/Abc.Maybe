@@ -11,5 +11,5 @@ try {
     say $uids
 }
 catch {
-    ___ERR___ $_
+    ___ERR___
 }

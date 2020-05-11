@@ -100,14 +100,12 @@ function ___BEGIN___ {
 # Meant to be used within the top-level catch.
 function ___ERR___ {
     [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
-        [System.Management.Automation.ErrorRecord] $error
-    )
+    param()
 
     $Host.UI.WriteErrorLine("An unexpected error occurred.")
 
-    if ($error -ne $null) {
+    $error = $Error[0]
+    if ($error -is [System.Management.Automation.ErrorRecord]) {
         $Host.UI.WriteErrorLine($error.ScriptStackTrace.ToString())
     }
     else {
@@ -127,30 +125,22 @@ function ___END___ {
 
     popd
 
-    if ($Script:___Warned)   { $color = "Yellow" }
-    elseif ($Script:___Died) { $color = "Red" }
-    else                     { $color = "Green" }
+    if ($Script:___Warned) {
+        Write-Host "`nExecution terminated with warning(s)." -ForegroundColor Yellow
+    }
+    elseif ($Script:___Died) {
+        Write-Host "`nExecution aborted." -ForegroundColor Red
+    }
+    else {
+        Write-Host "`nGoodbye." -ForegroundColor Green
+    }
 
-    Write-Host "`nGoodbye." -ForegroundColor $color
+    $error = $Error[0]
+    if ($error -is [System.Management.Automation.ErrorRecord]) {
+        Write-Host "`n--- Post-mortem." -ForegroundColor Red
 
-    return
-
-    # TODO: $LastExitCode
-    switch ($LastExitCode) {
-        0 {
-            if ($Script:___Warned) { $color = "Yellow" } else { $color = "Green" }
-            Write-Host "`nGoodbye." -ForegroundColor $color
-        }
-
-        # 255 is what we get when "___ERR___" was called.
-        255 {
-            Write-Host "`n--- Post-mortem." -ForegroundColor Red
-
-            # Write a terminating error.
-            #$PSCmdlet.WriteError($Error[0])
-        }
-
-        default { Write-Host "`nExecution aborted ($_)." -ForegroundColor Red }
+        # Write a terminating error.
+        $PSCmdlet.WriteError($error)
     }
 }
 

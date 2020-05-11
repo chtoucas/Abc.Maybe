@@ -715,7 +715,7 @@ try {
     }
 }
 catch {
-    ___ERR___ $_
+    ___ERR___
 }
 finally {
     ___END___
