@@ -103,9 +103,9 @@ function ___ERR___ {
 
     $Host.UI.WriteErrorLine("An unexpected error occurred.")
 
-    $error = $Error[0]
-    if ($error -is [System.Management.Automation.ErrorRecord]) {
-        $Host.UI.WriteErrorLine($error.ScriptStackTrace.ToString())
+    $err = $Error[0]
+    if ($err -is [System.Management.Automation.ErrorRecord]) {
+        $Host.UI.WriteErrorLine($err.ScriptStackTrace.ToString())
     }
     else {
         # Very unlikely to happen, but we never know.
@@ -134,12 +134,12 @@ function ___END___ {
         Write-Host "`nGoodbye." -ForegroundColor Green
     }
 
-    $error = $Error[0]
-    if ($error -is [System.Management.Automation.ErrorRecord]) {
+    $err = $Error[0]
+    if ($err -is [System.Management.Automation.ErrorRecord]) {
         Write-Host "`n--- Post-mortem." -ForegroundColor Red
 
         # Write a terminating error.
-        $PSCmdlet.WriteError($error)
+        $PSCmdlet.WriteError($err)
     }
 }
 

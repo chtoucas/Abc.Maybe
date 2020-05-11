@@ -275,21 +275,21 @@ function Invoke-Pack {
         [string] $versionPrefix,
 
         [Parameter(Mandatory = $false)]
-        [string] $versionSuffix = "",
+        [string] $versionSuffix,
 
         [Parameter(Mandatory = $false)]
-        [string] $repositoryBranch = "",
+        [string] $repositoryBranch,
 
         [Parameter(Mandatory = $false)]
-        [string] $repositoryCommit = "",
-
-        [Parameter(Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
-        [string] $buildNumber = "",
+        [string] $repositoryCommit,
 
         [Parameter(Mandatory = $false)]
         [ValidateNotNullOrEmpty()]
-        [string] $revisionNumber = "",
+        [string] $buildNumber,
+
+        [Parameter(Mandatory = $false)]
+        [ValidateNotNullOrEmpty()]
+        [string] $revisionNumber,
 
         [switch] $ci,
         [switch] $myVerbose
@@ -408,11 +408,11 @@ function Invoke-Publish {
     $args = @()
 
     $source = Read-Host "Source [empty to push to the default source]"
-    if ($source -ne "") { $args += "-s $source" }
+    if ($source) { $args += "-s $source" }
 
     # TODO: --interactive?
     $apiKey = Read-Host "API key [empty for no key]"
-    if ($apiKey -ne "") { $args += "-k $apiKey" }
+    if ($apiKey) { $args += "-k $apiKey" }
 
     if (Confirm-Yes "Do you want me to publish the package for you?") {
         warn "Not yet activated."
