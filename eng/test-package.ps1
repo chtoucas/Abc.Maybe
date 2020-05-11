@@ -200,19 +200,21 @@ function Validate-Version {
 
 # ------------------------------------------------------------------------------
 
+$Script:___NoXunitConsole = $false
+
 function Find-XunitRunnerOnce {
     [CmdletBinding()]
     param()
 
     Write-Verbose "Finding xunit.console.exe."
 
-    if ($NoXunitConsole) { warn "No Xunit console runner." ; return $null }
+    if ($___NoXunitConsole) { warn "No Xunit console runner." ; return $null }
 
     Restore-NETFrameworkTools
 
     $path = Find-XunitRunner -Platform $XUNIT_PLATFORM
 
-    if ($path -eq $null) { $Script:NoXunitConsole = $true ; return $null }
+    if ($path -eq $null) { $Script:___NoXunitConsole = $true ; return $null }
 
     $path
 }
@@ -578,8 +580,6 @@ if ($Help) { Print-Help ; exit }
 Hello "this is the script to test the package Abc.Maybe."
 
 # ------------------------------------------------------------------------------
-
-$NoXunitConsole = $false
 
 # Keep in sync w/ test\NETSdk\NETSdk.csproj.
 

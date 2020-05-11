@@ -115,7 +115,7 @@ function Invoke-OpenCover {
 
     SAY-LOUDLY "`nRunning OpenCover."
 
-    if (-not $IsWindows) { die "OpenCover only works on Windows." }
+    if (-not $IsWindows) { die "OpenCover.exe only works on Windows." }
 
     $filters = `
         "+[Abc.Maybe]*",
