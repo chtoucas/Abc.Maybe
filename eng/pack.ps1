@@ -94,7 +94,7 @@ function Get-GitMetadata {
 
     $git = Find-Git -ExitOnError:$exitOnError
 
-    if ($git -eq $null) {
+    if (-not $git) {
         if ($yes) {
             warn "The package description won't include any git metadata."
         }
@@ -138,7 +138,7 @@ function Generate-UIDs {
     say "Generating build UIDs."
 
     $fsi = Find-Fsi (Find-VsWhere)
-    if ($fsi -eq $null) { return @("", "", "") }
+    if (-not $fsi) { return @("", "", "") }
 
     $fsx = Join-Path $PSScriptRoot "genuids.fsx" -Resolve
 

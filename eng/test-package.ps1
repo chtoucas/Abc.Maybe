@@ -214,7 +214,7 @@ function Find-XunitRunnerOnce {
 
     $path = Find-XunitRunner -Platform $XUNIT_PLATFORM
 
-    if ($path -eq $null) { $Script:___NoXunitConsole = $true ; return $null }
+    if (-not $path) { $Script:___NoXunitConsole = $true ; return $null }
 
     $path
 }
@@ -238,7 +238,7 @@ function Find-LastLocalVersion {
     $last = Get-ChildItem (Join-Path $NUGET_LOCAL_FEED "*") -Include "*.nupkg" `
         | sort LastWriteTime | select -Last 1
 
-    if ($last -eq $null) {
+    if (-not $last) {
         warn "The local NuGet feed is empty, reverting to -NoCI."
         return Get-PackageVersion $packageName -AsString
     }
@@ -365,7 +365,7 @@ function Invoke-TestOldStyle {
     }
 
     $xunit = Find-XunitRunnerOnce
-    if ($xunit -eq $null) { warn "Skipping." ; return }
+    if (-not $xunit) { warn "Skipping." ; return }
 
     $msbuild = Find-MSBuild (Find-VsWhere) -ExitOnError
 
