@@ -170,7 +170,7 @@ function Get-ActualVersion {
 
     if ($ci) {
         if (-not $timestamp) {
-            croak "For CI packages, the timestamp cannot be empty."
+            die "For CI packages, the timestamp cannot be empty."
         }
 
         # For CI packages, we use SemVer 2.0.0, and we ensure that the package

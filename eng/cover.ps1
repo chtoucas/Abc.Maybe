@@ -216,7 +216,7 @@ try {
     New-Variable -Name "Configuration" -Value "Debug" -Option ReadOnly
 
     if ($NoCoverage -and $NoReport) {
-        croak "You cannot set both options -NoCoverage and -NoReport at the same time."
+        die "You cannot set both options -NoCoverage and -NoReport at the same time."
     }
 
     $tool = if ($OpenCover) { "opencover" } else { "coverlet" }

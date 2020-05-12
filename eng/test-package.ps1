@@ -168,7 +168,7 @@ function Approve-Platform {
     )
 
     if ($platform -notin $knownPlatforms) {
-        croak "The specified platform is not supported: ""$platform""."
+        die "The specified platform is not supported: ""$platform""."
     }
 }
 
@@ -194,7 +194,7 @@ function Approve-Version {
     $ok = $version -match "^$major\.$minor\.$patch(\-$prere)?$"
 
     if (-not $ok) {
-        croak "The specified version number is not well-formed: ""$version""."
+        die "The specified version number is not well-formed: ""$version""."
     }
 }
 
@@ -488,7 +488,7 @@ function Invoke-TestMany {
 
     $count = $platforms.Length
     if ($count -eq 0) {
-        croak "After filtering the list of known platforms w/ $filter, there is nothing left to be done."
+        die "After filtering the list of known platforms w/ $filter, there is nothing left to be done."
     }
 
     # Fast track.
@@ -636,7 +636,7 @@ try {
         # in "test\README").
         $Version = Get-PackageVersion $PackageName -AsString
     }
-    elseif ($Version -eq "") {
+    elseif (-not $Version) {
         $Version = Find-LastLocalVersion $PackageName
     }
     else {
@@ -651,7 +651,7 @@ try {
             $AllKnown = $true ; $NoClassic = $false ; $NoCore = $false
         }
         elseif ($NoClassic -and $NoCore) {
-            croak "You set both -NoClassic and -NoCore... There is nothing left to be done."
+            die "You set both -NoClassic and -NoCore... There is nothing left to be done."
         }
 
         if ($Yes -or (yesno "`nTest the package for all selected platforms at once (SLOW)?")) {
@@ -665,13 +665,9 @@ try {
         else {
             # Building or restoring the solution only once should speed up things a bit.
             if ($Optimise) {
-                $noBuild = $true
-
                 Invoke-Build -Version $Version -Runtime $Runtime -AllKnown:$AllKnown
             }
             else {
-                $noBuild = $false
-
                 Invoke-Restore -Version $Version -Runtime $Runtime -AllKnown:$AllKnown
             }
 
@@ -684,7 +680,7 @@ try {
                 -PlatformList   $platformList `
                 -Version        $Version `
                 -Runtime        $Runtime `
-                -NoBuild:       $noBuild `
+                -NoBuild:       $Optimise `
                 -NoRestore:     $true
         }
     }
