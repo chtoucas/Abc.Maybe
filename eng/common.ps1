@@ -214,7 +214,7 @@ function Remove-BinAndObj {
     }
 
     ls $path -Include bin,obj -Recurse `
-        | % { confess "Deleting ""$_""." ; rm $_.FullName -Recurse }
+        | foreach { confess "Deleting ""$_""." ; rm $_.FullName -Recurse }
 }
 
 #endregion

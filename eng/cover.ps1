@@ -1,5 +1,7 @@
 # See LICENSE in the project root for license information.
 
+#Requires -Version 7
+
 ################################################################################
 #region Preamble.
 
@@ -113,7 +115,6 @@ function Invoke-OpenCover {
 
     SAY-LOUDLY "`nRunning OpenCover."
 
-    # Will fail if PowerShell version < 6.
     if (-not $IsWindows) { die "OpenCover.exe only works on Windows." }
 
     $filters = `
@@ -219,7 +220,7 @@ try {
         die "You cannot set both options -NoCoverage and -NoReport at the same time."
     }
 
-    $tool = if ($OpenCover) { "opencover" } else { "coverlet" }
+    $tool = $OpenCover ? "opencover" : "coverlet"
     $outdir = Join-Path $ARTIFACTS_DIR $tool
     $outxml = Join-Path $outdir "$tool.xml"
 
@@ -256,8 +257,8 @@ try {
         try {
             pushd $outdir
 
-            cp -Force -Path "badge_combined.svg" -Destination (Join-Path ".." "$tool.svg")
-            cp -Force -Path "Summary.txt" -Destination (Join-Path ".." "$tool.txt")
+            cp -Force "badge_combined.svg" (Join-Path ".." "$tool.svg")
+            cp -Force "Summary.txt" (Join-Path ".." "$tool.txt")
         }
         finally {
             popd

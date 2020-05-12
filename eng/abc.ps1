@@ -408,7 +408,7 @@ function Reset-PackageOutDir {
 
         if (Test-Path $PKG_OUTDIR) {
             ls $PKG_OUTDIR -Include "*.nupkg" -Recurse `
-                | % { confess "Deleting ""$_""." ; rm $_.FullName }
+                | foreach { confess "Deleting ""$_""." ; rm $_.FullName }
         }
 
         say-softly "Output directory for packages was cleared."
@@ -432,7 +432,7 @@ function Reset-PackageCIOutDir {
 
         if (Test-Path $PKG_CI_OUTDIR) {
             ls $PKG_CI_OUTDIR -Include "*.nupkg" -Recurse `
-                | % { confess "Deleting ""$_""." ; rm $_.FullName }
+                | foreach { confess "Deleting ""$_""." ; rm $_.FullName }
         }
 
         say-softly "Output directory for CI packages was cleared."
@@ -463,12 +463,12 @@ function Reset-LocalNuGet {
 
         confess "Clearing local NuGet feed."
         ls $NUGET_LOCAL_FEED -Exclude "_._" `
-            | % { confess "Deleting ""$_""." ; rm $_ -Recurse }
+            | foreach { confess "Deleting ""$_""." ; rm $_ -Recurse }
         say-softly "Local NuGet feed was cleared."
 
         confess "Clearing local NuGet cache."
         ls $NUGET_LOCAL_CACHE -Exclude "_._" `
-            | % { confess "Deleting ""$_""." ; rm $_ -Recurse }
+            | foreach { confess "Deleting ""$_""." ; rm $_ -Recurse }
         say-softly "Local NuGet cache was cleared."
     }
 }

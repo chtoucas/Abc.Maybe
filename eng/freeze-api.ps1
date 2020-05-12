@@ -55,7 +55,7 @@ function Update-PublicAPI {
     say "  Writing PublicAPI.Shipped.txt."
     $shipped `
         | Sort-Object `
-        | ?{ -not $removed.Contains($_) } `
+        | where { -not $removed.Contains($_) } `
         | Out-File $shippedPath -Encoding UTF8
 
     say "  Writing PublicAPI.Unshipped.txt."
