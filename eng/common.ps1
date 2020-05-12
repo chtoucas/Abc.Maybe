@@ -3,14 +3,14 @@
 #Requires -Version 5.1
 
 New-Alias "my"      New-Variable
-New-Alias "const"   New-Constant
 New-Alias "say"     Write-Host
 New-Alias "diag"    Write-Debug
 New-Alias "confess" Write-Verbose
 New-Alias "whereis" Get-Command
 
+New-Alias "const"   New-Constant
 New-Alias "yesno"   Confirm-Yes
-New-Alias "gate"    Confirm-Continue
+New-Alias "guard"   Confirm-Continue
 
 ################################################################################
 
@@ -22,8 +22,8 @@ function New-Constant {
         [string] $name,
 
         [Parameter(Mandatory = $true, Position = 1, ValueFromPipeline = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $value
+        [ValidateNotNull()]
+        [Object] $value
     )
 
     New-Variable -Name $name -Value $value -Scope Script -Option Constant
@@ -129,14 +129,14 @@ function Confirm-Yes {
         $answer = (Read-Host $question, "[y/N/q]")
 
         if ($answer -eq "" -or $answer -eq "n") {
-            say "Discarded on your request." -ForegroundColor DarkRed
+            say "Discarded on your request." -ForegroundColor DarkCyan
             return $false
         }
         elseif ($answer -eq "y") {
             return $true
         }
         elseif ($answer -eq "q") {
-            say "Aborting the script on your request." -ForegroundColor DarkRed
+            say "Aborting the script on your request." -ForegroundColor DarkCyan
             exit
         }
     }
@@ -157,7 +157,7 @@ function Confirm-Continue {
         $answer = (Read-Host $question, "[y/N]")
 
         if ($answer -eq "" -or $answer -eq "n") {
-            say "Stopping on your request." -ForegroundColor DarkRed
+            say "Stopping on your request." -ForegroundColor DarkCyan
             exit
         }
         elseif ($answer -eq "y") {
