@@ -6,6 +6,7 @@ New-Alias "say"     Write-Host    -Scope Script
 New-Alias "confess" Write-Verbose -Scope Script
 New-Alias "whereis" Get-Command   -Scope Script
 
+# TODO: find a better name.
 New-Alias "agree" Confirm-Continue -Scope Script
 New-Alias "yesno" Confirm-Yes      -Scope Script
 
@@ -363,6 +364,7 @@ function Find-VsWhere {
     confess "vswhere.exe could not be found in your PATH."
 
     $path = Join-Path ${Env:ProgramFiles(x86)} "\Microsoft Visual Studio\Installer\vswhere.exe"
+
     if (Test-Path $path) {
         confess "vswhere.exe found here: ""$path""."
 
@@ -395,7 +397,7 @@ function Find-MSBuild {
     if (-not $vswhere) {
         $cmd = whereis "MSBuild.exe" -CommandType Application -TotalCount 1 -ErrorAction Ignore
 
-        if ($cmd -ne $null) { return $cmd.Path }
+        if ($cmd) { return $cmd.Path }
         else { . $onError "MSBuild.exe could not be found in your PATH." ; return $null }
     }
     else {
@@ -425,13 +427,13 @@ function Find-Fsi {
     if (-not $vswhere) {
         $cmd = whereis "fsi.exe" -CommandType Application -TotalCount 1 -ErrorAction Ignore
 
-        if ($cmd -ne $null) { return $cmd.Path }
+        if ($cmd) { return $cmd.Path }
         else { . $onError "fsi.exe could not be found in your PATH." ; return $null }
     }
     else {
         $vspath = & $vswhere -legacy -latest -property installationPath
-
         $path = Join-Path $vspath "\Common7\IDE\CommonExtensions\Microsoft\FSharp\fsi.exe"
+
         if (Test-Path $path) { confess "fsi.exe found here: ""$path""." ; return $path }
         else { . $onError "Could not find fsi.exe." ; return $null }
     }

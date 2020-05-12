@@ -159,7 +159,7 @@ function Write-Hello {
         [switch] $noNewline
     )
 
-    say "Hello, $message" -ForegroundColor Magenta -NoNewline:$noNewline
+    say "Hello, $message" -ForegroundColor Blue -NoNewline:$noNewline
 }
 
 # ------------------------------------------------------------------------------
@@ -260,14 +260,14 @@ function Find-OpenCover {
 
     $path = Join-Path $NET_FRAMEWORK_TOOLS_DIR "opencover\$version\tools\OpenCover.Console.exe"
 
-    if (-not (Test-Path $path)) {
-        . $onError "Couldn't find OpenCover v$version where I expected it to be. Maybe use -Restore?"
+    if (Test-Path $path) {
+        confess "OpenCover.Console.exe found here: ""$path""."
+        return $path
+    }
+    else {
+        . $onError "Could not find OpenCover v$version. Maybe use -Restore?"
         return $null
     }
-
-    confess "OpenCover.Console.exe found here: ""$path""."
-
-    $path
 }
 
 # ------------------------------------------------------------------------------
@@ -296,18 +296,19 @@ function Find-XunitRunner {
     $path = Join-Path $NET_FRAMEWORK_TOOLS_DIR `
         "xunit.runner.console\$version\tools\$platform\xunit.console.exe"
 
-    if (-not (Test-Path $path)) {
-        . $onError "Couldn't find Xunit Console Runner v$version where I expected it to be. Maybe use -Restore?"
+    if (Test-Path $path) {
+        confess "xunit.console.exe found here: ""$path""."
+        return $path
+    }
+    else {
+        . $onError "Could not find Xunit Console Runner v$version. Maybe use -Restore?"
         return $null
     }
-
-    confess "xunit.console.exe found here: ""$path""."
-
-    $path
 }
 
 # ------------------------------------------------------------------------------
 
+# TODO: to be removed.
 # Die if the exit code of the last external command that was run is not equal to zero.
 function Assert-CmdSuccess {
     [CmdletBinding()]
