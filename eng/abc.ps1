@@ -476,7 +476,7 @@ function Reset-LocalNuGet {
         # We can't delete the directories, otherwise "dotnet restore" will fail.
 
         confess "Clearing local NuGet feed."
-        ls $NUGET_LOCAL_CACHE -Exclude "_._" `
+        ls $NUGET_LOCAL_FEED -Exclude "_._" `
             | % { confess "Deleting ""$_""." ; rm $_ -Recurse }
         say-softly "Local NuGet feed was cleared."
 
