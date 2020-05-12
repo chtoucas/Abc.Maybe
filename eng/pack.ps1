@@ -99,7 +99,7 @@ function Get-GitMetadata {
             warn "The package description won't include any git metadata."
         }
         else {
-            Confirm-Continue "Continue even without any git metadata?"
+            agree "Continue even without any git metadata?"
         }
 
         return @("", "")
@@ -110,7 +110,7 @@ function Get-GitMetadata {
     $ok = Approve-GitStatus -Git $git -ExitOnError:$exitOnError
 
     $branch = "" ; $commit = ""
-    if ($ok -or $yes -or (Confirm-Yes "There are uncommited changes, force retrieval of git metadata?")) {
+    if ($ok -or $yes -or (yesno "There are uncommited changes, force retrieval of git metadata?")) {
         $branch = Get-GitBranch     -Git $git -ExitOnError:$exitOnError
         $commit = Get-GitCommitHash -Git $git -ExitOnError:$exitOnError
     }
@@ -144,7 +144,7 @@ function Generate-UIDs {
 
     $uids = & $fsi $fsx
 
-    Write-Verbose "Build UIDs: ""$uids"""
+    confess "Build UIDs: ""$uids"""
 
     $uids.Split(";")
 }
@@ -199,8 +199,8 @@ function Get-ActualVersion {
 
     $prefix = "$major.$minor.$patch"
 
-    Write-Verbose "Version suffix: ""$suffix"""
-    Write-Verbose "Version prefix: ""$prefix"""
+    confess "Version suffix: ""$suffix""."
+    confess "Version prefix: ""$prefix""."
 
     if ($suffix -eq "") {
         return @($prefix, $prefix, "")
@@ -236,20 +236,20 @@ function Get-PackageFile {
         $path = Join-Path $PKG_OUTDIR "$projectName.$version.nupkg"
     }
 
-    Write-Verbose "Package file: ""$path"""
+    confess "Package file: ""$path"""
 
     # Is there a dangling package file?
     # NB: not necessary for CI packages, the filename is unique.
     if (-not $ci -and (Test-Path $path)) {
         if (-not $yes) {
             warn "A package with the same version ($version) already exists."
-            Confirm-Continue "Do you wish to proceed anyway?"
+            agree "Do you wish to proceed anyway?"
         }
 
         # Not necessary, dotnet will replace it, but to avoid any ambiguity
         # I prefer to remove it anyway.
         say "  The old package file will be removed now."
-        Remove-Item $path
+        rm $path
     }
 
     $path
@@ -414,7 +414,7 @@ function Invoke-Publish {
     $apiKey = Read-Host "API key [empty for no key]"
     if ($apiKey) { $args += "-k $apiKey" }
 
-    if (Confirm-Yes "Do you want me to publish the package for you?") {
+    if (yesno "Do you want me to publish the package for you?") {
         warn "Not yet activated."
         SAY-LOUDLY "`n---`nTo publish the package:"
         SAY-LOUDLY "> dotnet nuget push $packageFile $args"
@@ -498,7 +498,7 @@ try {
             Remove-PackageFromLocalNuGet $ProjectName $version
 
             if (-not $yes) {
-                Confirm-Continue "Push the package to the local NuGet feed/cache?"
+                agree "Push the package to the local NuGet feed/cache?"
             }
 
             Invoke-PushLocal $packageFile $version

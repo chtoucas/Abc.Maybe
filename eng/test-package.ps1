@@ -155,7 +155,7 @@ Examples.
 
 # NB: with PowerShell 6.1, there is something called dynamic validateSet, but
 # I prefer to stick with v5.1.
-function Validate-Platform {
+function Approve-Platform {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, Position = 0)]
@@ -176,7 +176,7 @@ function Validate-Platform {
 
 # Validate the package version.
 # Non-strict validation, and not following SemVer (eg no build metadata).
-function Validate-Version {
+function Approve-Version {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
@@ -206,7 +206,7 @@ function Find-XunitRunnerOnce {
     [CmdletBinding()]
     param()
 
-    Write-Verbose "Finding xunit.console.exe."
+    confess "Finding xunit.console.exe."
 
     if ($___NoXunitConsole) { warn "No Xunit console runner." ; return $null }
 
@@ -232,7 +232,7 @@ function Find-LastLocalVersion {
         [string] $packageName
     )
 
-    Write-Verbose "Getting the last version from the local NuGet feed."
+    confess "Getting the last version from the local NuGet feed."
 
     # Don't remove the filter, the directory is never empty (file "_._").
     $last = Get-ChildItem (Join-Path $NUGET_LOCAL_FEED "*") -Include "*.nupkg" `
@@ -448,7 +448,7 @@ function Invoke-TestManyInteractive {
     )
 
     foreach ($platform in $platformList) {
-        if (Confirm-Yes "`nTest the package for ""$platform""?") {
+        if (yesno "`nTest the package for ""$platform""?") {
             Invoke-TestSingle `
                 -Platform $platform `
                 -Version  $version `
@@ -640,7 +640,7 @@ try {
         $Version = Find-LastLocalVersion $PackageName
     }
     else {
-        Validate-Version $Version
+        Approve-Version $Version
     }
 
     SAY-LOUDLY "`nThe selected package version is ""$Version""."
@@ -654,7 +654,7 @@ try {
             croak "You set both -NoClassic and -NoCore... There is nothing left to be done."
         }
 
-        if ($Yes -or (Confirm-Yes "`nTest the package for all selected platforms at once (SLOW)?")) {
+        if ($Yes -or (yesno "`nTest the package for all selected platforms at once (SLOW)?")) {
             Invoke-TestAll `
                 -Version    $Version `
                 -Runtime    $Runtime `
@@ -700,7 +700,7 @@ try {
         else {
             # Validating the platform name is not mandatory but, if we don't,
             # the script fails silently when the platform is not supported here.
-            Validate-Platform -Platform $Platform -KnownPlatforms $knownPlatforms
+            Approve-Platform -Platform $Platform -KnownPlatforms $knownPlatforms
 
             Invoke-TestSingle -Platform $Platform -Version $Version -Runtime $Runtime
         }

@@ -10,10 +10,9 @@ $Script:ErrorActionPreference = "Stop"
 ################################################################################
 #region Aliases / Constants.
 
-New-Alias "Hello"      Write-Hello -Scope Script
-New-Alias "say"        Write-Host  -Scope Script
-New-Alias "say-softly" Write-Cyan  -Scope Script
-New-Alias "SAY-LOUDLY" Write-Green -Scope Script
+New-Alias "Hello"      Write-Hello   -Scope Script
+New-Alias "say-softly" Write-Cyan    -Scope Script
+New-Alias "SAY-LOUDLY" Write-Green   -Scope Script
 
 # ------------------------------------------------------------------------------
 
@@ -71,7 +70,7 @@ function Initialize-Env {
     [CmdletBinding()]
     param()
 
-    Write-Verbose "Initialising environment."
+    confess "Initialising environment."
 
     # These changes won't survive when the script ends, which is good.
     [CultureInfo]::CurrentCulture = "en"
@@ -129,17 +128,17 @@ function ___END___ {
     popd
 
     if ($Script:___Warned) {
-        Write-Host "`nExecution terminated with warning(s)." -ForegroundColor Yellow
+        say "`nExecution terminated with warning(s)." -ForegroundColor Yellow
     }
     elseif ($Script:___Died) {
-        Write-Host "`nExecution aborted." -ForegroundColor Red
+        say "`nExecution aborted." -ForegroundColor Red
     }
     else {
-        Write-Host "`nGoodbye." -ForegroundColor Green
+        say "`nGoodbye." -ForegroundColor Green
     }
 
     if ($Error -and ($err = $Error[0]) -is [System.Management.Automation.ErrorRecord]) {
-        Write-Host "`n--- Post-mortem." -ForegroundColor Red
+        say "`n--- Post-mortem." -ForegroundColor Red
 
         # Write a terminating error.
         $PSCmdlet.WriteError($err)
@@ -193,78 +192,6 @@ function Write-Green {
     say $message -ForegroundColor Green -NoNewline:$noNewline
 }
 
-# ------------------------------------------------------------------------------
-
-# Request confirmation.
-function Confirm-Yes {
-    param(
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $question
-    )
-
-    while ($true) {
-        $answer = (Read-Host $question, "[y/N/q]")
-
-        if ($answer -eq "" -or $answer -eq "n") {
-            say-softly "Discarding on your request."
-            return $false
-        }
-        elseif ($answer -eq "y") {
-            return $true
-        }
-        elseif ($answer -eq "q") {
-            say-softly "Aborting the script on your request."
-            exit
-        }
-    }
-}
-
-# ------------------------------------------------------------------------------
-
-# Request confirmation to continue, terminate the script if not.
-function Confirm-Continue {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $question
-    )
-
-    while ($true) {
-        $answer = (Read-Host $question, "[y/N]")
-
-        if ($answer -eq "" -or $answer -eq "n") {
-            say-softly "Stopping on your request."
-            exit
-        }
-        elseif ($answer -eq "y") {
-            break
-        }
-    }
-}
-
-# ------------------------------------------------------------------------------
-
-# Die if the exit code of the last external command that was run is not equal to zero.
-function Assert-CmdSuccess {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true, Position = 0)]
-        [ValidateNotNullOrEmpty()]
-        [string] $error,
-
-        [Parameter(Mandatory = $false, Position = 1)]
-        [string] $success
-    )
-
-    Write-Verbose "Checking exit code of the last external command that was run."
-
-    if ($LastExitCode -ne 0) { croak $error }
-
-    if ($success) { say-softly $success }
-}
-
 #endregion
 ################################################################################
 #region Tools.
@@ -280,7 +207,7 @@ function Get-PackageVersion {
         [switch] $asString
     )
 
-    Write-Verbose "Getting package version."
+    confess "Getting package version."
 
     $projectPath = Join-Path $ENG_DIR "$packageName.props" -Resolve
 
@@ -320,7 +247,7 @@ function Find-OpenCover {
         [switch] $exitOnError
     )
 
-    Write-Verbose "Finding OpenCover.Console.exe."
+    confess "Finding OpenCover.Console.exe."
 
     if ($exitOnError) { $onError = "croak" } else { $onError = "carp" }
 
@@ -338,7 +265,7 @@ function Find-OpenCover {
         return $null
     }
 
-    Write-Verbose "OpenCover.Console.exe found here: ""$path""."
+    confess "OpenCover.Console.exe found here: ""$path""."
 
     $path
 }
@@ -355,7 +282,7 @@ function Find-XunitRunner {
         [switch] $exitOnError
     )
 
-    Write-Verbose "Finding xunit.console.exe."
+    confess "Finding xunit.console.exe."
 
     if ($exitOnError) { $onError = "croak" } else { $onError = "carp" }
 
@@ -374,9 +301,30 @@ function Find-XunitRunner {
         return $null
     }
 
-    Write-Verbose "xunit.console.exe found here: ""$path""."
+    confess "xunit.console.exe found here: ""$path""."
 
     $path
+}
+
+# ------------------------------------------------------------------------------
+
+# Die if the exit code of the last external command that was run is not equal to zero.
+function Assert-CmdSuccess {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [string] $error,
+
+        [Parameter(Mandatory = $false, Position = 1)]
+        [string] $success
+    )
+
+    confess "Checking exit code of the last external command that was run."
+
+    if ($LastExitCode -ne 0) { croak $error }
+
+    if ($success) { say-softly $success }
 }
 
 #endregion
@@ -427,7 +375,7 @@ function Restore-Solution {
 
 #endregion
 ################################################################################
-#region Reset
+#region Reset / Clear
 
 function Reset-SourceTree {
     [CmdletBinding()]
@@ -435,11 +383,13 @@ function Reset-SourceTree {
         [Alias("y")] [switch] $yes
     )
 
-    Write-Verbose "Resetting source tree."
+    if ($yes) { $echo = "say" } else { $echo = "confess" }
 
-    if ($yes -or (Confirm-Yes "Hard clean the directory ""src""?")) {
-        say "Deleting ""bin"" and ""obj"" directories within ""src""."
+    . $echo "Resetting source tree."
+
+    if ($yes -or (yesno "Reset the source tree?")) {
         Remove-BinAndObj $SRC_DIR
+        say-softly "The source tree was reset."
     }
 }
 
@@ -451,11 +401,13 @@ function Reset-TestTree {
         [Alias("y")] [switch] $yes
     )
 
-    Write-Verbose "Resetting test tree."
+    if ($yes) { $echo = "say" } else { $echo = "confess" }
 
-    if ($yes -or (Confirm-Yes "Hard clean the directory ""test""?")) {
-        say "Deleting ""bin"" and ""obj"" directories within ""test""."
+    . $echo "Resetting test tree."
+
+    if ($yes -or (yesno "Reset the test tree?")) {
         Remove-BinAndObj $TEST_DIR
+        say-softly "The test tree was reset."
     }
 }
 
@@ -467,11 +419,16 @@ function Reset-PackageOutDir {
         [Alias("y")] [switch] $yes
     )
 
-    Write-Verbose "Resetting output directory for packages."
+    if ($yes) { $echo = "say" } else { $echo = "confess" }
 
-    if ($yes -or (Confirm-Yes "Reset output directory for packages?")) {
-        say "Clearing output directory for packages."
-        Remove-Packages $PKG_OUTDIR
+    . $echo "Resetting output directory for packages."
+
+    if ($yes -or (yesno "Clear output directory for packages?")) {
+        confess "Clearing output directory for packages."
+
+        ls $PKG_OUTDIR -Include "*.nupkg" -Recurse `
+            | % { confess "Deleting ""$_""." ; rm $_.FullName }
+        say-softly "Output directory for packages was cleared."
     }
 }
 
@@ -483,11 +440,16 @@ function Reset-PackageCIOutDir {
         [Alias("y")] [switch] $yes
     )
 
-    Write-Verbose "Resetting output directory for CI packages."
+    if ($yes) { $echo = "say" } else { $echo = "confess" }
 
-    if ($yes -or (Confirm-Yes "Reset output directory for CI packages?")) {
-        say "Clearing output directory for CI packages."
-        Remove-Packages $PKG_CI_OUTDIR
+    . $echo "Resetting output directory for CI packages."
+
+    if ($yes -or (yesno "Clear output directory for CI packages?")) {
+        confess "Clearing output directory for CI packages."
+
+        ls $PKG_CI_OUTDIR -Include "*.nupkg" -Recurse `
+            | % { confess "Deleting ""$_""." ; rm $_.FullName }
+        say-softly "Output directory for CI packages was cleared."
     }
 }
 
@@ -499,9 +461,11 @@ function Reset-LocalNuGet {
         [Alias("y")] [switch] $yes
     )
 
-    Write-Verbose "Resetting local NuGet feed/cache."
+    if ($yes) { $echo = "say" } else { $echo = "confess" }
 
-    if ($yes -or (Confirm-Yes "Reset local NuGet feed/cache?")) {
+    . $echo "Resetting local NuGet feed/cache."
+
+    if ($yes -or (yesno "Clear local NuGet feed/cache?")) {
         # When we reset the NuGet feed, better to clear the cache too, this is
         # not mandatory but it keeps cache and feed in sync.
         # The inverse is also true.
@@ -511,12 +475,15 @@ function Reset-LocalNuGet {
         #
         # We can't delete the directories, otherwise "dotnet restore" will fail.
 
-        say "Resetting local NuGet feed."
-        Remove-Packages $NUGET_LOCAL_FEED
+        confess "Clearing local NuGet feed."
+        ls $NUGET_LOCAL_CACHE -Exclude "_._" `
+            | % { confess "Deleting ""$_""." ; rm $_ -Recurse }
+        say-softly "Local NuGet feed was cleared."
 
-        say "Clearing local NuGet cache."
-        Get-ChildItem $NUGET_LOCAL_CACHE -Exclude "_._" `
-            | % { Remove-Item $_ -Recurse }
+        confess "Clearing local NuGet cache."
+        ls $NUGET_LOCAL_CACHE -Exclude "_._" `
+            | % { confess "Deleting ""$_""." ; rm $_ -Recurse }
+        say-softly "Local NuGet cache was cleared."
     }
 }
 
@@ -536,13 +503,15 @@ function Remove-PackageFromLocalNuGet {
 
     say "Removing obsolete package data from local NuGet feed/cache."
 
+    confess "Removing package from the local NuGet cache."
     Join-Path $NUGET_LOCAL_CACHE $packageName.ToLower() `
         | Join-Path -ChildPath $version `
         | Remove-Dir
 
+    confess "Removing package from the local NuGet feed."
     $oldFilepath = Join-Path $NUGET_LOCAL_FEED "$packageName.$version.nupkg"
     if (Test-Path $oldFilepath) {
-        Remove-Item $oldFilepath
+        rm $oldFilepath
     }
 }
 

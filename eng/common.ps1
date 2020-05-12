@@ -2,6 +2,13 @@
 
 #Requires -Version 5.1
 
+New-Alias "say"     Write-Host    -Scope Script
+New-Alias "confess" Write-Verbose -Scope Script
+New-Alias "whereis" Get-Command   -Scope Script
+
+New-Alias "agree" Confirm-Continue -Scope Script
+New-Alias "yesno" Confirm-Yes      -Scope Script
+
 ################################################################################
 #region Warn or die (inspired by Perl).
 
@@ -88,6 +95,59 @@ function croak {
 
 #endregion
 ################################################################################
+#region UI.
+
+# Request confirmation.
+function Confirm-Yes {
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $question
+    )
+
+    while ($true) {
+        $answer = (Read-Host $question, "[y/N/q]")
+
+        if ($answer -eq "" -or $answer -eq "n") {
+            say "Discarded on your request." -ForegroundColor DarkRed
+            return $false
+        }
+        elseif ($answer -eq "y") {
+            return $true
+        }
+        elseif ($answer -eq "q") {
+            say "Aborting the script on your request." -ForegroundColor DarkRed
+            exit
+        }
+    }
+}
+
+# ------------------------------------------------------------------------------
+
+# Request confirmation to continue, terminate the script if not.
+function Confirm-Continue {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $question
+    )
+
+    while ($true) {
+        $answer = (Read-Host $question, "[y/N]")
+
+        if ($answer -eq "" -or $answer -eq "n") {
+            say "Stopping on your request." -ForegroundColor DarkRed
+            exit
+        }
+        elseif ($answer -eq "y") {
+            break
+        }
+    }
+}
+
+#endregion
+################################################################################
 #region FileSystem-related functions.
 
 function Remove-Dir {
@@ -98,10 +158,10 @@ function Remove-Dir {
         [string] $path
     )
 
-    Write-Verbose "Deleting directory ""$path""."
+    confess "Deleting directory ""$path""."
 
     if (-not (Test-Path $path)) {
-        Write-Verbose "Skipping ""$path""; the path does NOT exist."
+        confess "Skipping ""$path""; the path does NOT exist."
         return
     }
     if (-not [System.IO.Path]::IsPathRooted($path)) {
@@ -109,35 +169,7 @@ function Remove-Dir {
         return
     }
 
-    Remove-Item $path -Recurse
-}
-
-# ------------------------------------------------------------------------------
-
-function Remove-Packages {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $path
-    )
-
-    Write-Verbose "Deleting NuGet packages in ""$path""."
-
-    if (-not (Test-Path $path)) {
-        Write-Verbose "Skipping ""$path""; the path does NOT exist."
-        return
-    }
-    if (-not [System.IO.Path]::IsPathRooted($path)) {
-        carp "Skipping ""$path""; the path MUST be absolute."
-        return
-    }
-
-    ls $path -Include "*.nupkg" -Recurse | ?{
-        Write-Verbose "Deleting ""$_""."
-
-        Remove-Item $_.FullName
-    }
+    rm $path -Recurse
 }
 
 # ------------------------------------------------------------------------------
@@ -147,29 +179,22 @@ function Remove-BinAndObj {
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNull()]
-        [string[]] $pathList
+        [string] $path
     )
 
-    Write-Verbose "Deleting ""bin"" and ""obj"" directories."
+    confess "Deleting ""bin"" and ""obj"" directories within ""$path""."
 
-    $pathList | %{
-        if (-not (Test-Path $_)) {
-            Write-Verbose "Skipping ""$_""; the path does NOT exist."
-            return
-        }
-        if (-not [System.IO.Path]::IsPathRooted($_)) {
-            carp "Skipping ""$_""; the path MUST be absolute."
-            return
-        }
-
-        Write-Verbose "Processing directory ""$_""."
-
-        ls $_ -Include bin,obj -Recurse | ?{
-            Write-Verbose "Deleting ""$_""."
-
-            Remove-Item $_.FullName -Recurse
-        }
+    if (-not (Test-Path $path)) {
+        confess "Skipping ""$path""; the path does NOT exist."
+        return
     }
+    if (-not [System.IO.Path]::IsPathRooted($path)) {
+        carp "Skipping ""$path""; the path MUST be absolute."
+        return
+    }
+
+    ls $path -Include bin,obj -Recurse `
+        | % { confess "Deleting ""$_""." ; rm $_.FullName -Recurse }
 }
 
 #endregion
@@ -182,11 +207,11 @@ function Find-Git {
         [switch] $exitOnError
     )
 
-    Write-Verbose "Finding git.exe."
+    confess "Finding git.exe."
 
     if ($exitOnError) { $onError = "croak" } else { $onError = "carp" }
 
-    $cmd = Get-Command "git.exe" -CommandType Application -TotalCount 1 -ErrorAction Ignore
+    $cmd = whereis "git.exe" -CommandType Application -TotalCount 1 -ErrorAction Ignore
 
     if ($cmd -eq $null) {
         . $onError "Could not find git.exe. Please ensure git.exe is installed."
@@ -196,7 +221,7 @@ function Find-Git {
 
     $path = $cmd.Path
 
-    Write-Verbose "git.exe found here: ""$path""."
+    confess "git.exe found here: ""$path""."
 
     $path
 }
@@ -214,7 +239,7 @@ function Approve-GitStatus {
         [switch] $exitOnError
     )
 
-    Write-Verbose "Getting the git status."
+    confess "Getting the git status."
 
     if ($exitOnError) { $onError = "croak" } else { $onError = "carp" }
 
@@ -246,14 +271,14 @@ function Get-GitCommitHash {
         [switch] $exitOnError
     )
 
-    Write-Verbose "Getting the last git commit hash."
+    confess "Getting the last git commit hash."
 
     if ($exitOnError) { $onError = "croak" } else { $onError = "carp" }
 
     try {
         $commit = & $git log -1 --format="%H" 2>&1
 
-        Write-Verbose "Current git commit hash: ""$commit""."
+        confess "Current git commit hash: ""$commit""."
 
         return $commit
     }
@@ -277,14 +302,14 @@ function Get-GitBranch {
         [switch] $exitOnError
     )
 
-    Write-Verbose "Getting the git branch."
+    confess "Getting the git branch."
 
     if ($exitOnError) { $onError = "croak" } else { $onError = "carp" }
 
     try {
         $branch = & $git rev-parse --abbrev-ref HEAD 2>&1
 
-        Write-Verbose "Current git branch: ""$branch""."
+        confess "Current git branch: ""$branch""."
 
         return $branch
     }
@@ -312,7 +337,7 @@ function Get-PackageReferenceVersion {
         [string] $package
     )
 
-    Write-Verbose "Getting version for ""$package"" from ""$projectPath""."
+    confess "Getting version for ""$package"" from ""$projectPath""."
 
     [Xml] (Get-Content $projectPath) `
         | Select-Xml -XPath "//Project/ItemGroup/PackageReference[@Include='$package']" `
@@ -330,16 +355,16 @@ function Find-VsWhere {
         [switch] $exitOnError
     )
 
-    Write-Verbose "Finding vswhere.exe."
+    confess "Finding vswhere.exe."
 
-    $cmd = Get-Command "vswhere.exe" -CommandType Application -TotalCount 1 -ErrorAction Ignore
+    $cmd = whereis "vswhere.exe" -CommandType Application -TotalCount 1 -ErrorAction Ignore
     if ($cmd -ne $null) { return $cmd.Path }
 
-    Write-Verbose "vswhere.exe could not be found in your PATH."
+    confess "vswhere.exe could not be found in your PATH."
 
     $path = Join-Path ${Env:ProgramFiles(x86)} "\Microsoft Visual Studio\Installer\vswhere.exe"
     if (Test-Path $path) {
-        Write-Verbose "vswhere.exe found here: ""$path""."
+        confess "vswhere.exe found here: ""$path""."
 
         return $path
     }
@@ -363,12 +388,12 @@ function Find-MSBuild {
         [switch] $exitOnError
     )
 
-    Write-Verbose "Finding MSBuild.exe."
+    confess "Finding MSBuild.exe."
 
     if ($exitOnError) { $onError = "croak" } else { $onError = "carp" }
 
     if (-not $vswhere) {
-        $cmd = Get-Command "MSBuild.exe" -CommandType Application -TotalCount 1 -ErrorAction Ignore
+        $cmd = whereis "MSBuild.exe" -CommandType Application -TotalCount 1 -ErrorAction Ignore
 
         if ($cmd -ne $null) { return $cmd.Path }
         else { . $onError "MSBuild.exe could not be found in your PATH." ; return $null }
@@ -377,7 +402,7 @@ function Find-MSBuild {
         $path = & $vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe `
             | select-object -first 1
 
-        if ($path) { Write-Verbose "MSBuild.exe found here: ""$path""." ;  return $path }
+        if ($path) { confess "MSBuild.exe found here: ""$path""." ;  return $path }
         else { . $onError "Could not find MSBuild.exe." ; return $null }
     }
 }
@@ -393,12 +418,12 @@ function Find-Fsi {
         [switch] $exitOnError
     )
 
-    Write-Verbose "Finding fsi.exe."
+    confess "Finding fsi.exe."
 
     if ($exitOnError) { $onError = "croak" } else { $onError = "carp" }
 
     if (-not $vswhere) {
-        $cmd = Get-Command "fsi.exe" -CommandType Application -TotalCount 1 -ErrorAction Ignore
+        $cmd = whereis "fsi.exe" -CommandType Application -TotalCount 1 -ErrorAction Ignore
 
         if ($cmd -ne $null) { return $cmd.Path }
         else { . $onError "fsi.exe could not be found in your PATH." ; return $null }
@@ -407,7 +432,7 @@ function Find-Fsi {
         $vspath = & $vswhere -legacy -latest -property installationPath
 
         $path = Join-Path $vspath "\Common7\IDE\CommonExtensions\Microsoft\FSharp\fsi.exe"
-        if (Test-Path $path) { Write-Verbose "fsi.exe found here: ""$path""." ; return $path }
+        if (Test-Path $path) { confess "fsi.exe found here: ""$path""." ; return $path }
         else { . $onError "Could not find fsi.exe." ; return $null }
     }
 }
