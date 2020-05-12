@@ -159,7 +159,7 @@ function Write-Hello {
         [switch] $noNewline
     )
 
-    say "Hello, $message" -ForegroundColor Blue -NoNewline:$noNewline
+    say "Hello, $message" -ForegroundColor White -NoNewline:$noNewline
 }
 
 # ------------------------------------------------------------------------------
@@ -427,8 +427,11 @@ function Reset-PackageOutDir {
     if ($yes -or (yesno "Clear output directory for packages?")) {
         confess "Clearing output directory for packages."
 
-        ls $PKG_OUTDIR -Include "*.nupkg" -Recurse `
-            | % { confess "Deleting ""$_""." ; rm $_.FullName }
+        if (Test-Path $PKG_OUTDIR) {
+            ls $PKG_OUTDIR -Include "*.nupkg" -Recurse `
+                | % { confess "Deleting ""$_""." ; rm $_.FullName }
+        }
+
         say-softly "Output directory for packages was cleared."
     }
 }
@@ -448,8 +451,11 @@ function Reset-PackageCIOutDir {
     if ($yes -or (yesno "Clear output directory for CI packages?")) {
         confess "Clearing output directory for CI packages."
 
-        ls $PKG_CI_OUTDIR -Include "*.nupkg" -Recurse `
-            | % { confess "Deleting ""$_""." ; rm $_.FullName }
+        if (Test-Path $PKG_CI_OUTDIR) {
+            ls $PKG_CI_OUTDIR -Include "*.nupkg" -Recurse `
+                | % { confess "Deleting ""$_""." ; rm $_.FullName }
+        }
+
         say-softly "Output directory for CI packages was cleared."
     }
 }
