@@ -99,7 +99,7 @@ function Get-GitMetadata {
             warn "The package description won't include any git metadata."
         }
         else {
-            agree "Continue even without any git metadata?"
+            gate "Continue even without any git metadata?"
         }
 
         return @("", "")
@@ -243,7 +243,7 @@ function Get-PackageFile {
     if (-not $ci -and (Test-Path $path)) {
         if (-not $yes) {
             warn "A package with the same version ($version) already exists."
-            agree "Do you wish to proceed anyway?"
+            gate "Do you wish to proceed anyway?"
         }
 
         # Not necessary, dotnet will replace it, but to avoid any ambiguity
@@ -498,7 +498,7 @@ try {
             Remove-PackageFromLocalNuGet $ProjectName $version
 
             if (-not $yes) {
-                agree "Push the package to the local NuGet feed/cache?"
+                gate "Push the package to the local NuGet feed/cache?"
             }
 
             Invoke-PushLocal $packageFile $version

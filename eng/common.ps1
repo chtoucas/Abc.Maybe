@@ -2,15 +2,32 @@
 
 #Requires -Version 5.1
 
-New-Alias "my"      New-Variable  -Scope Script
-New-Alias "say"     Write-Host    -Scope Script
-New-Alias "diag"    Write-Debug   -Scope Script
-New-Alias "confess" Write-Verbose -Scope Script
-New-Alias "whereis" Get-Command   -Scope Script
+New-Alias "my"      New-Variable
+New-Alias "const"   New-Constant
+New-Alias "say"     Write-Host
+New-Alias "diag"    Write-Debug
+New-Alias "confess" Write-Verbose
+New-Alias "whereis" Get-Command
 
-# TODO: find a better name.
-New-Alias "agree" Confirm-Continue -Scope Script
-New-Alias "yesno" Confirm-Yes      -Scope Script
+New-Alias "yesno"   Confirm-Yes
+New-Alias "gate"    Confirm-Continue
+
+################################################################################
+
+function New-Constant {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [string] $name,
+
+        [Parameter(Mandatory = $true, Position = 1, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $value
+    )
+
+    New-Variable -Name $name -Value $value -Scope Script -Option Constant
+}
 
 ################################################################################
 #region Warn or die (inspired by Perl).

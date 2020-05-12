@@ -109,9 +109,8 @@ param(
 
 # ------------------------------------------------------------------------------
 
-(Join-Path $TEST_DIR "NETSdk" -Resolve) | my NET_SDK_PROJECT -Option Constant
-
-my XUNIT_PLATFORM "net452" -Option Constant
+const NET_SDK_PROJECT (Join-Path $TEST_DIR "NETSdk" -Resolve)
+const XUNIT_PLATFORM  "net452"
 
 #endregion
 ################################################################################

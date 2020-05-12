@@ -10,9 +10,9 @@ $Script:ErrorActionPreference = "Stop"
 ################################################################################
 #region Aliases / Constants.
 
-New-Alias "Hello"      Write-Hello   -Scope Script
-New-Alias "say-softly" Write-Cyan    -Scope Script
-New-Alias "SAY-LOUDLY" Write-Green   -Scope Script
+New-Alias "Hello"      Write-Hello
+New-Alias "say-softly" Write-Cyan
+New-Alias "SAY-LOUDLY" Write-Green
 
 # ------------------------------------------------------------------------------
 
@@ -24,24 +24,22 @@ New-Alias "SAY-LOUDLY" Write-Green   -Scope Script
 # All paths are ABSOLUTE.
 
 # Root directory = absolute path of the parent directory containing *this* file.
-(Get-Item $PSScriptRoot).Parent.FullName | my ROOT_DIR -Option Constant
-
-# Root subdirectories.
-(Join-Path $ROOT_DIR "eng"  -Resolve) | my ENG_DIR -Option Constant
-(Join-Path $ROOT_DIR "src"  -Resolve) | my SRC_DIR -Option Constant
-(Join-Path $ROOT_DIR "test" -Resolve) | my TEST_DIR -Option Constant
-(Join-Path $ROOT_DIR "__"   -Resolve) | my ARTIFACTS_DIR -Option Constant
-
-# Artifacts subdirectories. No -Resolve, dir does not necessary exist.
-(Join-Path $ARTIFACTS_DIR "packages")    | my PKG_OUTDIR -Option Constant
-(Join-Path $ARTIFACTS_DIR "packages-ci") | my PKG_CI_OUTDIR -Option Constant
-(Join-Path $ARTIFACTS_DIR "nuget-feed")  | my NUGET_LOCAL_FEED -Option Constant
-(Join-Path $ARTIFACTS_DIR "nuget-cache") | my NUGET_LOCAL_CACHE -Option Constant
-(Join-Path $ARTIFACTS_DIR "tools")       | my NET_FRAMEWORK_TOOLS_DIR -Option Constant
+(Get-Item $PSScriptRoot).Parent.FullName | const ROOT_DIR
+# Core directories.
+(Join-Path $ROOT_DIR "eng"  -Resolve)    | const ENG_DIR
+(Join-Path $ROOT_DIR "src"  -Resolve)    | const SRC_DIR
+(Join-Path $ROOT_DIR "test" -Resolve)    | const TEST_DIR
+(Join-Path $ROOT_DIR "__"   -Resolve)    | const ARTIFACTS_DIR
+# Artifacts directories. No -Resolve, dir does not necessary exist.
+(Join-Path $ARTIFACTS_DIR "packages")    | const PKG_OUTDIR
+(Join-Path $ARTIFACTS_DIR "packages-ci") | const PKG_CI_OUTDIR
+(Join-Path $ARTIFACTS_DIR "nuget-feed")  | const NUGET_LOCAL_FEED
+(Join-Path $ARTIFACTS_DIR "nuget-cache") | const NUGET_LOCAL_CACHE
+(Join-Path $ARTIFACTS_DIR "tools")       | const NET_FRAMEWORK_TOOLS_DIR
 
 # Reference project used to restore .NET Framework tools.
-(Join-Path $ENG_DIR "NETFrameworkTools\NETFrameworkTools.csproj") `
-    | my NET_FRAMEWORK_TOOLS_PROJECT -Option Constant
+const NET_FRAMEWORK_TOOLS_PROJECT `
+    (Join-Path $ENG_DIR "NETFrameworkTools\NETFrameworkTools.csproj")
 
 #endregion
 ################################################################################
