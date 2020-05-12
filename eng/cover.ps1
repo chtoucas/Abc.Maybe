@@ -1,7 +1,5 @@
 # See LICENSE in the project root for license information.
 
-#Requires -Version 6
-
 ################################################################################
 #region Preamble.
 
@@ -115,6 +113,7 @@ function Invoke-OpenCover {
 
     SAY-LOUDLY "`nRunning OpenCover."
 
+    # Will fail if PowerShell version < 6.
     if (-not $IsWindows) { die "OpenCover.exe only works on Windows." }
 
     $filters = `
