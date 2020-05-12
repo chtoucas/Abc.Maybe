@@ -109,10 +109,9 @@ param(
 
 # ------------------------------------------------------------------------------
 
-(Join-Path $TEST_DIR "NETSdk" -Resolve) `
-    | New-Variable -Name "NET_SDK_PROJECT" -Scope Script -Option Constant
+(Join-Path $TEST_DIR "NETSdk" -Resolve) | my NET_SDK_PROJECT -Option Constant
 
-New-Variable -Name "XUNIT_PLATFORM" -Value "net452" -Scope Script -Option Constant
+my XUNIT_PLATFORM "net452" -Option Constant
 
 #endregion
 ################################################################################
@@ -615,7 +614,7 @@ $AllCore = `
 try {
     ___BEGIN___ -FromLocation $TEST_DIR
 
-    New-Variable -Name "PackageName" -Value "Abc.Maybe" -Option ReadOnly
+    my PackageName "Abc.Maybe" -Option ReadOnly
 
     if ($Reset) {
         SAY-LOUDLY "`nResetting repository."

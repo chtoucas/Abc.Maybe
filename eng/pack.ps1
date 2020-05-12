@@ -442,7 +442,7 @@ else {
 try {
     ___BEGIN___
 
-    New-Variable -Name "ProjectName" -Value "Abc.Maybe" -Option ReadOnly
+    my ProjectName "Abc.Maybe" -Option ReadOnly
 
     $CI = -not ($Release -or $NoCI)
 

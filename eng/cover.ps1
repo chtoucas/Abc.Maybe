@@ -213,7 +213,7 @@ Hello "this is the Code Coverage script."
 try {
     ___BEGIN___
 
-    New-Variable -Name "Configuration" -Value "Debug" -Option ReadOnly
+    my Configuration "Debug" -Option ReadOnly
 
     if ($NoCoverage -and $NoReport) {
         die "You cannot set both options -NoCoverage and -NoReport at the same time."

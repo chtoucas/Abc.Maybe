@@ -2,7 +2,9 @@
 
 #Requires -Version 5.1
 
+New-Alias "my"      New-Variable  -Scope Script
 New-Alias "say"     Write-Host    -Scope Script
+New-Alias "diag"    Write-Debug   -Scope Script
 New-Alias "confess" Write-Verbose -Scope Script
 New-Alias "whereis" Get-Command   -Scope Script
 

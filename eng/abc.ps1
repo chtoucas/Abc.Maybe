@@ -24,43 +24,24 @@ New-Alias "SAY-LOUDLY" Write-Green   -Scope Script
 # All paths are ABSOLUTE.
 
 # Root directory = absolute path of the parent directory containing *this* file.
-(Get-Item $PSScriptRoot).Parent.FullName `
-    | New-Variable -Name "ROOT_DIR" -Scope Local -Option Constant
+(Get-Item $PSScriptRoot).Parent.FullName | my ROOT_DIR -Option Constant
 
-# Engineering directory.
-(Join-Path $ROOT_DIR "eng" -Resolve) `
-    | New-Variable -Name "ENG_DIR" -Scope Script -Option Constant
+# Root subdirectories.
+(Join-Path $ROOT_DIR "eng"  -Resolve) | my ENG_DIR -Option Constant
+(Join-Path $ROOT_DIR "src"  -Resolve) | my SRC_DIR -Option Constant
+(Join-Path $ROOT_DIR "test" -Resolve) | my TEST_DIR -Option Constant
+(Join-Path $ROOT_DIR "__"   -Resolve) | my ARTIFACTS_DIR -Option Constant
 
-# Source directory.
-(Join-Path $ROOT_DIR "src" -Resolve) `
-    | New-Variable -Name "SRC_DIR" -Scope Script -Option Constant
-
-# Test directory.
-(Join-Path $ROOT_DIR "test" -Resolve) `
-    | New-Variable -Name "TEST_DIR" -Scope Script -Option Constant
-
-# Artifacts directory. Be careful with -Resolve, dir does not necessary exist.
-(Join-Path $ROOT_DIR "__" -Resolve) `
-    | New-Variable -Name "ARTIFACTS_DIR" -Scope Script -Option Constant
-# Packages.
-(Join-Path $ARTIFACTS_DIR "packages") `
-    | New-Variable -Name "PKG_OUTDIR" -Scope Script -Option Constant
-# CI packages.
-(Join-Path $ARTIFACTS_DIR "packages-ci") `
-    | New-Variable -Name "PKG_CI_OUTDIR" -Scope Script -Option Constant
-# Local NuGet feed.
-(Join-Path $ARTIFACTS_DIR "nuget-feed" -Resolve) `
-    | New-Variable -Name "NUGET_LOCAL_FEED" -Scope Script -Option Constant
-# Local NuGet cache.
-(Join-Path $ARTIFACTS_DIR "nuget-cache") `
-    | New-Variable -Name "NUGET_LOCAL_CACHE" -Scope Script -Option Constant
-# .NET Framework tools.
-(Join-Path $ARTIFACTS_DIR "tools") `
-    | New-Variable -Name "NET_FRAMEWORK_TOOLS_DIR" -Scope Script -Option Constant
+# Artifacts subdirectories. No -Resolve, dir does not necessary exist.
+(Join-Path $ARTIFACTS_DIR "packages")    | my PKG_OUTDIR -Option Constant
+(Join-Path $ARTIFACTS_DIR "packages-ci") | my PKG_CI_OUTDIR -Option Constant
+(Join-Path $ARTIFACTS_DIR "nuget-feed")  | my NUGET_LOCAL_FEED -Option Constant
+(Join-Path $ARTIFACTS_DIR "nuget-cache") | my NUGET_LOCAL_CACHE -Option Constant
+(Join-Path $ARTIFACTS_DIR "tools")       | my NET_FRAMEWORK_TOOLS_DIR -Option Constant
 
 # Reference project used to restore .NET Framework tools.
 (Join-Path $ENG_DIR "NETFrameworkTools\NETFrameworkTools.csproj") `
-    | New-Variable -Name "NET_FRAMEWORK_TOOLS_PROJECT" -Scope Script -Option Constant
+    | my NET_FRAMEWORK_TOOLS_PROJECT -Option Constant
 
 #endregion
 ################################################################################
