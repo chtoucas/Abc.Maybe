@@ -298,7 +298,7 @@ function Invoke-Pack {
     # TODO: allow $buildNumber and $revisionNumber to be empty.
 
     SAY-LOUDLY "`nPacking v$version" -NoNewline
-    if ($buildNumber -and $repositoryCommit) {
+    if ($buildNumber -and $revisionNumber) {
         SAY-LOUDLY " --- build $buildNumber, rev. $revisionNumber" -NoNewline
     }
     else { SAY-LOUDLY " --- build ???, rev. ???" -NoNewline }
