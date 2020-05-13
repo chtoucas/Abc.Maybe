@@ -141,7 +141,6 @@ function Generate-UIDs {
     if (-not $fsi) { return @("", "", "") }
 
     $fsx = Join-Path $PSScriptRoot "genuids.fsx" -Resolve
-
     $uids = & $fsi $fsx
 
     confess "Build UIDs: ""$uids"""
@@ -340,8 +339,7 @@ function Invoke-Pack {
         /p:RepositoryBranch=$repositoryBranch `
         /p:Pack=true `
         | Out-Host
-
-    if (-not $?) { die "Pack task failed." }
+        || die "Pack task failed."
 
     if ($ci) {
         say-softly "CI package successfully created."
@@ -374,9 +372,9 @@ function Invoke-PushLocal {
     # separated. Also, if Microsoft ever decided to change the behaviour of
     # a local "push", we won't have to update this script (but maybe reset.ps1).
 
-    & dotnet nuget push $packageFile -s $NUGET_LOCAL_FEED --force-english-output | Out-Host
-
-    if (-not $?) { die "Failed to publish package to local NuGet feed." }
+    & dotnet nuget push $packageFile -s $NUGET_LOCAL_FEED --force-english-output `
+        | Out-Host
+        || die "Failed to publish package to local NuGet feed."
 
     # If the following task fails, we should remove the package from the feed,
     # otherwise, later on, the package will be restored to the global cache.
@@ -385,8 +383,7 @@ function Invoke-PushLocal {
     say "Updating the local NuGet cache"
     $project = Join-Path $TEST_DIR "Blank" -Resolve
     & dotnet restore $project /p:AbcVersion=$version | Out-Host
-
-    if (-not $?) { die "Failed to update the local NuGet cache." }
+        || die "Failed to update the local NuGet cache."
 
     say-softly "Package successfully installed."
 }
