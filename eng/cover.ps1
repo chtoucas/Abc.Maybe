@@ -139,7 +139,7 @@ function Invoke-OpenCover {
         -excludebyattribute:*.ExcludeFromCodeCoverageAttribute `
         | Out-Host
 
-    if ($LastExitCode -ne 0 ) { die "OpenCover failed." }
+    if (-not $?) { die "OpenCover failed." }
 
     say-softly "OpenCover completed successfully."
 }
@@ -175,7 +175,7 @@ function Invoke-Coverlet {
         /p:Exclude=$exclude `
         | Out-Host
 
-    if ($LastExitCode -ne 0 ) { die "Coverlet failed." }
+    if (-not $?) { die "Coverlet failed." }
 
     say-softly "Coverlet completed successfully."
 }
@@ -203,7 +203,7 @@ function Invoke-ReportGenerator {
         -targetdir:$targetdir `
         | Out-Host
 
-    if ($LastExitCode -ne 0 ) { die "ReportGenerator failed." }
+    if (-not $?) { die "ReportGenerator failed." }
 
     say-softly "ReportGenerator completed successfully."
 }

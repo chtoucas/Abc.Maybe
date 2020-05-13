@@ -341,7 +341,7 @@ function Invoke-Pack {
         /p:Pack=true `
         | Out-Host
 
-    if ($LastExitCode -ne 0 ) { die "Pack task failed." }
+    if (-not $?) { die "Pack task failed." }
 
     if ($ci) {
         say-softly "CI package successfully created."
@@ -376,7 +376,7 @@ function Invoke-PushLocal {
 
     & dotnet nuget push $packageFile -s $NUGET_LOCAL_FEED --force-english-output | Out-Host
 
-    if ($LastExitCode -ne 0 ) { die "Failed to publish package to local NuGet feed." }
+    if (-not $?) { die "Failed to publish package to local NuGet feed." }
 
     # If the following task fails, we should remove the package from the feed,
     # otherwise, later on, the package will be restored to the global cache.
@@ -386,7 +386,7 @@ function Invoke-PushLocal {
     $project = Join-Path $TEST_DIR "Blank" -Resolve
     & dotnet restore $project /p:AbcVersion=$version | Out-Host
 
-    if ($LastExitCode -ne 0 ) { die "Failed to update the local NuGet cache." }
+    if (-not $?) { die "Failed to update the local NuGet cache." }
 
     say-softly "Package successfully installed."
 }

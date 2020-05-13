@@ -194,7 +194,7 @@ function Get-PackageVersion {
         | Select-Xml -XPath "//Project/PropertyGroup/MajorVersion/.." `
         | select -ExpandProperty Node
 
-    if ($node -eq $null) {
+    if (-not $node) {
         croak "The property file for ""$packageName"" is not valid."
     }
 
@@ -228,13 +228,13 @@ function Find-OpenCover {
 
     confess "Finding OpenCover.Console.exe."
 
-    if ($exitOnError) { $onError = "croak" } else { $onError = "carp" }
+    if ($exitOnError) { $errhandler = "croak" } else { $errhandler = "carp" }
 
     $version = Get-PackageReferenceVersion $NET_FRAMEWORK_TOOLS_PROJECT "OpenCover"
 
-    if ($version -eq $null) {
-        . $onError "OpenCover is not referenced in ""$NET_FRAMEWORK_TOOLS_PROJECT""."
-        return $null
+    if (-not $version) {
+        . $errhandler "OpenCover is not referenced in ""$NET_FRAMEWORK_TOOLS_PROJECT""."
+        return
     }
 
     $path = Join-Path $NET_FRAMEWORK_TOOLS_DIR "opencover\$version\tools\OpenCover.Console.exe"
@@ -243,10 +243,8 @@ function Find-OpenCover {
         confess "OpenCover.Console.exe found here: ""$path""."
         return $path
     }
-    else {
-        . $onError "Could not find OpenCover v$version. Maybe use -Restore?"
-        return $null
-    }
+
+    . $errhandler "Could not find OpenCover v$version. Maybe use -Restore?"
 }
 
 # ------------------------------------------------------------------------------
@@ -263,13 +261,13 @@ function Find-XunitRunner {
 
     confess "Finding xunit.console.exe."
 
-    if ($exitOnError) { $onError = "croak" } else { $onError = "carp" }
+    if ($exitOnError) { $errhandler = "croak" } else { $errhandler = "carp" }
 
     $version = Get-PackageReferenceVersion $NET_FRAMEWORK_TOOLS_PROJECT "xunit.runner.console"
 
-    if ($version -eq $null) {
-        . $onError "Xunit console runner is not referenced in ""$NET_FRAMEWORK_TOOLS_PROJECT""."
-        return $null
+    if (-not $version) {
+        . $errhandler "Xunit console runner is not referenced in ""$NET_FRAMEWORK_TOOLS_PROJECT""."
+        return
     }
 
     $path = Join-Path $NET_FRAMEWORK_TOOLS_DIR `
@@ -279,10 +277,8 @@ function Find-XunitRunner {
         confess "xunit.console.exe found here: ""$path""."
         return $path
     }
-    else {
-        . $onError "Could not find Xunit Console Runner v$version. Maybe use -Restore?"
-        return $null
-    }
+
+    . $errhandler "Could not find Xunit Console Runner v$version. Maybe use -Restore?"
 }
 
 #endregion

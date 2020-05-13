@@ -206,13 +206,13 @@ function Find-XunitRunnerOnce {
 
     confess "Finding xunit.console.exe."
 
-    if ($___NoXunitConsole) { warn "No Xunit console runner." ; return $null }
+    if ($___NoXunitConsole) { warn "No Xunit console runner." ; return }
 
     Restore-NETFrameworkTools
 
     $path = Find-XunitRunner -Platform $XUNIT_PLATFORM
 
-    if (-not $path) { $Script:___NoXunitConsole = $true ; return $null }
+    if (-not $path) { $Script:___NoXunitConsole = $true ; return }
 
     $path
 }
@@ -299,7 +299,7 @@ function Invoke-Restore {
 
     & dotnet restore $NET_SDK_PROJECT $args | Out-Host
 
-    if ($LastExitCode -ne 0 ) { die "Restore task failed." }
+    if (-not $?) { die "Restore task failed." }
 
     say-softly "Dependencies successfully restored."
 }
@@ -330,7 +330,7 @@ function Invoke-Build {
 
     & dotnet build $NET_SDK_PROJECT $args | Out-Host
 
-    if ($LastExitCode -ne 0 ) { die "Build task failed." }
+    if (-not $?) { die "Build task failed." }
 
     say-softly "Project successfully built."
 }
@@ -376,14 +376,14 @@ function Invoke-TestOldStyle {
     # https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2019
     & $msbuild $project -nologo -v:minimal /p:AbcVersion=$version /t:"Restore;Build" | Out-Host
 
-    if ($LastExitCode -ne 0 ) { die "Build failed when targeting ""$platform""." }
+    if (-not $?) { die "Build failed when targeting ""$platform""." }
 
     # NB: Release, not Debug, this is hard-coded within the project file.
     $asm = Join-Path $TEST_DIR "$projectName\bin\Release\$projectName.dll" -Resolve
 
     & $xunit $asm | Out-Host
 
-    if ($LastExitCode -ne 0 ) { die "Test task failed when targeting ""$platform""." }
+    if (-not $?) { die "Test task failed when targeting ""$platform""." }
 
     say-softly "Test completed successfully."
 }
@@ -425,7 +425,7 @@ function Invoke-TestSingle {
 
     & dotnet test $NET_SDK_PROJECT --nologo $args | Out-Host
 
-    if ($LastExitCode -ne 0 ) { die "Test task failed when targeting ""$platform""." }
+    if (-not $?) { die "Test task failed when targeting ""$platform""." }
 
     say-softly "Test completed successfully."
 }
@@ -516,7 +516,7 @@ function Invoke-TestMany {
 
     & dotnet test $NET_SDK_PROJECT --nologo $args | Out-Host
 
-    if ($LastExitCode -ne 0 ) { die "Test task failed." }
+    if (-not $?) { die "Test task failed." }
 
     say-softly "Test completed successfully."
 
@@ -567,7 +567,7 @@ function Invoke-TestAll {
 
     & dotnet test $NET_SDK_PROJECT --nologo $args | Out-Host
 
-    if ($LastExitCode -ne 0 ) { die "Test task failed." }
+    if (-not $?) { die "Test task failed." }
 
     say-softly "Test completed successfully."
 
