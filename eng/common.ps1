@@ -83,11 +83,14 @@ function carp {
 
     $Script:___Warned = $true
 
-    # The first element is for "carp", let's remove it.
-    $x, $callstack = Get-PSCallStack
-    $msg = $message + "`n  " + ($callstack -join "`n  ")
 
-    Write-Warning $msg
+    # The first element is for "carp", and the last one is useless, let's remove them.
+    $stack = Get-PSCallStack
+    $c = $stack.Count
+    if ($c -gt 2)     { $message += "`n  " + ($stack[1..($c-2)] -join "`n  ") }
+    elseif ($c -eq 2) { $message += "`n  " + $stack[1] }
+
+    Write-Warning $message
 }
 
 # ------------------------------------------------------------------------------
@@ -104,11 +107,13 @@ function croak {
 
     $Script:___Died = $true
 
-    # The first element is for "croak", let's remove it.
-    $x, $callstack = Get-PSCallStack
-    $msg = $message + "`n  " + ($callstack -join "`n  ")
+    # The first element is for "croak", and the last one is useless, let's remove them.
+    $callstack = Get-PSCallStack
+    $c = $stack.Count
+    if ($c -gt 2)     { $message += "`n  " + ($stack[1..($c-2)] -join "`n  ") }
+    elseif ($c -eq 2) { $message += "`n  " + $stack[1] }
 
-    $Host.UI.WriteErrorLine($msg)
+    $Host.UI.WriteErrorLine($message)
 
     exit 1
 }
