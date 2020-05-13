@@ -237,13 +237,8 @@ function Find-OpenCover {
 
     confess "Finding OpenCover.Console.exe."
 
-    $version = Get-PackageReferenceVersion $NET_FRAMEWORK_TOOLS_PROJECT "OpenCover"
-
-    if (-not $version) {
-        cluck "OpenCover is not referenced in ""$NET_FRAMEWORK_TOOLS_PROJECT""." `
-            -ExitOnError:$exitOnError
-        return
-    }
+    $version = Get-PackageReferenceVersion $NET_FRAMEWORK_TOOLS_PROJECT "OpenCover" `
+        -ExitOnError:$exitOnError
 
     $path = Join-Path $NET_FRAMEWORK_TOOLS_DIR "opencover\$version\tools\OpenCover.Console.exe"
 
@@ -270,13 +265,8 @@ function Find-XunitRunner {
 
     confess "Finding xunit.console.exe."
 
-    $version = Get-PackageReferenceVersion $NET_FRAMEWORK_TOOLS_PROJECT "xunit.runner.console"
-
-    if (-not $version) {
-        cluck "Xunit console runner is not referenced in ""$NET_FRAMEWORK_TOOLS_PROJECT""." `
-            -ExitOnError:$exitOnError
-        return
-    }
+    $version = Get-PackageReferenceVersion $NET_FRAMEWORK_TOOLS_PROJECT "xunit.runner.console" `
+        -ExitOnError:$exitOnError
 
     $path = Join-Path $NET_FRAMEWORK_TOOLS_DIR `
         "xunit.runner.console\$version\tools\$platform\xunit.console.exe"

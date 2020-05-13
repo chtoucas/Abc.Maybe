@@ -376,15 +376,24 @@ function Get-PackageReferenceVersion {
 
         [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
-        [string] $package
+        [string] $package,
+
+        [switch] $exitOnError
     )
 
     confess "Getting version for ""$package"" from ""$projectPath""."
 
-    [Xml] (Get-Content $projectPath) `
+    $version = [Xml] (Get-Content $projectPath) `
         | Select-Xml -XPath "//Project/ItemGroup/PackageReference[@Include='$package']" `
         | select -ExpandProperty Node `
         | select -First 1 -ExpandProperty Version
+
+    if (-not $version) {
+        cluck """$package"" is not referenced in ""$projectPath""." `
+            -ExitOnError:$exitOnError
+    }
+
+    $version
 }
 
 # ------------------------------------------------------------------------------
