@@ -298,8 +298,7 @@ function Invoke-Restore {
     if ($allKnown) { $args += "/p:AllKnown=true" }
 
     & dotnet restore $NET_SDK_PROJECT $args | Out-Host
-
-    if (-not $?) { die "Restore task failed." }
+        || die "Restore task failed."
 
     say-softly "Dependencies successfully restored."
 }
@@ -329,8 +328,7 @@ function Invoke-Build {
     if ($noRestore) { $args += "--no-restore" }
 
     & dotnet build $NET_SDK_PROJECT $args | Out-Host
-
-    if (-not $?) { die "Build task failed." }
+        || die "Build task failed."
 
     say-softly "Project successfully built."
 }
@@ -375,15 +373,13 @@ function Invoke-TestOldStyle {
 
     # https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2019
     & $msbuild $project -nologo -v:minimal /p:AbcVersion=$version /t:"Restore;Build" | Out-Host
-
-    if (-not $?) { die "Build failed when targeting ""$platform""." }
+        || die "Build failed when targeting ""$platform""."
 
     # NB: Release, not Debug, this is hard-coded within the project file.
     $asm = Join-Path $TEST_DIR "$projectName\bin\Release\$projectName.dll" -Resolve
 
     & $xunit $asm | Out-Host
-
-    if (-not $?) { die "Test task failed when targeting ""$platform""." }
+        || die "Test task failed when targeting ""$platform""."
 
     say-softly "Test completed successfully."
 }
@@ -424,8 +420,7 @@ function Invoke-TestSingle {
     elseif ($noRestore) { $args += "--no-restore" }
 
     & dotnet test $NET_SDK_PROJECT --nologo $args | Out-Host
-
-    if (-not $?) { die "Test task failed when targeting ""$platform""." }
+        || die "Test task failed when targeting ""$platform""."
 
     say-softly "Test completed successfully."
 }
@@ -515,8 +510,7 @@ function Invoke-TestMany {
     if ($runtime) { $args += "--runtime:$runtime" }
 
     & dotnet test $NET_SDK_PROJECT --nologo $args | Out-Host
-
-    if (-not $?) { die "Test task failed." }
+        || die "Test task failed."
 
     say-softly "Test completed successfully."
 
@@ -566,8 +560,7 @@ function Invoke-TestAll {
     if ($runtime)   { $args += "--runtime:$runtime" }
 
     & dotnet test $NET_SDK_PROJECT --nologo $args | Out-Host
-
-    if (-not $?) { die "Test task failed." }
+        || die "Test task failed."
 
     say-softly "Test completed successfully."
 

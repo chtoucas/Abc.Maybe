@@ -138,8 +138,7 @@ function Invoke-OpenCover {
         -filter:$filter `
         -excludebyattribute:*.ExcludeFromCodeCoverageAttribute `
         | Out-Host
-
-    if (-not $?) { die "OpenCover failed." }
+        || die "OpenCover failed."
 
     say-softly "OpenCover completed successfully."
 }
@@ -174,8 +173,7 @@ function Invoke-Coverlet {
         /p:Include="[Abc.Maybe]*" `
         /p:Exclude=$exclude `
         | Out-Host
-
-    if (-not $?) { die "Coverlet failed." }
+        || die "Coverlet failed."
 
     say-softly "Coverlet completed successfully."
 }
@@ -202,8 +200,7 @@ function Invoke-ReportGenerator {
         -reports:$reports `
         -targetdir:$targetdir `
         | Out-Host
-
-    if (-not $?) { die "ReportGenerator failed." }
+        || die "ReportGenerator failed."
 
     say-softly "ReportGenerator completed successfully."
 }
