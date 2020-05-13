@@ -6,13 +6,14 @@ New-Alias "my"      New-Variable
 New-Alias "say"     Write-Host
 New-Alias "diag"    Write-Debug
 New-Alias "confess" Write-Verbose
-New-Alias "whereis" Get-Command
 
 New-Alias "const"   New-Constant
 New-Alias "yesno"   Confirm-Yes
 New-Alias "guard"   Confirm-Continue
+New-Alias "whereis" Find-SingleExe
 
 ################################################################################
+#region Core functions.
 
 function New-Constant {
     [CmdletBinding()]
@@ -29,6 +30,34 @@ function New-Constant {
     New-Variable -Name $name -Value $value -Scope Script -Option Constant
 }
 
+# ------------------------------------------------------------------------------
+
+# Returns a System.Management.Automation.CommandInfo
+function Find-SingleExe {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $name,
+
+        [switch] $exitOnError
+    )
+
+    confess "Finding $name in your PATH."
+
+    $cmd = Get-Command $name -CommandType Application -TotalCount 1 -ErrorAction Ignore
+
+    if ($cmd) {
+        confess "$name found here: ""$cmd.Path""."
+
+        return $cmd
+    }
+
+    $message = "Could not find $name in your PATH."
+    if ($exitOnError) { croak $message } else { confess $message }
+}
+
+#endregion
 ################################################################################
 #region Warn or die (inspired by Perl).
 
@@ -218,10 +247,10 @@ function Remove-Dir {
     confess "Deleting directory ""$path""."
 
     if (-not (Test-Path $path)) {
-        confess "Skipping ""$path""; the path does NOT exist." ; return
+        return confess "Skipping ""$path""; the path does NOT exist."
     }
     if (-not [System.IO.Path]::IsPathRooted($path)) {
-        carp "Skipping ""$path""; the path MUST be absolute." ; return
+        return carp "Skipping ""$path""; the path MUST be absolute."
     }
 
     rm $path -Recurse
@@ -240,10 +269,10 @@ function Remove-BinAndObj {
     confess "Deleting ""bin"" and ""obj"" directories within ""$path""."
 
     if (-not (Test-Path $path)) {
-        confess "Skipping ""$path""; the path does NOT exist." ; return
+        return confess "Skipping ""$path""; the path does NOT exist."
     }
     if (-not [System.IO.Path]::IsPathRooted($path)) {
-        carp "Skipping ""$path""; the path MUST be absolute." ; return
+        return carp "Skipping ""$path""; the path MUST be absolute."
     }
 
     ls $path -Include bin,obj -Recurse `
@@ -254,36 +283,13 @@ function Remove-BinAndObj {
 ################################################################################
 #region Git-related functions.
 
-function Find-Git {
-    [CmdletBinding()]
-    param(
-        [switch] $exitOnError
-    )
-
-    confess "Finding git.exe."
-
-    $cmd = whereis "git.exe" -CommandType Application -TotalCount 1 -ErrorAction Ignore
-
-    if ($cmd) {
-        $path = $cmd.Path
-
-        confess "git.exe found here: ""$path""."
-
-        return $path
-    }
-
-    cluck "Could not find git.exe. Please ensure git.exe is installed." -ExitOnError:$exitOnError
-}
-
-# ------------------------------------------------------------------------------
-
 # Verify that there are no pending changes.
 function Approve-GitStatus {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $git,
+        [ValidateNotNull()]
+        [System.Management.Automation.CommandInfo] $git,
 
         [switch] $exitOnError
     )
@@ -312,8 +318,8 @@ function Get-GitCommitHash {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $git,
+        [ValidateNotNull()]
+        [System.Management.Automation.CommandInfo] $git,
 
         [switch] $exitOnError
     )
@@ -341,8 +347,8 @@ function Get-GitBranch {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $git,
+        [ValidateNotNull()]
+        [System.Management.Automation.CommandInfo] $git,
 
         [switch] $exitOnError
     )
@@ -408,16 +414,8 @@ function Find-VsWhere {
 
     confess "Finding vswhere.exe."
 
-    $cmd = whereis "vswhere.exe" -CommandType Application -TotalCount 1 -ErrorAction Ignore
-    if ($cmd) {
-        $path = $cmd.Path
-
-        confess "vswhere.exe found here: ""$path""."
-
-        return $path
-    }
-
-    confess "vswhere.exe could not be found in your PATH."
+    $cmd = whereis "vswhere.exe"
+    if ($cmd) { return $cmd }
 
     $path = Join-Path ${Env:ProgramFiles(x86)} "\Microsoft Visual Studio\Installer\vswhere.exe"
 
@@ -444,15 +442,8 @@ function Find-MSBuild {
     confess "Finding MSBuild.exe."
 
     if (-not $vswhere) {
-        $cmd = whereis "MSBuild.exe" -CommandType Application -TotalCount 1 -ErrorAction Ignore
-
-        if ($cmd) {
-            $path = $cmd.Path
-
-            confess "MSBuild.exe found here: ""$path""."
-
-            return $path
-        }
+        $cmd = whereis "MSBuild.exe"
+        if ($cmd) { return $cmd.Path }
 
         cluck "MSBuild.exe could not be found in your PATH." -ExitOnError:$exitOnError
     }
@@ -478,33 +469,22 @@ function Find-Fsi {
         [switch] $exitOnError
     )
 
-    confess "Finding fsi.exe."
+    confess "Finding fsi.exe using vswhere.exe."
 
     if (-not $vswhere) {
-        $cmd = whereis "fsi.exe" -CommandType Application -TotalCount 1 -ErrorAction Ignore
-
-        if ($cmd) {
-            $path = $cmd.Path
-
-            confess "fsi.exe found here: ""$path""."
-
-            return $path
-        }
-
-        cluck "fsi.exe could not be found in your PATH." -ExitOnError:$exitOnError
+        return cluck "Parameter ""vswhere"" was empty." -ExitOnError:$exitOnError
     }
-    else {
-        # NB: vswhere.exe does not produce proper exit codes.
-        $vspath = & $vswhere -legacy -latest -property installationPath
 
-        confess "VSPath = ""$vspath""."
+    # NB: vswhere.exe does not produce proper exit codes.
+    $vspath = & $vswhere -legacy -latest -property installationPath
 
-        $path = Join-Path $vspath "\Common7\IDE\CommonExtensions\Microsoft\FSharp\fsi.exe"
+    confess "VS Installation Path = ""$vspath""."
 
-        if (Test-Path $path) { confess "fsi.exe found here: ""$path""." ; return $path }
+    $path = Join-Path $vspath "\Common7\IDE\CommonExtensions\Microsoft\FSharp\fsi.exe"
 
-        cluck "Could not find fsi.exe." -ExitOnError:$exitOnError
-    }
+    if (Test-Path $path) { confess "fsi.exe found here: ""$path""." ; return $path }
+
+    cluck "Could not find fsi.exe." -ExitOnError:$exitOnError
 }
 
 #endregion

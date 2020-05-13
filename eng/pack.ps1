@@ -92,7 +92,7 @@ function Get-GitMetadata {
 
     say "Retrieving git metadata."
 
-    $git = Find-Git -ExitOnError:$exitOnError
+    $git = whereis "git.exe" -ExitOnError:$exitOnError
 
     if (-not $git) {
         if ($yes) {
@@ -107,12 +107,12 @@ function Get-GitMetadata {
 
     # Keep Approve-GitStatus before $yes: we always want to see a warning
     # when there are uncommited changes.
-    $ok = Approve-GitStatus -Git $git -ExitOnError:$exitOnError
+    $ok = Approve-GitStatus $git -ExitOnError:$exitOnError
 
     $branch = "" ; $commit = ""
     if ($ok -or $yes -or (yesno "There are uncommited changes, force retrieval of git metadata?")) {
-        $branch = Get-GitBranch     -Git $git -ExitOnError:$exitOnError
-        $commit = Get-GitCommitHash -Git $git -ExitOnError:$exitOnError
+        $branch = Get-GitBranch     $git -ExitOnError:$exitOnError
+        $commit = Get-GitCommitHash $git -ExitOnError:$exitOnError
     }
 
     if ($branch -eq "") { warn "The branch name will be empty." }
@@ -133,7 +133,11 @@ function Generate-UIDs {
 
     say "Generating build UIDs."
 
-    $fsi = Find-Fsi (Find-VsWhere)
+    # TODO: ?? seems buggy right now. For instance
+    # $fsi = (Find-VsWhere | Find-Fsi -ExitOnError) ?? (whereis "fsi.exe")
+    # evaluates the left-hand operand twice.
+    $fsi = whereis "fsi.exe"
+    $fsi ??= Find-VsWhere | Find-Fsi -ExitOnError
     if (-not $fsi) { return @("", "", "") }
 
     $fsx = Join-Path $PSScriptRoot "genuids.fsx" -Resolve
