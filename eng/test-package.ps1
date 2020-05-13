@@ -299,8 +299,9 @@ function Invoke-Restore {
 
     & dotnet restore $NET_SDK_PROJECT $args | Out-Host
 
-    Assert-CmdSuccess -Error "Restore task failed." `
-        -Success "Dependencies successfully restored."
+    if ($LastExitCode -ne 0 ) { die "Restore task failed." }
+
+    say-softly "Dependencies successfully restored."
 }
 
 # ------------------------------------------------------------------------------
@@ -329,7 +330,9 @@ function Invoke-Build {
 
     & dotnet build $NET_SDK_PROJECT $args | Out-Host
 
-    Assert-CmdSuccess -Error "Build task failed." -Success "Project successfully built."
+    if ($LastExitCode -ne 0 ) { die "Build task failed." }
+
+    say-softly "Project successfully built."
 }
 
 # ------------------------------------------------------------------------------
@@ -373,15 +376,16 @@ function Invoke-TestOldStyle {
     # https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2019
     & $msbuild $project -nologo -v:minimal /p:AbcVersion=$version /t:"Restore;Build" | Out-Host
 
-    Assert-CmdSuccess -Error "Build failed when targeting ""$platform""."
+    if ($LastExitCode -ne 0 ) { die "Build failed when targeting ""$platform""." }
 
     # NB: Release, not Debug, this is hard-coded within the project file.
     $asm = Join-Path $TEST_DIR "$projectName\bin\Release\$projectName.dll" -Resolve
 
     & $xunit $asm | Out-Host
 
-    Assert-CmdSuccess -Error "Test task failed when targeting ""$platform""." `
-        -Success "Test completed successfully."
+    if ($LastExitCode -ne 0 ) { die "Test task failed when targeting ""$platform""." }
+
+    say-softly "Test completed successfully."
 }
 
 # ------------------------------------------------------------------------------
@@ -421,8 +425,9 @@ function Invoke-TestSingle {
 
     & dotnet test $NET_SDK_PROJECT --nologo $args | Out-Host
 
-    Assert-CmdSuccess -Error "Test task failed when targeting ""$platform""." `
-        -Success "Test completed successfully."
+    if ($LastExitCode -ne 0 ) { die "Test task failed when targeting ""$platform""." }
+
+    say-softly "Test completed successfully."
 }
 
 # ------------------------------------------------------------------------------
@@ -511,7 +516,9 @@ function Invoke-TestMany {
 
     & dotnet test $NET_SDK_PROJECT --nologo $args | Out-Host
 
-    Assert-CmdSuccess -Error "Test task failed." -Success "Test completed successfully."
+    if ($LastExitCode -ne 0 ) { die "Test task failed." }
+
+    say-softly "Test completed successfully."
 
     if ("net45" -in $platforms) {
         Invoke-TestOldStyle -Platform "net45" -Version $version -Runtime $runtime
@@ -560,7 +567,9 @@ function Invoke-TestAll {
 
     & dotnet test $NET_SDK_PROJECT --nologo $args | Out-Host
 
-    Assert-CmdSuccess -Error "Test task failed." -Success "Test completed successfully."
+    if ($LastExitCode -ne 0 ) { die "Test task failed." }
+
+    say-softly "Test completed successfully."
 
     if ($allKnown -and (-not $noClassic)) {
         # "net45" and "net451" must be handled separately.

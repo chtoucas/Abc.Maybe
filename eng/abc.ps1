@@ -285,28 +285,6 @@ function Find-XunitRunner {
     }
 }
 
-# ------------------------------------------------------------------------------
-
-# TODO: to be removed.
-# Die if the exit code of the last external command that was run is not equal to zero.
-function Assert-CmdSuccess {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true, Position = 0)]
-        [ValidateNotNullOrEmpty()]
-        [string] $error,
-
-        [Parameter(Mandatory = $false, Position = 1)]
-        [string] $success
-    )
-
-    confess "Checking exit code of the last external command that was run."
-
-    if ($LastExitCode -ne 0) { croak $error }
-
-    if ($success) { say-softly $success }
-}
-
 #endregion
 ################################################################################
 #region Restore
