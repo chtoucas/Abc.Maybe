@@ -115,12 +115,8 @@ function Get-GitMetadata {
         $commit = Get-GitCommitHash -Git $git -ExitOnError:$exitOnError
     }
 
-    if ($branch -eq "") {
-        warn "The branch name will be empty. Maybe use -Yes?"
-    }
-    if ($commit -eq "") {
-        warn "The commit hash will be empty. Maybe use -Yes?"
-    }
+    if ($branch -eq "") { warn "The branch name will be empty." }
+    if ($commit -eq "") { warn "The commit hash will be empty." }
 
     return @($branch, $commit)
 }
@@ -143,8 +139,14 @@ function Generate-UIDs {
     $fsx = Join-Path $PSScriptRoot "genuids.fsx" -Resolve
     $uids = & $fsi $fsx
 
+    if (-not $?) {
+        warn "genuids.fsx did not complete succesfully."
+        return @("", "", "")
+    }
+
     confess "Build UIDs: ""$uids"""
 
+    # TODO: $ci and empty timestamp.
     $uids.Split(";")
 }
 
@@ -176,24 +178,19 @@ function Get-ActualVersion {
         # is seen as a prerelease of what could be the next version. Examples:
         # - "1.2.3"       -> "1.2.4-ci-20201231-T121212".
         # - "1.2.3-beta4" -> "1.2.3-beta5-ci-20201231-T121212".
-        if ($precy -eq "") {
-            # Without a prerelease label, we increase the patch number.
-            $patch  = 1 + [int]$patch
-            $suffix = "ci-$timestamp"
-        }
-        else {
+        if ($precy) {
             # With a prerelease label, we increase the prerelease number.
             $preno  = 1 + [int]$preno
             $suffix = "$precy$preno-ci-$timestamp"
         }
+        else {
+            # Without a prerelease label, we increase the patch number.
+            $patch  = 1 + [int]$patch
+            $suffix = "ci-$timestamp"
+        }
     }
     else {
-        if ($precy -eq "") {
-            $suffix = ""
-        }
-        else {
-            $suffix = "$precy$preno"
-        }
+        $suffix = $precy ? "$precy$preno" : ""
     }
 
     $prefix = "$major.$minor.$patch"
@@ -201,12 +198,8 @@ function Get-ActualVersion {
     confess "Version suffix: ""$suffix""."
     confess "Version prefix: ""$prefix""."
 
-    if ($suffix -eq "") {
-        return @($prefix, $prefix, "")
-    }
-    else {
-        return @("$prefix-$suffix", $prefix, $suffix)
-    }
+    $suffix ? @("$prefix-$suffix", $prefix, $suffix)
+        : @($prefix, $prefix, "")
 }
 
 # ------------------------------------------------------------------------------
@@ -228,12 +221,7 @@ function Get-PackageFile {
 
     say "Getting package file."
 
-    if ($ci) {
-        $path = Join-Path $PKG_CI_OUTDIR "$projectName.$version.nupkg"
-    }
-    else {
-        $path = Join-Path $PKG_OUTDIR "$projectName.$version.nupkg"
-    }
+    $path = Join-Path ($ci ? $PKG_CI_OUTDIR : $PKG_OUTDIR) "$projectName.$version.nupkg"
 
     confess "Package file: ""$path"""
 
@@ -294,16 +282,13 @@ function Invoke-Pack {
         [switch] $myVerbose
     )
 
-    SAY-LOUDLY "`nPacking v$version" -NoNewline
-    if ($buildNumber -and $revisionNumber) {
-        SAY-LOUDLY " --- build $buildNumber, rev. $revisionNumber" -NoNewline
-    }
-    else { SAY-LOUDLY " --- build ???, rev. ???" -NoNewline }
-    if ($repositoryBranch -and $repositoryCommit) {
-        " on branch ""$repositoryBranch"", commit ""{0}""." -f $repositoryCommit.Substring(0, 7) `
-            | SAY-LOUDLY
-    }
-    else { SAY-LOUDLY " on branch ""???"", commit ""???""." }
+    "`nPacking v$version --- build {0}, rev. {1} on branch ""{2}"", commit ""{3}""." -f `
+        ($buildNumber ?? "???"),
+        ($revisionNumber ?? "???"),
+        # TODO: it gives us an empty string.
+        ($repositoryBranch ? $repositoryBranch : "???"),
+        ($repositoryCommit ? $repositoryCommit.Substring(0, 7) : "???") `
+        | SAY-LOUDLY
 
     # VersionSuffix is for Pack.props, but it is not enough, we MUST
     # also specify --version-suffix (not sure it is necessary any more, but

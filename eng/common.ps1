@@ -412,7 +412,7 @@ function Find-VsWhere {
     if ($cmd) {
         $path = $cmd.Path
 
-        confess "git.exe found here: ""$path""."
+        confess "vswhere.exe found here: ""$path""."
 
         return $path
     }
@@ -449,7 +449,7 @@ function Find-MSBuild {
         if ($cmd) {
             $path = $cmd.Path
 
-            confess "git.exe found here: ""$path""."
+            confess "MSBuild.exe found here: ""$path""."
 
             return $path
         }
@@ -457,10 +457,11 @@ function Find-MSBuild {
         cluck "MSBuild.exe could not be found in your PATH." -ExitOnError:$exitOnError
     }
     else {
+        # NB: vswhere.exe does not produce proper exit codes.
         $path = & $vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe `
-            | select-object -first 1
+            | select -First 1
 
-        if ($path) { confess "MSBuild.exe found here: ""$path""." ; return $path }
+        if (Test-Path $path) { confess "MSBuild.exe found here: ""$path""." ; return $path }
 
         cluck "Could not find MSBuild.exe." -ExitOnError:$exitOnError
     }
@@ -485,7 +486,7 @@ function Find-Fsi {
         if ($cmd) {
             $path = $cmd.Path
 
-            confess "git.exe found here: ""$path""."
+            confess "fsi.exe found here: ""$path""."
 
             return $path
         }
@@ -493,7 +494,11 @@ function Find-Fsi {
         cluck "fsi.exe could not be found in your PATH." -ExitOnError:$exitOnError
     }
     else {
+        # NB: vswhere.exe does not produce proper exit codes.
         $vspath = & $vswhere -legacy -latest -property installationPath
+
+        confess "VSPath = ""$vspath""."
+
         $path = Join-Path $vspath "\Common7\IDE\CommonExtensions\Microsoft\FSharp\fsi.exe"
 
         if (Test-Path $path) { confess "fsi.exe found here: ""$path""." ; return $path }
