@@ -1,5 +1,7 @@
 # See LICENSE in the project root for license information.
 
+#Requires -Version 7
+
 # Dot sourcing this file ensures that it executes in the caller scope.
 # For safety, we still add the $Script: prefix.
 Set-StrictMode -Version Latest
@@ -7,12 +9,8 @@ $Script:ErrorActionPreference = "Stop"
 
 . (Join-Path $PSScriptRoot "common.ps1")
 
-if ($Host.UI.RawUI.ForegroundColor -eq "White") {
-    $Script:__ForegroundColor = "Blue"
-}
-else {
-    $Script:__ForegroundColor = "White"
-}
+$Script:__ForegroundColor = `
+    $Host.UI.RawUI.ForegroundColor -eq "White" ? "Blue" : "White"
 
 ################################################################################
 #region Aliases / Constants.
@@ -201,26 +199,22 @@ function Get-PackageVersion {
 
     $node = [Xml] (Get-Content $projectPath) `
         | Select-Xml -XPath "//Project/PropertyGroup/MajorVersion/.." `
-        | select -ExpandProperty Node
+        | select -First 1 -ExpandProperty Node
 
     if (-not $node) {
         croak "The property file for ""$packageName"" is not valid."
     }
 
     # NB: if one of the nodes does not actually exist, the function throws.
-    $major = $node | select -First 1 -ExpandProperty MajorVersion
-    $minor = $node | select -First 1 -ExpandProperty MinorVersion
-    $patch = $node | select -First 1 -ExpandProperty PatchVersion
-    $precy = $node | select -First 1 -ExpandProperty PreReleaseCycle
-    $preno = $node | select -First 1 -ExpandProperty PreReleaseNumber
+    $major = $node.MajorVersion
+    $minor = $node.MinorVersion
+    $patch = $node.PatchVersion
+    $precy = $node.PreReleaseCycle
+    $preno = $node.PreReleaseNumber
 
     if ($asString) {
-        if ($precy -eq "") {
-            return "$major.$minor.$patch"
-        }
-        else {
-            return "$major.$minor.$patch-$precy$preno"
-        }
+        return $precy ? "$major.$minor.$patch-$precy$preno"
+            : "$major.$minor.$patch"
     }
     else {
         @($major, $minor, $patch, $precy, $preno)
@@ -290,6 +284,7 @@ function Restore-NETFrameworkTools {
 
     say "Restoring local .NET Framework tools."
     & dotnet restore $NET_FRAMEWORK_TOOLS_PROJECT | Out-Host
+        || carp "Failed to restore local .NET Framework tools."
 }
 
 # ------------------------------------------------------------------------------
@@ -303,6 +298,7 @@ function Restore-NETCoreTools {
 
         say "Restoring local .NET Core tools."
         & dotnet tool restore | Out-Host
+            || carp "Failed to restore local .NET Core tools."
     }
     finally {
         popd
@@ -320,6 +316,7 @@ function Restore-Solution {
 
         say "Restoring solution."
         & dotnet restore | Out-Host
+            || carp "Failed to restore solution."
     }
     finally {
         popd
@@ -336,8 +333,7 @@ function Reset-SourceTree {
         [Alias("y")] [switch] $yes
     )
 
-    if ($yes) { $echo = "say" } else { $echo = "confess" }
-
+    $echo = $yes ? "say" : "confess"
     . $echo "Resetting source tree."
 
     if ($yes -or (yesno "Reset the source tree?")) {
@@ -354,8 +350,7 @@ function Reset-TestTree {
         [Alias("y")] [switch] $yes
     )
 
-    if ($yes) { $echo = "say" } else { $echo = "confess" }
-
+    $echo = $yes ? "say" : "confess"
     . $echo "Resetting test tree."
 
     if ($yes -or (yesno "Reset the test tree?")) {
@@ -372,8 +367,7 @@ function Reset-PackageOutDir {
         [Alias("y")] [switch] $yes
     )
 
-    if ($yes) { $echo = "say" } else { $echo = "confess" }
-
+    $echo = $yes ? "say" : "confess"
     . $echo "Resetting output directory for packages."
 
     if ($yes -or (yesno "Clear output directory for packages?")) {
@@ -396,8 +390,7 @@ function Reset-PackageCIOutDir {
         [Alias("y")] [switch] $yes
     )
 
-    if ($yes) { $echo = "say" } else { $echo = "confess" }
-
+    $echo = $yes ? "say" : "confess"
     . $echo "Resetting output directory for CI packages."
 
     if ($yes -or (yesno "Clear output directory for CI packages?")) {
@@ -420,8 +413,7 @@ function Reset-LocalNuGet {
         [Alias("y")] [switch] $yes
     )
 
-    if ($yes) { $echo = "say" } else { $echo = "confess" }
-
+    $echo = $yes ? "say" : "confess"
     . $echo "Resetting local NuGet feed/cache."
 
     if ($yes -or (yesno "Clear local NuGet feed/cache?")) {

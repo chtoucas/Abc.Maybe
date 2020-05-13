@@ -1,15 +1,10 @@
 # See LICENSE in the project root for license information.
 
-. (Join-Path $PSScriptRoot "abc.ps1")
+. (Join-Path $PSScriptRoot "common.ps1")
 
-try {
-    $fsi = Find-Fsi (Find-VsWhere) -ExitOnError
-    $fsx = Join-Path $PSScriptRoot "genuids.fsx" -Resolve
+$fsi = Find-Fsi (Find-VsWhere) -ExitOnError
+$fsx = Join-Path $PSScriptRoot "genuids.fsx" -Resolve
 
-    $uids = & $fsi $fsx
+$uids = & $fsi $fsx
 
-    say $uids
-}
-catch {
-    ___ERR___
-}
+say $uids

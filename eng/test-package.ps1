@@ -1,7 +1,5 @@
 # See LICENSE in the project root for license information.
 
-#Requires -Version 7
-
 ################################################################################
 #region Preamble.
 
