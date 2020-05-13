@@ -83,7 +83,6 @@ function carp {
 
     $Script:___Warned = $true
 
-
     # The first element is for "carp", and the last one is useless, let's remove them.
     $stack = Get-PSCallStack
     $c = $stack.Count
@@ -108,7 +107,7 @@ function croak {
     $Script:___Died = $true
 
     # The first element is for "croak", and the last one is useless, let's remove them.
-    $callstack = Get-PSCallStack
+    $stack = Get-PSCallStack
     $c = $stack.Count
     if ($c -gt 2)     { $message += "`n  " + ($stack[1..($c-2)] -join "`n  ") }
     elseif ($c -eq 2) { $message += "`n  " + $stack[1] }
@@ -116,6 +115,39 @@ function croak {
     $Host.UI.WriteErrorLine($message)
 
     exit 1
+}
+
+# ------------------------------------------------------------------------------
+
+# Warn user or die of errors (from perspective of caller).
+function cluck {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $message,
+
+        [switch] $exitOnError
+    )
+
+    # The first element is for "cluck", and the last one is useless, let's remove them.
+    $stack = Get-PSCallStack
+    $c = $stack.Count
+    if ($c -gt 2)     { $message += "`n  " + ($stack[1..($c-2)] -join "`n  ") }
+    elseif ($c -eq 2) { $message += "`n  " + $stack[1] }
+
+    if ($exitOnError) {
+        $Script:___Died = $true
+
+        $Host.UI.WriteErrorLine($message)
+
+        exit 1
+    }
+    else {
+        $Script:___Warned = $true
+
+        Write-Warning $message
+    }
 }
 
 #endregion
@@ -186,12 +218,10 @@ function Remove-Dir {
     confess "Deleting directory ""$path""."
 
     if (-not (Test-Path $path)) {
-        confess "Skipping ""$path""; the path does NOT exist."
-        return
+        confess "Skipping ""$path""; the path does NOT exist." ; return
     }
     if (-not [System.IO.Path]::IsPathRooted($path)) {
-        carp "Skipping ""$path""; the path MUST be absolute."
-        return
+        carp "Skipping ""$path""; the path MUST be absolute." ; return
     }
 
     rm $path -Recurse
@@ -210,12 +240,10 @@ function Remove-BinAndObj {
     confess "Deleting ""bin"" and ""obj"" directories within ""$path""."
 
     if (-not (Test-Path $path)) {
-        confess "Skipping ""$path""; the path does NOT exist."
-        return
+        confess "Skipping ""$path""; the path does NOT exist." ; return
     }
     if (-not [System.IO.Path]::IsPathRooted($path)) {
-        carp "Skipping ""$path""; the path MUST be absolute."
-        return
+        carp "Skipping ""$path""; the path MUST be absolute." ; return
     }
 
     ls $path -Include bin,obj -Recurse `
@@ -234,8 +262,6 @@ function Find-Git {
 
     confess "Finding git.exe."
 
-    if ($exitOnError) { $errhandler = "croak" } else { $errhandler = "carp" }
-
     $cmd = whereis "git.exe" -CommandType Application -TotalCount 1 -ErrorAction Ignore
 
     if ($cmd) {
@@ -246,7 +272,7 @@ function Find-Git {
         return $path
     }
 
-    . $errhandler "Could not find git.exe. Please ensure git.exe is installed."
+    cluck "Could not find git.exe. Please ensure git.exe is installed." -ExitOnError:$exitOnError
 }
 
 # ------------------------------------------------------------------------------
@@ -264,18 +290,16 @@ function Approve-GitStatus {
 
     confess "Getting the git status."
 
-    if ($exitOnError) { $errhandler = "croak" } else { $errhandler = "carp" }
-
     try {
         # If there no uncommitted changes, the result is null, not empty.
         $status = & $git status -s 2>&1
 
         if ($status -eq $null) { return $true }
 
-        . $errhandler "Uncommitted changes are pending."
+        cluck "Uncommitted changes are pending." -ExitOnError:$exitOnError
     }
     catch {
-        . $errhandler """git status"" failed: $_"
+        cluck """git status"" failed: $_" -ExitOnError:$exitOnError
     }
 
     return $false
@@ -296,8 +320,6 @@ function Get-GitCommitHash {
 
     confess "Getting the last git commit hash."
 
-    if ($exitOnError) { $errhandler = "croak" } else { $errhandler = "carp" }
-
     try {
         $commit = & $git log -1 --format="%H" 2>&1
 
@@ -306,7 +328,7 @@ function Get-GitCommitHash {
         return $commit
     }
     catch {
-        . $errhandler """git log"" failed: $_"
+        cluck """git log"" failed: $_" -ExitOnError:$exitOnError
 
         return ""
     }
@@ -327,8 +349,6 @@ function Get-GitBranch {
 
     confess "Getting the git branch."
 
-    if ($exitOnError) { $errhandler = "croak" } else { $errhandler = "carp" }
-
     try {
         $branch = & $git rev-parse --abbrev-ref HEAD 2>&1
 
@@ -337,7 +357,7 @@ function Get-GitBranch {
         return $branch
     }
     catch {
-        . $errhandler """git rev-parse"" failed: $_"
+        cluck """git rev-parse"" failed: $_" -ExitOnError:$exitOnError
 
         return ""
     }
@@ -398,9 +418,7 @@ function Find-VsWhere {
         return $path
     }
 
-    if ($exitOnError) { $errhandler = "croak" } else { $errhandler = "carp" }
-
-    . $errhandler "Could not find vswhere.exe."
+    cluck "Could not find vswhere.exe." -ExitOnError:$exitOnError
 }
 
 # ------------------------------------------------------------------------------
@@ -416,8 +434,6 @@ function Find-MSBuild {
 
     confess "Finding MSBuild.exe."
 
-    if ($exitOnError) { $errhandler = "croak" } else { $errhandler = "carp" }
-
     if (-not $vswhere) {
         $cmd = whereis "MSBuild.exe" -CommandType Application -TotalCount 1 -ErrorAction Ignore
 
@@ -429,7 +445,7 @@ function Find-MSBuild {
             return $path
         }
 
-        . $errhandler "MSBuild.exe could not be found in your PATH."
+        cluck "MSBuild.exe could not be found in your PATH." -ExitOnError:$exitOnError
     }
     else {
         $path = & $vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe `
@@ -437,7 +453,7 @@ function Find-MSBuild {
 
         if ($path) { confess "MSBuild.exe found here: ""$path""." ; return $path }
 
-        . $errhandler "Could not find MSBuild.exe."
+        cluck "Could not find MSBuild.exe." -ExitOnError:$exitOnError
     }
 }
 
@@ -454,8 +470,6 @@ function Find-Fsi {
 
     confess "Finding fsi.exe."
 
-    if ($exitOnError) { $errhandler = "croak" } else { $errhandler = "carp" }
-
     if (-not $vswhere) {
         $cmd = whereis "fsi.exe" -CommandType Application -TotalCount 1 -ErrorAction Ignore
 
@@ -467,7 +481,7 @@ function Find-Fsi {
             return $path
         }
 
-        . $errhandler "fsi.exe could not be found in your PATH."
+        cluck "fsi.exe could not be found in your PATH." -ExitOnError:$exitOnError
     }
     else {
         $vspath = & $vswhere -legacy -latest -property installationPath
@@ -475,7 +489,7 @@ function Find-Fsi {
 
         if (Test-Path $path) { confess "fsi.exe found here: ""$path""." ; return $path }
 
-        . $errhandler "Could not find fsi.exe."
+        cluck "Could not find fsi.exe." -ExitOnError:$exitOnError
     }
 }
 
