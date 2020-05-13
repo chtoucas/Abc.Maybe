@@ -7,6 +7,13 @@ $Script:ErrorActionPreference = "Stop"
 
 . (Join-Path $PSScriptRoot "common.ps1")
 
+if ($Host.UI.RawUI.ForegroundColor -eq "White") {
+    $Script:__ForegroundColor = "Blue"
+}
+else {
+    $Script:__ForegroundColor = "White"
+}
+
 ################################################################################
 #region Aliases / Constants.
 
@@ -84,6 +91,8 @@ function ___ERR___ {
     [CmdletBinding()]
     param()
 
+    $Script:___Died = $true
+
     $Host.UI.WriteErrorLine("An unexpected error occurred.")
 
     if ($Error -and ($err = $Error[0]) -is [System.Management.Automation.ErrorRecord]) {
@@ -106,18 +115,18 @@ function ___END___ {
 
     popd
 
-    if ($Script:___Warned) {
-        say "`nExecution terminated with warning(s)." -ForegroundColor Yellow
-    }
-    elseif ($Script:___Died) {
+    if ($Script:___Died) {
         say "`nExecution aborted." -ForegroundColor Red
     }
+    elseif ($Script:___Warned) {
+        say "`nExecution terminated with warning(s)." -ForegroundColor Yellow
+    }
     else {
-        say "`nGoodbye." -ForegroundColor Green
+        say "`nGoodbye." -ForegroundColor $Script:__ForegroundColor
     }
 
     if ($Error -and ($err = $Error[0]) -is [System.Management.Automation.ErrorRecord]) {
-        say "`n--- Post-mortem." -ForegroundColor Red
+        say "`n--- Post-mortem." -ForegroundColor $Script:__ForegroundColor
 
         # Write a terminating error.
         $PSCmdlet.WriteError($err)
@@ -138,7 +147,7 @@ function Write-Hello {
         [switch] $noNewline
     )
 
-    say "Hello, $message" -ForegroundColor White -NoNewline:$noNewline
+    say "Hello, $message" -ForegroundColor $Script:__ForegroundColor -NoNewline:$noNewline
 }
 
 # ------------------------------------------------------------------------------
@@ -228,12 +237,11 @@ function Find-OpenCover {
 
     confess "Finding OpenCover.Console.exe."
 
-    if ($exitOnError) { $errhandler = "croak" } else { $errhandler = "carp" }
-
     $version = Get-PackageReferenceVersion $NET_FRAMEWORK_TOOLS_PROJECT "OpenCover"
 
     if (-not $version) {
-        . $errhandler "OpenCover is not referenced in ""$NET_FRAMEWORK_TOOLS_PROJECT""."
+        cluck "OpenCover is not referenced in ""$NET_FRAMEWORK_TOOLS_PROJECT""." `
+            -ExitOnError:$exitOnError
         return
     }
 
@@ -244,7 +252,8 @@ function Find-OpenCover {
         return $path
     }
 
-    . $errhandler "Could not find OpenCover v$version. Maybe use -Restore?"
+    cluck "Could not find OpenCover v$version. Maybe use -Restore?" `
+        -ExitOnError:$exitOnError
 }
 
 # ------------------------------------------------------------------------------
@@ -261,12 +270,11 @@ function Find-XunitRunner {
 
     confess "Finding xunit.console.exe."
 
-    if ($exitOnError) { $errhandler = "croak" } else { $errhandler = "carp" }
-
     $version = Get-PackageReferenceVersion $NET_FRAMEWORK_TOOLS_PROJECT "xunit.runner.console"
 
     if (-not $version) {
-        . $errhandler "Xunit console runner is not referenced in ""$NET_FRAMEWORK_TOOLS_PROJECT""."
+        cluck "Xunit console runner is not referenced in ""$NET_FRAMEWORK_TOOLS_PROJECT""." `
+            -ExitOnError:$exitOnError
         return
     }
 
@@ -278,7 +286,8 @@ function Find-XunitRunner {
         return $path
     }
 
-    . $errhandler "Could not find Xunit Console Runner v$version. Maybe use -Restore?"
+    cluck "Could not find Xunit Console Runner v$version. Maybe use -Restore?" `
+        -ExitOnError:$exitOnError
 }
 
 #endregion
