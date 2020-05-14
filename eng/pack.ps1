@@ -133,8 +133,6 @@ function Generate-UIDs {
 
     say "Generating build UIDs."
 
-    # TODO: $ci and empty timestamp.
-
     $fsi = (whereis "fsi.exe") ?? (Find-VsWhere -ExitOnError | Find-Fsi)
     if (-not $fsi) { return @("", "", "") }
 
@@ -172,7 +170,8 @@ function Get-ActualVersion {
 
     if ($ci) {
         if (-not $timestamp) {
-            die "For CI packages, the timestamp cannot be empty."
+            ___confess "The timestamp is empty, let's regenerate it."
+            $timestamp = "{0:yyyyMMdd}.T{0:HHmmss}" -f (Get-Date).ToUniversalTime()
         }
 
         # For CI packages, we use SemVer 2.0.0, and we ensure that the package
