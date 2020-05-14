@@ -364,8 +364,7 @@ function Invoke-TestOldStyle {
     $xunit = Find-XunitRunnerOnce
     if (-not $xunit) { warn "Skipping." ; return }
 
-    $msbuild = whereis "MSBuild.exe"
-    $msbuild ??= Find-VsWhere -ExitOnError | Find-MSBuild -ExitOnError
+    $msbuild = (whereis "MSBuild.exe") ?? (Find-VsWhere -ExitOnError | Find-MSBuild -ExitOnError)
 
     $projectName = $platform.ToUpper()
     $project = Join-Path $TEST_DIR $projectName -Resolve

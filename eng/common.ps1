@@ -12,12 +12,6 @@ New-Alias "yesno"   Confirm-Yes
 New-Alias "guard"   Confirm-Continue
 New-Alias "whereis" Find-SingleExe
 
-# In a cmdlet, use
-#   $die = $exitOnError.IsPresent ? $exitOnError : $Script:___ExitOnError
-# to determine the action. The default value for $Script:___ExitOnError is $false
-# to match the absence of a parameter ExitOnError.
-$Script:___ExitOnError = $false
-
 ################################################################################
 #region Core functions.
 
@@ -54,7 +48,6 @@ function Find-SingleExe {
 
     if (-not $exe) {
         $message = "Could not find $name in your PATH."
-        $die = $exitOnError.IsPresent ? $exitOnError : $Script:___ExitOnError
         if ($exitOnError) { croak $message } else { confess $message }
         return
     }
@@ -171,9 +164,7 @@ function cluck {
     if ($c -gt 2)     { $message += "`n  " + ($stack[1..($c-2)] -join "`n  ") }
     elseif ($c -eq 2) { $message += "`n  " + $stack[1] }
 
-    $die = $exitOnError.IsPresent ? $exitOnError : $Script:___ExitOnError
-
-    if ($die) {
+    if ($exitOnError) {
         $Script:___Died = $true
 
         $Host.UI.WriteErrorLine($message)
