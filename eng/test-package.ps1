@@ -202,7 +202,7 @@ function Find-XunitRunnerOnce {
     [CmdletBinding()]
     param()
 
-    confess "Finding xunit.console.exe."
+    ___confess "Finding xunit.console.exe."
 
     if ($___NoXunitConsole) { warn "No Xunit console runner." ; return }
 
@@ -228,7 +228,7 @@ function Find-LastLocalVersion {
         [string] $packageName
     )
 
-    confess "Getting the last version from the local NuGet feed."
+    ___confess "Getting the last version from the local NuGet feed."
 
     # Don't remove the filter, the directory is never empty (file "_._").
     $last = Get-ChildItem (Join-Path $NUGET_LOCAL_FEED "*") -Include "*.nupkg" `

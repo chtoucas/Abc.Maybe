@@ -2,15 +2,15 @@
 
 #Requires -Version 5.1
 
-New-Alias "my"      New-Variable
-New-Alias "say"     Write-Host
-New-Alias "diag"    Write-Debug
-New-Alias "confess" Write-Verbose
+New-Alias "my"         New-Variable
+New-Alias "say"        Write-Host
+New-Alias "diag"       Write-Debug
+New-Alias "___confess" Write-Verbose
 
-New-Alias "const"   New-Constant
-New-Alias "yesno"   Confirm-Yes
-New-Alias "guard"   Confirm-Continue
-New-Alias "whereis" Find-SingleExe
+New-Alias "const"      New-Constant
+New-Alias "yesno"      Confirm-Yes
+New-Alias "guard"      Confirm-Continue
+New-Alias "whereis"    Find-SingleExe
 
 ################################################################################
 #region Core functions.
@@ -42,17 +42,18 @@ function Find-SingleExe {
         [switch] $exitOnError
     )
 
-    confess "Finding $name in your PATH."
+    ___confess "Finding $name in your PATH."
 
     $exe = Get-Command $name -CommandType Application -TotalCount 1 -ErrorAction Ignore
 
     if (-not $exe) {
         $message = "Could not find $name in your PATH."
-        if ($exitOnError) { croak $message } else { confess $message }
+        if ($exitOnError) { croak $message } else { ___confess $message }
         return
     }
 
-    confess "$name found here: ""$exe.Path""."
+    ___confess "$name found here: ""$exe.Path""."
+
     $exe.Path
 }
 
@@ -243,10 +244,10 @@ function Remove-Dir {
         [string] $path
     )
 
-    confess "Deleting directory ""$path""."
+    ___confess "Deleting directory ""$path""."
 
     if (-not (Test-Path $path)) {
-        return confess "Skipping ""$path""; the path does NOT exist."
+        return ___confess "Skipping ""$path""; the path does NOT exist."
     }
     if (-not [System.IO.Path]::IsPathRooted($path)) {
         return carp "Skipping ""$path""; the path MUST be absolute."
@@ -265,17 +266,17 @@ function Remove-BinAndObj {
         [string] $path
     )
 
-    confess "Deleting ""bin"" and ""obj"" directories within ""$path""."
+    ___confess "Deleting ""bin"" and ""obj"" directories within ""$path""."
 
     if (-not (Test-Path $path)) {
-        return confess "Skipping ""$path""; the path does NOT exist."
+        return ___confess "Skipping ""$path""; the path does NOT exist."
     }
     if (-not [System.IO.Path]::IsPathRooted($path)) {
         return carp "Skipping ""$path""; the path MUST be absolute."
     }
 
     ls $path -Include bin,obj -Recurse `
-        | foreach { confess "Deleting ""$_""." ; rm $_.FullName -Recurse }
+        | foreach { ___confess "Deleting ""$_""." ; rm $_.FullName -Recurse }
 }
 
 #endregion
@@ -293,7 +294,7 @@ function Approve-GitStatus {
         [switch] $exitOnError
     )
 
-    confess "Getting the git status."
+    ___confess "Getting the git status."
 
     try {
         # If there no uncommitted changes, the result is null, not empty.
@@ -323,12 +324,12 @@ function Get-GitCommitHash {
         [switch] $exitOnError
     )
 
-    confess "Getting the last git commit hash."
+    ___confess "Getting the last git commit hash."
 
     try {
         $commit = & $git log -1 --format="%H" 2>&1
 
-        confess "Current git commit hash: ""$commit""."
+        ___confess "Current git commit hash: ""$commit""."
 
         return $commit
     }
@@ -352,12 +353,12 @@ function Get-GitBranch {
         [switch] $exitOnError
     )
 
-    confess "Getting the git branch."
+    ___confess "Getting the git branch."
 
     try {
         $branch = & $git rev-parse --abbrev-ref HEAD 2>&1
 
-        confess "Current git branch: ""$branch""."
+        ___confess "Current git branch: ""$branch""."
 
         return $branch
     }
@@ -386,7 +387,7 @@ function Get-PackageReferenceVersion {
         [switch] $exitOnError
     )
 
-    confess "Getting version for ""$package"" from ""$projectPath""."
+    ___confess "Getting version for ""$package"" from ""$projectPath""."
 
     $version = [Xml] (Get-Content $projectPath) `
         | Select-Xml -XPath "//Project/ItemGroup/PackageReference[@Include='$package']" `
@@ -411,7 +412,7 @@ function Find-VsWhere {
         [switch] $exitOnError
     )
 
-    confess "Finding vswhere.exe."
+    ___confess "Finding vswhere.exe."
 
     if ($exe = whereis "vswhere.exe") { return $exe }
 
@@ -421,7 +422,7 @@ function Find-VsWhere {
         return cluck "Could not find vswhere.exe." -ExitOnError:$exitOnError
     }
 
-    confess "vswhere.exe found here: ""$path""."
+    ___confess "vswhere.exe found here: ""$path""."
 
     $path
 }
@@ -438,7 +439,7 @@ function Find-MSBuild {
         [switch] $exitOnError
     )
 
-    confess "Finding MSBuild.exe."
+    ___confess "Finding MSBuild.exe."
 
     # NB: vswhere.exe does not produce proper exit codes.
     $path = & $vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe `
@@ -448,7 +449,7 @@ function Find-MSBuild {
         return cluck "Could not find MSBuild.exe." -ExitOnError:$exitOnError
     }
 
-    confess "MSBuild.exe found here: ""$path""."
+    ___confess "MSBuild.exe found here: ""$path""."
 
     $path
 }
@@ -465,12 +466,12 @@ function Find-Fsi {
         [switch] $exitOnError
     )
 
-    confess "Finding fsi.exe using vswhere.exe."
+    ___confess "Finding fsi.exe using vswhere.exe."
 
     # NB: vswhere.exe does not produce proper exit codes.
     $vspath = & $vswhere -legacy -latest -property installationPath
 
-    confess "VS Installation Path = ""$vspath""."
+    ___confess "VS Installation Path = ""$vspath""."
 
     $path = Join-Path $vspath "\Common7\IDE\CommonExtensions\Microsoft\FSharp\fsi.exe"
 
@@ -478,7 +479,7 @@ function Find-Fsi {
         return cluck "Could not find fsi.exe." -ExitOnError:$exitOnError
     }
 
-    confess "fsi.exe found here: ""$path""."
+    ___confess "fsi.exe found here: ""$path""."
 
     $path
 }

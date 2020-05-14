@@ -34,7 +34,7 @@ Usage: reset.ps1 [arguments]
     exit
 }
 
-Hello "this is the reset script.`n"
+Hello "this is the reset script."
 
 try {
     ___BEGIN___

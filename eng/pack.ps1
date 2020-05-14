@@ -146,7 +146,7 @@ function Generate-UIDs {
         return @("", "", "")
     }
 
-    confess "Build UIDs: ""$uids"""
+    ___confess "Build UIDs: ""$uids"""
 
     $uids.Split(";")
 }
@@ -196,8 +196,8 @@ function Get-ActualVersion {
 
     $prefix = "$major.$minor.$patch"
 
-    confess "Version suffix: ""$suffix""."
-    confess "Version prefix: ""$prefix""."
+    ___confess "Version suffix: ""$suffix""."
+    ___confess "Version prefix: ""$prefix""."
 
     $suffix ? @("$prefix-$suffix", $prefix, $suffix)
         : @($prefix, $prefix, "")
@@ -224,7 +224,7 @@ function Get-PackageFile {
 
     $path = Join-Path ($ci ? $PKG_CI_OUTDIR : $PKG_OUTDIR) "$projectName.$version.nupkg"
 
-    confess "Package file: ""$path"""
+    ___confess "Package file: ""$path"""
 
     # Is there a dangling package file?
     # NB: not necessary for CI packages, the filename is unique.

@@ -54,7 +54,7 @@ function Initialize-Env {
     [CmdletBinding()]
     param()
 
-    confess "Initialising environment."
+    ___confess "Initialising environment."
 
     # These changes won't survive when the script ends, which is good.
     [CultureInfo]::CurrentCulture = "en"
@@ -190,7 +190,7 @@ function Get-PackageVersion {
         [switch] $asString
     )
 
-    confess "Getting package version."
+    ___confess "Getting package version."
 
     $projectPath = Join-Path $ENG_DIR "$packageName.props" -Resolve
 
@@ -226,7 +226,7 @@ function Find-OpenCover {
         [switch] $exitOnError
     )
 
-    confess "Finding OpenCover.Console.exe."
+    ___confess "Finding OpenCover.Console.exe."
 
     $version = Get-PackageReferenceVersion $NET_FRAMEWORK_TOOLS_PROJECT "OpenCover" `
         -ExitOnError:$exitOnError
@@ -238,7 +238,7 @@ function Find-OpenCover {
             -ExitOnError:$exitOnError
     }
 
-    confess "OpenCover.Console.exe found here: ""$path""."
+    ___confess "OpenCover.Console.exe found here: ""$path""."
 
     $path
 }
@@ -255,7 +255,7 @@ function Find-XunitRunner {
         [switch] $exitOnError
     )
 
-    confess "Finding xunit.console.exe."
+    ___confess "Finding xunit.console.exe."
 
     $version = Get-PackageReferenceVersion $NET_FRAMEWORK_TOOLS_PROJECT "xunit.runner.console" `
         -ExitOnError:$exitOnError
@@ -268,7 +268,7 @@ function Find-XunitRunner {
             -ExitOnError:$exitOnError
     }
 
-    confess "xunit.console.exe found here: ""$path""."
+    ___confess "xunit.console.exe found here: ""$path""."
 
     $path
 }
@@ -332,10 +332,10 @@ function Reset-SourceTree {
         [Alias("y")] [switch] $yes
     )
 
-    $echo = $yes ? "say" : "confess"
-    . $echo "Resetting source tree."
+    $echo = $yes ? "say" : "___confess"
+    . $echo "`nResetting source tree."
 
-    if ($yes -or (yesno "Reset the source tree?")) {
+    if ($yes -or (yesno "`nReset the source tree?")) {
         Remove-BinAndObj $SRC_DIR
         say-softly "The source tree was reset."
     }
@@ -349,10 +349,10 @@ function Reset-TestTree {
         [Alias("y")] [switch] $yes
     )
 
-    $echo = $yes ? "say" : "confess"
-    . $echo "Resetting test tree."
+    $echo = $yes ? "say" : "___confess"
+    . $echo "`nResetting test tree."
 
-    if ($yes -or (yesno "Reset the test tree?")) {
+    if ($yes -or (yesno "`nReset the test tree?")) {
         Remove-BinAndObj $TEST_DIR
         say-softly "The test tree was reset."
     }
@@ -366,15 +366,15 @@ function Reset-PackageOutDir {
         [Alias("y")] [switch] $yes
     )
 
-    $echo = $yes ? "say" : "confess"
-    . $echo "Resetting output directory for packages."
+    $echo = $yes ? "say" : "___confess"
+    . $echo "`nResetting output directory for packages."
 
-    if ($yes -or (yesno "Clear output directory for packages?")) {
-        confess "Clearing output directory for packages."
+    if ($yes -or (yesno "`nClear output directory for packages?")) {
+        ___confess "Clearing output directory for packages."
 
         if (Test-Path $PKG_OUTDIR) {
             ls $PKG_OUTDIR -Include "*.nupkg" -Recurse `
-                | foreach { confess "Deleting ""$_""." ; rm $_.FullName }
+                | foreach { ___confess "Deleting ""$_""." ; rm $_.FullName }
         }
 
         say-softly "Output directory for packages was cleared."
@@ -389,15 +389,15 @@ function Reset-PackageCIOutDir {
         [Alias("y")] [switch] $yes
     )
 
-    $echo = $yes ? "say" : "confess"
-    . $echo "Resetting output directory for CI packages."
+    $echo = $yes ? "say" : "___confess"
+    . $echo "`nResetting output directory for CI packages."
 
-    if ($yes -or (yesno "Clear output directory for CI packages?")) {
-        confess "Clearing output directory for CI packages."
+    if ($yes -or (yesno "`nClear output directory for CI packages?")) {
+        ___confess "Clearing output directory for CI packages."
 
         if (Test-Path $PKG_CI_OUTDIR) {
             ls $PKG_CI_OUTDIR -Include "*.nupkg" -Recurse `
-                | foreach { confess "Deleting ""$_""." ; rm $_.FullName }
+                | foreach { ___confess "Deleting ""$_""." ; rm $_.FullName }
         }
 
         say-softly "Output directory for CI packages was cleared."
@@ -412,10 +412,10 @@ function Reset-LocalNuGet {
         [Alias("y")] [switch] $yes
     )
 
-    $echo = $yes ? "say" : "confess"
-    . $echo "Resetting local NuGet feed/cache."
+    $echo = $yes ? "say" : "___confess"
+    . $echo "`nResetting local NuGet feed/cache."
 
-    if ($yes -or (yesno "Clear local NuGet feed/cache?")) {
+    if ($yes -or (yesno "`nClear local NuGet feed/cache?")) {
         # When we reset the NuGet feed, better to clear the cache too, this is
         # not mandatory but it keeps cache and feed in sync.
         # The inverse is also true.
@@ -425,14 +425,14 @@ function Reset-LocalNuGet {
         #
         # We can't delete the directories, otherwise "dotnet restore" will fail.
 
-        confess "Clearing local NuGet feed."
+        ___confess "Clearing local NuGet feed."
         ls $NUGET_LOCAL_FEED -Exclude "_._" `
-            | foreach { confess "Deleting ""$_""." ; rm $_ -Recurse }
+            | foreach { ___confess "Deleting ""$_""." ; rm $_ -Recurse }
         say-softly "Local NuGet feed was cleared."
 
-        confess "Clearing local NuGet cache."
+        ___confess "Clearing local NuGet cache."
         ls $NUGET_LOCAL_CACHE -Exclude "_._" `
-            | foreach { confess "Deleting ""$_""." ; rm $_ -Recurse }
+            | foreach { ___confess "Deleting ""$_""." ; rm $_ -Recurse }
         say-softly "Local NuGet cache was cleared."
     }
 }
@@ -453,12 +453,12 @@ function Remove-PackageFromLocalNuGet {
 
     say "Removing obsolete package data from local NuGet feed/cache."
 
-    confess "Removing package from the local NuGet cache."
+    ___confess "Removing package from the local NuGet cache."
     Join-Path $NUGET_LOCAL_CACHE $packageName.ToLower() `
         | Join-Path -ChildPath $version `
         | Remove-Dir
 
-    confess "Removing package from the local NuGet feed."
+    ___confess "Removing package from the local NuGet feed."
     $oldFilepath = Join-Path $NUGET_LOCAL_FEED "$packageName.$version.nupkg"
     if (Test-Path $oldFilepath) {
         rm $oldFilepath
