@@ -92,15 +92,12 @@ function Get-GitMetadata {
 
     say "Retrieving git metadata."
 
-    $git = whereis "git.exe" -ExitOnError:$exitOnError
+    $git = whereis "git.exe"
 
     if (-not $git) {
-        if ($yes) {
-            warn "The package description won't include any git metadata."
-        }
-        else {
-            guard "Continue even without any git metadata?"
-        }
+        if ($exitOnError) { die "Could not find git.exe." }
+        elseif ($yes)     { warn "The package description won't include any git metadata." }
+        else              { guard "Continue even without any git metadata?" }
 
         return @("", "")
     }

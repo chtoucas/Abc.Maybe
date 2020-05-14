@@ -4,7 +4,7 @@
 
 New-Alias "my"         New-Variable
 New-Alias "say"        Write-Host
-New-Alias "diag"       Write-Debug
+New-Alias "___diag"    Write-Debug
 New-Alias "___confess" Write-Verbose
 
 New-Alias "const"      New-Constant
@@ -37,9 +37,7 @@ function Find-SingleExe {
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $name,
-
-        [switch] $exitOnError
+        [string] $name
     )
 
     ___confess "Finding $name in your PATH."
@@ -47,9 +45,7 @@ function Find-SingleExe {
     $exe = Get-Command $name -CommandType Application -TotalCount 1 -ErrorAction Ignore
 
     if (-not $exe) {
-        $message = "Could not find $name in your PATH."
-        if ($exitOnError) { croak $message } else { ___confess $message }
-        return
+        return ___confess "Could not find $name in your PATH."
     }
 
     ___confess "$name found here: ""$exe.Path""."
@@ -101,16 +97,16 @@ function die {
 
 # ------------------------------------------------------------------------------
 
-# Warn user (from perspective of caller).
+# Warn user or die of errors (from perspective of caller).
 function carp {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $message
-    )
+        [string] $message,
 
-    $Script:___Warned = $true
+        [switch] $exitOnError
+    )
 
     # The first element is for "carp", and the last one is useless, let's remove them.
     $stack = Get-PSCallStack
@@ -118,7 +114,18 @@ function carp {
     if ($c -gt 2)     { $message += "`n  " + ($stack[1..($c-2)] -join "`n  ") }
     elseif ($c -eq 2) { $message += "`n  " + $stack[1] }
 
-    Write-Warning $message
+    if ($exitOnError) {
+        $Script:___Died = $true
+
+        $Host.UI.WriteErrorLine($message)
+
+        exit 1
+    }
+    else {
+        $Script:___Warned = $true
+
+        Write-Warning $message
+    }
 }
 
 # ------------------------------------------------------------------------------
@@ -144,39 +151,6 @@ function croak {
     $Host.UI.WriteErrorLine($message)
 
     exit 1
-}
-
-# ------------------------------------------------------------------------------
-
-# Warn user or die of errors (from perspective of caller).
-function cluck {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $message,
-
-        [switch] $exitOnError
-    )
-
-    # The first element is for "cluck", and the last one is useless, let's remove them.
-    $stack = Get-PSCallStack
-    $c = $stack.Count
-    if ($c -gt 2)     { $message += "`n  " + ($stack[1..($c-2)] -join "`n  ") }
-    elseif ($c -eq 2) { $message += "`n  " + $stack[1] }
-
-    if ($exitOnError) {
-        $Script:___Died = $true
-
-        $Host.UI.WriteErrorLine($message)
-
-        exit 1
-    }
-    else {
-        $Script:___Warned = $true
-
-        Write-Warning $message
-    }
 }
 
 #endregion
@@ -302,10 +276,10 @@ function Approve-GitStatus {
 
         if ($status -eq $null) { return $true }
 
-        cluck "Uncommitted changes are pending." -ExitOnError:$exitOnError
+        carp "Uncommitted changes are pending." -ExitOnError:$exitOnError
     }
     catch {
-        cluck """git status"" failed: $_" -ExitOnError:$exitOnError
+        carp """git status"" failed: $_" -ExitOnError:$exitOnError
     }
 
     return $false
@@ -334,7 +308,7 @@ function Get-GitCommitHash {
         return $commit
     }
     catch {
-        cluck """git log"" failed: $_" -ExitOnError:$exitOnError
+        carp """git log"" failed: $_" -ExitOnError:$exitOnError
 
         return ""
     }
@@ -363,7 +337,7 @@ function Get-GitBranch {
         return $branch
     }
     catch {
-        cluck """git rev-parse"" failed: $_" -ExitOnError:$exitOnError
+        carp """git rev-parse"" failed: $_" -ExitOnError:$exitOnError
 
         return ""
     }
@@ -395,7 +369,7 @@ function Get-PackageReferenceVersion {
         | select -First 1 -ExpandProperty Version
 
     if (-not $version) {
-        return cluck """$package"" is not referenced in ""$projectPath""." `
+        return carp """$package"" is not referenced in ""$projectPath""." `
             -ExitOnError:$exitOnError
     }
 
@@ -419,7 +393,7 @@ function Find-VsWhere {
     $path = Join-Path ${Env:ProgramFiles(x86)} "\Microsoft Visual Studio\Installer\vswhere.exe"
 
     if (-not (Test-Path $path)) {
-        return cluck "Could not find vswhere.exe." -ExitOnError:$exitOnError
+        return carp "Could not find vswhere.exe." -ExitOnError:$exitOnError
     }
 
     ___confess "vswhere.exe found here: ""$path""."
@@ -446,11 +420,10 @@ function Find-MSBuild {
         | select -First 1
 
     if (-not (Test-Path $path)) {
-        return cluck "Could not find MSBuild.exe." -ExitOnError:$exitOnError
+        return carp "Could not find MSBuild.exe." -ExitOnError:$exitOnError
     }
 
     ___confess "MSBuild.exe found here: ""$path""."
-
     $path
 }
 
@@ -476,7 +449,7 @@ function Find-Fsi {
     $path = Join-Path $vspath "\Common7\IDE\CommonExtensions\Microsoft\FSharp\fsi.exe"
 
     if (-not (Test-Path $path)) {
-        return cluck "Could not find fsi.exe." -ExitOnError:$exitOnError
+        return carp "Could not find fsi.exe." -ExitOnError:$exitOnError
     }
 
     ___confess "fsi.exe found here: ""$path""."
