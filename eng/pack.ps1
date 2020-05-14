@@ -86,13 +86,12 @@ Examples.
 function Get-GitMetadata {
     [CmdletBinding()]
     param(
-        [switch] $yes,
-        [switch] $exitOnError
+        [switch] $yes
     )
 
     say "Retrieving git metadata."
 
-    $git = whereis "git.exe" -ExitOnError:$exitOnError
+    $git = whereis "git.exe"
 
     if (-not $git) {
         if ($yes) {
@@ -107,12 +106,12 @@ function Get-GitMetadata {
 
     # Keep Approve-GitStatus before $yes: we always want to see a warning
     # when there are uncommited changes.
-    $ok = Approve-GitStatus $git -ExitOnError:$exitOnError
+    $ok = Approve-GitStatus $git
 
     $branch = "" ; $commit = ""
     if ($ok -or $yes -or (yesno "There are uncommited changes, force retrieval of git metadata?")) {
-        $branch = Get-GitBranch     $git -ExitOnError:$exitOnError
-        $commit = Get-GitCommitHash $git -ExitOnError:$exitOnError
+        $branch = Get-GitBranch     $git
+        $commit = Get-GitCommitHash $git
     }
 
     if ($branch -eq "") { warn "The branch name will be empty." }
@@ -133,11 +132,8 @@ function Generate-UIDs {
 
     say "Generating build UIDs."
 
-    # TODO: the null-coalescing op has an odd behaviour. For instance
-    #   $fsi = (Find-VsWhere -ExitOnError | Find-Fsi -ExitOnError) ?? (whereis "fsi.exe")
-    # evaluates the left-hand operand twice.
     $fsi = whereis "fsi.exe"
-    $fsi ??= Find-Fsi (Find-VsWhere -ExitOnError) -ExitOnError
+    $fsi ??= Find-VsWhere -ExitOnError | Find-Fsi
     if (-not $fsi) { return @("", "", "") }
 
     $fsx = Join-Path $PSScriptRoot "genuids.fsx" -Resolve
@@ -427,6 +423,8 @@ try {
 
     my ProjectName "Abc.Maybe" -Option ReadOnly
 
+    if ($Release) { $Script:___ExitOnError = $true }
+
     $CI = -not ($Release -or $NoCI)
 
     SAY-LOUDLY "`nInitialisation."
@@ -434,7 +432,7 @@ try {
     # 1. Reset the source tree.
     if ($Release -or $Reset) { Reset-SourceTree -Yes:($Release -or $Yes) }
     # 2. Get git metadata.
-    $branch, $commit = Get-GitMetadata -Yes:$Yes -ExitOnError:$Release
+    $branch, $commit = Get-GitMetadata -Yes:$Yes
     # 3. Generate build UIDs.
     $buildNumber, $revisionNumber, $timestamp = Generate-UIDs
     # 4. Get package version.

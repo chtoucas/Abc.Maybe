@@ -12,6 +12,12 @@ New-Alias "yesno"   Confirm-Yes
 New-Alias "guard"   Confirm-Continue
 New-Alias "whereis" Find-SingleExe
 
+# In a cmdlet, use
+#   $die = $exitOnError.IsPresent ? $exitOnError : $Script:___ExitOnError
+# to determine the action. The default value for $Script:___ExitOnError is $false
+# to match the absence of a parameter ExitOnError.
+$Script:___ExitOnError = $false
+
 ################################################################################
 #region Core functions.
 
@@ -33,7 +39,6 @@ function New-Constant {
 # ------------------------------------------------------------------------------
 
 function Find-SingleExe {
-    [OutputType([System.Management.Automation.CommandInfo])]
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
@@ -49,12 +54,13 @@ function Find-SingleExe {
 
     if (-not $exe) {
         $message = "Could not find $name in your PATH."
+        $die = $exitOnError.IsPresent ? $exitOnError : $Script:___ExitOnError
         if ($exitOnError) { croak $message } else { confess $message }
         return
     }
 
     confess "$name found here: ""$exe.Path""."
-    $exe
+    $exe.Path
 }
 
 #endregion
@@ -83,7 +89,7 @@ function warn {
 # ------------------------------------------------------------------------------
 
 # Die of errors.
-# Not seen as a terminating error, it does not set $?.
+# Not seen as a terminating error, doesn't set $? to $false, but kills the script.
 function die {
     [CmdletBinding()]
     param(
@@ -124,7 +130,7 @@ function carp {
 # ------------------------------------------------------------------------------
 
 # Die of errors (from perspective of caller).
-# Not seen as a terminating error, it does not set $?.
+# Not seen as a terminating error, doesn't set $? to $false, but kills the script.
 function croak {
     [CmdletBinding()]
     param(
@@ -165,7 +171,9 @@ function cluck {
     if ($c -gt 2)     { $message += "`n  " + ($stack[1..($c-2)] -join "`n  ") }
     elseif ($c -eq 2) { $message += "`n  " + $stack[1] }
 
-    if ($exitOnError) {
+    $die = $exitOnError.IsPresent ? $exitOnError : $Script:___ExitOnError
+
+    if ($die) {
         $Script:___Died = $true
 
         $Host.UI.WriteErrorLine($message)
@@ -288,8 +296,8 @@ function Approve-GitStatus {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
-        [ValidateNotNull()]
-        [System.Management.Automation.CommandInfo] $git,
+        [ValidateNotNullOrEmpty()]
+        [string] $git,
 
         [switch] $exitOnError
     )
@@ -318,8 +326,8 @@ function Get-GitCommitHash {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
-        [ValidateNotNull()]
-        [System.Management.Automation.CommandInfo] $git,
+        [ValidateNotNullOrEmpty()]
+        [string] $git,
 
         [switch] $exitOnError
     )
@@ -347,8 +355,8 @@ function Get-GitBranch {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
-        [ValidateNotNull()]
-        [System.Management.Automation.CommandInfo] $git,
+        [ValidateNotNullOrEmpty()]
+        [string] $git,
 
         [switch] $exitOnError
     )
@@ -432,19 +440,14 @@ function Find-VsWhere {
 function Find-MSBuild {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $false, ValueFromPipeline = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
         [string] $vswhere,
 
         [switch] $exitOnError
     )
 
     confess "Finding MSBuild.exe."
-
-    if (-not $vswhere) {
-        if ($exe = whereis "MSBuild.exe") { return $exe }
-
-        return cluck "MSBuild.exe could not be found in your PATH." -ExitOnError:$exitOnError
-    }
 
     # NB: vswhere.exe does not produce proper exit codes.
     $path = & $vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe `
@@ -464,8 +467,8 @@ function Find-MSBuild {
 function Find-Fsi {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNull()]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
         [string] $vswhere,
 
         [switch] $exitOnError

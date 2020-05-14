@@ -72,14 +72,11 @@ function Initialize-Env {
 # ------------------------------------------------------------------------------
 
 function ___BEGIN___ {
-    [CmdletBinding(PositionalBinding = $false)]
-    param(
-        [Parameter(Mandatory = $false)]
-        [string] $fromLocation
-    )
+    [CmdletBinding()]
+    param()
 
     Initialize-Env
-    if ($fromLocation) { pushd $fromLocation } else { pushd $ROOT_DIR }
+    pushd $ROOT_DIR
 }
 
 # ------------------------------------------------------------------------------
