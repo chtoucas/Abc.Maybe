@@ -133,11 +133,11 @@ function Generate-UIDs {
 
     say "Generating build UIDs."
 
-    # TODO: ?? seems buggy right now. For instance
-    # $fsi = (Find-VsWhere | Find-Fsi -ExitOnError) ?? (whereis "fsi.exe")
+    # TODO: the null-coalescing op has an odd behaviour. For instance
+    #   $fsi = (Find-VsWhere -ExitOnError | Find-Fsi -ExitOnError) ?? (whereis "fsi.exe")
     # evaluates the left-hand operand twice.
     $fsi = whereis "fsi.exe"
-    $fsi ??= Find-VsWhere | Find-Fsi -ExitOnError
+    $fsi ??= Find-Fsi (Find-VsWhere -ExitOnError) -ExitOnError
     if (-not $fsi) { return @("", "", "") }
 
     $fsx = Join-Path $PSScriptRoot "genuids.fsx" -Resolve
@@ -287,9 +287,8 @@ function Invoke-Pack {
     )
 
     "`nPacking v$version --- build {0}, rev. {1} on branch ""{2}"", commit ""{3}""." -f `
-        ($buildNumber ?? "???"),
-        ($revisionNumber ?? "???"),
-        # TODO: it gives us an empty string.
+        ($buildNumber ? $buildNumber : "???"),
+        ($revisionNumber ? $revisionNumber : "???"),
         ($repositoryBranch ? $repositoryBranch : "???"),
         ($repositoryCommit ? $repositoryCommit.Substring(0, 7) : "???") `
         | SAY-LOUDLY

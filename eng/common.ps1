@@ -32,8 +32,8 @@ function New-Constant {
 
 # ------------------------------------------------------------------------------
 
-# Returns a System.Management.Automation.CommandInfo
 function Find-SingleExe {
+    [OutputType([System.Management.Automation.CommandInfo])]
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
@@ -45,16 +45,16 @@ function Find-SingleExe {
 
     confess "Finding $name in your PATH."
 
-    $cmd = Get-Command $name -CommandType Application -TotalCount 1 -ErrorAction Ignore
+    $exe = Get-Command $name -CommandType Application -TotalCount 1 -ErrorAction Ignore
 
-    if ($cmd) {
-        confess "$name found here: ""$cmd.Path""."
-
-        return $cmd
+    if (-not $exe) {
+        $message = "Could not find $name in your PATH."
+        if ($exitOnError) { croak $message } else { confess $message }
+        return
     }
 
-    $message = "Could not find $name in your PATH."
-    if ($exitOnError) { croak $message } else { confess $message }
+    confess "$name found here: ""$exe.Path""."
+    $exe
 }
 
 #endregion
@@ -395,7 +395,7 @@ function Get-PackageReferenceVersion {
         | select -First 1 -ExpandProperty Version
 
     if (-not $version) {
-        cluck """$package"" is not referenced in ""$projectPath""." `
+        return cluck """$package"" is not referenced in ""$projectPath""." `
             -ExitOnError:$exitOnError
     }
 
@@ -414,18 +414,17 @@ function Find-VsWhere {
 
     confess "Finding vswhere.exe."
 
-    $cmd = whereis "vswhere.exe"
-    if ($cmd) { return $cmd }
+    if ($exe = whereis "vswhere.exe") { return $exe }
 
     $path = Join-Path ${Env:ProgramFiles(x86)} "\Microsoft Visual Studio\Installer\vswhere.exe"
 
-    if (Test-Path $path) {
-        confess "vswhere.exe found here: ""$path""."
-
-        return $path
+    if (-not (Test-Path $path)) {
+        return cluck "Could not find vswhere.exe." -ExitOnError:$exitOnError
     }
 
-    cluck "Could not find vswhere.exe." -ExitOnError:$exitOnError
+    confess "vswhere.exe found here: ""$path""."
+
+    $path
 }
 
 # ------------------------------------------------------------------------------
@@ -442,20 +441,22 @@ function Find-MSBuild {
     confess "Finding MSBuild.exe."
 
     if (-not $vswhere) {
-        $cmd = whereis "MSBuild.exe"
-        if ($cmd) { return $cmd.Path }
+        if ($exe = whereis "MSBuild.exe") { return $exe }
 
-        cluck "MSBuild.exe could not be found in your PATH." -ExitOnError:$exitOnError
+        return cluck "MSBuild.exe could not be found in your PATH." -ExitOnError:$exitOnError
     }
-    else {
-        # NB: vswhere.exe does not produce proper exit codes.
-        $path = & $vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe `
-            | select -First 1
 
-        if (Test-Path $path) { confess "MSBuild.exe found here: ""$path""." ; return $path }
+    # NB: vswhere.exe does not produce proper exit codes.
+    $path = & $vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe `
+        | select -First 1
 
-        cluck "Could not find MSBuild.exe." -ExitOnError:$exitOnError
+    if (-not (Test-Path $path)) {
+        return cluck "Could not find MSBuild.exe." -ExitOnError:$exitOnError
     }
+
+    confess "MSBuild.exe found here: ""$path""."
+
+    $path
 }
 
 # ------------------------------------------------------------------------------
@@ -463,17 +464,14 @@ function Find-MSBuild {
 function Find-Fsi {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $false, ValueFromPipeline = $true)]
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNull()]
         [string] $vswhere,
 
         [switch] $exitOnError
     )
 
     confess "Finding fsi.exe using vswhere.exe."
-
-    if (-not $vswhere) {
-        return cluck "Parameter ""vswhere"" was empty." -ExitOnError:$exitOnError
-    }
 
     # NB: vswhere.exe does not produce proper exit codes.
     $vspath = & $vswhere -legacy -latest -property installationPath
@@ -482,9 +480,13 @@ function Find-Fsi {
 
     $path = Join-Path $vspath "\Common7\IDE\CommonExtensions\Microsoft\FSharp\fsi.exe"
 
-    if (Test-Path $path) { confess "fsi.exe found here: ""$path""." ; return $path }
+    if (-not (Test-Path $path)) {
+        return cluck "Could not find fsi.exe." -ExitOnError:$exitOnError
+    }
 
-    cluck "Could not find fsi.exe." -ExitOnError:$exitOnError
+    confess "fsi.exe found here: ""$path""."
+
+    $path
 }
 
 #endregion

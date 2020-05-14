@@ -236,13 +236,14 @@ function Find-OpenCover {
 
     $path = Join-Path $NET_FRAMEWORK_TOOLS_DIR "opencover\$version\tools\OpenCover.Console.exe"
 
-    if (Test-Path $path) {
-        confess "OpenCover.Console.exe found here: ""$path""."
-        return $path
+    if (-not (Test-Path $path)) {
+        return cluck "Could not find OpenCover v$version. Maybe use -Restore?" `
+            -ExitOnError:$exitOnError
     }
 
-    cluck "Could not find OpenCover v$version. Maybe use -Restore?" `
-        -ExitOnError:$exitOnError
+    confess "OpenCover.Console.exe found here: ""$path""."
+
+    $path
 }
 
 # ------------------------------------------------------------------------------
@@ -265,13 +266,14 @@ function Find-XunitRunner {
     $path = Join-Path $NET_FRAMEWORK_TOOLS_DIR `
         "xunit.runner.console\$version\tools\$platform\xunit.console.exe"
 
-    if (Test-Path $path) {
-        confess "xunit.console.exe found here: ""$path""."
-        return $path
+    if (-not (Test-Path $path)) {
+        return cluck "Could not find Xunit Console Runner v$version. Maybe use -Restore?" `
+            -ExitOnError:$exitOnError
     }
 
-    cluck "Could not find Xunit Console Runner v$version. Maybe use -Restore?" `
-        -ExitOnError:$exitOnError
+    confess "xunit.console.exe found here: ""$path""."
+
+    $path
 }
 
 #endregion

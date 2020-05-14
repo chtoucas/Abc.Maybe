@@ -7,7 +7,8 @@ param()
 
 . (Join-Path $PSScriptRoot "common.ps1")
 
-$fsi = (whereis "fsi.exe") ?? (Find-VsWhere | Find-Fsi -ExitOnError)
+$fsi = whereis "fsi.exe"
+$fsi ??= Find-Fsi (Find-VsWhere -ExitOnError) -ExitOnError
 $fsx = Join-Path $PSScriptRoot "genuids.fsx" -Resolve
 
 $uids = & $fsi $fsx
