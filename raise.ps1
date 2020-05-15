@@ -54,10 +54,8 @@ function hey {
 try {
     ___BEGIN___
 
-    $action = $false ? "Stop" : "SilentlyContinue"
-    Say "Action: $action"
-
-    hey -ErrorAction:$action
+    hey -ErrorAction:SilentlyContinue
+    hey -ErrorAction:Stop
 }
 catch {
     ___CATCH___
