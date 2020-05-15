@@ -214,7 +214,7 @@ Hello "this is the Code Coverage script."
 try {
     ___BEGIN___
 
-    my Configuration "Debug" -Option ReadOnly
+    readonly Configuration "Debug"
 
     if ($NoCoverage -and $NoReport) {
         die "You cannot set both options -NoCoverage and -NoReport at the same time."

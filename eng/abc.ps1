@@ -238,7 +238,7 @@ function Find-OpenCover {
             -ExitOnError:$exitOnError
     }
 
-    ___diag "OpenCover.Console.exe found here: ""$path""."
+    ___debug "OpenCover.Console.exe found here: ""$path""."
 
     $path
 }
@@ -268,14 +268,14 @@ function Find-XunitRunner {
             -ExitOnError:$exitOnError
     }
 
-    ___diag "xunit.console.exe found here: ""$path""."
+    ___debug "xunit.console.exe found here: ""$path""."
 
     $path
 }
 
 #endregion
 ################################################################################
-#region Restore
+#region Restore tasks.
 
 function Restore-NETFrameworkTools {
     [CmdletBinding()]
@@ -327,7 +327,7 @@ function Restore-Solution {
 
 #endregion
 ################################################################################
-#region Reset / Clear
+#region Reset tasks.
 
 function Reset-SourceTree {
     [CmdletBinding()]
@@ -335,8 +335,7 @@ function Reset-SourceTree {
         [Alias("y")] [switch] $yes
     )
 
-    $echo = $yes ? "say" : "___confess"
-    . $echo "Resetting source tree."
+    if ($yes) { say "`nResetting source tree." }
 
     if ($yes -or (yesno "`nReset the source tree?")) {
         Remove-BinAndObj $SRC_DIR
@@ -352,8 +351,7 @@ function Reset-TestTree {
         [Alias("y")] [switch] $yes
     )
 
-    $echo = $yes ? "say" : "___confess"
-    . $echo "Resetting test tree."
+    if ($yes) { say "`nResetting test tree." }
 
     if ($yes -or (yesno "`nReset the test tree?")) {
         Remove-BinAndObj $TEST_DIR
@@ -369,15 +367,14 @@ function Reset-PackageOutDir {
         [Alias("y")] [switch] $yes
     )
 
-    $echo = $yes ? "say" : "___confess"
-    . $echo "Resetting output directory for packages."
+    if ($yes) { say "`nResetting output directory for packages." }
 
     if ($yes -or (yesno "`nClear output directory for packages?")) {
-        ___diag "Clearing output directory for packages."
+        ___debug "Clearing output directory for packages."
 
         if (Test-Path $PKG_OUTDIR) {
             ls $PKG_OUTDIR -Include "*.nupkg" -Recurse `
-                | foreach { ___diag "Deleting ""$_""." ; rm $_.FullName }
+                | foreach { ___debug "Deleting ""$_""." ; rm $_.FullName }
         }
 
         say-softly "Output directory for packages was cleared."
@@ -392,15 +389,14 @@ function Reset-PackageCIOutDir {
         [Alias("y")] [switch] $yes
     )
 
-    $echo = $yes ? "say" : "___confess"
-    . $echo "Resetting output directory for CI packages."
+    if ($yes) { say "`nResetting output directory for CI packages." }
 
     if ($yes -or (yesno "`nClear output directory for CI packages?")) {
-        ___diag "Clearing output directory for CI packages."
+        ___debug "Clearing output directory for CI packages."
 
         if (Test-Path $PKG_CI_OUTDIR) {
             ls $PKG_CI_OUTDIR -Include "*.nupkg" -Recurse `
-                | foreach { ___diag "Deleting ""$_""." ; rm $_.FullName }
+                | foreach { ___debug "Deleting ""$_""." ; rm $_.FullName }
         }
 
         say-softly "Output directory for CI packages was cleared."
@@ -415,8 +411,7 @@ function Reset-LocalNuGet {
         [Alias("y")] [switch] $yes
     )
 
-    $echo = $yes ? "say" : "___confess"
-    . $echo "Resetting local NuGet feed/cache."
+    if ($yes) { say "`nResetting local NuGet feed/cache." }
 
     if ($yes -or (yesno "`nClear local NuGet feed/cache?")) {
         # When we reset the NuGet feed, better to clear the cache too, this is
@@ -428,14 +423,14 @@ function Reset-LocalNuGet {
         #
         # We can't delete the directories, otherwise "dotnet restore" will fail.
 
-        ___diag "Clearing local NuGet feed."
+        ___confess "Clearing local NuGet feed."
         ls $NUGET_LOCAL_FEED -Exclude "_._" `
-            | foreach { ___diag "Deleting ""$_""." ; rm $_ -Recurse }
+            | foreach { ___debug "Deleting ""$_""." ; rm $_ -Recurse }
         say-softly "Local NuGet feed was cleared."
 
-        ___diag "Clearing local NuGet cache."
+        ___confess "Clearing local NuGet cache."
         ls $NUGET_LOCAL_CACHE -Exclude "_._" `
-            | foreach { ___diag "Deleting ""$_""." ; rm $_ -Recurse }
+            | foreach { ___debug "Deleting ""$_""." ; rm $_ -Recurse }
         say-softly "Local NuGet cache was cleared."
     }
 }
@@ -456,12 +451,12 @@ function Remove-PackageFromLocalNuGet {
 
     say "Removing obsolete package data from local NuGet feed/cache."
 
-    ___diag "Removing package from the local NuGet cache."
+    ___confess "Removing package from the local NuGet cache."
     Join-Path $NUGET_LOCAL_CACHE $packageName.ToLower() `
         | Join-Path -ChildPath $version `
         | Remove-Dir
 
-    ___diag "Removing package from the local NuGet feed."
+    ___confess "Removing package from the local NuGet feed."
     $oldFilepath = Join-Path $NUGET_LOCAL_FEED "$packageName.$version.nupkg"
     if (Test-Path $oldFilepath) {
         rm $oldFilepath

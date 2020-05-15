@@ -2,12 +2,12 @@
 
 #Requires -Version 5.1
 
-New-Alias "my"         New-Variable
 New-Alias "say"        Write-Host
-New-Alias "___diag"    Write-Debug
+New-Alias "___debug"   Write-Debug
 New-Alias "___confess" Write-Verbose
 
 New-Alias "const"      New-Constant
+New-Alias "readonly"   New-ReadOnly
 New-Alias "yesno"      Confirm-Yes
 New-Alias "guard"      Confirm-Continue
 New-Alias "whereis"    Find-SingleExe
@@ -32,6 +32,23 @@ function New-Constant {
 
 # ------------------------------------------------------------------------------
 
+function New-ReadOnly {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [string] $name,
+
+        [Parameter(Mandatory = $true, Position = 1, ValueFromPipeline = $true)]
+        [ValidateNotNull()]
+        [Object] $value
+    )
+
+    New-Variable -Name $name -Value $value -Scope Script -Option ReadOnly
+}
+
+# ------------------------------------------------------------------------------
+
 function Find-SingleExe {
     [CmdletBinding()]
     param(
@@ -43,11 +60,11 @@ function Find-SingleExe {
     ___confess "Finding $name in your PATH."
 
     $exe = Get-Command $name -CommandType Application -TotalCount 1 -ErrorAction Ignore
-    if (-not $exe) { return ___diag "Could not find $name in your PATH." }
+    if (-not $exe) { return ___debug "Could not find $name in your PATH." }
 
     $path = $exe.Path
 
-    ___diag "$name found here: ""$path""."
+    ___debug "$name found here: ""$path""."
 
     $path
 }
@@ -220,7 +237,7 @@ function Remove-Dir {
     ___confess "Deleting directory ""$path""."
 
     if (-not (Test-Path $path)) {
-        return ___diag "Skipping ""$path""; the path does NOT exist."
+        return ___debug "Skipping ""$path""; the path does NOT exist."
     }
     if (-not [System.IO.Path]::IsPathRooted($path)) {
         return carp "Skipping ""$path""; the path MUST be absolute."
@@ -242,14 +259,14 @@ function Remove-BinAndObj {
     ___confess "Deleting ""bin"" and ""obj"" directories within ""$path""."
 
     if (-not (Test-Path $path)) {
-        return ___diag "Skipping ""$path""; the path does NOT exist."
+        return ___debug "Skipping ""$path""; the path does NOT exist."
     }
     if (-not [System.IO.Path]::IsPathRooted($path)) {
         return carp "Skipping ""$path""; the path MUST be absolute."
     }
 
     ls $path -Include bin,obj -Recurse `
-        | foreach { ___diag "Deleting ""$_""." ; rm $_.FullName -Recurse }
+        | foreach { ___debug "Deleting ""$_""." ; rm $_.FullName -Recurse }
 }
 
 #endregion
@@ -302,7 +319,7 @@ function Get-GitCommitHash {
     try {
         $commit = & $git log -1 --format="%H" 2>&1
 
-        ___diag "Current git commit hash: ""$commit""."
+        ___debug "Current git commit hash: ""$commit""."
 
         return $commit
     }
@@ -331,7 +348,7 @@ function Get-GitBranch {
     try {
         $branch = & $git rev-parse --abbrev-ref HEAD 2>&1
 
-        ___diag "Current git branch: ""$branch""."
+        ___debug "Current git branch: ""$branch""."
 
         return $branch
     }
@@ -395,7 +412,7 @@ function Find-VsWhere {
         return carp "Could not find vswhere.exe." -ExitOnError:$exitOnError
     }
 
-    ___diag "vswhere.exe found here: ""$path""."
+    ___debug "vswhere.exe found here: ""$path""."
 
     $path
 }
@@ -422,7 +439,7 @@ function Find-MSBuild {
         return carp "Could not find MSBuild.exe." -ExitOnError:$exitOnError
     }
 
-    ___diag "MSBuild.exe found here: ""$path""."
+    ___debug "MSBuild.exe found here: ""$path""."
 
     $path
 }
@@ -444,7 +461,7 @@ function Find-Fsi {
     # NB: vswhere.exe does not produce proper exit codes.
     $vspath = & $vswhere -legacy -latest -property installationPath
 
-    ___diag "VS Installation Path = ""$vspath""."
+    ___debug "VS Installation Path = ""$vspath""."
 
     $path = Join-Path $vspath "\Common7\IDE\CommonExtensions\Microsoft\FSharp\fsi.exe"
 
@@ -452,7 +469,7 @@ function Find-Fsi {
         return carp "Could not find fsi.exe." -ExitOnError:$exitOnError
     }
 
-    ___diag "fsi.exe found here: ""$path""."
+    ___debug "fsi.exe found here: ""$path""."
 
     $path
 }

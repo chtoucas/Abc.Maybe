@@ -615,7 +615,7 @@ try {
 
     pushd $TEST_DIR
 
-    my PackageName "Abc.Maybe" -Option ReadOnly
+    readonly PackageName "Abc.Maybe"
 
     if ($Reset) {
         SAY-LOUDLY "`nResetting repository."

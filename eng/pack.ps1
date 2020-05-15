@@ -141,7 +141,7 @@ function Generate-UIDs {
         return @("", "", "")
     }
 
-    ___diag "Build UIDs: ""$uids""."
+    ___debug "Build UIDs: ""$uids""."
 
     $uids.Split(";")
 }
@@ -167,7 +167,7 @@ function Get-ActualVersion {
 
     if ($ci) {
         if (-not $timestamp) {
-            ___diag "The timestamp is empty, let's regenerate it."
+            ___debug "The timestamp is empty, let's regenerate it."
             $timestamp = "{0:yyyyMMdd}.T{0:HHmmss}" -f (Get-Date).ToUniversalTime()
         }
 
@@ -192,8 +192,8 @@ function Get-ActualVersion {
 
     $prefix = "$major.$minor.$patch"
 
-    ___diag "Version suffix: ""$suffix""."
-    ___diag "Version prefix: ""$prefix""."
+    ___debug "Version suffix: ""$suffix""."
+    ___debug "Version prefix: ""$prefix""."
 
     $suffix ? @("$prefix-$suffix", $prefix, $suffix)
         : @($prefix, $prefix, "")
@@ -220,7 +220,7 @@ function Get-PackageFile {
 
     $path = Join-Path ($ci ? $PKG_CI_OUTDIR : $PKG_OUTDIR) "$projectName.$version.nupkg"
 
-    ___diag "Package file: ""$path""."
+    ___debug "Package file: ""$path""."
 
     # Is there a dangling package file?
     # NB: not necessary for CI packages, the filename is unique.
@@ -419,7 +419,7 @@ else {
 try {
     ___BEGIN___
 
-    my ProjectName "Abc.Maybe" -Option ReadOnly
+    readonly ProjectName "Abc.Maybe"
 
     $CI = -not ($Release -or $NoCI)
 
