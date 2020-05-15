@@ -130,20 +130,64 @@ function Generate-UIDs {
 
     say "Generating build UIDs."
 
-    $fsi = (whereis "fsi.exe") ?? (Find-VsWhere -ExitOnError | Find-Fsi)
-    if (-not $fsi) { return @("", "", "") }
+#    $fsi = (whereis "fsi.exe") ?? (Find-VsWhere -ExitOnError | Find-Fsi)
+#    if (-not $fsi) { return @("", "", "") }
+#
+#    $fsx = Join-Path $PSScriptRoot "genuids.fsx" -Resolve
+#    $uids = & $fsi $fsx
+#
+#    if (-not $?) {
+#        warn "genuids.fsx did not complete succesfully."
+#        return @("", "", "")
+#    }
+#
+#    ___debug "Build UIDs: ""$uids""."
+#
+#    $uids.Split(";")
 
-    $fsx = Join-Path $PSScriptRoot "genuids.fsx" -Resolve
-    $uids = & $fsi $fsx
+    Add-Type @'
+using System;
+using System.Management.Automation;
 
-    if (-not $?) {
-        warn "genuids.fsx did not complete succesfully."
-        return @("", "", "")
+[Cmdlet(VerbsCommon.Get, "BuildInfos")]
+public class GetBuildInfosCmdlet : Cmdlet
+{
+    protected override void BeginProcessing()
+    {
+        var orig = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+
+        var now  = DateTime.UtcNow;
+        var am   = now.Hour < 12;
+
+        var mon = new DateTime(now.Year, now.Month, now.Day, am ? 0 : 12, 0, 0, DateTimeKind.Utc);
+
+        var halfdays = 2 * (now - orig).Days + (am ? 0 : 1);
+        var seconds  = (now - mon).TotalSeconds;
+
+        var buildnum = (ushort)halfdays;
+        var revnum   = (ushort)seconds;
+
+        var timestamp = String.Format(
+            "{0}{1:D2}{2:D2}.T{3:D2}{4:D2}{5:D2}",
+            now.Year,
+            now.Month,
+            now.Day,
+            now.Hour,
+            now.Minute,
+            now.Second);
+
+        WriteDebug($"Build Number: \"{buildnum}\".");
+        WriteDebug($"Revision Number: \"{revnum}\".");
+        WriteDebug($"Build Timestamp: \"{timestamp}\".");
+
+        WriteObject(buildnum);
+        WriteObject(revnum);
+        WriteObject(timestamp);
     }
+}
+'@ -PassThru | % Assembly | Import-Module
 
-    ___debug "Build UIDs: ""$uids""."
-
-    $uids.Split(";")
+    Get-BuildInfos
 }
 
 # ------------------------------------------------------------------------------
