@@ -95,7 +95,6 @@ function warn {
 # ------------------------------------------------------------------------------
 
 # Die of errors.
-# Not seen as a terminating error, doesn't set $? to $false, but kills the script.
 function die {
     [CmdletBinding()]
     param(
@@ -147,7 +146,6 @@ function carp {
 # ------------------------------------------------------------------------------
 
 # Die of errors (from perspective of caller).
-# Not seen as a terminating error, doesn't set $? to $false, but kills the script.
 function croak {
     [CmdletBinding()]
     param(

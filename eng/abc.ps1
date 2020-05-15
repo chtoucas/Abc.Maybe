@@ -82,7 +82,7 @@ function ___BEGIN___ {
 # ------------------------------------------------------------------------------
 
 # Meant to be used within the top-level catch.
-function ___ERR___ {
+function ___CATCH___ {
     [CmdletBinding()]
     param()
 

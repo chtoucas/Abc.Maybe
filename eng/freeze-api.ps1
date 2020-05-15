@@ -75,7 +75,7 @@ try {
     }
 }
 catch {
-    ___ERR___
+    ___CATCH___
 }
 finally {
     ___END___

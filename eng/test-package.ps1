@@ -703,7 +703,7 @@ try {
     }
 }
 catch {
-    ___ERR___
+    ___CATCH___
 }
 finally {
     popd
