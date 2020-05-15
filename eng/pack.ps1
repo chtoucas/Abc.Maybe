@@ -120,32 +120,7 @@ function Get-GitMetadata {
 
 # ------------------------------------------------------------------------------
 
-# In the past, we used to generate the id's within MSBuild but then it is nearly
-# impossible to override the global properties PackageVersion and VersionSuffix.
-# Besides that, generating the id's outside ensures that all assemblies inherit
-# the same id's.
-function Generate-UIDs {
-    [CmdletBinding()]
-    param()
-
-    say "Generating build UIDs."
-
-#    $fsi = (whereis "fsi.exe") ?? (Find-VsWhere -ExitOnError | Find-Fsi)
-#    if (-not $fsi) { return @("", "", "") }
-#
-#    $fsx = Join-Path $PSScriptRoot "genuids.fsx" -Resolve
-#    $uids = & $fsi $fsx
-#
-#    if (-not $?) {
-#        warn "genuids.fsx did not complete succesfully."
-#        return @("", "", "")
-#    }
-#
-#    ___debug "Build UIDs: ""$uids""."
-#
-#    $uids.Split(";")
-
-    Add-Type @'
+Add-Type @'
 using System;
 using System.Management.Automation;
 
@@ -176,9 +151,9 @@ public class GetBuildInfosCmdlet : Cmdlet
             now.Minute,
             now.Second);
 
-        WriteDebug($"Build Number: \"{buildnum}\".");
-        WriteDebug($"Revision Number: \"{revnum}\".");
-        WriteDebug($"Build Timestamp: \"{timestamp}\".");
+        WriteDebug($"Build number: \"{buildnum}\".");
+        WriteDebug($"Build revision: \"{revnum}\".");
+        WriteDebug($"Build nimestamp: \"{timestamp}\".");
 
         WriteObject(buildnum);
         WriteObject(revnum);
@@ -186,6 +161,16 @@ public class GetBuildInfosCmdlet : Cmdlet
     }
 }
 '@ -PassThru | % Assembly | Import-Module
+
+# In the past, we used to generate the id's within MSBuild but then it is nearly
+# impossible to override the global properties PackageVersion and VersionSuffix.
+# Besides that, generating the id's outside ensures that all assemblies inherit
+# the same id's.
+function Generate-UIDs {
+    [CmdletBinding()]
+    param()
+
+    say "Generating build UIDs."
 
     Get-BuildInfos
 }
