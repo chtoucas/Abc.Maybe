@@ -9,7 +9,7 @@ $Script:ErrorActionPreference = "Stop"
 
 . (Join-Path $PSScriptRoot "common.ps1")
 
-$Script:__ForegroundColor = `
+$Script:___ForegroundColor = `
     $Host.UI.RawUI.ForegroundColor -eq "White" ? "Blue" : "White"
 
 ################################################################################
@@ -28,7 +28,7 @@ New-Alias "SAY-LOUDLY" Write-Green
 
 # All paths are ABSOLUTE.
 
-# Root directory = absolute path of the parent directory containing *this* file.
+# Root directory = absolute path of the parent directory.
 (Get-Item $PSScriptRoot).Parent.FullName | const ROOT_DIR
 # Core directories.
 (Join-Path $ROOT_DIR "eng"  -Resolve)    | const ENG_DIR
@@ -117,11 +117,11 @@ function ___END___ {
         say "`nExecution terminated with warning(s)." -ForegroundColor Yellow
     }
     else {
-        say "`nGoodbye." -ForegroundColor $Script:__ForegroundColor
+        say "`nGoodbye." -ForegroundColor $Script:___ForegroundColor
     }
 
     if ($Error -and ($err = $Error[0]) -is [System.Management.Automation.ErrorRecord]) {
-        say "`n--- Post-mortem." -ForegroundColor $Script:__ForegroundColor
+        say "`n--- Post-mortem." -ForegroundColor $Script:___ForegroundColor
 
         # Write a terminating error.
         $PSCmdlet.WriteError($err)
@@ -142,7 +142,7 @@ function Write-Hello {
         [switch] $noNewline
     )
 
-    say "Hello, $message" -ForegroundColor $Script:__ForegroundColor -NoNewline:$noNewline
+    say "Hello, $message" -ForegroundColor $Script:___ForegroundColor -NoNewline:$noNewline
 }
 
 # ------------------------------------------------------------------------------
@@ -238,7 +238,7 @@ function Find-OpenCover {
             -ExitOnError:$exitOnError
     }
 
-    ___confess "OpenCover.Console.exe found here: ""$path""."
+    ___diag "OpenCover.Console.exe found here: ""$path""."
 
     $path
 }
@@ -268,7 +268,7 @@ function Find-XunitRunner {
             -ExitOnError:$exitOnError
     }
 
-    ___confess "xunit.console.exe found here: ""$path""."
+    ___diag "xunit.console.exe found here: ""$path""."
 
     $path
 }
@@ -282,6 +282,7 @@ function Restore-NETFrameworkTools {
     param()
 
     say "Restoring local .NET Framework tools."
+
     & dotnet restore $NET_FRAMEWORK_TOOLS_PROJECT | Out-Host
         || carp "Failed to restore local .NET Framework tools."
 }
@@ -296,6 +297,7 @@ function Restore-NETCoreTools {
         pushd $ROOT_DIR
 
         say "Restoring local .NET Core tools."
+
         & dotnet tool restore | Out-Host
             || carp "Failed to restore local .NET Core tools."
     }
@@ -314,6 +316,7 @@ function Restore-Solution {
         pushd $ROOT_DIR
 
         say "Restoring solution."
+
         & dotnet restore | Out-Host
             || carp "Failed to restore solution."
     }
@@ -333,7 +336,7 @@ function Reset-SourceTree {
     )
 
     $echo = $yes ? "say" : "___confess"
-    . $echo "`nResetting source tree."
+    . $echo "Resetting source tree."
 
     if ($yes -or (yesno "`nReset the source tree?")) {
         Remove-BinAndObj $SRC_DIR
@@ -350,7 +353,7 @@ function Reset-TestTree {
     )
 
     $echo = $yes ? "say" : "___confess"
-    . $echo "`nResetting test tree."
+    . $echo "Resetting test tree."
 
     if ($yes -or (yesno "`nReset the test tree?")) {
         Remove-BinAndObj $TEST_DIR
@@ -367,14 +370,14 @@ function Reset-PackageOutDir {
     )
 
     $echo = $yes ? "say" : "___confess"
-    . $echo "`nResetting output directory for packages."
+    . $echo "Resetting output directory for packages."
 
     if ($yes -or (yesno "`nClear output directory for packages?")) {
-        ___confess "Clearing output directory for packages."
+        ___diag "Clearing output directory for packages."
 
         if (Test-Path $PKG_OUTDIR) {
             ls $PKG_OUTDIR -Include "*.nupkg" -Recurse `
-                | foreach { ___confess "Deleting ""$_""." ; rm $_.FullName }
+                | foreach { ___diag "Deleting ""$_""." ; rm $_.FullName }
         }
 
         say-softly "Output directory for packages was cleared."
@@ -390,14 +393,14 @@ function Reset-PackageCIOutDir {
     )
 
     $echo = $yes ? "say" : "___confess"
-    . $echo "`nResetting output directory for CI packages."
+    . $echo "Resetting output directory for CI packages."
 
     if ($yes -or (yesno "`nClear output directory for CI packages?")) {
-        ___confess "Clearing output directory for CI packages."
+        ___diag "Clearing output directory for CI packages."
 
         if (Test-Path $PKG_CI_OUTDIR) {
             ls $PKG_CI_OUTDIR -Include "*.nupkg" -Recurse `
-                | foreach { ___confess "Deleting ""$_""." ; rm $_.FullName }
+                | foreach { ___diag "Deleting ""$_""." ; rm $_.FullName }
         }
 
         say-softly "Output directory for CI packages was cleared."
@@ -413,7 +416,7 @@ function Reset-LocalNuGet {
     )
 
     $echo = $yes ? "say" : "___confess"
-    . $echo "`nResetting local NuGet feed/cache."
+    . $echo "Resetting local NuGet feed/cache."
 
     if ($yes -or (yesno "`nClear local NuGet feed/cache?")) {
         # When we reset the NuGet feed, better to clear the cache too, this is
@@ -425,14 +428,14 @@ function Reset-LocalNuGet {
         #
         # We can't delete the directories, otherwise "dotnet restore" will fail.
 
-        ___confess "Clearing local NuGet feed."
+        ___diag "Clearing local NuGet feed."
         ls $NUGET_LOCAL_FEED -Exclude "_._" `
-            | foreach { ___confess "Deleting ""$_""." ; rm $_ -Recurse }
+            | foreach { ___diag "Deleting ""$_""." ; rm $_ -Recurse }
         say-softly "Local NuGet feed was cleared."
 
-        ___confess "Clearing local NuGet cache."
+        ___diag "Clearing local NuGet cache."
         ls $NUGET_LOCAL_CACHE -Exclude "_._" `
-            | foreach { ___confess "Deleting ""$_""." ; rm $_ -Recurse }
+            | foreach { ___diag "Deleting ""$_""." ; rm $_ -Recurse }
         say-softly "Local NuGet cache was cleared."
     }
 }
@@ -453,12 +456,12 @@ function Remove-PackageFromLocalNuGet {
 
     say "Removing obsolete package data from local NuGet feed/cache."
 
-    ___confess "Removing package from the local NuGet cache."
+    ___diag "Removing package from the local NuGet cache."
     Join-Path $NUGET_LOCAL_CACHE $packageName.ToLower() `
         | Join-Path -ChildPath $version `
         | Remove-Dir
 
-    ___confess "Removing package from the local NuGet feed."
+    ___diag "Removing package from the local NuGet feed."
     $oldFilepath = Join-Path $NUGET_LOCAL_FEED "$packageName.$version.nupkg"
     if (Test-Path $oldFilepath) {
         rm $oldFilepath

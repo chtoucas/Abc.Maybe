@@ -141,7 +141,7 @@ function Generate-UIDs {
         return @("", "", "")
     }
 
-    ___confess "Build UIDs: ""$uids"""
+    ___diag "Build UIDs: ""$uids""."
 
     $uids.Split(";")
 }
@@ -167,7 +167,7 @@ function Get-ActualVersion {
 
     if ($ci) {
         if (-not $timestamp) {
-            ___confess "The timestamp is empty, let's regenerate it."
+            ___diag "The timestamp is empty, let's regenerate it."
             $timestamp = "{0:yyyyMMdd}.T{0:HHmmss}" -f (Get-Date).ToUniversalTime()
         }
 
@@ -192,8 +192,8 @@ function Get-ActualVersion {
 
     $prefix = "$major.$minor.$patch"
 
-    ___confess "Version suffix: ""$suffix""."
-    ___confess "Version prefix: ""$prefix""."
+    ___diag "Version suffix: ""$suffix""."
+    ___diag "Version prefix: ""$prefix""."
 
     $suffix ? @("$prefix-$suffix", $prefix, $suffix)
         : @($prefix, $prefix, "")
@@ -220,7 +220,7 @@ function Get-PackageFile {
 
     $path = Join-Path ($ci ? $PKG_CI_OUTDIR : $PKG_OUTDIR) "$projectName.$version.nupkg"
 
-    ___confess "Package file: ""$path"""
+    ___diag "Package file: ""$path""."
 
     # Is there a dangling package file?
     # NB: not necessary for CI packages, the filename is unique.
@@ -363,6 +363,7 @@ function Invoke-PushLocal {
     # CI packages (or versions we are going to publish).
     say "Updating the local NuGet cache"
     $project = Join-Path $TEST_DIR "Blank" -Resolve
+
     & dotnet restore $project /p:AbcVersion=$version | Out-Host
         || die "Failed to update the local NuGet cache."
 
