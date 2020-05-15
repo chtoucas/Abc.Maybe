@@ -214,20 +214,20 @@ Hello "this is the Code Coverage script."
 try {
     ___BEGIN___
 
-    readonly Configuration "Debug"
-
     if ($NoCoverage -and $NoReport) {
         die "You cannot set both options -NoCoverage and -NoReport at the same time."
     }
 
-    $tool = $OpenCover ? "opencover" : "coverlet"
-    $outdir = Join-Path $ARTIFACTS_DIR $tool
-    $outxml = Join-Path $outdir "$tool.xml"
+    readonly Configuration "Debug"
+
+    readonly Tool   ($OpenCover ? "opencover" : "coverlet")
+    readonly OutDir (Join-Path $ARTIFACTS_DIR $Tool)
+    readonly OutXml (Join-Path $OutDir "$Tool.xml")
 
     # Create the directory if it does not already exist.
     # Do not remove this, it must be done before calling OpenCover.
-    if (-not (Test-Path $outdir)) {
-        mkdir -Force -Path $outdir | Out-Null
+    if (-not (Test-Path $OutDir)) {
+        mkdir -Force -Path $OutDir | Out-Null
     }
 
     if ($Restore) { Invoke-Restore }
@@ -238,13 +238,13 @@ try {
     else {
         if ($OpenCover) {
             Find-OpenCover -ExitOnError `
-                | Invoke-OpenCover -Configuration $Configuration -Output $outxml
+                | Invoke-OpenCover -Configuration $Configuration -Output $OutXml
         }
         else {
             # For coverlet.msbuild the path must be absolute if we want the
             # result to be put within the directory for artifacts and not below
             # the test project.
-            Invoke-Coverlet -Configuration $Configuration -Output $outxml
+            Invoke-Coverlet -Configuration $Configuration -Output $OutXml
         }
     }
 
@@ -252,13 +252,13 @@ try {
         warn "`nOn your request, we do not run ReportGenerator."
     }
     else {
-        Invoke-ReportGenerator $outxml $outdir
+        Invoke-ReportGenerator $OutXml $OutDir
 
         try {
-            pushd $outdir
+            pushd $OutDir
 
-            cp -Force "badge_combined.svg" (Join-Path ".." "$tool.svg")
-            cp -Force "Summary.txt" (Join-Path ".." "$tool.txt")
+            cp -Force "badge_combined.svg" (Join-Path ".." "$Tool.svg")
+            cp -Force "Summary.txt" (Join-Path ".." "$Tool.txt")
         }
         finally {
             popd

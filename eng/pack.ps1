@@ -421,7 +421,7 @@ try {
 
     readonly ProjectName "Abc.Maybe"
 
-    $CI = -not ($Release -or $NoCI)
+    -not ($Release -or $NoCI) | readonly CI
 
     SAY-LOUDLY "`nInitialisation."
 
