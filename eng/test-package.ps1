@@ -446,11 +446,11 @@ function Invoke-TestManyInteractive {
     foreach ($platform in $platformList) {
         if (yesno "`nTest the package for ""$platform""?") {
             Invoke-TestSingle `
-                -Platform $platform `
-                -Version  $version `
-                -Runtime  $runtime `
-                -NoRestore:$noRestore `
-                -NoBuild:$noBuild
+                -Platform   $platform `
+                -Version    $version `
+                -Runtime    $runtime `
+                -NoRestore: $noRestore `
+                -NoBuild:   $noBuild
         }
     }
 }
@@ -691,9 +691,10 @@ try {
 
         if ($Platform.EndsWith("*")) {
             Invoke-TestMany `
-                -PlatformList $knownPlatforms -Filter $Platform `
-                -Version $Version `
-                -Runtime $Runtime
+                -PlatformList $knownPlatforms `
+                -Filter       $Platform `
+                -Version      $Version `
+                -Runtime      $Runtime
         }
         else {
             # Validating the platform name is not mandatory but, if we don't,
