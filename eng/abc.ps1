@@ -44,7 +44,7 @@ New-Alias "SAY-LOUDLY" Write-Green
 
 # Reference project used to restore .NET Framework tools.
 const NET_FRAMEWORK_TOOLS_PROJECT `
-    (Join-Path $ENG_DIR "NETFrameworkTools\NETFrameworkTools.csproj")
+    (Join-Path $ENG_DIR "NETFrameworkTools\NETFrameworkTools.csproj" -Resolve)
 
 # Platforms supported when packing Abc.Maybe, eg when building Abc.Maybe.csproj.
 const PACKAGE_SUPPORTED_PLATFORMS `
@@ -54,7 +54,7 @@ const PACKAGE_SUPPORTED_PLATFORMS `
     "net461"
 
 # Platforms supported when building the __whole__ solution.
-# - "netstandard1.0" is not supported here.
+# - we do NOT include "netstandard1.0", it is only supported by Abc.Maybe.csproj.
 # - see also Get-MaxApiPlatform below.
 const SOLUTION_SUPPORTED_PLATFORMS `
     "netstandard2.1",

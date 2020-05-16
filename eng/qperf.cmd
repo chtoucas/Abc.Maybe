@@ -1,4 +1,5 @@
 :: Quickly run the "perf" program.
+:: TODO: check .NET Core tool for BenchmarkDotNet.
 
 @echo off
 @setlocal
