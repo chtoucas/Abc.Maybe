@@ -331,11 +331,12 @@ function Invoke-Pack {
     }
 
     $project = Join-Path $SRC_DIR $projectName -Resolve
+    $targetFrameworks = '\"' + ($PACKAGE_SUPPORTED_PLATFORMS -join ";") + '\"'
 
     # Do NOT use --no-restore or --no-build (options -Reset/-Release erase bin/obj).
     # RepositoryCommit and RepositoryBranch are standard props, do not remove them.
     & dotnet pack $project -c Release --nologo $args --output $output `
-        /p:TargetFrameworks='\"netstandard2.1;netstandard2.0;netstandard1.0;net461\"' `
+        /p:TargetFrameworks=$targetFrameworks `
         /p:BuildNumber=$buildNumber `
         /p:RevisionNumber=$revisionNumber `
         /p:RepositoryCommit=$repositoryCommit `
@@ -414,8 +415,8 @@ function Invoke-Publish {
     if (yesno "Do you want me to publish the package for you?") {
         warn "Not yet activated."
         SAY-LOUDLY "`n---`nTo publish the package:"
-        SAY-LOUDLY "> dotnet nuget push $packageFile $args"
-        #& dotnet nuget push --force-english-output $packageFile $args
+        SAY-LOUDLY "> dotnet nuget push --force-english-output --interactive $packageFile $args"
+        #& dotnet nuget push --force-english-output --interactive $packageFile $args
     }
     else {
         SAY-LOUDLY "`n---`nTo publish the package:"
