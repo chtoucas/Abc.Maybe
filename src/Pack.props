@@ -5,9 +5,7 @@
   <PropertyGroup>
     <BuildNumber Condition=" $(BuildNumber) == '' ">$(PatchVersion)</BuildNumber>
     <RevisionNumber Condition=" $(RevisionNumber) == '' ">0</RevisionNumber>
-  </PropertyGroup>
 
-  <PropertyGroup>
     <VersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</VersionPrefix>
     <VersionSuffix Condition=" $(PreReleaseCycle) != '' ">$(PreReleaseCycle)$(PreReleaseNumber)</VersionSuffix>
 

@@ -207,7 +207,7 @@ function Get-PackageVersion {
 
     ___confess "Getting package version."
 
-    $projectPath = Join-Path $ENG_DIR "$packageName.props" -Resolve
+    $projectPath = Join-Path $SRC_DIR "$packageName.props" -Resolve
 
     $node = [Xml] (Get-Content $projectPath) `
         | Select-Xml -XPath "//Project/PropertyGroup/MajorVersion/.." `

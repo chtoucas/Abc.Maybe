@@ -6,7 +6,6 @@ Core files.
 - cover.ps1             code coverage script.
 - pack.ps1              create a package.
 - test-package.ps1      test a package.
-- Abc.Maybe.props       NuGet package props for Abc.Maybe.
 
 Maintenance scripts.
 - freeze-api.ps1        update public API files.
@@ -15,8 +14,6 @@ Maintenance scripts.
 Other files.
 - common.ps1            PowerShell generic helpers.
 - abc.ps1               PowerShell helpers.
-- Pack.props            MSBuild props when building packages.
-- Abc.snk               strong named key.
 - NETFrameworkTools     blank project used to restore .NET Framework tools.
 
 Obsolete files.
@@ -48,13 +45,5 @@ Filtering
 Dump the test suite.
 > dotnet test --list-tests
 
-Miscs
------
-
 Benchmarks
 > dotnet run -c Release -p perf
-
-Extract the public key.
-> sn -p Abc.snk Abc.pk
-Get the public key.
-> sn -tp Abc.pk

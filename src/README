@@ -1,0 +1,16 @@
+README
+------
+
+- HashCode.Shim.cs
+- MissingAttributes.cs
+- NullableAttributes.cs
+
+- Pack.props            MSBuild props when building packages.
+- Abc.Maybe.props       NuGet package props for Abc.Maybe.
+- Abc.snk               strong named key.
+
+Remarks.
+To extract the public key.
+> sn -p Abc.snk Abc.pk
+To get the public key.
+> sn -tp Abc.pk

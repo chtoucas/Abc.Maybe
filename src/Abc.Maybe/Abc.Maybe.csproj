@@ -4,7 +4,7 @@
     <TargetFrameworks>$(MaxApiPlatform);netstandard2.0</TargetFrameworks>
   </PropertyGroup>
 
-  <Import Project="$(EngRoot)Pack.props" Condition=" $(Pack) == 'true' " />
+  <Import Project="..\Pack.props" Condition=" $(Pack) == 'true' " />
 
   <PropertyGroup Condition=" $(Configuration) == 'Release' ">
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -22,8 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="$(SourceRoot)MissingAttributes.cs" />
-    <Compile Include="$(SourceRoot)NullableAttributes.cs" />
+    <Compile Include="..\MissingAttributes.cs" />
+    <Compile Include="..\NullableAttributes.cs" />
   </ItemGroup>
 
   <ItemGroup>

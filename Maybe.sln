@@ -19,22 +19,23 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abc.Sketches", "src\Abc.Ske
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D158B7E6-CFFB-40FF-B775-6E6995648EFC}"
 	ProjectSection(SolutionItems) = preProject
+		src\Abc.Maybe.props = src\Abc.Maybe.props
 		src\Directory.Build.props = src\Directory.Build.props
 		src\Directory.Build.targets = src\Directory.Build.targets
 		src\HashCode.Shim.cs = src\HashCode.Shim.cs
 		src\MissingAttributes.cs = src\MissingAttributes.cs
 		src\NullableAttributes.cs = src\NullableAttributes.cs
+		src\Pack.props = src\Pack.props
+		src\README = src\README
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eng", "eng", "{6D957FE8-23D0-4985-A91C-F1CC399AA453}"
 	ProjectSection(SolutionItems) = preProject
-		eng\Abc.Maybe.props = eng\Abc.Maybe.props
 		eng\abc.ps1 = eng\abc.ps1
 		eng\build.ps1 = eng\build.ps1
 		eng\common.ps1 = eng\common.ps1
 		eng\cover.ps1 = eng\cover.ps1
 		eng\freeze-api.ps1 = eng\freeze-api.ps1
-		eng\Pack.props = eng\Pack.props
 		eng\pack.ps1 = eng\pack.ps1
 		eng\README = eng\README
 		eng\reset.ps1 = eng\reset.ps1

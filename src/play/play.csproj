@@ -20,7 +20,7 @@
     <None Update="play.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Compile Include="$(SourceRoot)NullableAttributes.cs" />
+    <Compile Include="..\NullableAttributes.cs" />
   </ItemGroup>
 
   <!--

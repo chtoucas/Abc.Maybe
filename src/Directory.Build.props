@@ -1,11 +1,6 @@
 <Project>
 
   <PropertyGroup>
-    <SourceRoot>$(MSBuildThisFileDirectory)</SourceRoot>
-    <EngRoot>$(MSBuildThisFileDirectory)..\eng\</EngRoot>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <!--
       The first listed framework is the one used by the VS editor.
       Full NRT-analysis requires .NET Core 3.0 or above, .NET Standard does
@@ -75,7 +70,7 @@
     <!-- CONTRACTS_FULL is necessary to enable the attribute Pure -->
     <DefineConstants>$(DefineConstants);TRACE;CONTRACTS_FULL</DefineConstants>
 
-    <AssemblyOriginatorKeyFile>$(EngRoot)Abc.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Abc.snk</AssemblyOriginatorKeyFile>
 
     <!--
       Fake version only used during development. When building a package,
