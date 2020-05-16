@@ -9,12 +9,9 @@ Test-related scripts.
 - cover.ps1             code coverage (Coverlet or OpenCover).
 - qperf.cmd             quickly run the perf tool.
 
-Package-related scripts.
+Packaging-related scripts.
 - pack.ps1              create a package.
 - test-package.ps1      test a package.
-alongside the supporting scripts (not meant to be called directly)
-- genuids.fsx           generate unique ids used to timestamp a package.
-- genuids.ps1           execute genuids.fsx.
 
 Maintenance scripts.
 - dump-test-suite.cmd   dump the test suite.
@@ -22,11 +19,15 @@ Maintenance scripts.
 - reset.ps1             reset repository.
 
 Other files.
-- common.ps1            PowerShell common helpers.
-- abc.ps1               PowerShell library.
+- common.ps1            PowerShell generic helpers.
+- abc.ps1               PowerShell helpers.
 - Abc.Maybe.props       NuGet package props for Abc.Maybe.
 - Pack.props            MSBuild props when building packages.
-- Pack.tasks            MSBuild tasks when building packages (obsolete).
 - Abc.snk               strong named key.
 - Abc.pk                public key.
 - NETFrameworkTools     blank project used to restore .NET Framework tools.
+
+Obsolete files.
+- genuids.fsx           generate unique ids used to timestamp a package.
+- genuids.ps1           execute genuids.fsx.
+- Pack.tasks            MSBuild tasks when building packages.

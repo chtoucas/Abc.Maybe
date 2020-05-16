@@ -295,7 +295,7 @@ function Invoke-Restore {
     if ($runtime)  { $args += "--runtime:$runtime" }
     if ($allKnown) { $args += "/p:AllKnown=true" }
 
-    & dotnet restore $NET_SDK_PROJECT $args | Out-Host
+    & dotnet restore $NET_SDK_PROJECT $args
         || die "Restore task failed."
 
     say-softly "Dependencies successfully restored."
@@ -325,7 +325,7 @@ function Invoke-Build {
     if ($allKnown)  { $args += "/p:AllKnown=true" }
     if ($noRestore) { $args += "--no-restore" }
 
-    & dotnet build $NET_SDK_PROJECT $args | Out-Host
+    & dotnet build $NET_SDK_PROJECT $args
         || die "Build task failed."
 
     say-softly "Project successfully built."
@@ -370,13 +370,13 @@ function Invoke-TestOldStyle {
     $project = Join-Path $TEST_DIR $projectName -Resolve
 
     # https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2019
-    & $msbuild $project -nologo -v:minimal /p:AbcVersion=$version /t:"Restore;Build" | Out-Host
+    & $msbuild $project -nologo -v:minimal /p:AbcVersion=$version /t:"Restore;Build"
         || die "Build failed when targeting ""$platform""."
 
     # NB: Release, not Debug, this is hard-coded within the project file.
     $asm = Join-Path $TEST_DIR "$projectName\bin\Release\$projectName.dll" -Resolve
 
-    & $xunit $asm | Out-Host
+    & $xunit $asm
         || die "Test task failed when targeting ""$platform""."
 
     say-softly "Test completed successfully."
@@ -417,7 +417,7 @@ function Invoke-TestSingle {
     if ($noBuild)       { $args += "--no-build" }   # NB: no-build => no-restore
     elseif ($noRestore) { $args += "--no-restore" }
 
-    & dotnet test $NET_SDK_PROJECT --nologo $args | Out-Host
+    & dotnet test $NET_SDK_PROJECT --nologo $args
         || die "Test task failed when targeting ""$platform""."
 
     say-softly "Test completed successfully."
@@ -507,7 +507,7 @@ function Invoke-TestMany {
         ("/p:TargetFrameworks=" + '\"' + $targetFrameworks + '\"')
     if ($runtime) { $args += "--runtime:$runtime" }
 
-    & dotnet test $NET_SDK_PROJECT --nologo $args | Out-Host
+    & dotnet test $NET_SDK_PROJECT --nologo $args
         || die "Test task failed."
 
     say-softly "Test completed successfully."
@@ -557,7 +557,7 @@ function Invoke-TestAll {
     if ($noCore)    { $args += "/p:NoCore=true" }
     if ($runtime)   { $args += "--runtime:$runtime" }
 
-    & dotnet test $NET_SDK_PROJECT --nologo $args | Out-Host
+    & dotnet test $NET_SDK_PROJECT --nologo $args
         || die "Test task failed."
 
     say-softly "Test completed successfully."
@@ -581,12 +581,13 @@ Hello "this is the script to test the package Abc.Maybe."
 
 # Keep in sync w/ test\NETSdk\NETSdk.csproj.
 
-$LastClassic = `
+readonly LastClassic `
     "net452",
     "net462",
     "net472",
     "net48"
-$AllClassic = `
+
+readonly AllClassic `
     "net45",
     "net451",
     "net452",
@@ -598,15 +599,18 @@ $AllClassic = `
     "net472",
     "net48"
 
-$LTSCore = `
+readonly LTSCore `
     "netcoreapp2.1",
     "netcoreapp3.1"
-$AllCore = `
+
+readonly AllCore `
     "netcoreapp2.0",
     "netcoreapp2.1",
     "netcoreapp2.2",
     "netcoreapp3.0",
     "netcoreapp3.1"
+
+readonly PackageName "Abc.Maybe"
 
 # ------------------------------------------------------------------------------
 
@@ -614,8 +618,6 @@ try {
     ___BEGIN___
 
     pushd $TEST_DIR
-
-    readonly PackageName "Abc.Maybe"
 
     if ($Reset) {
         SAY-LOUDLY "`nResetting repository."

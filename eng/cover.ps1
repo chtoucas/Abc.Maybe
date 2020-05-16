@@ -134,8 +134,7 @@ function Invoke-OpenCover {
         -target:dotnet.exe `
         -targetargs:"test -v quiet -c $configuration --nologo --no-restore /p:DebugType=Full" `
         -filter:$filter `
-        -excludebyattribute:*.ExcludeFromCodeCoverageAttribute `
-        | Out-Host
+        -excludebyattribute:*.ExcludeFromCodeCoverageAttribute
         || die "OpenCover failed."
 
     say-softly "OpenCover completed successfully."
@@ -169,8 +168,7 @@ function Invoke-Coverlet {
         /p:CoverletOutputFormat=opencover `
         /p:CoverletOutput=$output `
         /p:Include="[Abc.Maybe]*" `
-        /p:Exclude=$exclude `
-        | Out-Host
+        /p:Exclude=$exclude
         || die "Coverlet failed."
 
     say-softly "Coverlet completed successfully."
@@ -196,8 +194,7 @@ function Invoke-ReportGenerator {
         -verbosity:Warning `
         -reporttypes:"HtmlInline;Badges;TextSummary" `
         -reports:$reports `
-        -targetdir:$targetdir `
-        | Out-Host
+        -targetdir:$targetdir
         || die "ReportGenerator failed."
 
     say-softly "ReportGenerator completed successfully."
@@ -211,6 +208,8 @@ if ($Help) { Print-Help ; exit }
 
 Hello "this is the Code Coverage script."
 
+readonly Configuration "Debug"
+
 try {
     ___BEGIN___
 
@@ -218,47 +217,45 @@ try {
         die "You cannot set both options -NoCoverage and -NoReport at the same time."
     }
 
-    readonly Configuration "Debug"
-
-    readonly Tool   ($OpenCover ? "opencover" : "coverlet")
-    readonly OutDir (Join-Path $ARTIFACTS_DIR $Tool)
-    readonly OutXml (Join-Path $OutDir "$Tool.xml")
+    $tool   = $OpenCover ? "opencover" : "coverlet"
+    $outDir = Join-Path $ARTIFACTS_DIR $tool
+    $outXml = Join-Path $outDir "$tool.xml"
 
     # Create the directory if it does not already exist.
     # Do not remove this, it must be done before calling OpenCover.
-    if (-not (Test-Path $OutDir)) {
-        mkdir -Force -Path $OutDir | Out-Null
+    if (-not (Test-Path $outDir)) {
+        mkdir -Force -Path $outDir | Out-Null
     }
 
     if ($Restore) { Invoke-Restore }
 
     if ($NoCoverage) {
-        warn "`nOn your request, we do not run any Code Coverage tool."
+        say "`nOn your request, we do not run any Code Coverage tool."
     }
     else {
         if ($OpenCover) {
             Find-OpenCover -ExitOnError `
-                | Invoke-OpenCover -Configuration $Configuration -Output $OutXml
+                | Invoke-OpenCover -Configuration $Configuration -Output $outXml
         }
         else {
             # For coverlet.msbuild the path must be absolute if we want the
             # result to be put within the directory for artifacts and not below
             # the test project.
-            Invoke-Coverlet -Configuration $Configuration -Output $OutXml
+            Invoke-Coverlet -Configuration $Configuration -Output $outXml
         }
     }
 
     if ($NoReport) {
-        warn "`nOn your request, we do not run ReportGenerator."
+        say "`nOn your request, we do not run ReportGenerator."
     }
     else {
-        Invoke-ReportGenerator $OutXml $OutDir
+        Invoke-ReportGenerator $outXml $outDir
 
         try {
-            pushd $OutDir
+            pushd $outDir
 
-            cp -Force "badge_combined.svg" (Join-Path ".." "$Tool.svg")
-            cp -Force "Summary.txt" (Join-Path ".." "$Tool.txt")
+            cp -Force "badge_combined.svg" (Join-Path ".." "$tool.svg")
+            cp -Force "Summary.txt" (Join-Path ".." "$tool.txt")
         }
         finally {
             popd

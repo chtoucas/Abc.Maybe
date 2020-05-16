@@ -283,7 +283,7 @@ function Restore-NETFrameworkTools {
 
     say "Restoring local .NET Framework tools."
 
-    & dotnet restore $NET_FRAMEWORK_TOOLS_PROJECT | Out-Host
+    & dotnet restore $NET_FRAMEWORK_TOOLS_PROJECT
         || carp "Failed to restore local .NET Framework tools."
 }
 
@@ -298,7 +298,7 @@ function Restore-NETCoreTools {
 
         say "Restoring local .NET Core tools."
 
-        & dotnet tool restore | Out-Host
+        & dotnet tool restore
             || carp "Failed to restore local .NET Core tools."
     }
     finally {
@@ -317,7 +317,7 @@ function Restore-Solution {
 
         say "Restoring solution."
 
-        & dotnet restore | Out-Host
+        & dotnet restore
             || carp "Failed to restore solution."
     }
     finally {

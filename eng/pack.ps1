@@ -120,15 +120,21 @@ function Get-GitMetadata {
 
 # ------------------------------------------------------------------------------
 
+# In the past, we used to generate the id's within MSBuild but then it is nearly
+# impossible to override the global properties PackageVersion and VersionSuffix.
+# Besides that, generating the id's outside ensures that all assemblies inherit
+# the same id's.
 Add-Type @'
 using System;
 using System.Management.Automation;
 
-[Cmdlet(VerbsCommon.Get, "BuildInfos")]
-public class GetBuildInfosCmdlet : Cmdlet
+[Cmdlet(VerbsCommon.Get, "BuildNumbers")]
+public class GetBuildNumbersCmdlet : Cmdlet
 {
     protected override void BeginProcessing()
     {
+        WriteVerbose("Getting the build numbers.");
+
         var orig = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         var now  = DateTime.UtcNow;
@@ -153,7 +159,7 @@ public class GetBuildInfosCmdlet : Cmdlet
 
         WriteDebug($"Build number: \"{buildnum}\".");
         WriteDebug($"Build revision: \"{revnum}\".");
-        WriteDebug($"Build nimestamp: \"{timestamp}\".");
+        WriteDebug($"Build timestamp: \"{timestamp}\".");
 
         WriteObject(buildnum);
         WriteObject(revnum);
@@ -161,19 +167,6 @@ public class GetBuildInfosCmdlet : Cmdlet
     }
 }
 '@ -PassThru | % Assembly | Import-Module
-
-# In the past, we used to generate the id's within MSBuild but then it is nearly
-# impossible to override the global properties PackageVersion and VersionSuffix.
-# Besides that, generating the id's outside ensures that all assemblies inherit
-# the same id's.
-function Generate-UIDs {
-    [CmdletBinding()]
-    param()
-
-    say "Generating build UIDs."
-
-    Get-BuildInfos
-}
 
 # ------------------------------------------------------------------------------
 
@@ -245,7 +238,7 @@ function Get-PackageFile {
         [switch] $yes
     )
 
-    say "Getting package file."
+    say "Getting package filepath."
 
     $path = Join-Path ($ci ? $PKG_CI_OUTDIR : $PKG_OUTDIR) "$projectName.$version.nupkg"
 
@@ -347,8 +340,7 @@ function Invoke-Pack {
         /p:RevisionNumber=$revisionNumber `
         /p:RepositoryCommit=$repositoryCommit `
         /p:RepositoryBranch=$repositoryBranch `
-        /p:Pack=true `
-        | Out-Host
+        /p:Pack=true
         || die "Pack task failed."
 
     if ($ci) {
@@ -382,8 +374,7 @@ function Invoke-PushLocal {
     # separated. Also, if Microsoft ever decided to change the behaviour of
     # a local "push", we won't have to update this script (but maybe reset.ps1).
 
-    & dotnet nuget push $packageFile -s $NUGET_LOCAL_FEED --force-english-output `
-        | Out-Host
+    & dotnet nuget push $packageFile -s $NUGET_LOCAL_FEED --force-english-output
         || die "Failed to publish package to local NuGet feed."
 
     # If the following task fails, we should remove the package from the feed,
@@ -393,7 +384,7 @@ function Invoke-PushLocal {
     say "Updating the local NuGet cache"
     $project = Join-Path $TEST_DIR "Blank" -Resolve
 
-    & dotnet restore $project /p:AbcVersion=$version | Out-Host
+    & dotnet restore $project /p:AbcVersion=$version
         || die "Failed to update the local NuGet cache."
 
     say-softly "Package successfully installed."
@@ -424,7 +415,7 @@ function Invoke-Publish {
         warn "Not yet activated."
         SAY-LOUDLY "`n---`nTo publish the package:"
         SAY-LOUDLY "> dotnet nuget push $packageFile $args"
-        #& dotnet nuget push --force-english-output $packageFile $args | Out-Host
+        #& dotnet nuget push --force-english-output $packageFile $args
     }
     else {
         SAY-LOUDLY "`n---`nTo publish the package:"
@@ -445,12 +436,12 @@ else {
     Hello "this is the NuGet package creation script for Abc.Maybe (CI mode)."
 }
 
+readonly ProjectName "Abc.Maybe"
+
 try {
     ___BEGIN___
 
-    readonly ProjectName "Abc.Maybe"
-
-    -not ($Release -or $NoCI) | readonly CI
+    $CI = -not ($Release -or $NoCI)
 
     SAY-LOUDLY "`nInitialisation."
 
@@ -458,8 +449,9 @@ try {
     if ($Release -or $Reset) { Reset-SourceTree -Yes:($Release -or $Yes) }
     # 2. Get git metadata.
     $branch, $commit = Get-GitMetadata -Yes:$Yes -ExitOnError:$Release
-    # 3. Generate build UIDs.
-    $buildNumber, $revisionNumber, $timestamp = Generate-UIDs
+    # 3. Generate build numbers.
+    say "Generating build numbers."
+    $buildNumber, $revisionNumber, $timestamp = Get-BuildNumbers
     # 4. Get package version.
     $version, $prefix, $suffix = Get-ActualVersion $ProjectName $timestamp -CI:$CI
     # 5. Get package file.
