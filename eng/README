@@ -1,17 +1,12 @@
 README
 ------
 
-Build script.
-- build.ps1             build project/solution for all supported frameworks.
-
-Test-related scripts.
-- qtest.cmd             quickly run the test suite.
-- cover.ps1             code coverage (Coverlet or OpenCover).
-- qperf.cmd             quickly run the perf tool.
-
-Packaging-related scripts.
+Core files.
+- build.ps1             build the solution.
+- cover.ps1             code coverage script.
 - pack.ps1              create a package.
 - test-package.ps1      test a package.
+- Abc.Maybe.props       NuGet package props for Abc.Maybe.
 
 Maintenance scripts.
 - freeze-api.ps1        update public API files.
@@ -20,10 +15,8 @@ Maintenance scripts.
 Other files.
 - common.ps1            PowerShell generic helpers.
 - abc.ps1               PowerShell helpers.
-- Abc.Maybe.props       NuGet package props for Abc.Maybe.
 - Pack.props            MSBuild props when building packages.
 - Abc.snk               strong named key.
-- Abc.pk                public key.
 - NETFrameworkTools     blank project used to restore .NET Framework tools.
 
 Obsolete files.
@@ -32,6 +25,38 @@ Obsolete files.
 - genuids.ps1           execute genuids.fsx.
 - Pack.tasks            MSBuild tasks when building packages.
 
-Miscs.
+Tests
+-----
+
+Quickly run the test suite for the default target.
+> dotnet test src\Abc.Tests -c Release
+
+Beware, will crash if the packages were not correctly restored before
+(correctly because we seem to have a problem since we enabled .NET 4.6.1).
+
+Multi-targeting at once does not work. To test for a single framework:
+> qtest /p:TargetFramework=net461
+
+Beware, we CANNOT write:
+> qtest -f net461
+because "net461" is not listed as a supported framework within the project file.
+
+Filtering
+- by Category: --filter Category=XXXX
+- by Priority: --filter Priority!=XXX -v q
+
 Dump the test suite.
 > dotnet test src\Abc.Tests --list-tests -c Release
+
+Benchmarks
+----------
+
+> dotnet run -c Release -p perf
+
+Miscs
+-----
+
+Extract the public key.
+> sn -p Abc.snk Abc.pk
+Get the public key.
+> sn -tp Abc.pk
