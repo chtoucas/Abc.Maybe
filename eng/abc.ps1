@@ -43,10 +43,14 @@ New-Alias "SAY-LOUDLY" Write-Green
 (Join-Path $ARTIFACTS_DIR "tools")       | const NET_FRAMEWORK_TOOLS_DIR
 
 # Reference project used to restore .NET Framework tools.
-const NET_FRAMEWORK_TOOLS_PROJECT (Join-Path $ENG_DIR "NETFrameworkTools" -Resolve)
+# NB: we need the project file (not the directory) since we are going to parse it.
+const NET_FRAMEWORK_TOOLS_PROJECT `
+    (Join-Path $ENG_DIR "NETFrameworkTools\NETFrameworkTools.csproj" -Resolve)
 
 # Main test project for the package Abc.Maybe.
-const PACKAGE_TEST_PROJECT (Join-Path $TEST_DIR "NETSdk" -Resolve)
+# NB: we need the project file (not the directory) since we are going to parse it.
+const PACKAGE_TEST_PROJECT `
+    (Join-Path $TEST_DIR "NETSdk\NETSdk.csproj" -Resolve)
 
 # Platforms supported when packing Abc.Maybe, eg when building Abc.Maybe.csproj.
 const PACKAGE_SUPPORTED_PLATFORMS `
@@ -257,6 +261,39 @@ function Get-MaxApiPlatform {
 }
 
 # ------------------------------------------------------------------------------
+
+function Get-SupportedPlatforms {
+    [CmdletBinding()]
+    param()
+
+    ___confess "Getting the list of all supported platforms."
+
+    $xml = [Xml] (Get-Content $PACKAGE_TEST_PROJECT)
+
+    $lastClassic = $xml `
+        | Select-Xml -XPath "//Project/PropertyGroup/LastClassic"
+        | select -First 1 -ExpandProperty Node
+    $allClassic = $xml `
+        | Select-Xml -XPath "//Project/PropertyGroup/AllClassic"
+        | select -First 1 -ExpandProperty Node
+    $ltsCore = $xml `
+        | Select-Xml -XPath "//Project/PropertyGroup/LTSCore"
+        | select -First 1 -ExpandProperty Node
+    $allCore = $xml `
+        | Select-Xml -XPath "//Project/PropertyGroup/AllCore"
+        | select -First 1 -ExpandProperty Node
+
+    if (-not ($lastClassic -and $allClassic -and $ltsCore -and $allCore)) {
+        croak "The property file for ""$PACKAGE_TEST_PROJECT"" is not valid."
+    }
+
+    $lastClassic = $lastClassic.InnerXml.Trim().Split(";")
+    $allClassic  = @("net45", "net451") + $allClassic.InnerXml.Trim().Split(";")
+    $ltsCore     = $ltsCore.InnerXml.Trim().Split(";")
+    $allCore     = $allCore.InnerXml.Trim().Split(";")
+
+    @($lastClassic, $allClassic, $ltsCore, $allCore)
+}
 
 #endregion
 ################################################################################

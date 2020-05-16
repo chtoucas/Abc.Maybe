@@ -576,39 +576,6 @@ if ($Help) { Print-Help ; exit }
 
 Hello "this is the script to test the package Abc.Maybe."
 
-# ------------------------------------------------------------------------------
-
-# Keep in sync w/ test\NETSdk\NETSdk.csproj.
-
-readonly LastClassic `
-    "net452",
-    "net462",
-    "net472",
-    "net48"
-
-readonly AllClassic `
-    "net45",
-    "net451",
-    "net452",
-    "net46",
-    "net461",
-    "net462",
-    "net47",
-    "net471",
-    "net472",
-    "net48"
-
-readonly LTSCore `
-    "netcoreapp2.1",
-    "netcoreapp3.1"
-
-readonly AllCore `
-    "netcoreapp2.0",
-    "netcoreapp2.1",
-    "netcoreapp2.2",
-    "netcoreapp3.0",
-    "netcoreapp3.1"
-
 readonly PackageName "Abc.Maybe"
 
 # ------------------------------------------------------------------------------
@@ -617,6 +584,8 @@ try {
     ___BEGIN___
 
     pushd $TEST_DIR
+
+    $LastClassic, $AllClassic, $LTSCore, $AllCore  = Get-SupportedPlatforms
 
     if ($Reset) {
         SAY-LOUDLY "`nResetting repository."

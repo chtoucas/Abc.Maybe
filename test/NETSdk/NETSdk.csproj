@@ -13,7 +13,7 @@
       Unless AllKnown == "true", we only list the last minor version of each major version.
       https://support.microsoft.com/en-us/help/17455/lifecycle-faq-net-framework
     .NET Core.
-      Unless AllKnown == "true", we only list the LTS versions.
+      Unless AllKnown == "true", we only list the LTS versions and maybe the latest one.
       https://dotnet.microsoft.com/platform/support/policy/dotnet-core
       https://github.com/dotnet/core/blob/master/microsoft-support.md
   -->
@@ -22,20 +22,20 @@
     <AllKnown>false</AllKnown>
     <NoClassic>false</NoClassic>
     <NoCore>false</NoCore>
+
+    <LastClassic>net452;net462;net472;net48</LastClassic>
+    <AllClassic>net452;net46;net461;net462;net47;net471;net472;net48</AllClassic>
+
+    <LTSCore>netcoreapp2.1;netcoreapp3.1</LTSCore>
+    <AllCore>netcoreapp2.0;netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netcoreapp3.1</AllCore>
   </PropertyGroup>
 
   <PropertyGroup Condition=" $(AllKnown) == 'true' ">
-    <NetFmkTargets Condition=" $(NoClassic) != 'true' ">net452;net46;net461;net462;net47;net471;net472;net48</NetFmkTargets>
-    <NetCoreTargets Condition=" $(NoCore) != 'true' ">netcoreapp2.0;netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netcoreapp3.1</NetCoreTargets>
+    <TargetFrameworks>$(AllClassic);$(AllCore)</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup Condition=" $(AllKnown) != 'true' ">
-    <NetFmkTargets Condition=" $(NoClassic) != 'true' ">net452;net462;net472;net48</NetFmkTargets>
-    <NetCoreTargets Condition=" $(NoCore) != 'true' ">netcoreapp2.1;netcoreapp3.1</NetCoreTargets>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <TargetFrameworks>$(NetFmkTargets);$(NetCoreTargets)</TargetFrameworks>
+    <TargetFrameworks>$(LastClassic);$(LTSCore)</TargetFrameworks>
   </PropertyGroup>
 
 </Project>
