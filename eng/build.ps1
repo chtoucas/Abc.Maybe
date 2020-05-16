@@ -32,6 +32,9 @@ Ignored if -AllPlatforms is also set and equals $true.
 .PARAMETER AllPlatforms
 Build the project/solution (exe projects included) for ALL supported platforms.
 
+.PARAMETER ListPlatforms
+Display the list of all supported platforms, then exit.
+
 .PARAMETER Sign
 Sign the assemblies.
 
@@ -67,6 +70,7 @@ param(
     [Parameter(Mandatory = $false)]
     [Alias("f")] [string] $TargetPlatform,
     [Alias("a")] [switch] $AllPlatforms,
+    [Alias("l")] [switch] $ListPlatforms,
 
     # See Directory.Build.props/targets.
                  [switch] $Sign,
@@ -98,6 +102,7 @@ Usage: reset.ps1 [arguments]
 
   -f|-TargetPlatform    the platform to build the project/solution for.
   -a|-AllPlatforms      build the project/solution for ALL supported platforms.
+  -l|-ListPlatforms     display the list of all supported platforms, then exit.
 
      -Sign              sign the assemblies.
      -Unchecked         use unchecked arithmetic.
@@ -127,6 +132,13 @@ Hello "this is the build script.`n"
 try {
     ___BEGIN___
 
+    $platforms = $SOLUTION_SUPPORTED_PLATFORMS + (Get-MaxApiPlatform)
+
+    if ($ListPlatforms) {
+        say ("Supported platforms: {0}." -f ($platforms -join ", "))
+        exit
+    }
+
     if ($ProjectPath) {
         if (-not (Test-Path $ProjectPath)) {
             die "The specified project path doe not exist: ""$ProjectPath""."
@@ -136,15 +148,21 @@ try {
         $ProjectPath = Join-Path $ROOT_DIR "Maybe.sln" -Resolve
     }
 
-    $platforms = ($SOLUTION_SUPPORTED_PLATFORMS + (Get-MaxApiPlatform)) -join ";"
-
-    $args = @('/p:TargetFrameworks=\"' + $platforms + '\"')
+    $args = @('/p:TargetFrameworks=\"' + ($platforms -join ";") + '\"')
     if ($Configuration) { $args += "-c $Configuration" }
     if ($Runtime)       { $args += "--runtime:$runtime" }
     if ($NoRestore)     { $args += "--no-restore" }
 
-    if ($AllPlatforms)         { $args += "/p:TargetFramework=" }
-    elseif ($TargetPlatform)   { $args += "/p:TargetFramework=$TargetPlatform" }
+    if ($AllPlatforms)  {
+        $args += "/p:TargetFramework="
+    }
+    elseif ($TargetPlatform)  {
+        if ($TargetPlatform -notin $platforms) {
+            die "The specified platform is not supported: ""$TargetPlatform""."
+        }
+
+        $args += "/p:TargetFramework=$TargetPlatform"
+    }
 
     if ($Pack) {
         $args += "/p:Pack=true"
