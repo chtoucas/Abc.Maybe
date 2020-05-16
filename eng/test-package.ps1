@@ -107,7 +107,6 @@ param(
 
 # ------------------------------------------------------------------------------
 
-const NET_SDK_PROJECT (Join-Path $TEST_DIR "NETSdk" -Resolve)
 const XUNIT_PLATFORM  "net452"
 
 #endregion
@@ -295,7 +294,7 @@ function Invoke-Restore {
     if ($runtime)  { $args += "--runtime:$runtime" }
     if ($allKnown) { $args += "/p:AllKnown=true" }
 
-    & dotnet restore $NET_SDK_PROJECT $args
+    & dotnet restore $PACKAGE_TEST_PROJECT $args
         || die "Restore task failed."
 
     say-softly "Dependencies successfully restored."
@@ -325,7 +324,7 @@ function Invoke-Build {
     if ($allKnown)  { $args += "/p:AllKnown=true" }
     if ($noRestore) { $args += "--no-restore" }
 
-    & dotnet build $NET_SDK_PROJECT $args
+    & dotnet build $PACKAGE_TEST_PROJECT $args
         || die "Build task failed."
 
     say-softly "Project successfully built."
@@ -417,7 +416,7 @@ function Invoke-TestSingle {
     if ($noBuild)       { $args += "--no-build" }   # NB: no-build => no-restore
     elseif ($noRestore) { $args += "--no-restore" }
 
-    & dotnet test $NET_SDK_PROJECT --nologo $args
+    & dotnet test $PACKAGE_TEST_PROJECT --nologo $args
         || die "Test task failed when targeting ""$platform""."
 
     say-softly "Test completed successfully."
@@ -507,7 +506,7 @@ function Invoke-TestMany {
         ("/p:TargetFrameworks=" + '\"' + $targetFrameworks + '\"')
     if ($runtime) { $args += "--runtime:$runtime" }
 
-    & dotnet test $NET_SDK_PROJECT --nologo $args
+    & dotnet test $PACKAGE_TEST_PROJECT --nologo $args
         || die "Test task failed."
 
     say-softly "Test completed successfully."
@@ -557,7 +556,7 @@ function Invoke-TestAll {
     if ($noCore)    { $args += "/p:NoCore=true" }
     if ($runtime)   { $args += "--runtime:$runtime" }
 
-    & dotnet test $NET_SDK_PROJECT --nologo $args
+    & dotnet test $PACKAGE_TEST_PROJECT --nologo $args
         || die "Test task failed."
 
     say-softly "Test completed successfully."

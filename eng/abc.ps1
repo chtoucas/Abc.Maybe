@@ -43,8 +43,10 @@ New-Alias "SAY-LOUDLY" Write-Green
 (Join-Path $ARTIFACTS_DIR "tools")       | const NET_FRAMEWORK_TOOLS_DIR
 
 # Reference project used to restore .NET Framework tools.
-const NET_FRAMEWORK_TOOLS_PROJECT `
-    (Join-Path $ENG_DIR "NETFrameworkTools\NETFrameworkTools.csproj" -Resolve)
+const NET_FRAMEWORK_TOOLS_PROJECT (Join-Path $ENG_DIR "NETFrameworkTools" -Resolve)
+
+# Main test project for the package Abc.Maybe.
+const PACKAGE_TEST_PROJECT (Join-Path $TEST_DIR "NETSdk" -Resolve)
 
 # Platforms supported when packing Abc.Maybe, eg when building Abc.Maybe.csproj.
 const PACKAGE_SUPPORTED_PLATFORMS `
@@ -253,6 +255,8 @@ function Get-MaxApiPlatform {
 
     $node.InnerXML.Trim()
 }
+
+# ------------------------------------------------------------------------------
 
 #endregion
 ################################################################################
