@@ -387,7 +387,7 @@ function Get-PackageReferenceVersion {
             -ExitOnError:$exitOnError
     }
 
-    $version
+    $version.Trim()
 }
 
 # ------------------------------------------------------------------------------

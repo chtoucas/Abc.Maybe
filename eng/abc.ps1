@@ -46,6 +46,21 @@ New-Alias "SAY-LOUDLY" Write-Green
 const NET_FRAMEWORK_TOOLS_PROJECT `
     (Join-Path $ENG_DIR "NETFrameworkTools\NETFrameworkTools.csproj")
 
+# Platforms supported when packing Abc.Maybe, eg when building Abc.Maybe.csproj.
+const PACKAGE_SUPPORTED_PLATFORMS `
+    "netstandard2.1",
+    "netstandard2.0",
+    "netstandard1.0",
+    "net461"
+
+# Platforms supported when building the __whole__ solution.
+# - "netstandard1.0" is not supported here.
+# - see also Get-MaxApiPlatform below.
+const SOLUTION_SUPPORTED_PLATFORMS `
+    "netstandard2.1",
+    "netstandard2.0",
+    "net461"
+
 #endregion
 ################################################################################
 #region Begin / End.
@@ -177,7 +192,7 @@ function Write-Green {
 
 #endregion
 ################################################################################
-#region Tools.
+#region Settings.
 
 # Throws if the property file does not exist, or if its content is not valid.
 function Get-PackageVersion {
@@ -203,11 +218,11 @@ function Get-PackageVersion {
     }
 
     # NB: if one of the nodes does not actually exist, the function throws.
-    $major = $node.MajorVersion
-    $minor = $node.MinorVersion
-    $patch = $node.PatchVersion
-    $precy = $node.PreReleaseCycle
-    $preno = $node.PreReleaseNumber
+    $major = $node.MajorVersion.Trim()
+    $minor = $node.MinorVersion.Trim()
+    $patch = $node.PatchVersion.Trim()
+    $precy = $node.PreReleaseCycle.Trim()
+    $preno = $node.PreReleaseNumber.Trim()
 
     if ($asString) {
         return $precy ? "$major.$minor.$patch-$precy$preno"
@@ -219,6 +234,29 @@ function Get-PackageVersion {
 }
 
 # ------------------------------------------------------------------------------
+
+function Get-MaxApiPlatform {
+    [CmdletBinding()]
+    param()
+
+    ___confess "Getting the last supported platform."
+
+    $projectPath = Join-Path $SRC_DIR "Directory.Build.props" -Resolve
+
+    $node = [Xml] (Get-Content $projectPath) `
+        | Select-Xml -XPath "//Project/PropertyGroup/MaxApiPlatform" `
+        | select -First 1 -ExpandProperty Node
+
+    if (-not $node) {
+        croak "The property file for ""$projectPath"" is not valid."
+    }
+
+    $node.InnerXML.Trim()
+}
+
+#endregion
+################################################################################
+#region Tools.
 
 function Find-OpenCover {
     [CmdletBinding()]
