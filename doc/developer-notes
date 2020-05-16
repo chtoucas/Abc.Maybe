@@ -62,7 +62,7 @@ Pre action, for beta -or- production packages.
 0. Run script eng\freeze-api.ps1, then review the result.
    NB: between releases, feel free to add and remove **new** stuff.
 
-1. New version in eng\Abc.Maybe.props
+1. New version in src\Abc.Maybe.props
 2. Update CHANGELOG
 3. Run eng\pack.ps1 -NoCI -y              Create the package
 4. Run eng\test-package.ps1 -NoCI -a -y   Test the result
