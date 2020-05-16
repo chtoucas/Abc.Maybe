@@ -14,7 +14,6 @@ Packaging-related scripts.
 - test-package.ps1      test a package.
 
 Maintenance scripts.
-- dump-test-suite.cmd   dump the test suite.
 - freeze-api.ps1        update public API files.
 - reset.ps1             reset repository.
 
@@ -32,3 +31,7 @@ Obsolete files.
 - genuids.fsx           generate unique ids used to timestamp a package.
 - genuids.ps1           execute genuids.fsx.
 - Pack.tasks            MSBuild tasks when building packages.
+
+Miscs.
+Dump the test suite.
+> dotnet test src\Abc.Tests --list-tests -c Release
