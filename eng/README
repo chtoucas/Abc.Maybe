@@ -2,7 +2,7 @@ README
 ------
 
 Build script.
-- qbuild.cmd            build project/solution for all supported frameworks.
+- build.ps1             build project/solution for all supported frameworks.
 
 Test-related scripts.
 - qtest.cmd             quickly run the test suite.
@@ -28,6 +28,7 @@ Other files.
 - NETFrameworkTools     blank project used to restore .NET Framework tools.
 
 Obsolete files.
+- qbuild.cmd            build project/solution for all supported frameworks.
 - genuids.fsx           generate unique ids used to timestamp a package.
 - genuids.ps1           execute genuids.fsx.
 - Pack.tasks            MSBuild tasks when building packages.
