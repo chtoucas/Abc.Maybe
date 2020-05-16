@@ -35,26 +35,24 @@ Beware, will crash if the packages were not correctly restored before
 (correctly because we seem to have a problem since we enabled .NET 4.6.1).
 
 Multi-targeting at once does not work. To test for a single framework:
-> qtest /p:TargetFramework=net461
+> dotnet test /p:TargetFramework=net461
 
 Beware, we CANNOT write:
-> qtest -f net461
+> dotnet test -f net461
 because "net461" is not listed as a supported framework within the project file.
 
 Filtering
-- by Category: --filter Category=XXXX
-- by Priority: --filter Priority!=XXX -v q
+> dotnet test --filter Category=XXXX
+> dotnet test --filter Priority!=XXX -v q
 
 Dump the test suite.
-> dotnet test src\Abc.Tests --list-tests -c Release
-
-Benchmarks
-----------
-
-> dotnet run -c Release -p perf
+> dotnet test --list-tests
 
 Miscs
 -----
+
+Benchmarks
+> dotnet run -c Release -p perf
 
 Extract the public key.
 > sn -p Abc.snk Abc.pk
