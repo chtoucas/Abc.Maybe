@@ -145,17 +145,9 @@ public class GetBuildNumbersCmdlet : Cmdlet
         var halfdays = 2 * (now - orig).Days + (am ? 0 : 1);
         var seconds  = (now - mon).TotalSeconds;
 
-        var buildnum = (ushort)halfdays;
-        var revnum   = (ushort)seconds;
-
-        var timestamp = String.Format(
-            "{0}{1:D2}{2:D2}.T{3:D2}{4:D2}{5:D2}",
-            now.Year,
-            now.Month,
-            now.Day,
-            now.Hour,
-            now.Minute,
-            now.Second);
+        var buildnum  = (ushort)halfdays;
+        var revnum    = (ushort)seconds;
+        var timestamp = String.Format("{0:yyyyMMdd}.T{0:HHmmss}", now);
 
         WriteDebug($"Build number: \"{buildnum}\".");
         WriteDebug($"Build revision: \"{revnum}\".");
