@@ -17,7 +17,7 @@ use -AllPlatforms. NB: the list of supported platforms can NOT be overriden.
 To target a single platform, use -TargetPlatform (no "s").
 
 .PARAMETER ProjectPath
-Specify a single project to build.
+The project to build.
 
 .PARAMETER Configuration
 The configuration to build the project/solution for.
@@ -26,17 +26,27 @@ The configuration to build the project/solution for.
 The runtime to build the project/solution for.
 
 .PARAMETER TargetPlatform
-A (single) platform to build the project/solution for.
+The platform to build the project/solution for.
 Ignored if -AllPlatforms is also set and equals $true.
 
 .PARAMETER AllPlatforms
-Build ALL projects (exe projects included) for ALL supported platforms.
+Build the project/solution (exe projects included) for ALL supported platforms.
 
-.PARAMETER SignAssembly
-Sign the assembly.
+.PARAMETER Sign
+Sign the assemblies.
 
-.PARAMETER NoDocumentation
-Do not build the XML documentation.
+.PARAMETER Unchecked
+Use unchecked arithmetic.
+
+.PARAMETER XmlDocumentation
+Generate the XML documentation.
+
+.PARAMETER HideInternals
+Hide internals.
+
+.PARAMETER Pack
+This is a meta-option, it automatically sets -Sign, -XmlDocumentation,
+-Unchecked and -HideInternals to $true.
 
 .PARAMETER NoRestore
 Do not restore the project/solution.
@@ -54,28 +64,21 @@ param(
     [Parameter(Mandatory = $false)]
     [Alias("r")] [string] $Runtime,
 
-    # Platform selection.
-    #
     [Parameter(Mandatory = $false)]
     [Alias("f")] [string] $TargetPlatform,
     [Alias("a")] [switch] $AllPlatforms,
 
-    # Standard settings.
-    #
-                 [switch] $SignAssembly,
-                 [switch] $NoDocumentation,
-                 [switch] $NoRestore,
-
-    # Local settings (see Directory.Build.props).
-    #
-    [Alias("v")] [switch] $MyVerbose,
-                 [switch] $Pack,
-                 [switch] $PatchEquality,
+    # See Directory.Build.props/targets.
+                 [switch] $Sign,
+                 [switch] $Unchecked,
+                 [switch] $XmlDocumentation,
                  [switch] $HideInternals,
+                 [switch] $Pack,
 
+                 [switch] $MyVerbose,
+                 [switch] $PatchEquality,
 
-    # Other parameters.
-    #
+                 [switch] $NoRestore,
     [Alias("h")] [switch] $Help
 )
 
@@ -89,27 +92,29 @@ if ($Help) {
 Build the solution for all supported platforms.
 
 Usage: reset.ps1 [arguments]
-     -ProjectPath       specify a single project to build.
+     -ProjectPath       the project to build.
   -c|-Configuration     the configuration to build the project/solution for.
   -r|-Runtime           the runtime to build the project/solution for.
 
-  -f|-TargetPlatform    a (single) platform to build the project/solution.
-  -a|-AllPlatforms      build ALL projects for ALL supported platforms.
+  -f|-TargetPlatform    the platform to build the project/solution for.
+  -a|-AllPlatforms      build the project/solution for ALL supported platforms.
 
-     -SignAssembly      sign the assembly.
-     -NoDocumentation   do not build the XML documentation.
-     -NoRestore         do not restore the project/solution.
+     -Sign              sign the assemblies.
+     -Unchecked         use unchecked arithmetic.
+     -XmlDocumentation  generate the XML documentation.
+     -HideInternals     hide internals.
+     -Pack              meta-option setting the four previous one at once.
 
-  -v|-MyVerbose         set MSBuild property "DisplaySettings" to true.
-     -Pack              set MSBuild property "Pack" to true.
+     -MyVerbose         set MSBuild property "DisplaySettings" to true.
      -PatchEquality     set MSBuild property "PatchEquality" to true.
-     -HideInternals     set MSBuild property "HideInternals" to true.
+
+     -NoRestore         do not restore the project/solution.
 
   -h|-Help              print this help and exit.
 
 Examples.
 > build.ps1                             #
-> build.ps1 -AllPlatforms               #
+> build.ps1 -AllPlatforms -Pack         #
 > build.ps1 src\Abc.Maybe -c Release    # "Release" build of Abc.Maybe
 
 "@
@@ -131,27 +136,29 @@ try {
         $ProjectPath = Join-Path $ROOT_DIR "Maybe.sln" -Resolve
     }
 
-    $args = @()
+    $platforms = ($SOLUTION_SUPPORTED_PLATFORMS + (Get-MaxApiPlatform)) -join ";"
+
+    $args = @('/p:TargetFrameworks=\"' + $platforms + '\"')
     if ($Configuration) { $args += "-c $Configuration" }
     if ($Runtime)       { $args += "--runtime:$runtime" }
     if ($NoRestore)     { $args += "--no-restore" }
 
-    # Platforms.
-    $platforms = ($SOLUTION_SUPPORTED_PLATFORMS + (Get-MaxApiPlatform)) -join ";"
-    $args += '/p:TargetFrameworks=\"' + $platforms + '\"'
-
     if ($AllPlatforms)         { $args += "/p:TargetFramework=" }
-    elseif ($TargetFramework)  { $args += "/p:TargetFramework=$TargetFramework" }
+    elseif ($TargetPlatform)   { $args += "/p:TargetFramework=$TargetPlatform" }
 
-    # Standard settings.
-    if ($SignAssembly)         { $args += "/p:SignAssembly=true" }
-    if (-not $NoDocumentation) { $args += "/p:GenerateDocumentationFile=true" }
+    if ($Pack) {
+        $args += "/p:Pack=true"
+    }
+    else {
+        if ($Sign)             { $args += "/p:SignAssembly=true" }
+        if ($Unchecked)        { $args += "/p:CheckForOverflowUnderflow=false" }
+        if ($XmlDocumentation) { $args += "/p:GenerateDocumentationFile=true" }
+        if ($HideInternals)    { $args += "/p:HideInternals=true" }
+    }
 
     # Local settings.
     if ($MyVerbose)            { $args += "/p:DisplaySettings=true" }
-    if ($Pack)                 { $args += "/p:Pack=true" }
     if ($PatchEquality)        { $args += "/p:PatchEquality=true" }
-    if ($HideInternals)        { $args += "/p:HideInternals=true" }
 
     & dotnet build $ProjectPath $args
         || die "Build task failed."
