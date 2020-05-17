@@ -585,7 +585,7 @@ try {
 
     pushd $TEST_DIR
 
-    $LastClassic, $AllClassic, $LTSCore, $AllCore  = Get-SupportedPlatforms
+    $lastClassic, $allClassic, $ltsCore, $allCore  = Get-SupportedPlatforms
 
     if ($Reset) {
         SAY-LOUDLY "`nResetting repository."
@@ -643,8 +643,8 @@ try {
 
             SAY-LOUDLY "`nNow, you will have the opportunity to choose which platform to test the package for."
 
-            $platformList  = $NoClassic ? @() : $AllKnown ? $AllClassic : $LastClassic
-            $platformList += $NoCore    ? @() : $AllKnown ? $AllCore    : $LTSCore
+            $platformList  = $NoClassic ? @() : $AllKnown ? $allClassic : $lastClassic
+            $platformList += $NoCore    ? @() : $AllKnown ? $allCore    : $ltsCore
 
             Invoke-TestManyInteractive `
                 -PlatformList   $platformList `
@@ -655,7 +655,7 @@ try {
         }
     }
     else {
-        $knownPlatforms = $AllClassic + $AllCore
+        $knownPlatforms = $allClassic + $allCore
 
         if ($Platform.EndsWith("*")) {
             Invoke-TestMany `
