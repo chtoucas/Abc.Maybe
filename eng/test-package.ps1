@@ -78,16 +78,15 @@ param(
     #
     [Parameter(Mandatory = $false, Position = 0)]
                  [string] $Platform,
-
     [Alias("a")] [switch] $AllKnown,
                  [switch] $NoClassic,
                  [switch] $NoCore,
+    [Alias("l")] [switch] $ListPlatforms,
 
     # Package version.
     #
     [Parameter(Mandatory = $false, Position = 1)]
                  [string] $Version,
-
                  [switch] $NoCI,
 
     # Runtime selection.
@@ -124,6 +123,7 @@ Usage: test-package.ps1 [arguments]
   -a|-AllKnown   test the package for ALL known platform versions (SLOW).
      -NoClassic  exclude .NET Framework from the tests.
      -NoCore     exclude .NET Core from the tests.
+  -l|-ListPlatforms     print the list of supported platforms, then exit.
 
      -Version    specify a version of the package Abc.Maybe.
      -NoCI       force using the package version found in Abc.Maybe.props.
@@ -206,7 +206,7 @@ function Find-XunitRunnerOnce {
 
     if ($___NoXunitConsole) { warn "No Xunit console runner." ; return }
 
-    Restore-NETFrameworkTools
+    Restore-NETFrameworkTools | Out-Host
 
     $path = Find-XunitRunner -Platform $XUNIT_PLATFORM
 
@@ -271,6 +271,20 @@ function Get-RuntimeLabel {
     $runtime ? "runtime ""$runtime""" : "default runtime"
 }
 
+# ------------------------------------------------------------------------------
+
+function Get-TargetFrameworks {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNull()]
+        [string[]] $platformList
+    )
+
+    # "net45" and "net451" must be handled separately.
+    '\"' + (($platformList | where { $_ -notin "net45", "net451" }) -join ";") + '\"'
+}
+
 #endregion
 ################################################################################
 #region Tasks.
@@ -280,20 +294,23 @@ function Invoke-Restore {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateNotNull()]
+        [string[]] $platformList,
+
+        [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
         [string] $version,
 
-        [Parameter(Mandatory = $false, Position = 1)]
-        [string] $runtime,
-
-        [switch] $allKnown
+        [Parameter(Mandatory = $false, Position = 2)]
+        [string] $runtime
     )
 
     SAY-LOUDLY "`nRestoring dependencies for NETSdk, please wait..."
 
-    $args = @("/p:AbcVersion=$version")
+    $targetFrameworks = Get-TargetFrameworks $platformList
+
+    $args = "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
     if ($runtime)  { $args += "--runtime:$runtime" }
-    if ($allKnown) { $args += "/p:AllKnown=true" }
 
     & dotnet restore $NET_SDK_PROJECT $args
         || die "Restore task failed."
@@ -308,22 +325,23 @@ function Invoke-Build {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateNotNull()]
+        [string[]] $platformList,
+
+        [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
         [string] $version,
 
-        [Parameter(Mandatory = $false, Position = 1)]
-        [string] $runtime,
-
-        [switch] $allKnown,
-        [switch] $noRestore
+        [Parameter(Mandatory = $false, Position = 2)]
+        [string] $runtime
     )
 
     SAY-LOUDLY "`nBuilding NETSdk, please wait..."
 
-    $args = @("/p:AbcVersion=$version")
+    $targetFrameworks = Get-TargetFrameworks $platformList
+
+    $args = "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
     if ($runtime)   { $args += "--runtime:$runtime" }
-    if ($allKnown)  { $args += "/p:AllKnown=true" }
-    if ($noRestore) { $args += "--no-restore" }
 
     & dotnet build $NET_SDK_PROJECT $args
         || die "Build task failed."
@@ -500,11 +518,9 @@ function Invoke-TestMany {
     "Remaining platorms after filtering: ""{0}""." -f ($platforms -join '", "') `
         | SAY-LOUDLY
 
-    # "net45" and "net451" must be handled separately.
-    $targetFrameworks = ($platforms | where { $_ -notin "net45", "net451" }) -join ";"
+    $targetFrameworks = Get-TargetFrameworks $platforms
 
-    $args = "/p:AbcVersion=$version", "/p:AllKnown=true",
-        ("/p:TargetFrameworks=" + '\"' + $targetFrameworks + '\"')
+    $args = "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
     if ($runtime) { $args += "--runtime:$runtime" }
 
     & dotnet test $NET_SDK_PROJECT --nologo $args
@@ -526,10 +542,14 @@ function Invoke-TestAll {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateNotNull()]
+        [string[]] $platformList,
+
+        [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
         [string] $version,
 
-        [Parameter(Mandatory = $false, Position = 1)]
+        [Parameter(Mandatory = $false, Position = 2)]
         [string] $runtime,
 
         [switch] $allKnown,
@@ -551,11 +571,10 @@ function Invoke-TestAll {
         -f (Get-RuntimeLabel $runtime) `
         | SAY-LOUDLY
 
-    $args = @("/p:AbcVersion=$version")
-    if ($allKnown)  { $args += "/p:AllKnown=true" }
-    if ($noClassic) { $args += "/p:NoClassic=true" }
-    if ($noCore)    { $args += "/p:NoCore=true" }
-    if ($runtime)   { $args += "--runtime:$runtime" }
+    $targetFrameworks = Get-TargetFrameworks $platformList
+
+    $args = "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
+    if ($runtime) { $args += "--runtime:$runtime" }
 
     & dotnet test $NET_SDK_PROJECT --nologo $args
         || die "Test task failed."
@@ -587,6 +606,24 @@ try {
     pushd $TEST_DIR
 
     $minClassic, $maxClassic, $minCore, $maxCore  = Get-SupportedPlatforms
+
+    if ($ListPlatforms) {
+        say (@"
+
+Supported .NET Frameworks (maximal and minimal sets):
+- "{0}"
+- "{1}"
+
+Supported .NET Core (maximal and minimal sets):
+- "{2}"
+- "{3}"
+"@ -f ($maxClassic -join '", "'),
+    ($minClassic -join '", "'),
+    ($maxCore -join '", "'),
+    ($minCore -join '", "'))
+
+        exit
+    }
 
     if ($Reset) {
         SAY-LOUDLY "`nResetting repository."
@@ -625,34 +662,35 @@ try {
             die "You set both -NoClassic and -NoCore... There is nothing left to be done."
         }
 
+        $platformList  = $NoClassic ? @() : $AllKnown ? $maxClassic : $minClassic
+        $platformList += $NoCore    ? @() : $AllKnown ? $maxCore    : $minCore
+
         if ($Yes -or (yesno "`nTest the package for all selected platforms at once (SLOW)?")) {
             Invoke-TestAll `
-                -Version    $Version `
-                -Runtime    $Runtime `
-                -AllKnown:  $AllKnown `
-                -NoClassic: $NoClassic `
-                -NoCore:    $NoCore
+                -PlatformList $platformList `
+                -Version      $Version `
+                -Runtime      $Runtime `
+                -AllKnown:    $AllKnown `
+                -NoClassic:   $NoClassic `
+                -NoCore:      $NoCore
         }
         else {
             # Building or restoring the solution only once should speed up things a bit.
             if ($Optimise) {
-                Invoke-Build -Version $Version -Runtime $Runtime -AllKnown:$AllKnown
+                Invoke-Build   -PlatformList $platformList -Version $Version -Runtime $Runtime
             }
             else {
-                Invoke-Restore -Version $Version -Runtime $Runtime -AllKnown:$AllKnown
+                Invoke-Restore -PlatformList $platformList -Version $Version -Runtime $Runtime
             }
 
             SAY-LOUDLY "`nNow, you will have the opportunity to choose which platform to test the package for."
 
-            $platformList  = $NoClassic ? @() : $AllKnown ? $maxClassic : $minClassic
-            $platformList += $NoCore    ? @() : $AllKnown ? $maxCore    : $minCore
-
             Invoke-TestManyInteractive `
-                -PlatformList   $platformList `
-                -Version        $Version `
-                -Runtime        $Runtime `
-                -NoBuild:       $Optimise `
-                -NoRestore:     $true
+                -PlatformList $platformList `
+                -Version      $Version `
+                -Runtime      $Runtime `
+                -NoBuild:     $Optimise `
+                -NoRestore:   $true
         }
     }
     else {
