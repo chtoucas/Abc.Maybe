@@ -323,7 +323,7 @@ function Invoke-Pack {
     }
 
     $project = Join-Path $SRC_DIR $projectName -Resolve
-    $targetFrameworks = '\"' + ($PACKAGE_SUPPORTED_PLATFORMS -join ";") + '\"'
+    $targetFrameworks = '\"' + (Get-PackagePlatforms -AsString) + '\"'
 
     # Do NOT use --no-restore or --no-build (options -Reset/-Release erase bin/obj).
     # RepositoryCommit and RepositoryBranch are standard props, do not remove them.

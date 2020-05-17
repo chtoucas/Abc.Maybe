@@ -1,5 +1,8 @@
 # See LICENSE in the project root for license information.
 
+################################################################################
+#region Preamble.
+
 <#
 .SYNOPSIS
 Build the solution for all supported platforms.
@@ -88,9 +91,11 @@ param(
 
 . (Join-Path $PSScriptRoot "abc.ps1")
 
-# ------------------------------------------------------------------------------
+#endregion
+################################################################################
+#region Helpers
 
-if ($Help) {
+function Print-Help {
     say @"
 
 Build the solution for all supported platforms.
@@ -123,16 +128,20 @@ Examples.
 > build.ps1 src\Abc.Maybe -c Release    # "Release" build of Abc.Maybe
 
 "@
-
-    exit
 }
+
+#endregion
+################################################################################
+#region Main.
+
+if ($Help) { Print-Help ; exit }
 
 Hello "this is the build script.`n"
 
 try {
     ___BEGIN___
 
-    $platforms = $SOLUTION_SUPPORTED_PLATFORMS + (Get-MaxApiPlatform)
+    $platforms = Get-SolutionPlatforms
 
     if ($ListPlatforms) {
         say ("Supported platforms: {0}." -f ($platforms -join ", "))
@@ -188,4 +197,5 @@ finally {
     ___END___
 }
 
+#endregion
 ################################################################################

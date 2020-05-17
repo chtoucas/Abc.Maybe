@@ -1,5 +1,16 @@
 <Project>
 
+  <!--
+    IMPORTANT: do NOT use MSBuild property resolution $() for the following
+    properties, they are parsed independently of MSBuild,
+    - SolutionPlatforms
+    - PackagePlatforms
+    - MinClassicPlatforms
+    - MaxClassicPlatforms
+    - MinCorePlatforms
+    - MaxCorePlatforms
+  -->
+
   <PropertyGroup>
     <!--
       The first listed framework is the one used by the VS editor.
@@ -17,13 +28,17 @@
       MaxApiPlatform just to benefit from the last improvements it could bring.
     -->
 
+    <!-- IMPORTANT: keep "SolutionPlatforms" in sync -->
     <MaxApiPlatform>netcoreapp3.1</MaxApiPlatform>
 
     <!-- Library projects -->
     <LibraryPlatforms>$(MaxApiPlatform);netstandard2.0</LibraryPlatforms>
 
-    <!-- Solution -->
-    <SolutionPlatforms>$(MaxApiPlatform);netstandard2.1;netstandard2.0;net461</SolutionPlatforms>
+    <!--
+      Platforms supported when building the __whole__ solution.
+      We do NOT include "netstandard1.0", it is only supported by Abc.Maybe.csproj.
+    -->
+    <SolutionPlatforms>netcoreapp3.1;netstandard2.1;netstandard2.0;net461</SolutionPlatforms>
 
     <!-- Package -->
     <PackagePlatforms>netstandard2.1;netstandard2.0;netstandard1.0;net461</PackagePlatforms>

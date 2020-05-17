@@ -45,27 +45,16 @@ New-Alias "SAY-LOUDLY" Write-Green
 (Join-Path $ARTIFACTS_DIR "nuget-cache") | const NUGET_LOCAL_CACHE
 (Join-Path $ARTIFACTS_DIR "tools")       | const NET_FRAMEWORK_TOOLS_DIR
 
+# See below:
+# - Get-SolutionPlatforms
+# - Get-PackagePlatforms
+# - Get-SupportedPlatforms
 const PLATFORMS_PROPS (Join-Path $ROOT_DIR "Platforms.props" -Resolve)
 
 # Reference project used to restore .NET Framework tools.
 # NB: we need the project file (not the directory) since we are going to parse it.
 const NET_FRAMEWORK_TOOLS_PROJECT `
     (Join-Path $ENG_DIR "NETFrameworkTools\NETFrameworkTools.csproj" -Resolve)
-
-# Platforms supported when packing Abc.Maybe, eg when building Abc.Maybe.csproj.
-const PACKAGE_SUPPORTED_PLATFORMS `
-    "netstandard2.1",
-    "netstandard2.0",
-    "netstandard1.0",
-    "net461"
-
-# Platforms supported when building the __whole__ solution.
-# - we do NOT include "netstandard1.0", it is only supported by Abc.Maybe.csproj.
-# - see also Get-MaxApiPlatform below.
-const SOLUTION_SUPPORTED_PLATFORMS `
-    "netstandard2.1",
-    "netstandard2.0",
-    "net461"
 
 #endregion
 ################################################################################
@@ -242,20 +231,56 @@ function Get-PackageVersion {
 
 # ------------------------------------------------------------------------------
 
-function Get-MaxApiPlatform {
+function Get-SolutionPlatforms {
     [CmdletBinding()]
-    param()
+    param(
+        [switch] $asString
+    )
 
-    ___confess "Getting the last supported platform."
+    ___confess "Getting the supported platforms by the solution."
 
     [SelectXmlInfo[]] $nodes = [Xml] (Get-Content $PLATFORMS_PROPS) `
-        | Select-Xml -XPath "//Project/PropertyGroup/MaxApiPlatform" `
+        | Select-Xml -XPath "//Project/PropertyGroup/SolutionPlatforms" `
 
     if ($nodes.Count -ne 1) {
         croak "The property file for ""$PLATFORMS_PROPS"" is not ""valid""."
     }
 
-    $nodes[0].Node.InnerXML.Trim()
+    $platforms = $nodes[0].Node.InnerXML.Trim()
+
+    if ($asString) {
+        return $platforms
+    }
+    else {
+        return $platforms.Split(";")
+    }
+}
+
+# ------------------------------------------------------------------------------
+
+function Get-PackagePlatforms {
+    [CmdletBinding()]
+    param(
+        [switch] $asString
+    )
+
+    ___confess "Getting the supported platforms by the package."
+
+    [SelectXmlInfo[]] $nodes = [Xml] (Get-Content $PLATFORMS_PROPS) `
+        | Select-Xml -XPath "//Project/PropertyGroup/PackagePlatforms" `
+
+    if ($nodes.Count -ne 1) {
+        croak "The property file for ""$PLATFORMS_PROPS"" is not ""valid""."
+    }
+
+    $platforms = $nodes[0].Node.InnerXML.Trim()
+
+    if ($asString) {
+        return $platforms
+    }
+    else {
+        return $platforms.Split(";")
+    }
 }
 
 # ------------------------------------------------------------------------------
