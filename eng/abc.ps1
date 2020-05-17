@@ -2,6 +2,9 @@
 
 #Requires -Version 7
 
+using namespace System.Management.Automation
+using namespace Microsoft.PowerShell.Commands
+
 # Dot sourcing this file ensures that it executes in the caller scope.
 # For safety, we still add the $Script: prefix.
 Set-StrictMode -Version Latest
@@ -111,7 +114,7 @@ function ___CATCH___ {
 
     $Host.UI.WriteErrorLine("An unexpected error occurred.")
 
-    if ($Error -and ($err = $Error[0]) -is [System.Management.Automation.ErrorRecord]) {
+    if ($Error -and ($err = $Error[0]) -is [ErrorRecord]) {
         $Host.UI.WriteErrorLine($err.ScriptStackTrace.ToString())
     }
     else {
@@ -141,7 +144,7 @@ function ___END___ {
         say "`nGoodbye." -ForegroundColor $Script:___ForegroundColor
     }
 
-    if ($Error -and ($err = $Error[0]) -is [System.Management.Automation.ErrorRecord]) {
+    if ($Error -and ($err = $Error[0]) -is [ErrorRecord]) {
         say "`n--- Post-mortem." -ForegroundColor $Script:___ForegroundColor
 
         # Write a terminating error.
@@ -215,20 +218,21 @@ function Get-PackageVersion {
 
     $projectPath = Join-Path $SRC_DIR "$packageName.props" -Resolve
 
-    $node = [Xml] (Get-Content $projectPath) `
-        | Select-Xml -XPath "//Project/PropertyGroup/MajorVersion/.." `
-        | select -First 1 -ExpandProperty Node
+    [SelectXmlInfo[]] $nodes = [Xml] (Get-Content $projectPath) `
+        | Select-Xml -XPath "//Project/PropertyGroup/MajorVersion/.."
 
-    if (-not $node) {
-        croak "The property file for ""$packageName"" is not valid."
+    if ($nodes.Count -ne 1) {
+        croak "The property file for ""$packageName"" is not ""valid""."
     }
 
+    $pg = $nodes[0].Node
+
     # NB: if one of the nodes does not actually exist, the function throws.
-    $major = $node.MajorVersion.Trim()
-    $minor = $node.MinorVersion.Trim()
-    $patch = $node.PatchVersion.Trim()
-    $precy = $node.PreReleaseCycle.Trim()
-    $preno = $node.PreReleaseNumber.Trim()
+    $major = $pg.MajorVersion.Trim()
+    $minor = $pg.MinorVersion.Trim()
+    $patch = $pg.PatchVersion.Trim()
+    $precy = $pg.PreReleaseCycle.Trim()
+    $preno = $pg.PreReleaseNumber.Trim()
 
     if ($asString) {
         return $precy ? "$major.$minor.$patch-$precy$preno"
@@ -249,15 +253,14 @@ function Get-MaxApiPlatform {
 
     $projectPath = Join-Path $SRC_DIR "Directory.Build.props" -Resolve
 
-    $node = [Xml] (Get-Content $projectPath) `
+    [SelectXmlInfo[]] $nodes = [Xml] (Get-Content $projectPath) `
         | Select-Xml -XPath "//Project/PropertyGroup/MaxApiPlatform" `
-        | select -First 1 -ExpandProperty Node
 
-    if (-not $node) {
-        croak "The property file for ""$projectPath"" is not valid."
+    if ($nodes.Count -ne 1) {
+        croak "The property file for ""$projectPath"" is not ""valid""."
     }
 
-    $node.InnerXML.Trim()
+    $nodes[0].Node.InnerXML.Trim()
 }
 
 # ------------------------------------------------------------------------------
@@ -268,29 +271,19 @@ function Get-SupportedPlatforms {
 
     ___confess "Getting the list of all supported platforms."
 
-    $xml = [Xml] (Get-Content $PACKAGE_TEST_PROJECT)
+    [SelectXmlInfo[]] $nodes = [Xml] (Get-Content $PACKAGE_TEST_PROJECT) `
+        | Select-Xml -XPath "//Project/PropertyGroup/LastClassic/.." `
 
-    $lastClassic = $xml `
-        | Select-Xml -XPath "//Project/PropertyGroup/LastClassic"
-        | select -First 1 -ExpandProperty Node
-    $allClassic = $xml `
-        | Select-Xml -XPath "//Project/PropertyGroup/AllClassic"
-        | select -First 1 -ExpandProperty Node
-    $ltsCore = $xml `
-        | Select-Xml -XPath "//Project/PropertyGroup/LTSCore"
-        | select -First 1 -ExpandProperty Node
-    $allCore = $xml `
-        | Select-Xml -XPath "//Project/PropertyGroup/AllCore"
-        | select -First 1 -ExpandProperty Node
-
-    if (-not ($lastClassic -and $allClassic -and $ltsCore -and $allCore)) {
-        croak "The property file for ""$PACKAGE_TEST_PROJECT"" is not valid."
+    if ($nodes.Count -ne 1) {
+        croak "The property file for ""$PACKAGE_TEST_PROJECT"" is not ""valid""."
     }
 
-    $lastClassic = $lastClassic.InnerXml.Trim().Split(";")
-    $allClassic  = @("net45", "net451") + $allClassic.InnerXml.Trim().Split(";")
-    $ltsCore     = $ltsCore.InnerXml.Trim().Split(";")
-    $allCore     = $allCore.InnerXml.Trim().Split(";")
+    $pg = $nodes[0].Node
+
+    $lastClassic = $pg.LastClassic.Trim().Split(";")
+    $allClassic  = @("net45", "net451") + $pg.AllClassic.Trim().Split(";")
+    $ltsCore     = $pg.LTSCore.Trim().Split(";")
+    $allCore     = $pg.AllCore.Trim().Split(";")
 
     @($lastClassic, $allClassic, $ltsCore, $allCore)
 }

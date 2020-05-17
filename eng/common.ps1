@@ -2,6 +2,8 @@
 
 #Requires -Version 5.1
 
+using namespace Microsoft.PowerShell.Commands
+
 New-Alias "say"        Write-Host
 New-Alias "___debug"   Write-Debug
 New-Alias "___confess" Write-Verbose
@@ -377,17 +379,15 @@ function Get-PackageReferenceVersion {
 
     ___confess "Getting version for ""$package"" from ""$projectPath""."
 
-    $version = [Xml] (Get-Content $projectPath) `
-        | Select-Xml -XPath "//Project/ItemGroup/PackageReference[@Include='$package']" `
-        | select -ExpandProperty Node `
-        | select -First 1 -ExpandProperty Version
+    [SelectXmlInfo[]] $nodes = [Xml] (Get-Content $projectPath) `
+        | Select-Xml -XPath "//Project/ItemGroup/PackageReference[@Include='$package']"
 
-    if (-not $version) {
+    if ($nodes.Count -ne 1) {
         return carp """$package"" is not referenced in ""$projectPath""." `
             -ExitOnError:$exitOnError
     }
 
-    $version.Trim()
+    $nodes[0].Node.Version.Trim()
 }
 
 # ------------------------------------------------------------------------------
