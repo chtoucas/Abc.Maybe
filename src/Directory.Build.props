@@ -34,11 +34,6 @@
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <Nullable>enable</Nullable>
 
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-
-    <!-- CONTRACTS_FULL is necessary to enable the attribute Pure -->
-    <DefineConstants>$(DefineConstants);TRACE;CONTRACTS_FULL</DefineConstants>
-
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Abc.snk</AssemblyOriginatorKeyFile>
 
     <!--
@@ -47,20 +42,6 @@
     -->
     <VersionPrefix>1.0.0</VersionPrefix>
     <VersionSuffix>DUMMY</VersionSuffix>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" $(Configuration) == 'Debug' ">
-    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <TreatSpecificWarningsAsErrors />
-
-    <!--
-      RS0016  Symbol XXX is not part of the declared API
-      RS0017  Symbol XXX is part of the declared API, but is either not public
-              or could not be found
-    -->
-    <NoWarn>$(NoWarn);RS0016;RS0017</NoWarn>
   </PropertyGroup>
 
 </Project>

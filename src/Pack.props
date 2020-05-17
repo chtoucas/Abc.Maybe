@@ -18,15 +18,9 @@
     <InformationalVersion Condition=" $(VersionSuffix) != '' ">$(InformationalVersion)-$(VersionSuffix)</InformationalVersion>
     <InformationalVersion Condition=" $(RepositoryCommit) != '' ">$(InformationalVersion)+$(RepositoryCommit.Substring(0, 7))</InformationalVersion>
 
-    <!--
-      Assembly informations
-      NB: cannot be in Directory.Build.props, $(AssemblyName) is not yet set.
-    -->
-    <AssemblyTitle>$(AssemblyName)</AssemblyTitle>
+    <!-- Assembly description -->
     <Description>$(AssemblyTitle), built [$([System.DateTime]::UtcNow.ToString("r"))].</Description>
-  </PropertyGroup>
 
-  <PropertyGroup>
     <!--
       *** BE VERY, VERY CAREFUL, BEFORE CHANGING THIS ***
 
@@ -34,13 +28,11 @@
       See https://docs.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-properties?view=vs-2019
 
       Weird bug in MSBuild; see https://github.com/Microsoft/msbuild/issues/2754
-      First, it can't be in Directory.Build.targets
-      Second, What we really want is sketched below but it does NOT work.
-
-    <DebugType Condition=" $(TargetFrameworkIdentifier) == '.NETFramework' ">pdbonly</DebugType>
-    <DebugType Condition=" $(TargetFrameworkIdentifier) != '.NETFramework' ">embedded</DebugType>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder
-      Condition=" $(DebugType) != 'embedded' ">$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+      what follows can't be done in Directory.Build.targets
+      Also, what we really want is sketched below but it does NOT work.
+        <DebugType Condition=" $(TargetFrameworkIdentifier) == '.NETFramework' ">pdbonly</DebugType>
+        <DebugType Condition=" $(TargetFrameworkIdentifier) != '.NETFramework' ">embedded</DebugType>
+      The whole thing is very fragile.
     -->
     <DebugType>embedded</DebugType>
     <DebugType Condition=" $(TargetFramework.StartsWith('net4')) ">pdbonly</DebugType>

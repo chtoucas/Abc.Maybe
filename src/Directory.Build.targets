@@ -16,6 +16,9 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <!-- CONTRACTS_FULL is necessary to enable the attribute Pure -->
+    <DefineConstants>$(DefineConstants);CONTRACTS_FULL</DefineConstants>
+
     <DefineConstants Condition=" $(SignAssembly) == 'true' ">$(DefineConstants);SIGNED_ASSEMBLY</DefineConstants>
     <DefineConstants Condition=" $(HideInternals) != 'true' ">$(DefineConstants);INTERNALS_VISIBLE_TO</DefineConstants>
     <DefineConstants Condition=" $(PatchEquality) == 'true' ">$(DefineConstants);PATCH_EQUALITY</DefineConstants>
@@ -25,6 +28,22 @@
 
     <!--<DefineConstants>$(DefineConstants);PLAIN_LINQ</DefineConstants>-->
     <!--<DefineConstants>$(DefineConstants);PURE_MAYBE</DefineConstants>-->
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" $(Configuration) == 'Release' ">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" $(Configuration) == 'Debug' ">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TreatSpecificWarningsAsErrors />
+
+    <!--
+      RS0016  Symbol XXX is not part of the declared API
+      RS0017  Symbol XXX is part of the declared API, but is either not public
+              or could not be found
+    -->
+    <NoWarn>$(NoWarn);RS0016;RS0017</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -53,25 +72,17 @@
   <Target Name="__PrintSettings" BeforeTargets="Compile"
           Condition=" $(PrintSettings) == 'true' and $(TargetFramework) != '' ">
     <PropertyGroup>
-      <_MyMessage Condition="  $(SignAssembly) == 'true' ">| will be signed.</_MyMessage>
-      <_MyMessage Condition="  $(SignAssembly) != 'true' ">| will NOT be signed.</_MyMessage>
-
-      <_MyMessage Condition="  $(HideInternals) == 'true' ">$(_MyMessage)%0A| will hide its internals.</_MyMessage>
-      <_MyMessage Condition="  $(HideInternals) != 'true' ">$(_MyMessage)%0A| will NOT hide its internals.</_MyMessage>
+      <_MyMessage Condition="  $(HideInternals) == 'true' ">| will hide its internals.</_MyMessage>
+      <_MyMessage Condition="  $(HideInternals) != 'true' ">| will NOT hide its internals.</_MyMessage>
 
       <_MyMessage Condition="  $(CheckForOverflowUnderflow) == 'true' ">$(_MyMessage)%0A| will use checked arithmetic.</_MyMessage>
       <_MyMessage Condition="  $(CheckForOverflowUnderflow) != 'true' ">$(_MyMessage)%0A| will NOT use checked arithmetic.</_MyMessage>
 
-      <_MyMessage Condition="  $(GenerateDocumentationFile) == 'true' ">$(_MyMessage)%0A| will generate its XML documentation.</_MyMessage>
-      <_MyMessage Condition="  $(GenerateDocumentationFile) != 'true' ">$(_MyMessage)%0A| will NOT generate its XML documentation.</_MyMessage>
-
       <_MyMessage Condition="  $(PatchEquality) == 'true' ">$(_MyMessage)%0A| will use patched equality.</_MyMessage>
 
-      <!-- Possible values: "full," "pdbonly," "portable", "embedded", and "none" -->
       <_MyMessage>$(_MyMessage)%0A| %24(DefineConstants) = "$(DefineConstants)"</_MyMessage>
       <_MyMessage>$(_MyMessage)%0A| %24(DebugType) = "$(DebugType)"</_MyMessage>
       <_MyMessage>$(_MyMessage)%0A| %24(NoWarn) = "$(NoWarn)"</_MyMessage>
-      <_MyMessage>$(_MyMessage)%0A| %24(AllowedOutputExtensions...) = "$(AllowedOutputExtensionsInPackageBuildOutputFolder)"</_MyMessage>
     </PropertyGroup>
 
     <Message Text="+ $(AssemblyName) for $(TargetFramework)%0A$(_MyMessage)" Importance="high" />
