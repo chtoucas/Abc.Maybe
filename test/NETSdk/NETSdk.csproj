@@ -7,6 +7,8 @@
     project with /p:AllKnown=true.
     https://docs.microsoft.com/en-us/dotnet/framework/install/guide-for-developers
     https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/how-to-determine-which-versions-are-installed
+
+    You should not set both "NoClassic" and "NoCore" to "true".
   -->
 
   <PropertyGroup>
@@ -16,11 +18,13 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" $(AllKnown) == 'true' ">
-    <TargetFrameworks>$(MaxClassicPlatforms);$(MaxCorePlatforms)</TargetFrameworks>
+    <TargetFrameworks Condition=" $(NoClassic) != 'true' ">$(MaxClassicPlatforms)</TargetFrameworks>
+    <TargetFrameworks Condition=" $(NoCore) != 'true' ">$(TargetFrameworks);$(MaxCorePlatforms)</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup Condition=" $(AllKnown) != 'true' ">
-    <TargetFrameworks>$(MinClassicPlatforms);$(MinCorePlatforms)</TargetFrameworks>
+    <TargetFrameworks Condition=" $(NoClassic) != 'true' ">$(MinClassicPlatforms)</TargetFrameworks>
+    <TargetFrameworks Condition=" $(NoCore) != 'true' ">$(TargetFrameworks);$(MinCorePlatforms)</TargetFrameworks>
   </PropertyGroup>
 
 </Project>
