@@ -11,20 +11,6 @@
     <Pack>false</Pack>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" $(Pack) == 'true' ">
-    <!--
-      *** BE VERY, VERY CAREFUL, BEFORE CHANGING THIS ***
-
-      Weird bug in MSBuild; see https://github.com/Microsoft/msbuild/issues/2754
-      First, it must stay here, it can't be in Directory.Build.targets
-      Second, What we really want is sketched in Directory.Build.targets but
-      even if use what's there here, it does NOT work.
-    -->
-    <DebugType>embedded</DebugType>
-    <DebugType Condition=" $(TargetFramework.StartsWith('net4')) ">pdbonly</DebugType>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-  </PropertyGroup>
-
   <PropertyGroup>
     <!-- Package metadata & assembly info -->
 
