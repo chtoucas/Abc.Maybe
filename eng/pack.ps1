@@ -36,7 +36,7 @@ Only one exception: after having created a package w/ option -Release on, the
 script will enter in an interactive mode.
 
 .PARAMETER MyVerbose
-Verbose mode. We display the settings used before compiling each assembly.
+Verbose mode. We print the settings in use before compiling each assembly.
 
 .PARAMETER Help
 Print help text then exit.
@@ -310,7 +310,7 @@ function Invoke-Pack {
         "/p:VersionSuffix=$versionSuffix",
         "--version-suffix:$versionSuffix"
 
-    if ($myVerbose) { $args += "/p:DisplaySettings=true" }
+    if ($myVerbose) { $args += "/p:PrintSettings=true" }
 
     if ($ci) {
         $output = $PKG_CI_OUTDIR

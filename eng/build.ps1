@@ -115,7 +115,7 @@ Usage: reset.ps1 [arguments]
      -HideInternals     hide internals.
      -Pack              meta-option setting the four previous one at once.
 
-     -MyVerbose         set MSBuild property "DisplaySettings" to true.
+     -MyVerbose         set MSBuild property "PrintSettings" to true.
      -PatchEquality     set MSBuild property "PatchEquality" to true.
 
      -NoRestore         do not restore the project/solution.
@@ -184,7 +184,7 @@ try {
     }
 
     # Local settings.
-    if ($MyVerbose)            { $args += "/p:DisplaySettings=true" }
+    if ($MyVerbose)            { $args += "/p:PrintSettings=true" }
     if ($PatchEquality)        { $args += "/p:PatchEquality=true" }
 
     & dotnet build $ProjectPath $args

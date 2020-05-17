@@ -4,7 +4,7 @@
 
   <PropertyGroup>
     <!-- Local options -->
-    <DisplaySettings>false</DisplaySettings>
+    <PrintSettings>false</PrintSettings>
     <PatchEquality>false</PatchEquality>
     <HideInternals>false</HideInternals>
     <!-- Meta-option -->

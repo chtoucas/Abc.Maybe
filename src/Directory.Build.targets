@@ -50,8 +50,8 @@
     </PackageReference>
   </ItemGroup>
 
-  <Target Name="__DisplaySettings" BeforeTargets="Compile"
-          Condition=" $(DisplaySettings) == 'true' and $(TargetFramework) != '' ">
+  <Target Name="__PrintSettings" BeforeTargets="Compile"
+          Condition=" $(PrintSettings) == 'true' and $(TargetFramework) != '' ">
     <PropertyGroup>
       <_MyMessage Condition="  $(SignAssembly) == 'true' ">| will be signed.</_MyMessage>
       <_MyMessage Condition="  $(SignAssembly) != 'true' ">| will NOT be signed.</_MyMessage>
