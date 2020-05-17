@@ -82,7 +82,7 @@ param(
                  [switch] $HideInternals,
                  [switch] $Pack,
 
-                 [switch] $MyVerbose,
+    [Alias("v")] [switch] $MyVerbose,
                  [switch] $PatchEquality,
 
                  [switch] $NoRestore,
@@ -114,12 +114,10 @@ Usage: reset.ps1 [arguments]
      -XmlDocumentation  generate the XML documentation.
      -HideInternals     hide internals.
      -Pack              meta-option setting the four previous one at once.
-
-     -MyVerbose         set MSBuild property "PrintSettings" to true.
+  -v|-MyVerbose         set MSBuild property "PrintSettings" to true.
      -PatchEquality     set MSBuild property "PatchEquality" to true.
 
      -NoRestore         do not restore the project/solution.
-
   -h|-Help              print this help and exit.
 
 Examples.
@@ -157,35 +155,37 @@ try {
         $ProjectPath = Join-Path $ROOT_DIR "Maybe.sln" -Resolve
     }
 
-    $args = @('/p:TargetFrameworks=\"' + ($platforms -join ";") + '\"')
+    $args = @()
     if ($Configuration) { $args += "-c $Configuration" }
     if ($Runtime)       { $args += "--runtime:$runtime" }
     if ($NoRestore)     { $args += "--no-restore" }
 
+    $args += '-p:TargetFrameworks=\"' + ($platforms -join ";") + '\"'
+
     if ($AllPlatforms)  {
-        $args += "/p:TargetFramework="
+        $args += "-p:TargetFramework="
     }
     elseif ($TargetPlatform)  {
         if ($TargetPlatform -notin $platforms) {
             die "The specified platform is not supported: ""$TargetPlatform""."
         }
 
-        $args += "/p:TargetFramework=$TargetPlatform"
+        $args += "-p:TargetFramework=$TargetPlatform"
     }
 
     if ($Pack) {
-        $args += "/p:Pack=true"
+        $args += "-p:Pack=true"
     }
     else {
-        if ($Sign)             { $args += "/p:SignAssembly=true" }
-        if ($Unchecked)        { $args += "/p:CheckForOverflowUnderflow=false" }
-        if ($XmlDocumentation) { $args += "/p:GenerateDocumentationFile=true" }
-        if ($HideInternals)    { $args += "/p:HideInternals=true" }
+        if ($Sign)             { $args += "-p:SignAssembly=true" }
+        if ($Unchecked)        { $args += "-p:CheckForOverflowUnderflow=false" }
+        if ($XmlDocumentation) { $args += "-p:GenerateDocumentationFile=true" }
+        if ($HideInternals)    { $args += "-p:HideInternals=true" }
     }
 
     # Local settings.
-    if ($MyVerbose)            { $args += "/p:PrintSettings=true" }
-    if ($PatchEquality)        { $args += "/p:PatchEquality=true" }
+    if ($MyVerbose)            { $args += "-p:PrintSettings=true" }
+    if ($PatchEquality)        { $args += "-p:PatchEquality=true" }
 
     & dotnet build $ProjectPath $args
         || die "Build task failed."

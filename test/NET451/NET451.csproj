@@ -3,6 +3,8 @@
   <PropertyGroup>
     <AssemblyName>NET451</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFramework>net451</TargetFramework>
+    <DefineConstants>$(DefineConstants);NETFRAMEWORK;NET451</DefineConstants>
 
     <OutputType>Library</OutputType>
     <OutputPath>bin\Release\</OutputPath>
