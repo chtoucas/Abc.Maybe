@@ -156,7 +156,7 @@ try {
     }
 
     $args = @()
-    if ($Configuration) { $args += "-c $Configuration" }
+    if ($Configuration) { $args += "-c:$Configuration" }
     if ($Runtime)       { $args += "--runtime:$runtime" }
     if ($NoRestore)     { $args += "--no-restore" }
 
@@ -183,7 +183,6 @@ try {
         if ($HideInternals)    { $args += "-p:HideInternals=true" }
     }
 
-    # Local settings.
     if ($MyVerbose)            { $args += "-p:PrintSettings=true" }
     if ($PatchEquality)        { $args += "-p:PatchEquality=true" }
 
