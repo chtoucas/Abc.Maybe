@@ -13,11 +13,6 @@ Matching .NET Framework Developer Packs or Targeting Packs must be installed
 locally, the later should suffice. The script will fail with error MSB3644 when
 it is not the case.
 
-.OUTPUTS
-In case of a fatal error, the script exits with a code 1.
-The script exits with a code 2 when -Platform is equal "net45" or "net451", and
-it couldn't find the Xunit runner console.
-
 .PARAMETER Platform
 Specify the platform(s) for which to test the package.
 Unless there is one trailing asterisk (*), this parameter expects a single

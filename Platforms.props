@@ -1,14 +1,16 @@
 <Project>
 
   <!--
-    IMPORTANT: do NOT use MSBuild property resolution $() for the following
-    properties, they are parsed independently of MSBuild,
-    - SolutionPlatforms
-    - PackagePlatforms
-    - MinClassicPlatforms
-    - MaxClassicPlatforms
-    - MinCorePlatforms
-    - MaxCorePlatforms
+    IMPORTANT: do NOT use MSBuild property resolution $() when a property is
+    going to be parsed by a PowerShell script.
+    - MaxApiPlatform            MSBuild lib projs
+    - LibraryPlatforms          MSBuild exe projs
+    - SolutionPlatforms                           Get-SolutionPlatforms()
+    - PackagePlatforms                            Get-PackagePlatforms()
+    - MinClassicPlatforms       NETSdk.csproj     Get-SupportedPlatforms()
+    - MaxClassicPlatforms       NETSdk.csproj     Get-SupportedPlatforms()
+    - MinCorePlatforms          NETSdk.csproj     Get-SupportedPlatforms()
+    - MaxCorePlatforms          NETSdk.csproj     Get-SupportedPlatforms()
   -->
 
   <PropertyGroup>
@@ -28,7 +30,7 @@
       MaxApiPlatform just to benefit from the last improvements it could bring.
     -->
 
-    <!-- IMPORTANT: keep "SolutionPlatforms" in sync -->
+    <!-- IMPORTANT: keep "SolutionPlatforms" in sync with this -->
     <MaxApiPlatform>netcoreapp3.1</MaxApiPlatform>
 
     <!-- Library projects -->
@@ -48,7 +50,8 @@
     <!--
       Supported platforms by a package.
 
-      "net45" and "net451" are handled separately.
+      "net45" and "net451" are handled separately, they are not supported by
+      xunit.runner.visualstudio.
 
       .NET Framework (Classic).
         "MinClassicPlatforms" lists the last minor version of each major version.
