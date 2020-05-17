@@ -45,11 +45,11 @@ New-Alias "SAY-LOUDLY" Write-Green
 (Join-Path $ARTIFACTS_DIR "nuget-cache") | const NUGET_LOCAL_CACHE
 (Join-Path $ARTIFACTS_DIR "tools")       | const NET_FRAMEWORK_TOOLS_DIR
 
-# See below:
+# The props where we can informations related to the supported platforms, see:
 # - Get-SolutionPlatforms
 # - Get-PackagePlatforms
 # - Get-SupportedPlatforms
-const PLATFORMS_PROPS (Join-Path $ROOT_DIR "Platforms.props" -Resolve)
+const PLATFORMS_PROPS (Join-Path $ROOT_DIR "Directory.Build.props" -Resolve)
 
 # Reference project used to restore .NET Framework tools.
 # NB: we need the project file (not the directory) since we are going to parse it.

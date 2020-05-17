@@ -1,6 +1,6 @@
 <Project>
 
-  <Import Project="$([MSBuild]::GetPathOfFileAbove(Platforms.props))" />
+  <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.props" />
 
   <PropertyGroup>
     <SourceRoot>$(MSBuildThisFileDirectory)..\src\</SourceRoot>

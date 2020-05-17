@@ -4,7 +4,7 @@
     <TargetFrameworks>$(LibraryPlatforms)</TargetFrameworks>
   </PropertyGroup>
 
-  <Import Project="$([MSBuild]::GetPathOfFileAbove(Pack.props))" Condition=" $(Pack) == 'true' " />
+  <Import Project="$(MSBuildThisFileDirectory)..\Pack.props" Condition=" $(Pack) == 'true' " />
 
   <PropertyGroup Condition=" $(Configuration) == 'Release' ">
     <GenerateDocumentationFile>true</GenerateDocumentationFile>

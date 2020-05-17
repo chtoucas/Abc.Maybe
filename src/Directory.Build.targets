@@ -1,5 +1,7 @@
 <Project>
 
+  <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets" />
+
   <PropertyGroup Condition=" $(Pack) == 'true' ">
     <!--
       Even if the following props are already set with the right value, we
@@ -32,9 +34,6 @@
 
     <DefineConstants Condition=" $(TargetFramework) == 'netstandard2.1' ">$(DefineConstants);API_PROFILE_21</DefineConstants>
     <DefineConstants Condition=" $(TargetFramework) == $(MaxApiPlatform) ">$(DefineConstants);API_PROFILE_21</DefineConstants>
-
-    <DefineConstants Condition=" $(TargetFramework.StartsWith('netstandard1.')) ">$(DefineConstants);NETSTANDARD1_x</DefineConstants>
-    <DefineConstants Condition=" $(TargetFramework.StartsWith('netcoreapp2.')) ">$(DefineConstants);NETCOREAPP2_x</DefineConstants>
 
     <!--<DefineConstants>$(DefineConstants);PLAIN_LINQ</DefineConstants>-->
     <!--<DefineConstants>$(DefineConstants);PURE_MAYBE</DefineConstants>-->
