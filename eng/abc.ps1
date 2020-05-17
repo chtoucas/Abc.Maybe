@@ -45,15 +45,12 @@ New-Alias "SAY-LOUDLY" Write-Green
 (Join-Path $ARTIFACTS_DIR "nuget-cache") | const NUGET_LOCAL_CACHE
 (Join-Path $ARTIFACTS_DIR "tools")       | const NET_FRAMEWORK_TOOLS_DIR
 
+const PLATFORMS_PROPS (Join-Path $ROOT_DIR "Platforms.props" -Resolve)
+
 # Reference project used to restore .NET Framework tools.
 # NB: we need the project file (not the directory) since we are going to parse it.
 const NET_FRAMEWORK_TOOLS_PROJECT `
     (Join-Path $ENG_DIR "NETFrameworkTools\NETFrameworkTools.csproj" -Resolve)
-
-# Main test project for the package Abc.Maybe.
-# NB: we need the project file (not the directory) since we are going to parse it.
-const PACKAGE_TEST_PROJECT `
-    (Join-Path $TEST_DIR "NETSdk\NETSdk.csproj" -Resolve)
 
 # Platforms supported when packing Abc.Maybe, eg when building Abc.Maybe.csproj.
 const PACKAGE_SUPPORTED_PLATFORMS `
@@ -251,13 +248,11 @@ function Get-MaxApiPlatform {
 
     ___confess "Getting the last supported platform."
 
-    $projectPath = Join-Path $SRC_DIR "Directory.Build.props" -Resolve
-
-    [SelectXmlInfo[]] $nodes = [Xml] (Get-Content $projectPath) `
+    [SelectXmlInfo[]] $nodes = [Xml] (Get-Content $PLATFORMS_PROPS) `
         | Select-Xml -XPath "//Project/PropertyGroup/MaxApiPlatform" `
 
     if ($nodes.Count -ne 1) {
-        croak "The property file for ""$projectPath"" is not ""valid""."
+        croak "The property file for ""$PLATFORMS_PROPS"" is not ""valid""."
     }
 
     $nodes[0].Node.InnerXML.Trim()
@@ -271,21 +266,21 @@ function Get-SupportedPlatforms {
 
     ___confess "Getting the list of all supported platforms."
 
-    [SelectXmlInfo[]] $nodes = [Xml] (Get-Content $PACKAGE_TEST_PROJECT) `
-        | Select-Xml -XPath "//Project/PropertyGroup/LastClassic/.." `
+    [SelectXmlInfo[]] $nodes = [Xml] (Get-Content $PLATFORMS_PROPS) `
+        | Select-Xml -XPath "//Project/PropertyGroup/MinClassicPlatforms/.." `
 
     if ($nodes.Count -ne 1) {
-        croak "The property file for ""$PACKAGE_TEST_PROJECT"" is not ""valid""."
+        croak "The property file for ""$PLATFORMS_PROPS"" is not ""valid""."
     }
 
     $pg = $nodes[0].Node
 
-    $lastClassic = $pg.LastClassic.Trim().Split(";")
-    $allClassic  = @("net45", "net451") + $pg.AllClassic.Trim().Split(";")
-    $ltsCore     = $pg.LTSCore.Trim().Split(";")
-    $allCore     = $pg.AllCore.Trim().Split(";")
+    $minClassic = $pg.MinClassicPlatforms.Trim().Split(";")
+    $maxClassic = @("net45", "net451") + $pg.MaxClassicPlatforms.Trim().Split(";")
+    $minCore    = $pg.MinCorePlatforms.Trim().Split(";")
+    $maxCore    = $pg.MaxCorePlatforms.Trim().Split(";")
 
-    @($lastClassic, $allClassic, $ltsCore, $allCore)
+    @($minClassic, $maxClassic, $minCore, $maxCore)
 }
 
 #endregion

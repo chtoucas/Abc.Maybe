@@ -1,0 +1,53 @@
+<Project>
+
+  <PropertyGroup>
+    <!--
+      The first listed framework is the one used by the VS editor.
+      Full NRT-analysis requires .NET Core 3.0 or above, .NET Standard does
+      not include the nullable annotations (version 2.1 defines the nullable
+      attributes but VS doesn't use them if I understand things correctly).
+      We use the version 3.1 instead of 3.0 because the former is LTS and the
+      latter is already EOL.
+      For libraries, use
+        <TargetFrameworks>$(LibraryPlatforms)/TargetFrameworks>
+      otherwise, use
+        <TargetFramework>$(MaxApiPlatform)</TargetFramework>
+      If/when we create an API depending on a new .NET standard, MaxApiPlatform
+      should be the last available platform supporting it We can also update
+      MaxApiPlatform just to benefit from the last improvements it could bring.
+    -->
+
+    <MaxApiPlatform>netcoreapp3.1</MaxApiPlatform>
+
+    <!-- Library projects -->
+    <LibraryPlatforms>$(MaxApiPlatform);netstandard2.0</LibraryPlatforms>
+
+    <!-- Solution -->
+    <SolutionPlatforms>$(MaxApiPlatform);netstandard2.1;netstandard2.0;net461</SolutionPlatforms>
+
+    <!-- Package -->
+    <PackagePlatforms>netstandard2.1;netstandard2.0;netstandard1.0;net461</PackagePlatforms>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!--
+      Supported platforms by a package.
+
+      "net45" and "net451" are handled separately.
+
+      .NET Framework (Classic).
+        "MinClassicPlatforms" lists the last minor version of each major version.
+        https://support.microsoft.com/en-us/help/17455/lifecycle-faq-net-framework
+      .NET Core.
+        "MinCorePlatforms" list the LTS versions (maybe the latest one too?).
+        https://dotnet.microsoft.com/platform/support/policy/dotnet-core
+        https://github.com/dotnet/core/blob/master/microsoft-support.md
+    -->
+
+    <MinClassicPlatforms>net452;net462;net472;net48</MinClassicPlatforms>
+    <MaxClassicPlatforms>net452;net46;net461;net462;net47;net471;net472;net48</MaxClassicPlatforms>
+
+    <MinCorePlatforms>netcoreapp2.1;netcoreapp3.1</MinCorePlatforms>
+    <MaxCorePlatforms>netcoreapp2.0;netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netcoreapp3.1</MaxCorePlatforms>
+  </PropertyGroup>
+</Project>

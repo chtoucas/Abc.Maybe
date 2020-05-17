@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>$(MaxApiPlatform);netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>$(LibraryPlatforms)</TargetFrameworks>
   </PropertyGroup>
 
-  <Import Project="..\Pack.props" Condition=" $(Pack) == 'true' " />
+  <Import Project="$([MSBuild]::GetPathOfFileAbove(Pack.props))" Condition=" $(Pack) == 'true' " />
 
   <PropertyGroup Condition=" $(Configuration) == 'Release' ">
     <GenerateDocumentationFile>true</GenerateDocumentationFile>

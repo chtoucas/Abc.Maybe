@@ -107,6 +107,7 @@ param(
 
 # ------------------------------------------------------------------------------
 
+const NET_SDK_PROJECT (Join-Path $TEST_DIR "NETSdk" -Resolve)
 const XUNIT_PLATFORM  "net452"
 
 #endregion
@@ -294,7 +295,7 @@ function Invoke-Restore {
     if ($runtime)  { $args += "--runtime:$runtime" }
     if ($allKnown) { $args += "/p:AllKnown=true" }
 
-    & dotnet restore $PACKAGE_TEST_PROJECT $args
+    & dotnet restore $NET_SDK_PROJECT $args
         || die "Restore task failed."
 
     say-softly "Dependencies successfully restored."
@@ -324,7 +325,7 @@ function Invoke-Build {
     if ($allKnown)  { $args += "/p:AllKnown=true" }
     if ($noRestore) { $args += "--no-restore" }
 
-    & dotnet build $PACKAGE_TEST_PROJECT $args
+    & dotnet build $NET_SDK_PROJECT $args
         || die "Build task failed."
 
     say-softly "Project successfully built."
@@ -416,7 +417,7 @@ function Invoke-TestSingle {
     if ($noBuild)       { $args += "--no-build" }   # NB: no-build => no-restore
     elseif ($noRestore) { $args += "--no-restore" }
 
-    & dotnet test $PACKAGE_TEST_PROJECT --nologo $args
+    & dotnet test $NET_SDK_PROJECT --nologo $args
         || die "Test task failed when targeting ""$platform""."
 
     say-softly "Test completed successfully."
@@ -506,7 +507,7 @@ function Invoke-TestMany {
         ("/p:TargetFrameworks=" + '\"' + $targetFrameworks + '\"')
     if ($runtime) { $args += "--runtime:$runtime" }
 
-    & dotnet test $PACKAGE_TEST_PROJECT --nologo $args
+    & dotnet test $NET_SDK_PROJECT --nologo $args
         || die "Test task failed."
 
     say-softly "Test completed successfully."
@@ -556,7 +557,7 @@ function Invoke-TestAll {
     if ($noCore)    { $args += "/p:NoCore=true" }
     if ($runtime)   { $args += "--runtime:$runtime" }
 
-    & dotnet test $PACKAGE_TEST_PROJECT --nologo $args
+    & dotnet test $NET_SDK_PROJECT --nologo $args
         || die "Test task failed."
 
     say-softly "Test completed successfully."
@@ -585,7 +586,7 @@ try {
 
     pushd $TEST_DIR
 
-    $lastClassic, $allClassic, $ltsCore, $allCore  = Get-SupportedPlatforms
+    $minClassic, $maxClassic, $minCore, $maxCore  = Get-SupportedPlatforms
 
     if ($Reset) {
         SAY-LOUDLY "`nResetting repository."
@@ -643,8 +644,8 @@ try {
 
             SAY-LOUDLY "`nNow, you will have the opportunity to choose which platform to test the package for."
 
-            $platformList  = $NoClassic ? @() : $AllKnown ? $allClassic : $lastClassic
-            $platformList += $NoCore    ? @() : $AllKnown ? $allCore    : $ltsCore
+            $platformList  = $NoClassic ? @() : $AllKnown ? $maxClassic : $minClassic
+            $platformList += $NoCore    ? @() : $AllKnown ? $maxCore    : $minCore
 
             Invoke-TestManyInteractive `
                 -PlatformList   $platformList `
@@ -655,7 +656,7 @@ try {
         }
     }
     else {
-        $knownPlatforms = $allClassic + $allCore
+        $knownPlatforms = $maxClassic + $maxCore
 
         if ($Platform.EndsWith("*")) {
             Invoke-TestMany `

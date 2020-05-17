@@ -102,7 +102,7 @@ Usage: reset.ps1 [arguments]
 
   -f|-TargetPlatform    the platform to build the project/solution for.
   -a|-AllPlatforms      build the project/solution for ALL supported platforms.
-  -l|-ListPlatforms     display the list of all supported platforms, then exit.
+  -l|-ListPlatforms     print the list of all supported platforms, then exit.
 
      -Sign              sign the assemblies.
      -Unchecked         use unchecked arithmetic.
