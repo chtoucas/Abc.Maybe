@@ -350,6 +350,8 @@ function Invoke-Build {
 # Since it's no longer officialy supported by Microsoft, we can remove them
 # if it ever becomes too much of a burden.
 # __Only works on Windows__
+# TODO: I wonder if it does really make sense at all (we actually use .NET 4.5.2).
+# The same remark apply to Invoke-TestXXX where we always use the .NET Core engine.
 function Invoke-TestOldStyle {
     [CmdletBinding()]
     param(
