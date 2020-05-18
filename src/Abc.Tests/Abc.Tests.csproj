@@ -26,7 +26,6 @@
     <None Update="xunit.runner.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <Compile Include="..\NullableAttributes.cs" />
   </ItemGroup>
 
   <!--
