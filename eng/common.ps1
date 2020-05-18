@@ -1,7 +1,5 @@
 # See LICENSE in the project root for license information.
 
-#Requires -Version 5.1
-
 using namespace Microsoft.PowerShell.Commands
 
 New-Alias "say"        Write-Host

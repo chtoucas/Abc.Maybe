@@ -249,7 +249,8 @@ function Get-SolutionPlatforms {
     $platforms = $nodes[0].Node.InnerXML.Trim()
 
     if ($asString) {
-        return $platforms
+        # Ready for MSBuild.exe/dotnet.exe.
+        return """$platforms"""
     }
     else {
         return $platforms.Split(";")
@@ -276,7 +277,8 @@ function Get-PackagePlatforms {
     $platforms = $nodes[0].Node.InnerXML.Trim()
 
     if ($asString) {
-        return $platforms
+        # Ready for MSBuild.exe/dotnet.exe.
+        return """$platforms"""
     }
     else {
         return $platforms.Split(";")
