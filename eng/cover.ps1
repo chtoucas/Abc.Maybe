@@ -73,6 +73,9 @@ Examples.
 > cover.ps1 -OpenCover            # Run OpenCover then build reports and badges
 > cover.ps1 -OpenCover -NoReport  # Run OpenCover, do NOT build reports and badges
 
+Looking for more help?
+> Get-Help -Detailed cover.ps1
+
 "@
 }
 

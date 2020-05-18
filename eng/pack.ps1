@@ -77,6 +77,9 @@ Examples.
 > pack.ps1 -NoCI -Yes     # Create a non-CI package, ignore uncommited changes
 > pack.ps1 -Release       # Create a package ready to be published to NuGet.Org
 
+Looking for more help?
+> Get-Help -Detailed pack.ps1
+
 "@
 }
 
