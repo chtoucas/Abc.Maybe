@@ -23,10 +23,10 @@ Targetting a single platform or all supported platforms maye "transform" an exe
 project into a library.
 
 .PARAMETER ProjectPath
-The project to build.
+The project to build. Default = solution.
 
 .PARAMETER Configuration
-The configuration to build the project/solution for.
+The configuration to build the project/solution for. Default = Debug.
 
 .PARAMETER Runtime
 The runtime to build the project/solution for.
@@ -190,6 +190,7 @@ try {
     if ($MyVerbose)            { $args += "/p:PrintSettings=true" }
     if ($PatchEquality)        { $args += "/p:PatchEquality=true" }
 
+    # Do not invoke "dotnet restore" before, it will fail w/ -TargetPlatform.
     & dotnet build $ProjectPath $args
         || die "Build task failed."
 }
