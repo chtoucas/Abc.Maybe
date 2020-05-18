@@ -5,7 +5,7 @@
   <PropertyGroup Condition=" $(Pack) == 'true' ">
     <!--
       Even if the following props were already set with the right value, we
-      override them here to be crystal about what to expect.
+      override them here to be crystal clear about what to expect.
       Packages are actually only created for Abc.Maybe but, if we wish to compile
       the whole solution, we must be careful for instance w/ HideInternals.
     -->
@@ -55,7 +55,7 @@
     <NoWarn Condition=" $(RelaxAsyncWarnings) == 'true' ">$(NoWarn);CA2007</NoWarn>
     <NoWarn Condition=" $(GenerateDocumentationFile) == 'true' ">$(NoWarn);CS1591</NoWarn>
 
-    <!-- Maybe, append a custom list of excluded rules (scripts) -->
+    <!-- Maybe append a custom list of excluded rules (for PS scripts) -->
     <NoWarn>$(NoWarn);$(NoWarnX)</NoWarn>
   </PropertyGroup>
 

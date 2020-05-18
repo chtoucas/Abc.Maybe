@@ -19,6 +19,9 @@ use -AllPlatforms. NB: the list of supported platforms can NOT be overriden.
 
 To target a single platform, use -TargetPlatform (no "s").
 
+Targetting a single platform or all supported platforms maye "transform" an exe
+project into a library.
+
 .PARAMETER ProjectPath
 The project to build.
 
@@ -114,6 +117,7 @@ Usage: reset.ps1 [arguments]
      -XmlDocumentation  generate the XML documentation.
      -HideInternals     hide internals.
      -Pack              meta-option setting the four previous one at once.
+
   -v|-MyVerbose         set MSBuild property "PrintSettings" to true.
      -PatchEquality     set MSBuild property "PatchEquality" to true.
 
