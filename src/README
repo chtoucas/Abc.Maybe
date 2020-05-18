@@ -5,7 +5,7 @@ README
 - MissingAttributes.cs
 - NullableAttributes.cs
 
-- Pack.props            MSBuild props when building packages.
+- Retail.props          MSBuild props when building packages.
 - Abc.Maybe.props       NuGet package props for Abc.Maybe.
 - Abc.snk               strong named key.
 

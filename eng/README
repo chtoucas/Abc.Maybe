@@ -27,9 +27,7 @@ Tests
 
 Quickly run the test suite for the default target.
 > dotnet test src\Abc.Tests -c Release
-
-Beware, will crash if the packages were not correctly restored before
-(correctly because we seem to have a problem since we enabled .NET 4.6.1).
+> dotnet test src\Abc.Tests -c Release /p:Retail=true
 
 Multi-targeting at once does not work. To test for a single framework:
 > dotnet test /p:TargetFramework=net461

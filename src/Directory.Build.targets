@@ -2,12 +2,10 @@
 
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets" />
 
-  <PropertyGroup Condition=" $(Pack) == 'true' ">
+  <PropertyGroup Condition=" $(Retail) == 'true' ">
     <!--
       Even if the following props were already set with the right value, we
       override them here to be crystal clear about what to expect.
-      Packages are actually only created for Abc.Maybe but, if we wish to compile
-      the whole solution, we must be careful for instance w/ HideInternals.
     -->
     <SignAssembly>true</SignAssembly>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>

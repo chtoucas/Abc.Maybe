@@ -53,7 +53,7 @@ Generate the XML documentation.
 .PARAMETER HideInternals
 Hide internals.
 
-.PARAMETER Pack
+.PARAMETER Retail
 This is a meta-option, it automatically sets -Sign, -XmlDocumentation,
 -Unchecked and -HideInternals to $true.
 
@@ -83,7 +83,7 @@ param(
                  [switch] $Unchecked,
                  [switch] $XmlDocumentation,
                  [switch] $HideInternals,
-                 [switch] $Pack,
+                 [switch] $Retail,
 
                  [switch] $NoRestore,
     [Alias("h")] [switch] $Help,
@@ -116,7 +116,7 @@ Usage: reset.ps1 [arguments]
      -Unchecked         use unchecked arithmetic.
      -XmlDocumentation  generate the XML documentation.
      -HideInternals     hide internals.
-     -Pack              meta-option setting the four previous ones at once.
+     -Retail            meta-option setting the four previous options to "true".
 
      -NoRestore         do not restore the project/solution.
   -h|-Help              print this help and exit.
@@ -127,7 +127,7 @@ Arguments starting with '/p:' are passed through to dotnet.exe.
 
 Examples.
 > build.ps1                             #
-> build.ps1 -AllPlatforms -Pack         #
+> build.ps1 -AllPlatforms -Retail       #
 > build.ps1 src\Abc.Maybe -c Release    # "Release" build of Abc.Maybe
 
 Looking for more help?
@@ -181,8 +181,8 @@ try {
         $args += "/p:TargetFramework=$TargetPlatform"
     }
 
-    if ($Pack) {
-        $args += "/p:Pack=true"
+    if ($Retail) {
+        $args += "/p:Retail=true"
     }
     else {
         if ($Sign)             { $args += "/p:SignAssembly=true" }

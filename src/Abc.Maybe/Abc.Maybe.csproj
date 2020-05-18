@@ -4,7 +4,7 @@
     <TargetFrameworks>$(LibraryPlatforms)</TargetFrameworks>
   </PropertyGroup>
 
-  <Import Project="..\Pack.props" Condition=" $(Pack) == 'true' " />
+  <Import Project="..\Retail.props" Condition=" $(Retail) == 'true' " />
 
   <PropertyGroup Condition=" $(Configuration) == 'Release' ">
     <GenerateDocumentationFile>true</GenerateDocumentationFile>

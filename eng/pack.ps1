@@ -302,7 +302,7 @@ function Invoke-Pack {
         ($repositoryCommit ? $repositoryCommit.Substring(0, 7) : "???") `
         | SAY-LOUDLY
 
-    # VersionSuffix is for Pack.props, but it is not enough, we MUST
+    # VersionSuffix is for Retail.props, but it is not enough, we MUST
     # also specify --version-suffix (not sure it is necessary any more, but
     # I prefer to play safe).
     # NB: this is not something that we have to do for non-CI packages, since
@@ -336,7 +336,7 @@ function Invoke-Pack {
         /p:RevisionNumber=$revisionNumber `
         /p:RepositoryCommit=$repositoryCommit `
         /p:RepositoryBranch=$repositoryBranch `
-        /p:Pack=true
+        /p:Retail=true
         || die "Pack task failed."
 
     if ($ci) {
