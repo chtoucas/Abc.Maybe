@@ -4,9 +4,9 @@
 
   <PropertyGroup>
     <!-- Local options -->
-    <PrintSettings>false</PrintSettings>
-    <PatchEquality>false</PatchEquality>
     <HideInternals>false</HideInternals>
+    <PatchEquality>false</PatchEquality>
+    <PrintSettings>false</PrintSettings>
     <!-- Meta-option -->
     <Pack>false</Pack>
   </PropertyGroup>
@@ -36,10 +36,7 @@
 
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Abc.snk</AssemblyOriginatorKeyFile>
 
-    <!--
-      Fake version only used during development. When building a package,
-      the version is taken from "eng\Pack.props" which is loaded later on.
-    -->
+    <!-- Fake version only used during development -->
     <VersionPrefix>1.0.0</VersionPrefix>
     <VersionSuffix>DUMMY</VersionSuffix>
   </PropertyGroup>

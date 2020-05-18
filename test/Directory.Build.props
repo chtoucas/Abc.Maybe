@@ -23,8 +23,6 @@
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <Deterministic>true</Deterministic>
-    <DefineConstants>$(DefineConstants);TRACE;CONTRACTS_FULL</DefineConstants>
   </PropertyGroup>
 
 </Project>

@@ -160,31 +160,31 @@ try {
     if ($Runtime)       { $args += "--runtime:$runtime" }
     if ($NoRestore)     { $args += "--no-restore" }
 
-    $args += '-p:TargetFrameworks=\"' + ($platforms -join ";") + '\"'
+    $args += '/p:TargetFrameworks=\"' + ($platforms -join ";") + '\"'
 
     if ($AllPlatforms)  {
-        $args += "-p:TargetFramework="
+        $args += "/p:TargetFramework="
     }
     elseif ($TargetPlatform)  {
         if ($TargetPlatform -notin $platforms) {
             die "The specified platform is not supported: ""$TargetPlatform""."
         }
 
-        $args += "-p:TargetFramework=$TargetPlatform"
+        $args += "/p:TargetFramework=$TargetPlatform"
     }
 
     if ($Pack) {
-        $args += "-p:Pack=true"
+        $args += "/p:Pack=true"
     }
     else {
-        if ($Sign)             { $args += "-p:SignAssembly=true" }
-        if ($Unchecked)        { $args += "-p:CheckForOverflowUnderflow=false" }
-        if ($XmlDocumentation) { $args += "-p:GenerateDocumentationFile=true" }
-        if ($HideInternals)    { $args += "-p:HideInternals=true" }
+        if ($Sign)             { $args += "/p:SignAssembly=true" }
+        if ($Unchecked)        { $args += "/p:CheckForOverflowUnderflow=false" }
+        if ($XmlDocumentation) { $args += "/p:GenerateDocumentationFile=true" }
+        if ($HideInternals)    { $args += "/p:HideInternals=true" }
     }
 
-    if ($MyVerbose)            { $args += "-p:PrintSettings=true" }
-    if ($PatchEquality)        { $args += "-p:PatchEquality=true" }
+    if ($MyVerbose)            { $args += "/p:PrintSettings=true" }
+    if ($PatchEquality)        { $args += "/p:PatchEquality=true" }
 
     & dotnet build $ProjectPath $args
         || die "Build task failed."

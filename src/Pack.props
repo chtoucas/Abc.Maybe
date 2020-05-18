@@ -1,5 +1,9 @@
 <Project>
 
+  <!--
+    If the file does not exist, the import won't fail but the compilation will
+    since the version numbers will be invalid, eg VersionPrefix="..".
+  -->
   <Import Project="$(MSBuildThisFileDirectory)$(AssemblyName).props" />
 
   <PropertyGroup>
@@ -10,7 +14,6 @@
     <VersionSuffix Condition=" $(PreReleaseCycle) != '' ">$(PreReleaseCycle)$(PreReleaseNumber)</VersionSuffix>
 
     <AssemblyVersion>$(MajorVersion).$(MinorVersion).0.0</AssemblyVersion>
-
     <FileVersion>$(MajorVersion).$(MinorVersion).$(BuildNumber).$(RevisionNumber)</FileVersion>
 
     <!-- Informational version = semantic version -->
@@ -24,12 +27,12 @@
     <!--
       *** BE VERY, VERY CAREFUL, BEFORE CHANGING THIS ***
 
-      Valid values for DebugType are "full," "pdbonly," "portable", "embedded", and "none".
-      See https://docs.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-properties?view=vs-2019
+      https://github.com/Microsoft/msbuild/issues/2754
 
-      Weird bug in MSBuild; see https://github.com/Microsoft/msbuild/issues/2754
-      what follows can't be done in Directory.Build.targets
-      Also, what we really want is sketched below but it does NOT work.
+      Valid values: "full," "pdbonly," "portable", "embedded", and "none".
+      https://docs.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-properties?view=vs-2019
+
+      What we really want is sketched here but it does NOT work.
         <DebugType Condition=" $(TargetFrameworkIdentifier) == '.NETFramework' ">pdbonly</DebugType>
         <DebugType Condition=" $(TargetFrameworkIdentifier) != '.NETFramework' ">embedded</DebugType>
       The whole thing is very fragile.
