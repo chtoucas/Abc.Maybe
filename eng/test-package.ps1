@@ -139,6 +139,9 @@ Examples.
 > test-package.ps1 -AllKnown -NoCore            # ALL versions of .NET Framework
 > test-package.ps1 net452 -Runtime win10-x64    # net452 and for the runtime "win10-x64"
 
+Looking for more help?
+> Get-Help -Detailed test-package.ps1
+
 "@
 }
 
@@ -495,7 +498,7 @@ function Invoke-TestMany {
         | SAY-LOUDLY
 
     $pattern = $filter.Substring(0, $filter.Length - 1)
-    $platforms = $platformList | where { $_.StartsWith($pattern) }
+    $platforms = $platformList | where { $_.StartsWith($pattern, "InvariantCultureIgnoreCase") }
 
     $count = $platforms.Length
     if ($count -eq 0) {

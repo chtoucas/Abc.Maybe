@@ -40,7 +40,7 @@ function Update-PublicAPI {
 
     foreach ($item in $unshipped) {
         if ($item.Length -gt 0) {
-            if ($item.StartsWith($removedPrefix)) {
+            if ($item.StartsWith($removedPrefix, "InvariantCultureIgnoreCase")) {
                 $item = $item.Substring($removedPrefix.Length)
                 $removed += $item
             }
