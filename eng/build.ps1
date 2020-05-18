@@ -26,7 +26,7 @@ project into a library.
 The project to build. Default = solution.
 
 .PARAMETER Configuration
-The configuration to build the project/solution for. Default = Debug.
+The configuration to build the project/solution for. Default = "Debug".
 
 .PARAMETER Runtime
 The runtime to build the project/solution for.
@@ -61,10 +61,10 @@ This is a meta-option, it automatically sets -Sign, -XmlDocumentation,
 Do not restore the project/solution.
 
 #>
-[CmdletBinding()]
+[CmdletBinding(PositionalBinding = $false)]
 param(
-    [Parameter(Mandatory = $false, Position = 0)]
-                 [string] $ProjectPath,
+    [Parameter(Mandatory = $false)]
+    [Alias("p")] [string] $ProjectPath,
 
     [Parameter(Mandatory = $false)]
     [ValidateSet("Debug", "Release")]
@@ -85,11 +85,11 @@ param(
                  [switch] $HideInternals,
                  [switch] $Pack,
 
-    [Alias("v")] [switch] $MyVerbose,
-                 [switch] $PatchEquality,
-
                  [switch] $NoRestore,
-    [Alias("h")] [switch] $Help
+    [Alias("h")] [switch] $Help,
+
+    [Parameter(Mandatory=$false, ValueFromRemainingArguments = $true)]
+                 [string[]] $Properties
 )
 
 . (Join-Path $PSScriptRoot "abc.ps1")
@@ -104,7 +104,7 @@ function Print-Help {
 Build the solution for all supported platforms.
 
 Usage: reset.ps1 [arguments]
-     -ProjectPath       the project to build.
+  -p|-ProjectPath       the project to build.
   -c|-Configuration     the configuration to build the project/solution for.
   -r|-Runtime           the runtime to build the project/solution for.
 
@@ -116,18 +116,22 @@ Usage: reset.ps1 [arguments]
      -Unchecked         use unchecked arithmetic.
      -XmlDocumentation  generate the XML documentation.
      -HideInternals     hide internals.
-     -Pack              meta-option setting the four previous one at once.
-
-  -v|-MyVerbose         set MSBuild property "PrintSettings" to true.
-     -PatchEquality     set MSBuild property "PatchEquality" to true.
+     -Pack              meta-option setting the four previous ones at once.
 
      -NoRestore         do not restore the project/solution.
   -h|-Help              print this help and exit.
+
+Arguments starting with '/p:' are passed through to dotnet.exe.
+> build.ps1 /p:PatchEquality=true
+> build.ps1 /p:PrintSettings=true
 
 Examples.
 > build.ps1                             #
 > build.ps1 -AllPlatforms -Pack         #
 > build.ps1 src\Abc.Maybe -c Release    # "Release" build of Abc.Maybe
+
+Looking for more help?
+> Get-Help -Detailed reset.ps1
 
 "@
 }
@@ -187,8 +191,11 @@ try {
         if ($HideInternals)    { $args += "/p:HideInternals=true" }
     }
 
-    if ($MyVerbose)            { $args += "/p:PrintSettings=true" }
-    if ($PatchEquality)        { $args += "/p:PatchEquality=true" }
+    foreach ($arg in $Properties) {
+        if ($arg.StartsWith("/p:", "InvariantCultureIgnoreCase")) {
+            $args += $arg
+        }
+    }
 
     # Do not invoke "dotnet restore" before, it will fail w/ -TargetPlatform.
     & dotnet build $ProjectPath $args
