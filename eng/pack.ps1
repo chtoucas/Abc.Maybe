@@ -14,9 +14,8 @@ The default behaviour is to build a CI package.
 .PARAMETER NoCI
 Create a non-CI package.
 
-.PARAMETER Release
+.PARAMETER Freeze
 Create a package ready to be published to NuGet.Org.
-NB: Release has nothing to do with the MSBuild configuration property.
 
 This is a meta-option, it automatically sets -NoCI. The resulting package is no
 different from the one you would get using only -NoCI, but, in addition, the
@@ -32,7 +31,7 @@ Hard clean (reset) the source directory before anything else.
 
 .PARAMETER Yes
 Do not ask for confirmation, mostly.
-Only one exception: after having created a package w/ option -Release on, the
+Only one exception: after having created a package w/ option -Freeze on, the
 script will enter in an interactive mode.
 
 .PARAMETER MyVerbose
@@ -44,7 +43,7 @@ Print help text then exit.
 [CmdletBinding()]
 param(
                  [switch] $NoCI,
-                 [switch] $Release,
+                 [switch] $Freeze,
 
                  [switch] $Reset,
     [Alias("y")] [switch] $Yes,
@@ -65,7 +64,7 @@ Create a NuGet package for Abc.Maybe.
 
 Usage: pack.ps1 [arguments]
      -NoCI       create a non-CI package.
-     -Release    create a package ready to be published to NuGet.Org.
+     -Freeze     create a package ready to be published to NuGet.Org.
 
      -Reset      reset the solution before anything else.
   -y|-Yes        do not ask for confirmation, mostly.
@@ -75,7 +74,7 @@ Usage: pack.ps1 [arguments]
 Examples.
 > pack.ps1                # Create a CI package
 > pack.ps1 -NoCI -Yes     # Create a non-CI package, ignore uncommited changes
-> pack.ps1 -Release       # Create a package ready to be published to NuGet.Org
+> pack.ps1 -Freeze        # Create a package ready to be published to NuGet.Org
 
 Looking for more help?
 > Get-Help -Detailed pack.ps1
@@ -328,7 +327,7 @@ function Invoke-Pack {
     $project = Join-Path $SRC_DIR $projectName -Resolve
     $targetFrameworks = '\"' + (Get-PackagePlatforms -AsString) + '\"'
 
-    # Do NOT use --no-restore or --no-build (options -Reset/-Release erase bin/obj).
+    # Do NOT use --no-restore or --no-build (options -Reset/-Freeze erase bin/obj).
     # RepositoryCommit and RepositoryBranch are standard props, do not remove them.
     & dotnet pack $project -c Release --nologo $args --output $output `
         /p:TargetFrameworks=$targetFrameworks `
@@ -425,7 +424,7 @@ function Invoke-Publish {
 
 if ($Help) { Print-Help ; exit }
 
-if ($Release -or $NoCI) {
+if ($Freeze -or $NoCI) {
     Hello "this is the NuGet package creation script for Abc.Maybe."
 }
 else {
@@ -437,21 +436,21 @@ readonly ProjectName "Abc.Maybe"
 try {
     ___BEGIN___
 
-    $CI = -not ($Release -or $NoCI)
+    $CI = -not ($Freeze -or $NoCI)
 
     SAY-LOUDLY "`nInitialisation."
 
     # 1. Reset the source tree.
-    if ($Release -or $Reset) { Reset-SourceTree -Yes:($Release -or $Yes) }
+    if ($Freeze -or $Reset) { Reset-SourceTree -Yes:($Freeze -or $Yes) }
     # 2. Get git metadata.
-    $branch, $commit = Get-GitMetadata -Yes:$Yes -ExitOnError:$Release
+    $branch, $commit = Get-GitMetadata -Yes:$Yes -ExitOnError:$Freeze
     # 3. Generate build numbers.
     say "Generating build numbers."
     $buildNumber, $revisionNumber, $timestamp = Get-BuildNumbers
     # 4. Get package version.
     $version, $prefix, $suffix = Get-ActualVersion $ProjectName $timestamp -CI:$CI
     # 5. Get package file.
-    $packageFile = Get-PackageFile $ProjectName $version -Yes:($Release -or $Yes) -CI:$CI
+    $packageFile = Get-PackageFile $ProjectName $version -Yes:($Freeze -or $Yes) -CI:$CI
 
     Invoke-Pack `
         -ProjectName      $ProjectName `
@@ -470,11 +469,11 @@ try {
         Invoke-PushLocal $packageFile $version
     }
     else {
-        if ($Release) {
+        if ($Freeze) {
             # Now, all CI packages should be obsoleted. Traces of them can be
             # found within the directories "test" and "__\packages-ci", but also
             # in the local NuGet cache/feed.
-            # We should also remove any reference to a release package with the
+            # We should also remove any reference to a released package with the
             # same version. Failing to do so would mean that, after publishing
             # the package to NuGet.Org, "test-package.ps1" could still test a
             # package from the local NuGet cache/feed not the one from NuGet.Org.
