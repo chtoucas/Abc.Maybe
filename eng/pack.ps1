@@ -316,8 +316,9 @@ function Invoke-Pack {
 
     if ($ci) {
         $output = $PKG_CI_OUTDIR
+        # NU5105 = warning about SemVer 2.0.0.
         $args += `
-            "/p:AssemblyTitle=""$projectName (CI)""",
+            "/p:MyAssemblyTitle=""$projectName (CI)""",
             "/p:NoWarnX=NU5105"
     }
     else {

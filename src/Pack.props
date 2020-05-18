@@ -9,6 +9,7 @@
   <PropertyGroup>
     <BuildNumber Condition=" $(BuildNumber) == '' ">$(PatchVersion)</BuildNumber>
     <RevisionNumber Condition=" $(RevisionNumber) == '' ">0</RevisionNumber>
+    <MyAssemblyTitle Condition=" $(MyAssemblyTitle) == '' ">$(AssemblyName)</MyAssemblyTitle>
 
     <VersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</VersionPrefix>
     <VersionSuffix Condition=" $(PreReleaseCycle) != '' ">$(PreReleaseCycle)$(PreReleaseNumber)</VersionSuffix>
@@ -22,7 +23,8 @@
     <InformationalVersion Condition=" $(RepositoryCommit) != '' ">$(InformationalVersion)+$(RepositoryCommit.Substring(0, 7))</InformationalVersion>
 
     <!-- Assembly description -->
-    <Description>$(AssemblyTitle), built [$([System.DateTime]::UtcNow.ToString("r"))].</Description>
+    <AssemblyTitle>$(MyAssemblyTitle) [$(TargetFramework)]</AssemblyTitle>
+    <Description>$(MyAssemblyTitle), built [$([System.DateTime]::UtcNow.ToString("r"))].</Description>
 
     <!--
       *** BE VERY, VERY CAREFUL, BEFORE CHANGING THIS ***
