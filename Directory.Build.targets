@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)src\MissingAttributes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\NullableAttributes.cs" />
   </ItemGroup>
 
