@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>$(MaxApiPlatform)</TargetFrameworks>
-    <RestorePackagesPath>$(MSBuildThisFileDirectory)../../__/tools/</RestorePackagesPath>
+    <RestorePackagesPath>../../__/tools/</RestorePackagesPath>
   </PropertyGroup>
 
   <ItemGroup>
