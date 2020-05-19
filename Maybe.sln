@@ -36,13 +36,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eng", "eng", "{6D957FE8-23D
 	ProjectSection(SolutionItems) = preProject
 		eng\abc.ps1 = eng\abc.ps1
 		eng\build.ps1 = eng\build.ps1
-		eng\common.ps1 = eng\common.ps1
 		eng\cover.ps1 = eng\cover.ps1
 		eng\freeze-api.ps1 = eng\freeze-api.ps1
 		eng\pack.ps1 = eng\pack.ps1
 		eng\README = eng\README
 		eng\reset.ps1 = eng\reset.ps1
 		eng\test-package.ps1 = eng\test-package.ps1
+		eng\utils.ps1 = eng\utils.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{73C72FF8-FF25-49A3-A241-4959FEFC8C81}"
