@@ -3,17 +3,6 @@
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.props" />
 
   <PropertyGroup>
-    <!-- Local options -->
-    <HideInternals>false</HideInternals>
-    <PatchEquality>false</PatchEquality>
-    <PrintSettings>false</PrintSettings>
-    <!-- Meta-option -->
-    <Retail>false</Retail>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <!-- Package metadata & assembly info -->
-
     <Authors>Chtoucas</Authors>
     <Company>Narvalo.Org</Company>
     <Product>Abécédaire Library</Product>
@@ -36,7 +25,7 @@
 
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Abc.snk</AssemblyOriginatorKeyFile>
 
-    <!-- Fake version only used during development -->
+    <!-- Fake version -->
     <VersionPrefix>1.0.0</VersionPrefix>
     <VersionSuffix>DUMMY</VersionSuffix>
   </PropertyGroup>

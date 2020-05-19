@@ -2,10 +2,10 @@
 
   <!--
     Command-line options (default = disabled, to enable /p:XXX=true):
-    - HideInternals
+    - HideInternals         Do not open internals to Abc.Testing
     - PatchEquality
+    - Retail                Meta-option
     - PrintSettings
-    - Retail (meta-option)
     Project options:
     - RelaxWarnings
     - RelaxAsyncWarnings
@@ -21,12 +21,9 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <!-- CONTRACTS_FULL is necessary to enable the attribute Pure -->
-    <DefineConstants>$(DefineConstants);CONTRACTS_FULL</DefineConstants>
-
     <DefineConstants Condition=" $(SignAssembly) == 'true' ">$(DefineConstants);SIGNED_ASSEMBLY</DefineConstants>
 
-    <DefineConstants Condition=" $(HideInternals) != 'true' ">$(DefineConstants);INTERNALS_VISIBLE_TO</DefineConstants>
+    <!--<DefineConstants Condition=" $(HideInternals) != 'true' ">$(DefineConstants);INTERNALS_VISIBLE_TO</DefineConstants>-->
     <DefineConstants Condition=" $(PatchEquality) == 'true' ">$(DefineConstants);PATCH_EQUALITY</DefineConstants>
 
     <!--<DefineConstants>$(DefineConstants);PLAIN_LINQ</DefineConstants>-->
