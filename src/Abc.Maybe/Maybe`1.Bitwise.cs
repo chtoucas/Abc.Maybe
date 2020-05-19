@@ -62,7 +62,7 @@ namespace Abc
         public static Maybe<T> operator ^(Maybe<T> left, Maybe<T> right) =>
             left.XorElse(right);
 
-        // I know, this is just IsSome, but I wish to emphasize a boolean context.
+        // I know, this is just IsSome, but I wish to emphasize the boolean context.
         [Pure]
         [InternalForTesting]
         internal bool ToBoolean() =>

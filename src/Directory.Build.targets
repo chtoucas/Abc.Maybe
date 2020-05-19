@@ -6,7 +6,7 @@
     - PatchEquality
     - Retail                Meta-option
     - PrintSettings
-    Project options:
+    Project configuration:
     - RelaxWarnings
     - RelaxAsyncWarnings
   -->
@@ -18,9 +18,6 @@
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <HideInternals>true</HideInternals>
-    <!-- Safe guards (but one can still force them to true via the cmdline) -->
-    <HideInternals>true</HideInternals>
-    <PatchEquality>false</PatchEquality>
   </PropertyGroup>
 
   <PropertyGroup>

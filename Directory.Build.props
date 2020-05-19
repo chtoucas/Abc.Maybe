@@ -45,18 +45,18 @@
     <!--
       Supported platforms by a package.
 
-      "net45" and "net451" are handled separately; they are not supported by
-      xunit.runner.visualstudio.
-
       .NET Framework (Classic).
         "MinClassicPlatforms" lists the last minor version of each major version.
         https://support.microsoft.com/en-us/help/17455/lifecycle-faq-net-framework
+
       .NET Core.
         "MinCorePlatforms" lists the LTS versions and the latest one if not LTS.
         https://dotnet.microsoft.com/platform/support/policy/dotnet-core
         https://github.com/dotnet/core/blob/master/microsoft-support.md
-    -->
 
+      "net45" and "net451" are handled separately; they are not supported by
+      xunit.runner.visualstudio.
+    -->
     <MinClassicPlatforms>net452;net462;net472;net48</MinClassicPlatforms>
     <MaxClassicPlatforms>net452;net46;net461;net462;net47;net471;net472;net48</MaxClassicPlatforms>
 
