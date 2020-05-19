@@ -9,16 +9,12 @@
     https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/how-to-determine-which-versions-are-installed
   -->
 
-  <PropertyGroup>
-    <AllKnown>false</AllKnown>
-  </PropertyGroup>
-
   <PropertyGroup Condition=" $(AllKnown) == 'true' ">
     <TargetFrameworks>$(MaxClassicPlatforms);$(MaxCorePlatforms)</TargetFrameworks>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" $(AllKnown) == 'false' ">
-    <TargetFrameworks>$(MinClassicPlatforms);$(MinClassicPlatforms)</TargetFrameworks>
+  <PropertyGroup Condition=" $(AllKnown) != 'true' ">
+    <TargetFrameworks>$(MinClassicPlatforms);$(MinCorePlatforms)</TargetFrameworks>
   </PropertyGroup>
 
 </Project>
