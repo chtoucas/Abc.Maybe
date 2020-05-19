@@ -1,12 +1,19 @@
 <Project>
 
+  <!--
+    Command-line options (default = disabled, to enable /p:XXX=true):
+    - HideInternals
+    - PatchEquality
+    - PrintSettings
+    - Retail (meta-option)
+    Project options:
+    - RelaxWarnings
+    - RelaxAsyncWarnings
+  -->
+
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets" />
 
   <PropertyGroup Condition=" $(Retail) == 'true' ">
-    <!--
-      Even if the following props were already set with the right value, we
-      override them here to be crystal clear about what to expect.
-    -->
     <SignAssembly>true</SignAssembly>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -18,6 +25,7 @@
     <DefineConstants>$(DefineConstants);CONTRACTS_FULL</DefineConstants>
 
     <DefineConstants Condition=" $(SignAssembly) == 'true' ">$(DefineConstants);SIGNED_ASSEMBLY</DefineConstants>
+
     <DefineConstants Condition=" $(HideInternals) != 'true' ">$(DefineConstants);INTERNALS_VISIBLE_TO</DefineConstants>
     <DefineConstants Condition=" $(PatchEquality) == 'true' ">$(DefineConstants);PATCH_EQUALITY</DefineConstants>
 

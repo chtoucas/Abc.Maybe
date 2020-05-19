@@ -28,25 +28,20 @@
       If/when we create an API depending on a new .NET standard, MaxApiPlatform
       should be the last available platform supporting it We can also update
       MaxApiPlatform just to benefit from the last improvements it could bring.
+
+      IMPORTANT: update "SolutionPlatforms" when changing "MaxApiPlatform".
     -->
-
-    <!-- IMPORTANT: keep "SolutionPlatforms" in sync with this -->
     <MaxApiPlatform>netcoreapp3.1</MaxApiPlatform>
-
-    <!-- Library projects -->
     <LibraryPlatforms>$(MaxApiPlatform);netstandard2.0</LibraryPlatforms>
 
     <!--
       Platforms supported when building the __whole__ solution.
-      We do NOT include "netstandard1.0", it is only supported by Abc.Maybe.csproj.
+      Do NOT include "netstandard1.0", it is only supported by Abc.Maybe.csproj.
     -->
     <SolutionPlatforms>netcoreapp3.1;netstandard2.1;netstandard2.0;net461</SolutionPlatforms>
 
-    <!-- Package -->
     <PackagePlatforms>netstandard2.1;netstandard2.0;netstandard1.0;net461</PackagePlatforms>
-  </PropertyGroup>
 
-  <PropertyGroup>
     <!--
       Supported platforms by a package.
 

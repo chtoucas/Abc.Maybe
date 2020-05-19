@@ -14,10 +14,9 @@
 
     <!--
       MSBuild (or NuGet?) is not meant to work when we specify both
-      TargetFramework and TargetFrameworks (see the "s").
+      TargetFramework and TargetFrameworks (with an "s").
       Warning NU1701 appears only for xunit.runner.visualstudio.
-      This is harmless since testing is done using a **single** framework at a time.
-      See eng\qbuild.cmd.
+      This is harmless since testing is done using a __single__ framework at a time.
     -->
     <NoWarn Condition=" $(TargetFrameworks) != '' ">$(NoWarn);NU1701</NoWarn>
   </PropertyGroup>
