@@ -1,16 +1,14 @@
 README
 ------
 
-- HashCode.Shim.cs
-- MissingAttributes.cs
-- NullableAttributes.cs
+- MissingAttributes.cs      Serializable, ExcludeFromCodeCoverage and Pure.
+- NullableAttributes.cs     Nullable attributes.
 
-- Retail.props          MSBuild props when building packages.
-- Abc.Maybe.props       NuGet package props for Abc.Maybe.
-- Abc.snk               strong named key.
+- Abc.Maybe.props           NuGet package props for Abc.Maybe.
+- Abc.snk                   strong named key.
+- Retail.props              MSBuild props when building packages.
 
 Remarks.
-To extract the public key.
+To extract the public key, then get the public key.
 > sn -p Abc.snk Abc.pk
-To get the public key.
 > sn -tp Abc.pk

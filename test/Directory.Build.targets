@@ -10,7 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
-    <Compile Include="$(SourceRoot)HashCode.Shim.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HashCode.Shim.cs" />
     <Compile Include="$(SourceRoot)Abc.Sketches\**\*.cs" Exclude="$(FilesToExclude)" />
     <Compile Include="$(SourceRoot)Abc.Testing\**\*.cs" Exclude="$(FilesToExclude)" />
     <Compile Include="$(SourceRoot)Abc.Tests\**\*.cs" Exclude="$(FilesToExclude)" />
