@@ -3,17 +3,6 @@
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.props" />
 
   <PropertyGroup>
-    <SourceRoot>$(MSBuildThisFileDirectory)..\src\</SourceRoot>
-  </PropertyGroup>
-
-  <Import Project="$(SourceRoot)\Abc.Maybe.props" />
-
-  <PropertyGroup>
-    <AbcVersion>$(MajorVersion).$(MinorVersion).$(PatchVersion)</AbcVersion>
-    <AbcVersion Condition=" $(PreReleaseCycle) != '' ">$(AbcVersion)-$(PreReleaseCycle)$(PreReleaseNumber)</AbcVersion>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <Platform>AnyCPU</Platform>
     <Configuration>Release</Configuration>
     <Optimize>true</Optimize>

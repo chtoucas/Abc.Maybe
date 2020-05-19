@@ -2,8 +2,12 @@
 
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets" />
 
+  <Import Project="$(MSBuildThisFileDirectory)AbcVersion.props" />
+
   <!-- Source files -->
   <PropertyGroup>
+    <SourceRoot>$(MSBuildThisFileDirectory)..\src\</SourceRoot>
+
     <FilesToExclude>$(SourceRoot)**\AssemblyInfo.cs</FilesToExclude>
     <FilesToExclude>$(FilesToExclude);$(SourceRoot)**\bin\**\*.*</FilesToExclude>
     <FilesToExclude>$(FilesToExclude);$(SourceRoot)**\obj\**\*.*</FilesToExclude>

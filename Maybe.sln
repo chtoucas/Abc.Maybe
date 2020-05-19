@@ -47,13 +47,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eng", "eng", "{6D957FE8-23D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{73C72FF8-FF25-49A3-A241-4959FEFC8C81}"
 	ProjectSection(SolutionItems) = preProject
+		test\AbcVersion.props = test\AbcVersion.props
 		test\AssemblyInfo.cs = test\AssemblyInfo.cs
 		test\Directory.Build.props = test\Directory.Build.props
 		test\Directory.Build.targets = test\Directory.Build.targets
 		test\HashCode.Shim.cs = test\HashCode.Shim.cs
-		test\NET45\NET45.csproj = test\NET45\NET45.csproj
-		test\NET451\NET451.csproj = test\NET451\NET451.csproj
-		test\NETSdk\NETSdk.csproj = test\NETSdk\NETSdk.csproj
 		test\NuGet.Config = test\NuGet.Config
 		test\README = test\README
 	EndProjectSection
@@ -69,6 +67,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NETFrameworkTools", "NETFra
 		eng\NETFrameworkTools\Directory.Build.props = eng\NETFrameworkTools\Directory.Build.props
 		eng\NETFrameworkTools\Directory.Build.targets = eng\NETFrameworkTools\Directory.Build.targets
 		eng\NETFrameworkTools\NETFrameworkTools.csproj = eng\NETFrameworkTools\NETFrameworkTools.csproj
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestProjects", "TestProjects", "{A1F32A9C-96CD-4A8A-89C8-10A0CB4D245A}"
+	ProjectSection(SolutionItems) = preProject
+		test\NET45\NET45.csproj = test\NET45\NET45.csproj
+		test\NET451\NET451.csproj = test\NET451\NET451.csproj
+		test\NETSdk\NETSdk.csproj = test\NETSdk\NETSdk.csproj
 	EndProjectSection
 EndProject
 Global
@@ -111,6 +116,7 @@ Global
 		{73C72FF8-FF25-49A3-A241-4959FEFC8C81} = {4B926891-DAB0-4792-AB7B-E1A0C001843A}
 		{22206E77-3EB9-4B73-BEC0-2A63201DA473} = {73C72FF8-FF25-49A3-A241-4959FEFC8C81}
 		{9DE2F491-0AAE-44F8-870F-28422DCFEA54} = {6D957FE8-23D0-4985-A91C-F1CC399AA453}
+		{A1F32A9C-96CD-4A8A-89C8-10A0CB4D245A} = {73C72FF8-FF25-49A3-A241-4959FEFC8C81}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1739E5AC-504C-40F8-968B-64F1F620D3C3}

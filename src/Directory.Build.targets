@@ -18,6 +18,9 @@
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <HideInternals>true</HideInternals>
+    <!-- Safe guards (but one can still force them to true via the cmdline) -->
+    <HideInternals>false</HideInternals>
+    <PatchEquality>false</PatchEquality>
   </PropertyGroup>
 
   <PropertyGroup>
