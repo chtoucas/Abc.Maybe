@@ -1,7 +1,7 @@
 README
 ------
 
-Core files.
+Core scripts.
 - build.ps1             build the solution.
 - cover.ps1             code coverage script.
 - pack.ps1              create a package.
@@ -12,12 +12,11 @@ Maintenance scripts.
 - reset.ps1             reset repository.
 
 Other files.
-- common.ps1            PowerShell generic helpers.
-- abc.ps1               PowerShell helpers.
+- utils.ps1             generic helpers.
+- abc.ps1               project-specific helpers.
 - NETFrameworkTools     blank project used to restore .NET Framework tools.
 
 Obsolete files.
-- qbuild.cmd            build project/solution for all supported frameworks.
 - genuids.fsx           generate unique ids used to timestamp a package.
 - genuids.ps1           execute genuids.fsx.
 - Pack.tasks            MSBuild tasks when building packages.

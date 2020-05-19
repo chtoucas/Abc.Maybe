@@ -10,7 +10,7 @@ using namespace Microsoft.PowerShell.Commands
 Set-StrictMode -Version Latest
 $Script:ErrorActionPreference = "Stop"
 
-. (Join-Path $PSScriptRoot "common.ps1")
+. (Join-Path $PSScriptRoot "utils.ps1")
 
 $Script:___ForegroundColor = `
     $Host.UI.RawUI.ForegroundColor -eq "White" ? "Blue" : "White"
