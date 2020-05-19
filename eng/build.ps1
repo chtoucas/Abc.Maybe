@@ -41,22 +41,6 @@ Build the project/solution (exe projects included) for ALL supported platforms.
 .PARAMETER ListPlatforms
 Display the list of all supported platforms, then exit.
 
-.PARAMETER Sign
-Sign the assemblies.
-
-.PARAMETER Unchecked
-Use unchecked arithmetic.
-
-.PARAMETER XmlDocumentation
-Generate the XML documentation.
-
-.PARAMETER HideInternals
-Hide internals.
-
-.PARAMETER Retail
-This is a meta-option, it automatically sets -Sign, -XmlDocumentation,
--Unchecked and -HideInternals to $true.
-
 .PARAMETER NoRestore
 Do not restore the project/solution.
 
@@ -77,13 +61,6 @@ param(
     [Alias("f")] [string] $TargetPlatform,
     [Alias("a")] [switch] $AllPlatforms,
     [Alias("l")] [switch] $ListPlatforms,
-
-    # See Directory.Build.props/targets.
-                 [switch] $Sign,
-                 [switch] $Unchecked,
-                 [switch] $XmlDocumentation,
-                 [switch] $HideInternals,
-                 [switch] $Retail,
 
                  [switch] $NoRestore,
     [Alias("h")] [switch] $Help,
@@ -112,23 +89,18 @@ Usage: reset.ps1 [arguments]
   -a|-AllPlatforms      build the project/solution for ALL supported platforms.
   -l|-ListPlatforms     print the list of supported platforms, then exit.
 
-     -Sign              sign the assemblies.
-     -Unchecked         use unchecked arithmetic.
-     -XmlDocumentation  generate the XML documentation.
-     -HideInternals     hide internals.
-     -Retail            meta-option setting the four previous options to "true".
-
      -NoRestore         do not restore the project/solution.
   -h|-Help              print this help and exit.
 
 Arguments starting with '/p:' are passed through to dotnet.exe.
+> build.ps1 /p:Retail=true
 > build.ps1 /p:PatchEquality=true
 > build.ps1 /p:PrintSettings=true
 
 Examples.
-> build.ps1                             #
-> build.ps1 -AllPlatforms -Retail       #
-> build.ps1 src\Abc.Maybe -c Release    # "Release" build of Abc.Maybe
+> build.ps1                                 #
+> build.ps1 -a /p:Retail=true               #
+> build.ps1 -p src\Abc.Maybe -c Release     # "Release" build of Abc.Maybe
 
 Looking for more help?
 > Get-Help -Detailed reset.ps1
@@ -179,16 +151,6 @@ try {
         }
 
         $args += "/p:TargetFramework=$TargetPlatform"
-    }
-
-    if ($Retail) {
-        $args += "/p:Retail=true"
-    }
-    else {
-        if ($Sign)             { $args += "/p:SignAssembly=true" }
-        if ($Unchecked)        { $args += "/p:CheckForOverflowUnderflow=false" }
-        if ($XmlDocumentation) { $args += "/p:GenerateDocumentationFile=true" }
-        if ($HideInternals)    { $args += "/p:HideInternals=true" }
     }
 
     foreach ($arg in $Properties) {
