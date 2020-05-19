@@ -250,7 +250,7 @@ function Get-SolutionPlatforms {
 
     if ($asString) {
         # Ready for MSBuild.exe/dotnet.exe.
-        return """$platforms"""
+        return "\""$platforms\"""
     }
     else {
         return $platforms.Split(";")
@@ -278,7 +278,7 @@ function Get-PackagePlatforms {
 
     if ($asString) {
         # Ready for MSBuild.exe/dotnet.exe.
-        return """$platforms"""
+        return "\""$platforms\"""
     }
     else {
         return $platforms.Split(";")
