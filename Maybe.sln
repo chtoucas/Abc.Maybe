@@ -64,7 +64,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Blank", "Blank", "{22206E77
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NETFrameworkTools", "NETFrameworkTools", "{9DE2F491-0AAE-44F8-870F-28422DCFEA54}"
 	ProjectSection(SolutionItems) = preProject
-		eng\NETFrameworkTools\Directory.Build.props = eng\NETFrameworkTools\Directory.Build.props
 		eng\NETFrameworkTools\Directory.Build.targets = eng\NETFrameworkTools\Directory.Build.targets
 		eng\NETFrameworkTools\NETFrameworkTools.csproj = eng\NETFrameworkTools\NETFrameworkTools.csproj
 	EndProjectSection
