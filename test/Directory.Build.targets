@@ -23,12 +23,14 @@
   <!-- Dependencies -->
   <!-- Microsoft.Bcl.HashCode is not compatible w/ .NET Framework <= 4.6 -->
   <PropertyGroup>
-    <HashCodePkg Condition=" $(TargetFramework.StartsWith('net45')) ">false</HashCodePkg>
-    <HashCodePkg Condition=" $(TargetFramework) == 'net46' ">false</HashCodePkg>
+    <HashCodePackage>true</HashCodePackage>
+    <HashCodePackage Condition=" $(TargetFramework.StartsWith('net45')) ">false</HashCodePackage>
+    <HashCodePackage Condition=" $(TargetFramework) == 'net46' ">false</HashCodePackage>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Abc.Maybe" Version="$(AbcVersion)" />
-    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0" Condition=" $(HashCodePkg) != 'false' " />
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0"
+                      Condition=" $(HashCodePackage) == 'true' " />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <!-- For .NET Framework 4.5/4.5.1, we use xunit.runner.console; see "eng\NETFrameworkTools" -->
