@@ -3,7 +3,7 @@
   <!--
     Command-line options (default = disabled, to enable /p:XXX=true):
     - Retail                Meta-option
-    - HiddenInternals       Abc.Maybe internals are hidden from Abc.Testing
+    - HideInternals         Abc.Maybe internals are hidden from Abc.Testing
     - PatchEquality
     - PrintSettings
     Project configuration:
@@ -15,7 +15,7 @@
 
   <PropertyGroup>
     <VisibleInternals>true</VisibleInternals>
-    <VisibleInternals Condition=" $(HiddenInternals) == 'true' ">false</VisibleInternals>
+    <VisibleInternals Condition=" $(HideInternals) == 'true' ">false</VisibleInternals>
   </PropertyGroup>
 
   <PropertyGroup Condition=" $(Retail) == 'true' ">
