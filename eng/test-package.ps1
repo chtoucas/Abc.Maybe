@@ -106,7 +106,9 @@ param(
 
 const TESTS_PROJECT_NAME "Abc.PackageTests"
 const TESTS_PROJECT (Join-Path $TEST_DIR $TESTS_PROJECT_NAME -Resolve)
+
 const XUNIT_PLATFORM "net452"
+const OLDSTYLE_PLATFORMS @("net45", "net451")
 
 #endregion
 ################################################################################
@@ -278,20 +280,12 @@ function Get-RuntimeLabel {
 function Get-TargetFrameworks {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNull()]
-        [string[]] $platformList,
-
-        [switch] $noLegacy
+        [string[]] $platformList
     )
 
-    if ($noLegacy) {
-        # Exclude "net45" and "net451".
-        return '\"' + (($platformList | where { $_ -notin "net45", "net451" }) -join ";") + '\"'
-    }
-    else {
-        return '\"' + ($platformList -join ";") + '\"'
-    }
+    '\"' + ($platformList -join ";") + '\"'
 }
 
 #endregion
@@ -320,7 +314,7 @@ function Invoke-Restore {
     $args = "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
     if ($runtime)  { $args += "--runtime:$runtime" }
 
-    & dotnet restore $TESTS_PROJECT $args
+    & dotnet restore $TESTS_PROJECT --nologo $args
         || die "Restore task failed."
 
     say-softly "Dependencies successfully restored."
@@ -350,7 +344,7 @@ function Invoke-Build {
     $args = "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
     if ($runtime)   { $args += "--runtime:$runtime" }
 
-    & dotnet build $TESTS_PROJECT $args
+    & dotnet build $TESTS_PROJECT --nologo $args
         || die "Build task failed."
 
     say-softly "Project successfully built."
@@ -367,7 +361,7 @@ function Invoke-TestOldStyle {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, Position = 0)]
-        [ValidateSet("net45", "net451")]
+        [ValidateScript({ $_ -in $OLDSTYLE_PLATFORMS })]
         [string] $platform,
 
         [Parameter(Mandatory = $true, Position = 1)]
@@ -431,7 +425,7 @@ function Invoke-TestSingle {
         [switch] $noBuild
     )
 
-    if ($platform -in "net45", "net451") {
+    if ($platform -in $OLDSTYLE_PLATFORMS) {
         Invoke-TestOldStyle `
             -Platform   $platform `
             -Version    $version `
@@ -489,6 +483,42 @@ function Invoke-TestManyInteractive {
 
 # ------------------------------------------------------------------------------
 
+function Invoke-TestAny {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateNotNull()]
+        [string[]] $platformList,
+
+        [Parameter(Mandatory = $true, Position = 1)]
+        [ValidateNotNullOrEmpty()]
+        [string] $version,
+
+        [Parameter(Mandatory = $false, Position = 2)]
+        [string] $runtime
+    )
+
+    $targetFrameworks = $platformList `
+        | where { $_ -notin $OLDSTYLE_PLATFORMS } | Get-TargetFrameworks
+
+    $args = "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
+    if ($runtime) { $args += "--runtime:$runtime" }
+
+    & dotnet test $TESTS_PROJECT --nologo $args
+        || die "Test task failed."
+
+    say-softly "Test completed successfully."
+
+    say "`nContinuing with ""old-style"" platforms if any."
+    foreach ($platform in $OLDSTYLE_PLATFORMS) {
+        if ($platform -in $platformList) {
+            Invoke-TestOldStyle -Platform $platform -Version $version -Runtime $runtime
+        }
+    }
+}
+
+# ------------------------------------------------------------------------------
+
 function Invoke-TestMany {
     [CmdletBinding()]
     param(
@@ -512,16 +542,16 @@ function Invoke-TestMany {
         | SAY-LOUDLY
 
     $pattern = $filter.Substring(0, $filter.Length - 1)
-    $platforms = $platformList | where { $_.StartsWith($pattern, "InvariantCultureIgnoreCase") }
+    $filteredPlatforms = $platformList | where { $_.StartsWith($pattern, "InvariantCultureIgnoreCase") }
 
-    $count = $platforms.Length
+    $count = $filteredPlatforms.Length
     if ($count -eq 0) {
         die "After filtering the list of known platforms w/ $filter, there is nothing left to be done."
     }
 
     # Fast track.
     if ($count -eq 1) {
-        $platform = $platforms[0]
+        $platform = $filteredPlatforms[0]
 
         say "Only ""$platform"" was left after filtering the list of known platforms."
 
@@ -529,25 +559,15 @@ function Invoke-TestMany {
         return
     }
 
-    "Remaining platorms after filtering: ""{0}""." -f ($platforms -join '", "') `
-        | SAY-LOUDLY
+    $platformSet = ($filteredPlatforms -join '", "')
+    say "Remaining platorms after filtering: ""$platformSet""."
 
-    $targetFrameworks = Get-TargetFrameworks $platforms
+    SAY-LOUDLY "`nBatch testing the package."
 
-    $args = "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
-    if ($runtime) { $args += "--runtime:$runtime" }
-
-    & dotnet test $TESTS_PROJECT --nologo $args
-        || die "Test task failed."
-
-    say-softly "Test completed successfully."
-
-    if ("net45" -in $platforms) {
-        Invoke-TestOldStyle -Platform "net45" -Version $version -Runtime $runtime
-    }
-    if ("net451" -in $platforms) {
-        Invoke-TestOldStyle -Platform "net451" -Version $version -Runtime $runtime
-    }
+    Invoke-TestAny `
+        -PlatformList $filteredPlatforms `
+        -Version      $version `
+        -Runtime      $runtime
 }
 
 # ------------------------------------------------------------------------------
@@ -585,20 +605,10 @@ function Invoke-TestAll {
         -f (Get-RuntimeLabel $runtime) `
         | SAY-LOUDLY
 
-    $targetFrameworks = Get-TargetFrameworks $platformList -NoLegacy
-
-    $args = "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
-    if ($runtime) { $args += "--runtime:$runtime" }
-
-    & dotnet test $TESTS_PROJECT --nologo $args
-        || die "Test task failed."
-
-    say-softly "Test completed successfully."
-
-    if ($allKnown -and (-not $noClassic)) {
-        Invoke-TestOldStyle -Platform "net45" -Version $version -Runtime $runtime
-        Invoke-TestOldStyle -Platform "net451" -Version $version -Runtime $runtime
-    }
+    Invoke-TestAny `
+        -PlatformList $platformList `
+        -Version      $version `
+        -Runtime      $runtime
 }
 
 #endregion
