@@ -314,7 +314,7 @@ function Invoke-Restore {
     $args = "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
     if ($runtime)  { $args += "--runtime:$runtime" }
 
-    & dotnet restore $TESTS_PROJECT --nologo $args
+    & dotnet restore $TESTS_PROJECT $args
         || die "Restore task failed."
 
     say-softly "Dependencies successfully restored."
@@ -344,7 +344,7 @@ function Invoke-Build {
     $args = "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
     if ($runtime)   { $args += "--runtime:$runtime" }
 
-    & dotnet build $TESTS_PROJECT --nologo $args
+    & dotnet build $TESTS_PROJECT $args
         || die "Build task failed."
 
     say-softly "Project successfully built."
