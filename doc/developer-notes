@@ -206,3 +206,10 @@ To find outdated NuGet references in supporting projects:
 NB: these commands will fail if the package were not restored before.
 NB: we used net48, but any other would do the job (and you can remove this).
 NB: Project test\Blank has no external references.
+
+Strong named key
+----------------
+
+To extract the public key, then get the public key.
+> sn -p Abc.snk Abc.pk
+> sn -tp Abc.pk

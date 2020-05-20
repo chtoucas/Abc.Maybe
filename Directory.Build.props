@@ -1,21 +1,52 @@
 <Project>
 
-  <!--
-    IMPORTANT: do NOT use MSBuild property resolution $() when a property is
-    going to be parsed by a PowerShell script.
-    - MaxApiPlatform            MSBuild lib projs
-    - LibraryPlatforms          MSBuild exe projs
-    - SolutionPlatforms                           Get-SolutionPlatforms()
-    - PackagePlatforms                            Get-PackagePlatforms()
-    - MinClassicPlatforms       NETSdk.csproj     Get-SupportedPlatforms()
-    - MaxClassicPlatforms       NETSdk.csproj     Get-SupportedPlatforms()
-    - MinCorePlatforms          NETSdk.csproj     Get-SupportedPlatforms()
-    - MaxCorePlatforms          NETSdk.csproj     Get-SupportedPlatforms()
-  -->
+  <PropertyGroup>
+    <RootNamespace>Abc</RootNamespace>
+
+    <LangVersion>latest</LangVersion>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Abc.snk</AssemblyOriginatorKeyFile>
+
+    <!-- Fake version -->
+    <VersionPrefix>1.0.0</VersionPrefix>
+    <VersionSuffix>DUMMY</VersionSuffix>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>Chtoucas</Authors>
+    <Company>Narvalo.Org</Company>
+    <Product>Abécédaire Library</Product>
+    <Copyright>Copyright (c) 2019 Narvalo.Org</Copyright>
+
+    <PackageProjectUrl>https://github.com/chtoucas/Abc.Maybe/</PackageProjectUrl>
+    <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
+    <PackageReleaseNotes>See CHANGELOG in project root.</PackageReleaseNotes>
+
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/chtoucas/Abc.Maybe/</RepositoryUrl>
+  </PropertyGroup>
 
   <PropertyGroup>
     <!--
-      The first listed framework is the one used by the VS editor.
+      IMPORTANT: do NOT use MSBuild property resolution $() when a property is
+      going to be parsed by a PowerShell script.
+      - MaxApiPlatform            Library projects
+                                  eng\NETFrameworkTools.csproj
+                                  test\Blank.csproj
+      - LibraryPlatforms          Exe projects
+      - SolutionPlatforms                                           Get-SolutionPlatforms()
+      - PackagePlatforms                                            Get-PackagePlatforms()
+      - NET45xPlatforms           test\Abc.TestPackages.csproj
+      - MinClassicPlatforms       test\Abc.TestPackages.csproj      Get-SupportedPlatforms()
+      - MaxClassicPlatforms       test\Abc.TestPackages.csproj      Get-SupportedPlatforms()
+      - MinCorePlatforms          test\Abc.TestPackages.csproj      Get-SupportedPlatforms()
+      - MaxCorePlatforms          test\Abc.TestPackages.csproj      Get-SupportedPlatforms()
+
+      The first listed framework in "LibraryPlatforms" is the one used by the
+      VS editor.
       Full NRT-analysis requires .NET Core 3.0 or above, .NET Standard does
       not include the nullable annotations (version 2.1 defines the nullable
       attributes but VS doesn't use them if I understand things correctly).
@@ -55,8 +86,11 @@
         https://github.com/dotnet/core/blob/master/microsoft-support.md
 
       "net45" and "net451" are handled separately; they are not supported by
-      xunit.runner.visualstudio.
+      xunit.runner.visualstudio. We add "net452" to "NET45xPlatforms" even if we
+      don't really use it.
     -->
+    <NET45xPlatforms>net45;net451;net452</NET45xPlatforms>
+
     <MinClassicPlatforms>net452;net462;net472;net48</MinClassicPlatforms>
     <MaxClassicPlatforms>net452;net46;net461;net462;net47;net471;net472;net48</MaxClassicPlatforms>
 
