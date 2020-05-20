@@ -1,6 +1,12 @@
 <Project>
 
-  <Import Project="$(MSBuildThisFileDirectory)..\src\Abc.Maybe.props" />
+  <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.props" />
+
+  <PropertyGroup>
+    <RepositoryRoot>$(MSBuildThisFileDirectory)..\</RepositoryRoot>
+  </PropertyGroup>
+
+  <Import Project="$(RepositoryRoot)src\Abc.Maybe.props" />
 
   <PropertyGroup>
     <AbcVersion>$(MajorVersion).$(MinorVersion).$(PatchVersion)</AbcVersion>

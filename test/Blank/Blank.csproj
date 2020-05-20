@@ -7,11 +7,9 @@
     https://docs.microsoft.com/en-us/nuget/consume-packages/package-restore#force-restore-from-package-sources
   -->
 
-  <Import Project="..\AbcVersion.props" />
-
   <PropertyGroup>
     <TargetFramework>$(MaxApiPlatform)</TargetFramework>
-    <RestorePackagesPath>..\..\__\nuget-cache\</RestorePackagesPath>
+    <RestorePackagesPath>$(RepositoryRoot)__\nuget-cache\</RestorePackagesPath>
   </PropertyGroup>
 
   <ItemGroup>

@@ -9,8 +9,6 @@
     https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/how-to-determine-which-versions-are-installed
   -->
 
-  <Import Project="..\AbcVersion.props" />
-
   <PropertyGroup>
     <TargetFrameworks>$(MinClassicPlatforms);$(MinCorePlatforms)</TargetFrameworks>
     <TargetFrameworks Condition=" $(AllKnown) == 'true' ">$(MaxClassicPlatforms);$(MaxCorePlatforms)</TargetFrameworks>
@@ -22,16 +20,14 @@
 
   <!-- Source files -->
   <PropertyGroup>
-    <SourceRoot>..\..\src\</SourceRoot>
-
-    <FilesToExclude>$(SourceRoot)**\AssemblyInfo.cs</FilesToExclude>
-    <FilesToExclude>$(FilesToExclude);$(SourceRoot)**\bin\**\*.*</FilesToExclude>
-    <FilesToExclude>$(FilesToExclude);$(SourceRoot)**\obj\**\*.*</FilesToExclude>
+    <FilesToExclude>$(RepositoryRoot)src\**\AssemblyInfo.cs</FilesToExclude>
+    <FilesToExclude>$(FilesToExclude);$(RepositoryRoot)src\**\bin\**\*.*</FilesToExclude>
+    <FilesToExclude>$(FilesToExclude);$(RepositoryRoot)src\**\obj\**\*.*</FilesToExclude>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(SourceRoot)Abc.Sketches\**\*.cs" Exclude="$(FilesToExclude)" />
-    <Compile Include="$(SourceRoot)Abc.Testing\**\*.cs" Exclude="$(FilesToExclude)" />
-    <Compile Include="$(SourceRoot)Abc.Tests\**\*.cs" Exclude="$(FilesToExclude)" />
+    <Compile Include="$(RepositoryRoot)src\Abc.Sketches\**\*.cs" Exclude="$(FilesToExclude)" />
+    <Compile Include="$(RepositoryRoot)src\Abc.Testing\**\*.cs" Exclude="$(FilesToExclude)" />
+    <Compile Include="$(RepositoryRoot)src\Abc.Tests\**\*.cs" Exclude="$(FilesToExclude)" />
   </ItemGroup>
 
   <!-- Dependencies -->
