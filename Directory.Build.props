@@ -33,13 +33,12 @@
     <!--
       IMPORTANT: do NOT use MSBuild property resolution $() when a property is
       going to be parsed by a PowerShell script.
-      - MaxApiPlatform            Library projects
+      - MaxApiPlatform            Exe projects
                                   eng\NETFrameworkTools.csproj
                                   test\Blank.csproj
-      - LibraryPlatforms          Exe projects
+      - LibraryPlatforms          Library projects
       - SolutionPlatforms                                           Get-SolutionPlatforms()
       - PackagePlatforms                                            Get-PackagePlatforms()
-      - NET45xPlatforms           test\Abc.TestPackages.csproj
       - MinClassicPlatforms       test\Abc.TestPackages.csproj      Get-SupportedPlatforms()
       - MaxClassicPlatforms       test\Abc.TestPackages.csproj      Get-SupportedPlatforms()
       - MinCorePlatforms          test\Abc.TestPackages.csproj      Get-SupportedPlatforms()

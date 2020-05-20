@@ -10,7 +10,7 @@
   <Import Project="..\AbcVersion.props" />
 
   <PropertyGroup>
-    <TargetFrameworks>$(MaxApiPlatform)</TargetFrameworks>
+    <TargetFramework>$(MaxApiPlatform)</TargetFramework>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <RestorePackagesPath>..\..\__\nuget-cache\</RestorePackagesPath>
   </PropertyGroup>
