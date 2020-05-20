@@ -86,10 +86,9 @@
         https://github.com/dotnet/core/blob/master/microsoft-support.md
 
       "net45" and "net451" are handled separately; they are not supported by
-      xunit.runner.visualstudio. We add "net452" to "NET45xPlatforms" even if we
-      don't really use it.
+      xunit.runner.visualstudio.
     -->
-    <NET45xPlatforms>net45;net451;net452</NET45xPlatforms>
+    <NET45xPlatforms>net45;net451</NET45xPlatforms>
 
     <MinClassicPlatforms>net452;net462;net472;net48</MinClassicPlatforms>
     <MaxClassicPlatforms>net452;net46;net461;net462;net47;net471;net472;net48</MaxClassicPlatforms>
