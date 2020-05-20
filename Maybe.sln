@@ -24,7 +24,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D158B7E6-CFFB-40FF-B775-6E6995648EFC}"
 	ProjectSection(SolutionItems) = preProject
 		src\Abc.Maybe.props = src\Abc.Maybe.props
-		src\Directory.Build.props = src\Directory.Build.props
 		src\Directory.Build.targets = src\Directory.Build.targets
 		src\MissingAttributes.cs = src\MissingAttributes.cs
 		src\NullableAttributes.cs = src\NullableAttributes.cs
@@ -48,10 +47,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{73C72FF8-FF25-49A3-A241-4959FEFC8C81}"
 	ProjectSection(SolutionItems) = preProject
 		test\AbcVersion.props = test\AbcVersion.props
-		test\AssemblyInfo.cs = test\AssemblyInfo.cs
-		test\Directory.Build.props = test\Directory.Build.props
-		test\Directory.Build.targets = test\Directory.Build.targets
-		test\HashCode.Shim.cs = test\HashCode.Shim.cs
 		test\NuGet.Config = test\NuGet.Config
 		test\README = test\README
 	EndProjectSection
@@ -68,11 +63,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NETFrameworkTools", "NETFra
 		eng\NETFrameworkTools\NETFrameworkTools.csproj = eng\NETFrameworkTools\NETFrameworkTools.csproj
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestProjects", "TestProjects", "{A1F32A9C-96CD-4A8A-89C8-10A0CB4D245A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Abc.PackageTests", "Abc.PackageTests", "{ADFC7A73-0F9A-42BC-986C-B6B1FA2DC91C}"
 	ProjectSection(SolutionItems) = preProject
-		test\NET45\NET45.csproj = test\NET45\NET45.csproj
-		test\NET451\NET451.csproj = test\NET451\NET451.csproj
-		test\NETSdk\NETSdk.csproj = test\NETSdk\NETSdk.csproj
+		test\Abc.PackageTests\Abc.PackageTests.csproj = test\Abc.PackageTests\Abc.PackageTests.csproj
+		test\Abc.PackageTests\AssemblyInfo.cs = test\Abc.PackageTests\AssemblyInfo.cs
+		test\Abc.PackageTests\HashCode.Shim.cs = test\Abc.PackageTests\HashCode.Shim.cs
 	EndProjectSection
 EndProject
 Global
@@ -115,7 +110,7 @@ Global
 		{73C72FF8-FF25-49A3-A241-4959FEFC8C81} = {4B926891-DAB0-4792-AB7B-E1A0C001843A}
 		{22206E77-3EB9-4B73-BEC0-2A63201DA473} = {73C72FF8-FF25-49A3-A241-4959FEFC8C81}
 		{9DE2F491-0AAE-44F8-870F-28422DCFEA54} = {6D957FE8-23D0-4985-A91C-F1CC399AA453}
-		{A1F32A9C-96CD-4A8A-89C8-10A0CB4D245A} = {73C72FF8-FF25-49A3-A241-4959FEFC8C81}
+		{ADFC7A73-0F9A-42BC-986C-B6B1FA2DC91C} = {73C72FF8-FF25-49A3-A241-4959FEFC8C81}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1739E5AC-504C-40F8-968B-64F1F620D3C3}

@@ -104,8 +104,9 @@ param(
 
 # ------------------------------------------------------------------------------
 
-const NET_SDK_PROJECT (Join-Path $TEST_DIR "NETSdk" -Resolve)
-const XUNIT_PLATFORM  "net452"
+const TESTS_PROJECT_NAME "Abc.PackageTests"
+const TESTS_PROJECT (Join-Path $TEST_DIR $TESTS_PROJECT_NAME -Resolve)
+const XUNIT_PLATFORM "net452"
 
 #endregion
 ################################################################################
@@ -306,14 +307,14 @@ function Invoke-Restore {
         [string] $runtime
     )
 
-    SAY-LOUDLY "`nRestoring dependencies for NETSdk, please wait..."
+    SAY-LOUDLY "`nRestoring dependencies for Abc.PackageTests, please wait..."
 
     $targetFrameworks = Get-TargetFrameworks $platformList
 
     $args = "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
     if ($runtime)  { $args += "--runtime:$runtime" }
 
-    & dotnet restore $NET_SDK_PROJECT $args
+    & dotnet restore $TESTS_PROJECT $args
         || die "Restore task failed."
 
     say-softly "Dependencies successfully restored."
@@ -337,14 +338,14 @@ function Invoke-Build {
         [string] $runtime
     )
 
-    SAY-LOUDLY "`nBuilding NETSdk, please wait..."
+    SAY-LOUDLY "`nBuilding Abc.PackageTests, please wait..."
 
     $targetFrameworks = Get-TargetFrameworks $platformList
 
     $args = "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
     if ($runtime)   { $args += "--runtime:$runtime" }
 
-    & dotnet build $NET_SDK_PROJECT $args
+    & dotnet build $TESTS_PROJECT $args
         || die "Build task failed."
 
     say-softly "Project successfully built."
@@ -384,17 +385,14 @@ function Invoke-TestOldStyle {
     $xunit = Find-XunitRunnerOnce
     if (-not $xunit) { warn "Skipping." ; return }
 
-    $msbuild = (whereis "MSBuild.exe") ?? (Find-VsWhere -ExitOnError | Find-MSBuild -ExitOnError)
+    $args = "/p:AbcVersion=$version", "/p:NET45x=true", "-f:$platform"
+    if ($runtime) { $args += "--runtime:$runtime" }
 
-    $projectName = $platform.ToUpper()
-    $project = Join-Path $TEST_DIR $projectName -Resolve
-
-    # https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2019
-    & $msbuild $project -nologo -v:minimal /p:AbcVersion=$version /t:"Restore;Build"
+    & dotnet build $TESTS_PROJECT --nologo $args
         || die "Build failed when targeting ""$platform""."
 
-    # NB: Release, not Debug, this is hard-coded within the project file.
-    $asm = Join-Path $TEST_DIR "$projectName\bin\Release\$projectName.dll" -Resolve
+    # NB: Release, not Debug. This is hard-coded within the project file.
+    $asm = Join-Path $TESTS_PROJECT "bin\Release\$platform\$TESTS_PROJECT_NAME.dll" -Resolve
 
     & $xunit $asm
         || die "Test task failed when targeting ""$platform""."
@@ -437,7 +435,7 @@ function Invoke-TestSingle {
     if ($noBuild)       { $args += "--no-build" }   # NB: no-build => no-restore
     elseif ($noRestore) { $args += "--no-restore" }
 
-    & dotnet test $NET_SDK_PROJECT --nologo $args
+    & dotnet test $TESTS_PROJECT --nologo $args
         || die "Test task failed when targeting ""$platform""."
 
     say-softly "Test completed successfully."
@@ -525,7 +523,7 @@ function Invoke-TestMany {
     $args = "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
     if ($runtime) { $args += "--runtime:$runtime" }
 
-    & dotnet test $NET_SDK_PROJECT --nologo $args
+    & dotnet test $TESTS_PROJECT --nologo $args
         || die "Test task failed."
 
     say-softly "Test completed successfully."
@@ -578,7 +576,7 @@ function Invoke-TestAll {
     $args = "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
     if ($runtime) { $args += "--runtime:$runtime" }
 
-    & dotnet test $NET_SDK_PROJECT --nologo $args
+    & dotnet test $TESTS_PROJECT --nologo $args
         || die "Test task failed."
 
     say-softly "Test completed successfully."

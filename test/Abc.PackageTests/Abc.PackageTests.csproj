@@ -1,20 +1,43 @@
-<Project>
+<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets" />
+  <!--
+    Prerequesite: .NET Framework Developer Pack or Targeting Pack, the later
+    should suffice.
+    A very simple way to see what works and what does not is to compile this
+    project with /p:AllKnown=true.
+    https://docs.microsoft.com/en-us/dotnet/framework/install/guide-for-developers
+    https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/how-to-determine-which-versions-are-installed
+  -->
 
-  <Import Project="$(MSBuildThisFileDirectory)AbcVersion.props" />
+  <Import Project="..\AbcVersion.props" />
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <Configuration>Release</Configuration>
+    <DebugType>none</DebugType>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" $(NET45x) != 'true' ">
+    <TargetFrameworks Condition=" $(AllKnown) == 'true' ">$(MaxClassicPlatforms);$(MaxCorePlatforms)</TargetFrameworks>
+    <TargetFrameworks Condition=" $(AllKnown) != 'true' ">$(MinClassicPlatforms);$(MinCorePlatforms)</TargetFrameworks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" $(NET45x) == 'true' ">
+    <TargetFrameworks>$(NET45xPlatforms)</TargetFrameworks>
+  </PropertyGroup>
 
   <!-- Source files -->
   <PropertyGroup>
-    <SourceRoot>$(MSBuildThisFileDirectory)..\src\</SourceRoot>
+    <SourceRoot>..\..\src\</SourceRoot>
 
     <FilesToExclude>$(SourceRoot)**\AssemblyInfo.cs</FilesToExclude>
     <FilesToExclude>$(FilesToExclude);$(SourceRoot)**\bin\**\*.*</FilesToExclude>
     <FilesToExclude>$(FilesToExclude);$(SourceRoot)**\obj\**\*.*</FilesToExclude>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)HashCode.Shim.cs" />
+    <!--<Compile Include="AssemblyInfo.cs" />
+    <Compile Include="HashCode.Shim.cs" />-->
     <Compile Include="$(SourceRoot)Abc.Sketches\**\*.cs" Exclude="$(FilesToExclude)" />
     <Compile Include="$(SourceRoot)Abc.Testing\**\*.cs" Exclude="$(FilesToExclude)" />
     <Compile Include="$(SourceRoot)Abc.Tests\**\*.cs" Exclude="$(FilesToExclude)" />
