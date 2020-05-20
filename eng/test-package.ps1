@@ -25,6 +25,9 @@ synonym for "-AllKnown -NoClassic:$false -NoCore:$false".
 Test the package for ALL known platform versions (SLOW).
 Ignored if -Platform is also set and equals $true.
 
+.PARAMETER ListPlatforms
+Display the list of all supported platforms, then exit.
+
 .PARAMETER NoClassic
 Exclude .NET Framework from the tests.
 Ignored if -Platform is also set and equals $true.
@@ -74,9 +77,9 @@ param(
     [Parameter(Mandatory = $false, Position = 0)]
                  [string] $Platform,
     [Alias("a")] [switch] $AllKnown,
+                 [switch] $ListPlatforms,
                  [switch] $NoClassic,
                  [switch] $NoCore,
-    [Alias("l")] [switch] $ListPlatforms,
 
     # Package version.
     #
@@ -114,21 +117,21 @@ function Print-Help {
 Test the package Abc.Maybe.
 
 Usage: test-package.ps1 [arguments]
-     -Platform   specify the platform(s) for which to test the package.
-  -a|-AllKnown   test the package for ALL known platform versions (SLOW).
-     -NoClassic  exclude .NET Framework from the tests.
-     -NoCore     exclude .NET Core from the tests.
-  -l|-ListPlatforms     print the list of supported platforms, then exit.
+     -Platform      specify the platform(s) for which to test the package.
+  -a|-AllKnown      test the package for ALL known platform versions (SLOW).
+     -ListPlatforms print the list of supported platforms, then exit.
+     -NoClassic     exclude .NET Framework from the tests.
+     -NoCore        exclude .NET Core from the tests.
 
-     -Version    specify a version of the package Abc.Maybe.
-     -NoCI       force using the package version found in Abc.Maybe.props.
+     -Version       specify a version of the package Abc.Maybe.
+     -NoCI          force using the package version found in Abc.Maybe.props.
 
-     -Runtime    specify a target runtime to test for.
+     -Runtime       specify a target runtime to test for.
 
-     -Reset      reset the solution before anything else.
-  -o|-Optimise   attempt to speed up things a bit when testing many platforms one at a time.
-  -y|-Yes        do not ask for confirmation before running any test.
-  -h|-Help       print this help then exit.
+     -Reset         reset the solution before anything else.
+  -o|-Optimise      attempt to speed up things a bit when testing many platforms one at a time.
+  -y|-Yes           do not ask for confirmation before running any test.
+  -h|-Help          print this help then exit.
 
 Examples.
 > test-package.ps1                              # selected versions of .NET Core and .NET Framework
@@ -354,7 +357,6 @@ function Invoke-Build {
 # if it ever becomes too much of a burden.
 # __Only works on Windows__
 # TODO: I wonder if it does really make sense at all (we actually use .NET 4.5.2).
-# The same remark apply to Invoke-TestXXX where we always use the .NET Core engine.
 function Invoke-TestOldStyle {
     [CmdletBinding()]
     param(

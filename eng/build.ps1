@@ -15,9 +15,9 @@ The default behaviour is to build libraries for all supported platforms, and to
 build exe projects only for "MaxApiPlatform".
 
 To build ALL projects (exe projects included) for ALL supported platforms,
-use -AllPlatforms. NB: the list of supported platforms can NOT be overriden.
+use -AllKnown. NB: the list of supported platforms can NOT be overriden.
 
-To target a single platform, use -TargetPlatform (no "s").
+To target a single platform, use -Platform (no "s").
 
 Targetting a single platform or all supported platforms maye "transform" an exe
 project into a library.
@@ -31,11 +31,11 @@ The configuration to build the project/solution for. Default = "Debug".
 .PARAMETER Runtime
 The runtime to build the project/solution for.
 
-.PARAMETER TargetPlatform
-The platform to build the project/solution for.
-Ignored if -AllPlatforms is also set and equals $true.
+.PARAMETER Platform
+The single platform to build the project/solution for.
+Ignored if -AllKnown is also set and equals $true.
 
-.PARAMETER AllPlatforms
+.PARAMETER AllKnown
 Build the project/solution (exe projects included) for ALL supported platforms.
 
 .PARAMETER ListPlatforms
@@ -55,12 +55,12 @@ param(
     [Alias("c")] [string] $Configuration,
 
     [Parameter(Mandatory = $false)]
-    [Alias("r")] [string] $Runtime,
+                 [string] $Runtime,
 
     [Parameter(Mandatory = $false)]
-    [Alias("f")] [string] $TargetPlatform,
-    [Alias("a")] [switch] $AllPlatforms,
-    [Alias("l")] [switch] $ListPlatforms,
+                 [string] $Platform,
+    [Alias("a")] [switch] $AllKnown,
+                 [switch] $ListPlatforms,
 
                  [switch] $NoRestore,
     [Alias("h")] [switch] $Help,
@@ -83,11 +83,11 @@ Build the solution for all supported platforms.
 Usage: reset.ps1 [arguments]
   -p|-ProjectPath       the project to build.
   -c|-Configuration     the configuration to build the project/solution for.
-  -r|-Runtime           the runtime to build the project/solution for.
+     -Runtime           the runtime to build the project/solution for.
 
-  -f|-TargetPlatform    the platform to build the project/solution for.
-  -a|-AllPlatforms      build the project/solution for ALL supported platforms.
-  -l|-ListPlatforms     print the list of supported platforms, then exit.
+     -Platform          the platform to build the project/solution for.
+  -a|-AllKnown          build the project/solution for ALL supported platforms.
+     -ListPlatforms     print the list of supported platforms, then exit.
 
      -NoRestore         do not restore the project/solution.
   -h|-Help              print this help and exit.
@@ -104,7 +104,7 @@ Examples.
 > build.ps1 -p src\Abc.Maybe -c Release     # "Release" build of Abc.Maybe
 
 Looking for more help?
-> Get-Help -Detailed reset.ps1
+> Get-Help -Detailed build.ps1
 
 "@
 }
@@ -143,15 +143,15 @@ try {
 
     $args += '/p:TargetFrameworks=\"' + ($platforms -join ";") + '\"'
 
-    if ($AllPlatforms)  {
+    if ($AllKnown)  {
         $args += "/p:TargetFramework="
     }
-    elseif ($TargetPlatform)  {
-        if ($TargetPlatform -notin $platforms) {
-            die "The specified platform is not supported: ""$TargetPlatform""."
+    elseif ($Platform)  {
+        if ($Platform -notin $platforms) {
+            die "The specified platform is not supported: ""$Platform""."
         }
 
-        $args += "/p:TargetFramework=$TargetPlatform"
+        $args += "/p:TargetFramework=$Platform"
     }
 
     foreach ($arg in $Properties) {
@@ -160,7 +160,7 @@ try {
         }
     }
 
-    # Do not invoke "dotnet restore" before, it will fail w/ -TargetPlatform.
+    # Do not invoke "dotnet restore" before, it will fail w/ -Platform.
     & dotnet build $ProjectPath $args
         || die "Build task failed."
 }
