@@ -12,19 +12,13 @@
   <Import Project="..\AbcVersion.props" />
 
   <PropertyGroup>
+    <TargetFrameworks>$(MinClassicPlatforms);$(MinCorePlatforms)</TargetFrameworks>
+    <TargetFrameworks Condition=" $(AllKnown) == 'true' ">$(MaxClassicPlatforms);$(MaxCorePlatforms)</TargetFrameworks>
+
     <IsPackable>false</IsPackable>
     <Configuration>Release</Configuration>
     <DebugType>none</DebugType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" $(NET45x) != 'true' ">
-    <TargetFrameworks Condition=" $(AllKnown) == 'true' ">$(MaxClassicPlatforms);$(MaxCorePlatforms)</TargetFrameworks>
-    <TargetFrameworks Condition=" $(AllKnown) != 'true' ">$(MinClassicPlatforms);$(MinCorePlatforms)</TargetFrameworks>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" $(NET45x) == 'true' ">
-    <TargetFrameworks>$(NET45xPlatforms)</TargetFrameworks>
   </PropertyGroup>
 
   <!-- Source files -->

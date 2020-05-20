@@ -280,18 +280,24 @@ function Get-TargetFrameworks {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNull()]
-        [string[]] $platformList
+        [string[]] $platformList,
+
+        [switch] $noLegacy
     )
 
-    # "net45" and "net451" must be handled separately.
-    '\"' + (($platformList | where { $_ -notin "net45", "net451" }) -join ";") + '\"'
+    if ($noLegacy) {
+        # Exclude "net45" and "net451".
+        return '\"' + (($platformList | where { $_ -notin "net45", "net451" }) -join ";") + '\"'
+    }
+    else {
+        return '\"' + ($platformList -join ";") + '\"'
+    }
 }
 
 #endregion
 ################################################################################
 #region Tasks.
 
-# NB: does not cover the solutions for "net45" and "net451".
 function Invoke-Restore {
     [CmdletBinding()]
     param(
@@ -322,7 +328,6 @@ function Invoke-Restore {
 
 # ------------------------------------------------------------------------------
 
-# NB: does not cover the solutions for "net45" and "net451".
 function Invoke-Build {
     [CmdletBinding()]
     param(
@@ -370,7 +375,10 @@ function Invoke-TestOldStyle {
         [string] $version,
 
         [Parameter(Mandatory = $false, Position = 2)]
-        [string] $runtime
+        [string] $runtime,
+
+        [switch] $noRestore,
+        [switch] $noBuild
     )
 
     "`nTesting the package for ""$platform"" and {0}." -f (Get-RuntimeLabel $runtime) `
@@ -385,11 +393,14 @@ function Invoke-TestOldStyle {
     $xunit = Find-XunitRunnerOnce
     if (-not $xunit) { warn "Skipping." ; return }
 
-    $args = "/p:AbcVersion=$version", "/p:NET45x=true", "-f:$platform"
-    if ($runtime) { $args += "--runtime:$runtime" }
+    if (-not $noBuild) {
+        $args = "/p:AbcVersion=$version", "/p:AllKnown=true", "-f:$platform"
+        if ($runtime)   { $args += "--runtime:$runtime" }
+        if ($noRestore) { $args += "--no-restore" }
 
-    & dotnet build $TESTS_PROJECT --nologo $args
-        || die "Build failed when targeting ""$platform""."
+        & dotnet build $TESTS_PROJECT --nologo $args
+            || die "Build failed when targeting ""$platform""."
+    }
 
     # NB: Release, not Debug. This is hard-coded within the project file.
     $asm = Join-Path $TESTS_PROJECT "bin\Release\$platform\$TESTS_PROJECT_NAME.dll" -Resolve
@@ -402,7 +413,6 @@ function Invoke-TestOldStyle {
 
 # ------------------------------------------------------------------------------
 
-# Option -NoRestore is ignored when -Platform is "net45" or "net451".
 function Invoke-TestSingle {
     [CmdletBinding()]
     param(
@@ -422,8 +432,12 @@ function Invoke-TestSingle {
     )
 
     if ($platform -in "net45", "net451") {
-        # "net45" and "net451" must be handled separately.
-        Invoke-TestOldStyle -Platform $platform -Version $version -Runtime $runtime
+        Invoke-TestOldStyle `
+            -Platform   $platform `
+            -Version    $version `
+            -Runtime    $runtime `
+            -NoRestore: $noRestore `
+            -NoBuild:   $noBuild
         return
     }
 
@@ -571,7 +585,7 @@ function Invoke-TestAll {
         -f (Get-RuntimeLabel $runtime) `
         | SAY-LOUDLY
 
-    $targetFrameworks = Get-TargetFrameworks $platformList
+    $targetFrameworks = Get-TargetFrameworks $platformList -NoLegacy
 
     $args = "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
     if ($runtime) { $args += "--runtime:$runtime" }
@@ -582,7 +596,6 @@ function Invoke-TestAll {
     say-softly "Test completed successfully."
 
     if ($allKnown -and (-not $noClassic)) {
-        # "net45" and "net451" must be handled separately.
         Invoke-TestOldStyle -Platform "net45" -Version $version -Runtime $runtime
         Invoke-TestOldStyle -Platform "net451" -Version $version -Runtime $runtime
     }

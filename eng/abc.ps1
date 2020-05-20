@@ -303,7 +303,7 @@ function Get-SupportedPlatforms {
     $pg = $nodes[0].Node
 
     $minClassic = $pg.MinClassicPlatforms.Trim().Split(";")
-    $maxClassic = @("net45", "net451") + $pg.MaxClassicPlatforms.Trim().Split(";")
+    $maxClassic = $pg.MaxClassicPlatforms.Trim().Split(";")
     $minCore    = $pg.MinCorePlatforms.Trim().Split(";")
     $maxCore    = $pg.MaxCorePlatforms.Trim().Split(";")
 

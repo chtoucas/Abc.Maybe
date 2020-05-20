@@ -84,14 +84,9 @@
         "MinCorePlatforms" lists the LTS versions and the latest one if not LTS.
         https://dotnet.microsoft.com/platform/support/policy/dotnet-core
         https://github.com/dotnet/core/blob/master/microsoft-support.md
-
-      "net45" and "net451" are handled separately; they are not supported by
-      xunit.runner.visualstudio.
     -->
-    <NET45xPlatforms>net45;net451</NET45xPlatforms>
-
     <MinClassicPlatforms>net452;net462;net472;net48</MinClassicPlatforms>
-    <MaxClassicPlatforms>net452;net46;net461;net462;net47;net471;net472;net48</MaxClassicPlatforms>
+    <MaxClassicPlatforms>net45;net451;net452;net46;net461;net462;net47;net471;net472;net48</MaxClassicPlatforms>
 
     <MinCorePlatforms>netcoreapp2.1;netcoreapp3.1</MinCorePlatforms>
     <MaxCorePlatforms>netcoreapp2.0;netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netcoreapp3.1</MaxCorePlatforms>
