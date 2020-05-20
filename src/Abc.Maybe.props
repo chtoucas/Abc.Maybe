@@ -1,6 +1,5 @@
 <Project>
 
-  <!-- See also src\Directory.Build.props which is loaded before this file -->
   <PropertyGroup>
     <MajorVersion>1</MajorVersion>
     <MinorVersion>0</MinorVersion>
