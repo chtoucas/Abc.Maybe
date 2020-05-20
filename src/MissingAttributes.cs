@@ -1,5 +1,6 @@
 ﻿// See LICENSE.dotnet in the project root for license information.
 
+#if !USE_ATTRS_FROM_ABC_MAYBE
 #if NETSTANDARD1_x // Missing attributes
 
 namespace System
@@ -48,4 +49,5 @@ namespace System.Diagnostics.Contracts
     internal sealed class PureAttribute : Attribute { }
 }
 
+#endif
 #endif

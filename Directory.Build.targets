@@ -12,9 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!--
-      TODO: if HideInternals != true, Abc.Testing should not include these files.
-    -->
     <Compile Include="$(MSBuildThisFileDirectory)src\MissingAttributes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\NullableAttributes.cs" />
   </ItemGroup>

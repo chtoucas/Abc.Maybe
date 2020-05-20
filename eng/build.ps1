@@ -94,6 +94,7 @@ Usage: reset.ps1 [arguments]
 
 Arguments starting with '/p:' are passed through to dotnet.exe.
 > build.ps1 /p:Retail=true
+> build.ps1 /p:HiddenInternals=true
 > build.ps1 /p:PatchEquality=true
 > build.ps1 /p:PrintSettings=true
 
