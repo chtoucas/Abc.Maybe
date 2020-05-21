@@ -1,6 +1,10 @@
 <Project>
 
   <PropertyGroup>
+    <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <RootNamespace>Abc</RootNamespace>
 
     <LangVersion>latest</LangVersion>

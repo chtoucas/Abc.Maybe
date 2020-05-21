@@ -19,15 +19,15 @@
   </PropertyGroup>
 
   <!-- Source files -->
-  <PropertyGroup>
-    <FilesToExclude>$(RepositoryRoot)src\**\AssemblyInfo.cs</FilesToExclude>
-    <FilesToExclude>$(FilesToExclude);$(RepositoryRoot)src\**\bin\**\*.*</FilesToExclude>
-    <FilesToExclude>$(FilesToExclude);$(RepositoryRoot)src\**\obj\**\*.*</FilesToExclude>
-  </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(RepositoryRoot)src\Abc.Sketches\**\*.cs" Exclude="$(FilesToExclude)" />
-    <Compile Include="$(RepositoryRoot)src\Abc.Testing\**\*.cs" Exclude="$(FilesToExclude)" />
-    <Compile Include="$(RepositoryRoot)src\Abc.Tests\**\*.cs" Exclude="$(FilesToExclude)" />
+    <FilesToExclude Include="$(SourceRoot)**\AssemblyInfo.cs" />
+    <FilesToExclude Include="$(SourceRoot)**\bin\**\*.*" />
+    <FilesToExclude Include="$(SourceRoot)**\obj\**\*.*" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(SourceRoot)Abc.Sketches\**\*.cs" Exclude="@(FilesToExclude)" />
+    <Compile Include="$(SourceRoot)Abc.Testing\**\*.cs" Exclude="@(FilesToExclude)" />
+    <Compile Include="$(SourceRoot)Abc.Tests\**\*.cs" Exclude="@(FilesToExclude)" />
   </ItemGroup>
 
   <!-- Dependencies -->
