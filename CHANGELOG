@@ -4,10 +4,9 @@ vNEXT
 -----
 
 Changed
-- For .NET Framework 4.6.1 (retail build), changed DebugType from "full" to "pdbonly".
+- DebugType from "full" to "pdbonly" for .NET Framework 4.6.1 (retail build).
 
 Internal Changes
-- Made the packaging script more robust and more versatile.
 - Very much improve all PowerShell scripts.
 - Enabled testing for a package with
   - .NET Core, version >= 2.0.

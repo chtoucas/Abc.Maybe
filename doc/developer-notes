@@ -9,7 +9,7 @@ Format Major.Minor.Patch[-PreRelease]
 - Minor: Minor new features, but backwards compatible.
 - Patch: Backwards compatible bug fixes only.
 - PreRelease:
-  DEV)   Internal, not for public consumption.
+  ci)    Internal, not for public consumption.
          Exist only to prevent accidental publication of a dev package.
   alpha) Used for work-in-progress and experimentation.
   beta)  One that is feature complete for the next planned release, but may
@@ -170,9 +170,9 @@ Common script/function parameters:
    -Reset
    -Restore
    -DryRun
+   -Force
 -a|-AllXXX
 -o|-Optimise
--f|-Force
 -y|-Yes
 -v|-MyVerbose
 -h|-Help

@@ -11,18 +11,18 @@ Abc.Maybe features an Option type for .NET.
 - [Changelog](CHANGELOG)
 - [BSD 3-Clause "New" or "Revised" License](LICENSE)
 
-## NuGet package
+### NuGet Package
 
 The NuGet package offers full support for:
 - .NET Standard 1.0 / 2.0 / 2.1.
 - .NET Framework 4.6.1.
 
 The public API is not the same for all targets. We currently define two profiles,
-- one for .NET Standard 2.1.
-- one for .NET Standard 1.0 / 2.0 and .NET Framework 4.6.1.
+- one is for .NET Standard 2.1.
+- one is for .NET Standard 1.0 / 2.0 and .NET Framework 4.6.1.
   Of course, it is a subset of the previous one.
 
-## Objectives/Features
+### Objectives/Features
 
 - [x] Being safe yet effective.
   - [x] Immutable.
