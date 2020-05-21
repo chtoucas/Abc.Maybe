@@ -108,7 +108,7 @@ const TESTS_PROJECT_NAME "Abc.PackageTests"
 const TESTS_PROJECT (Join-Path $TEST_DIR $TESTS_PROJECT_NAME -Resolve)
 
 const XUNIT_PLATFORM "net452"
-const OLDSTYLE_PLATFORMS @("net45", "net451")
+const OLDSTYLE_PLATFORMS @("net451", "net45")
 
 #endregion
 ################################################################################
@@ -685,8 +685,8 @@ Supported .NET Core (maximal and minimal sets):
             die "You set both -NoClassic and -NoCore... There is nothing left to be done."
         }
 
-        $platformList  = $NoClassic ? @() : $AllKnown ? $maxClassic : $minClassic
-        $platformList += $NoCore    ? @() : $AllKnown ? $maxCore    : $minCore
+        $platformList  = $NoCore    ? @() : $AllKnown ? $maxCore    : $minCore
+        $platformList += $NoClassic ? @() : $AllKnown ? $maxClassic : $minClassic
 
         if ($Yes -or (yesno "`nTest the package for all selected platforms at once (SLOW)?")) {
             Invoke-TestAll `
@@ -717,7 +717,7 @@ Supported .NET Core (maximal and minimal sets):
         }
     }
     else {
-        $knownPlatforms = $maxClassic + $maxCore
+        $knownPlatforms = $maxCore + $maxClassic
 
         if ($Platform.EndsWith("*")) {
             Invoke-TestMany `

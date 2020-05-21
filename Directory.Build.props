@@ -44,51 +44,49 @@
       - MinCorePlatforms          test\Abc.TestPackages.csproj      Get-SupportedPlatforms()
       - MaxCorePlatforms          test\Abc.TestPackages.csproj      Get-SupportedPlatforms()
 
+      If/when we create an API depending on a new .NET Standard, "MaxApiPlatform"
+      should be the last available platform supporting it We can also update
+      "MaxApiPlatform" just to benefit from the last improvements it could bring.
+
       The first listed framework in "LibraryPlatforms" is the one used by the
-      VS editor.
-      Full NRT-analysis requires .NET Core 3.0 or above, .NET Standard does
-      not include the nullable annotations (version 2.1 defines the nullable
+      VS editor. Full NRT-analysis requires .NET Core 3.0 or above, .NET Standard
+      does not include the nullable annotations (version 2.1 defines the nullable
       attributes but VS doesn't use them if I understand things correctly).
       We use the version 3.1 instead of 3.0 because the former is LTS and the
       latter is already EOL.
-      For libraries, use
-        <TargetFrameworks>$(LibraryPlatforms)/TargetFrameworks>
-      otherwise, use
-        <TargetFramework>$(MaxApiPlatform)</TargetFramework>
-      If/when we create an API depending on a new .NET standard, MaxApiPlatform
-      should be the last available platform supporting it We can also update
-      MaxApiPlatform just to benefit from the last improvements it could bring.
 
-      IMPORTANT: update "SolutionPlatforms" when changing "MaxApiPlatform".
-    -->
-    <MaxApiPlatform>netcoreapp3.1</MaxApiPlatform>
-    <LibraryPlatforms>$(MaxApiPlatform);netstandard2.0</LibraryPlatforms>
+      "SolutionPlatforms" lists the supported when building the __whole__ solution.
+      It does NOT include "netstandard1.0", it is only supported by
+      Abc.Maybe.csproj.
 
-    <!--
-      Platforms supported when building the __whole__ solution.
-      Do NOT include "netstandard1.0", it is only supported by Abc.Maybe.csproj.
-    -->
-    <SolutionPlatforms>netcoreapp3.1;netstandard2.1;netstandard2.0;net461</SolutionPlatforms>
-
-    <PackagePlatforms>netstandard2.1;netstandard2.0;netstandard1.0;net461</PackagePlatforms>
-
-    <!--
       Supported platforms by a package.
-
       .NET Framework (Classic).
         "MinClassicPlatforms" lists the last minor version of each major version.
         https://support.microsoft.com/en-us/help/17455/lifecycle-faq-net-framework
-
       .NET Core.
         "MinCorePlatforms" lists the LTS versions and the latest one if not LTS.
         https://dotnet.microsoft.com/platform/support/policy/dotnet-core
         https://github.com/dotnet/core/blob/master/microsoft-support.md
-    -->
-    <MinClassicPlatforms>net452;net462;net472;net48</MinClassicPlatforms>
-    <MaxClassicPlatforms>net45;net451;net452;net46;net461;net462;net47;net471;net472;net48</MaxClassicPlatforms>
 
-    <MinCorePlatforms>netcoreapp2.1;netcoreapp3.1</MinCorePlatforms>
-    <MaxCorePlatforms>netcoreapp2.0;netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netcoreapp3.1</MaxCorePlatforms>
+      For libraries, use
+        <TargetFrameworks>$(LibraryPlatforms)/TargetFrameworks>
+      otherwise, use
+        <TargetFramework>$(MaxApiPlatform)</TargetFramework>
+
+      IMPORTANT: update "LibraryPlatforms" and "SolutionPlatforms" when changing
+      "MaxApiPlatform".
+    -->
+    <MaxApiPlatform>netcoreapp3.1</MaxApiPlatform>
+    <LibraryPlatforms>netcoreapp3.1;netstandard2.0</LibraryPlatforms>
+    <SolutionPlatforms>netcoreapp3.1;netstandard2.1;netstandard2.0;net461</SolutionPlatforms>
+
+    <PackagePlatforms>netstandard2.1;netstandard2.0;netstandard1.0;net461</PackagePlatforms>
+
+    <MinClassicPlatforms>net48;net472;net462;net452</MinClassicPlatforms>
+    <MaxClassicPlatforms>net48;net472;net471;net47;net462;net461;net46;net452;net451;net45</MaxClassicPlatforms>
+
+    <MinCorePlatforms>netcoreapp3.1;netcoreapp2.1</MinCorePlatforms>
+    <MaxCorePlatforms>netcoreapp3.1;netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0</MaxCorePlatforms>
   </PropertyGroup>
 
 </Project>
