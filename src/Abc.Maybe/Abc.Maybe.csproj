@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>$(LibraryPlatforms)</TargetFrameworks>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <Import Project="..\Retail.props" Condition=" $(Retail) == 'true' " />

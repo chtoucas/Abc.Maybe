@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>$(MaxApiPlatform)</TargetFramework>
-    <IsPackable>false</IsPackable>
 
     <!--
       IDE0002   Simplify Member Access

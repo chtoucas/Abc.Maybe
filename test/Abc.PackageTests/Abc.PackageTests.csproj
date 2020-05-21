@@ -13,7 +13,6 @@
     <TargetFrameworks>$(MinClassicPlatforms);$(MinCorePlatforms)</TargetFrameworks>
     <TargetFrameworks Condition=" $(AllKnown) == 'true' ">$(MaxClassicPlatforms);$(MaxCorePlatforms)</TargetFrameworks>
 
-    <IsPackable>false</IsPackable>
     <Configuration>Release</Configuration>
     <DebugType>none</DebugType>
   </PropertyGroup>

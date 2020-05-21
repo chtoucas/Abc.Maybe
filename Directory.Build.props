@@ -6,6 +6,7 @@
 
   <PropertyGroup>
     <RootNamespace>Abc</RootNamespace>
+    <IsPackable>false</IsPackable>
 
     <LangVersion>latest</LangVersion>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
@@ -73,7 +74,7 @@
         https://github.com/dotnet/core/blob/master/microsoft-support.md
 
       For libraries, use
-        <TargetFrameworks>$(LibraryPlatforms)/TargetFrameworks>
+        <TargetFrameworks>$(LibraryPlatforms)</TargetFrameworks>
       otherwise, use
         <TargetFramework>$(MaxApiPlatform)</TargetFramework>
 
