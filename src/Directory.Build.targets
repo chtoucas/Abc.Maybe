@@ -14,11 +14,13 @@
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets" />
 
   <Import Project="$(MSBuildThisFileDirectory)Retail.props"
-          Condition=" $(Retail) == 'true' And $(IsPackable) == 'true' " />
+          Condition=" $(Retail) == 'true' and $(IsPackable) == 'true' " />
 
   <PropertyGroup>
     <VisibleInternals>true</VisibleInternals>
     <VisibleInternals Condition=" $(HideInternals) == 'true' ">false</VisibleInternals>
+
+    <NoWarnCS1591 Condition=" $(NoWarnCS1591) == '' ">true</NoWarnCS1591>
   </PropertyGroup>
 
   <PropertyGroup Condition=" $(Retail) == 'true' ">
@@ -46,13 +48,6 @@
   <PropertyGroup Condition=" $(Configuration) == 'Debug' ">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <TreatSpecificWarningsAsErrors />
-
-    <!--
-      RS0016  Symbol XXX is not part of the declared API
-      RS0017  Symbol XXX is part of the declared API, but is either not public
-              or could not be found
-    -->
-    <NoWarn>$(NoWarn);RS0016;RS0017</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -65,7 +60,7 @@
     -->
     <NoWarn Condition=" $(RelaxWarnings) == 'true' ">$(NoWarn);CA1034;CA1303;CA1707</NoWarn>
     <NoWarn Condition=" $(RelaxAsyncWarnings) == 'true' ">$(NoWarn);CA2007</NoWarn>
-    <NoWarn Condition=" $(GenerateDocumentationFile) == 'true' ">$(NoWarn);CS1591</NoWarn>
+    <NoWarn Condition=" $(NoWarnCS1591) == 'true' ">$(NoWarn);CS1591</NoWarn>
 
     <!-- Maybe append a custom list of excluded rules (for PS scripts) -->
     <NoWarn Condition=" $(NoWarnX) != '' ">$(NoWarn);$(NoWarnX)</NoWarn>

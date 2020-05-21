@@ -3,30 +3,31 @@
   <PropertyGroup>
     <TargetFrameworks>$(LibraryPlatforms)</TargetFrameworks>
     <IsPackable>true</IsPackable>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);CS1591</WarningsNotAsErrors>
+    <!--<NoWarnCS1591>false</NoWarnCS1591>-->
+
+    <!--
+      RS0016  Symbol XXX is not part of the declared API
+      RS0017  Symbol XXX is part of the declared API, but is either not public
+              or could not be found
+    -->
+    <NoWarn>$(NoWarn);RS0016;RS0017</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition=" $(Retail) == 'true' ">
-    <!--
-      *** BE VERY, VERY CAREFUL, BEFORE CHANGING THIS ***
-
-      https://github.com/Microsoft/msbuild/issues/2754
-
-      Valid values: "full," "pdbonly," "portable", "embedded", and "none".
-      https://docs.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-properties?view=vs-2019
-
-      What we really want is sketched here but it does NOT work.
+    <!-- *** BE VERY, VERY CAREFUL, BEFORE CHANGING THIS ***
+      What we really want is sketched here but it does NOT work since
+      "TargetFrameworkIdentifier" is not yet set. A good place where to put this
+      would be Directory.Build.targets, but it is too late according to this issue
+      https://github.com/Microsoft/msbuild/issues/2754.
         <DebugType Condition=" $(TargetFrameworkIdentifier) == '.NETFramework' ">pdbonly</DebugType>
         <DebugType Condition=" $(TargetFrameworkIdentifier) != '.NETFramework' ">embedded</DebugType>
-      The whole thing is very fragile.
     -->
     <DebugType>embedded</DebugType>
     <DebugType Condition=" $(TargetFramework.StartsWith('net4')) ">pdbonly</DebugType>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" $(Configuration) == 'Release' ">
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <WarningsNotAsErrors>$(WarningsNotAsErrors);CS1591</WarningsNotAsErrors>
   </PropertyGroup>
 
   <!-- Define the public API for .NET Standard 2.0/2.1 and MaxApiPlatform -->
