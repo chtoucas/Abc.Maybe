@@ -4,11 +4,15 @@
     Command-line options (default = disabled, to enable /p:XXX=true):
     - Retail                Meta-option
     - HideInternals         Abc.Maybe internals are hidden from Abc.Testing
+                            NB: if Retail = true, HideInternals has no effect
+    - NoWarnX               More NoWarn's
     - PatchEquality
-    - PrintSettings
+    - PrintSettings         Enable target PrintSettings?
+
     Project configuration:
-    - RelaxWarnings
-    - RelaxAsyncWarnings
+    - NoWarnCS1591          default = true
+    - RelaxWarnings         default = false
+    - RelaxAsyncWarnings    default = false
   -->
 
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets" />
