@@ -13,6 +13,9 @@
 
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets" />
 
+  <Import Project="$(MSBuildThisFileDirectory)Retail.props"
+          Condition=" $(Retail) == 'true' And $(IsPackable) == 'true' " />
+
   <PropertyGroup>
     <VisibleInternals>true</VisibleInternals>
     <VisibleInternals Condition=" $(HideInternals) == 'true' ">false</VisibleInternals>
@@ -65,7 +68,7 @@
     <NoWarn Condition=" $(GenerateDocumentationFile) == 'true' ">$(NoWarn);CS1591</NoWarn>
 
     <!-- Maybe append a custom list of excluded rules (for PS scripts) -->
-    <NoWarn>$(NoWarn);$(NoWarnX)</NoWarn>
+    <NoWarn Condition=" $(NoWarnX) != '' ">$(NoWarn);$(NoWarnX)</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

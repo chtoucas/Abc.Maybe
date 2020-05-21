@@ -5,7 +5,24 @@
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 
-  <Import Project="..\Retail.props" Condition=" $(Retail) == 'true' " />
+  <PropertyGroup Condition=" $(Retail) == 'true' ">
+    <!--
+      *** BE VERY, VERY CAREFUL, BEFORE CHANGING THIS ***
+
+      https://github.com/Microsoft/msbuild/issues/2754
+
+      Valid values: "full," "pdbonly," "portable", "embedded", and "none".
+      https://docs.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-properties?view=vs-2019
+
+      What we really want is sketched here but it does NOT work.
+        <DebugType Condition=" $(TargetFrameworkIdentifier) == '.NETFramework' ">pdbonly</DebugType>
+        <DebugType Condition=" $(TargetFrameworkIdentifier) != '.NETFramework' ">embedded</DebugType>
+      The whole thing is very fragile.
+    -->
+    <DebugType>embedded</DebugType>
+    <DebugType Condition=" $(TargetFramework.StartsWith('net4')) ">pdbonly</DebugType>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+  </PropertyGroup>
 
   <PropertyGroup Condition=" $(Configuration) == 'Release' ">
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
