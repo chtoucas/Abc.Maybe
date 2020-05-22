@@ -493,7 +493,11 @@ namespace Abc
             Assert.Equal(Int32.MaxValue, (int)Maybe.Some((long)Int32.MaxValue));
         }
 
+#if UNCHECKED
+        [Fact(Skip = "CheckForOverflowUnderflow = false")]
+#else
         [Fact]
+#endif
         public static void OpExplicit_Some_ExplicitNumericConversion_Overflows()
         {
             Assert.Throws<OverflowException>(() => (short)Maybe.Some(Int32.MaxValue));

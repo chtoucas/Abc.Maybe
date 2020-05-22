@@ -32,6 +32,8 @@
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <VisibleInternals>false</VisibleInternals>
+
+    <DefineConstants>$(DefineConstants);UNCHECKED</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition=" $(VisibleInternals) == 'true' ">
