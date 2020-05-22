@@ -1,6 +1,24 @@
 <Project>
 
   <PropertyGroup>
+    <!--
+      See "SolutionPlatforms" and "PackagePlatforms" in D.B.P.
+      Profile 2.1
+      - netcoreapp3.1
+      - netstandard2.1
+      Profile 2.0 (default)
+      - netstandard2.0
+      - net461
+      - net452
+      - net451
+      - net45
+    -->
+    <ApiProfileVersion>netstandard2.0</ApiProfileVersion>
+    <ApiProfileVersion Condition=" $(TargetFramework) == 'netstandard2.1' ">netstandard2.1</ApiProfileVersion>
+    <ApiProfileVersion Condition=" $(TargetFramework) == $(MaxApiPlatform) ">netstandard2.1</ApiProfileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <!-- CONTRACTS_FULL is necessary to enable the attribute Pure -->
     <DefineConstants>$(DefineConstants);CONTRACTS_FULL</DefineConstants>
 
