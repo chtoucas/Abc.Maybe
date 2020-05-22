@@ -19,7 +19,7 @@ use -AllKnown. NB: the list of supported platforms can NOT be overriden.
 
 To target a single platform, use -Platform (no "s").
 
-Targetting a single platform or all supported platforms maye "transform" an exe
+Targetting a single platform or all supported platforms may "transform" an exe
 project into a library.
 
 .PARAMETER ProjectPath
@@ -142,6 +142,10 @@ try {
     if ($NoRestore)     { $args += "--no-restore" }
 
     $args += '/p:TargetFrameworks=\"' + ($platforms -join ";") + '\"'
+
+    # Warning NU1701 appears only for "xunit.runner.visualstudio".
+    # This is harmless since we are only building the solution.
+    $args += "/p:NoWarnX=NU1701"
 
     if ($AllKnown)  {
         $args += "/p:TargetFramework="

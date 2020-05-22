@@ -10,14 +10,6 @@
     <RelaxWarnings>true</RelaxWarnings>
     <RelaxAsyncWarnings>true</RelaxAsyncWarnings>
     <NoWarn>$(NoWarn);IDE0002;xUnit1004</NoWarn>
-
-    <!--
-      MSBuild (or NuGet?) is not meant to work when we specify both
-      TargetFramework and TargetFrameworks (with an "s").
-      Warning NU1701 appears only for xunit.runner.visualstudio.
-      This is harmless since testing is done using a __single__ framework at a time.
-    -->
-    <NoWarn Condition=" $(TargetFrameworks) != '' ">$(NoWarn);NU1701</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
