@@ -6,11 +6,19 @@
   -->
   <Import Project="$(MSBuildThisFileDirectory)$(AssemblyName).props" />
 
+  <!--
+    Command-line options:
+    - BuildNumber       default = PatchVersion
+    - RevisionNumber    default = 0
+    - MyAssemblyTitle   default = AssemblyName
+  -->
   <PropertyGroup>
     <BuildNumber Condition=" $(BuildNumber) == '' ">$(PatchVersion)</BuildNumber>
     <RevisionNumber Condition=" $(RevisionNumber) == '' ">0</RevisionNumber>
     <MyAssemblyTitle Condition=" $(MyAssemblyTitle) == '' ">$(AssemblyName)</MyAssemblyTitle>
+  </PropertyGroup>
 
+  <PropertyGroup>
     <VersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</VersionPrefix>
     <VersionSuffix Condition=" $(PreReleaseCycle) != '' ">$(PreReleaseCycle)$(PreReleaseNumber)</VersionSuffix>
 
