@@ -646,9 +646,12 @@ namespace Abc
 
 #pragma warning restore CA1305
 
-          // FIXME: time designators w/ .NET 4.6.1.
-#if !NETFRAMEWORK // DateTime
+        // FIXME: time designators w/ .NET 4.6.1.
+#if NETFRAMEWORK // DateTime
+        [Fact(Skip = ".NET Framework and Time Designators")]
+#else
         [Fact]
+#endif
         public static void ParseDateTime_TimeDesignators_NetCore()
         {
             // Act
@@ -674,7 +677,6 @@ namespace Abc
                 }
             );
         }
-#endif
 
         public static TheoryData<string> StandardFormatSpecifiers
             => new TheoryData<string>
