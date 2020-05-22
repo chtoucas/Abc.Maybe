@@ -33,9 +33,9 @@
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
       <!--
-        Warning NU1701. This is something that should not happen, but we do it
-        in eng\build.ps1. This is harmless since we are only building the project
-        we don't actually run it.
+        Warning NU1701. This is something that should not happen, except that we
+        tweak "TargetFrameworks" in "eng\build.ps1". This is harmless since we
+        are only building the project we don't actually run it.
       -->
       <NoWarn Condition=" $(TargetFrameworks.Contains('netstandard')) != '' ">NU1701</NoWarn>
       <PrivateAssets>all</PrivateAssets>
