@@ -143,10 +143,6 @@ try {
 
     $args += '/p:TargetFrameworks=\"' + ($platforms -join ";") + '\"'
 
-    # Warning NU1701 appears only for "xunit.runner.visualstudio".
-    # This is harmless since we are only building the solution.
-    $args += "/p:NoWarnX=NU1701"
-
     if ($AllKnown)  {
         $args += "/p:TargetFramework="
     }
