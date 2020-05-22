@@ -11,7 +11,6 @@
     <LangVersion>latest</LangVersion>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <Nullable>enable</Nullable>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Abc.snk</AssemblyOriginatorKeyFile>
 
@@ -20,6 +19,23 @@
     <VersionSuffix>DUMMY</VersionSuffix>
   </PropertyGroup>
 
+  <!-- Warnings & errors -->
+  <Choose>
+    <When Condition=" $(Configuration) == 'Debug' ">
+      <PropertyGroup>
+        <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+        <TreatSpecificWarningsAsErrors />
+      </PropertyGroup>
+    </When>
+
+    <Otherwise>
+      <PropertyGroup>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <!-- Assembly info & Package metadata -->
   <PropertyGroup>
     <Authors>Chtoucas</Authors>
     <Company>Narvalo.Org</Company>
@@ -34,6 +50,7 @@
     <RepositoryUrl>https://github.com/chtoucas/Abc.Maybe/</RepositoryUrl>
   </PropertyGroup>
 
+  <!-- Supported platforms -->
   <PropertyGroup>
     <!--
       IMPORTANT: do NOT use MSBuild property resolution $() when a property is
