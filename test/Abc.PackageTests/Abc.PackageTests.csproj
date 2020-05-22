@@ -30,14 +30,13 @@
   </ItemGroup>
 
   <!-- Dependencies -->
-  <!-- Microsoft.Bcl.HashCode is not compatible w/ .NET Framework <= 4.6 -->
+  <!-- Microsoft.Bcl.HashCode does not support .NET Framework <= 4.6 -->
   <PropertyGroup>
     <HashCodePackage>true</HashCodePackage>
     <HashCodePackage Condition=" $(TargetFramework.StartsWith('net45')) ">false</HashCodePackage>
     <HashCodePackage Condition=" $(TargetFramework) == 'net46' ">false</HashCodePackage>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Abc.Maybe" Version="$(AbcVersion)" />
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0"
                       Condition=" $(HashCodePackage) == 'true' " />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />

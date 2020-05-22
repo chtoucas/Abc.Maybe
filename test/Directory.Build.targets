@@ -1,10 +1,6 @@
 <Project>
 
-  <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.props" />
-
-  <PropertyGroup>
-    <SourceRoot>$(RepositoryRoot)src\</SourceRoot>
-  </PropertyGroup>
+  <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets" />
 
   <Import Project="$(SourceRoot)Abc.Maybe.props" />
 
@@ -12,5 +8,9 @@
     <AbcVersion>$(MajorVersion).$(MinorVersion).$(PatchVersion)</AbcVersion>
     <AbcVersion Condition=" $(PreReleaseCycle) != '' ">$(AbcVersion)-$(PreReleaseCycle)$(PreReleaseNumber)</AbcVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Abc.Maybe" Version="$(AbcVersion)" />
+  </ItemGroup>
 
 </Project>

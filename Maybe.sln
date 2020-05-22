@@ -46,7 +46,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eng", "eng", "{6D957FE8-23D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{73C72FF8-FF25-49A3-A241-4959FEFC8C81}"
 	ProjectSection(SolutionItems) = preProject
-		test\Directory.Build.props = test\Directory.Build.props
+		test\Directory.Build.targets = test\Directory.Build.targets
 		test\NuGet.Config = test\NuGet.Config
 		test\README = test\README
 	EndProjectSection
@@ -54,7 +54,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Blank", "Blank", "{22206E77-3EB9-4B73-BEC0-2A63201DA473}"
 	ProjectSection(SolutionItems) = preProject
 		test\Blank\Blank.csproj = test\Blank\Blank.csproj
-		test\Blank\Directory.Build.targets = test\Blank\Directory.Build.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NETFrameworkTools", "NETFrameworkTools", "{9DE2F491-0AAE-44F8-870F-28422DCFEA54}"

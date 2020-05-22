@@ -12,8 +12,4 @@
     <RestorePackagesPath>$(RepositoryRoot)__\nuget-cache\</RestorePackagesPath>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Abc.Maybe" Version="$(AbcVersion)" />
-  </ItemGroup>
-
 </Project>

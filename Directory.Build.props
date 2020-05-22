@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>
+    <SourceRoot>$(RepositoryRoot)src\</SourceRoot>
   </PropertyGroup>
 
   <PropertyGroup>
