@@ -101,8 +101,8 @@
     -->
     <MaxApiPlatform>netcoreapp3.1</MaxApiPlatform>
     <LibraryPlatforms>netcoreapp3.1;netstandard2.0</LibraryPlatforms>
-    <SolutionPlatforms>netcoreapp3.1;netstandard2.1;netstandard2.0;net461</SolutionPlatforms>
 
+    <SolutionPlatforms>netcoreapp3.1;netstandard2.1;netstandard2.0;net461</SolutionPlatforms>
     <PackagePlatforms>netstandard2.1;netstandard2.0;netstandard1.0;net461</PackagePlatforms>
 
     <MinClassicPlatforms>net48;net472;net462;net452</MinClassicPlatforms>

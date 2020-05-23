@@ -2,7 +2,10 @@
 
   <PropertyGroup>
     <!--
-      See "SolutionPlatforms" and "PackagePlatforms" in D.B.P.
+      FIXME: API profile + PublicAPI, test projects, package (netstandard1.0),
+      build.ps1 & pack.ps1.
+
+      See "SolutionPlatforms" and "PackagePlatforms" in D.B.props.
       Profile 2.1
       - netcoreapp3.1
       - netstandard2.1
@@ -12,10 +15,14 @@
       - net452
       - net451
       - net45
+
+      ApiProfileMoniker, D.B.targets is not the right place to define it,
+      as we need it in Abc.Maybe.csproj to define the PublicAPI files.
+      The only other place where we need it is here, for API_PROFILE_21.
     -->
-    <ApiProfileVersion>netstandard2.0</ApiProfileVersion>
-    <ApiProfileVersion Condition=" $(TargetFramework) == 'netstandard2.1' ">netstandard2.1</ApiProfileVersion>
-    <ApiProfileVersion Condition=" $(TargetFramework) == $(MaxApiPlatform) ">netstandard2.1</ApiProfileVersion>
+    <ApiProfileMoniker>netstandard2.0</ApiProfileMoniker>
+    <ApiProfileMoniker Condition=" $(TargetFramework) == 'netstandard2.1' ">netstandard2.1</ApiProfileMoniker>
+    <ApiProfileMoniker Condition=" $(TargetFramework) == $(MaxApiPlatform) ">netstandard2.1</ApiProfileMoniker>
   </PropertyGroup>
 
   <PropertyGroup>

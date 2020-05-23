@@ -41,9 +41,6 @@ Multitargeting.
   https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/making-an-image-easier-to-debug
 - https://github.com/dotnet/announcements/issues/31
 - code coverage?
-- Build warning NU1701 (should be OK now)
-  https://docs.microsoft.com/en-us/dotnet/core/porting/third-party-deps#net-framework-compatibility-mode
-  https://docs.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files
 
 Misc tasks.
 - https://www.nuget.org/packages/Microsoft.NETFramework.ReferenceAssemblies/

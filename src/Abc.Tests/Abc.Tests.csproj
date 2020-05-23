@@ -36,6 +36,7 @@
         Warning NU1701. This is something that should not happen, except that we
         tweak "TargetFrameworks" in "eng\build.ps1". This is harmless since we
         are only building the project we don't actually run it.
+        https://docs.microsoft.com/en-us/dotnet/core/porting/third-party-deps#net-framework-compatibility-mode
       -->
       <NoWarn Condition=" $(TargetFrameworks.Contains('netstandard')) != '' ">NU1701</NoWarn>
       <PrivateAssets>all</PrivateAssets>
