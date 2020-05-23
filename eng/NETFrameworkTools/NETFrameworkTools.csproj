@@ -8,11 +8,6 @@
   <ItemGroup>
     <!-- Tool required by cover.ps1 -->
     <PackageReference Include="OpenCover" Version="4.7.922" />
-    <!-- Tool required by test-package.ps1 -->
-    <PackageReference Include="xunit.runner.console" Version="2.4.1">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
   </ItemGroup>
 
 </Project>

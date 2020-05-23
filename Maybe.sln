@@ -25,7 +25,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D158B7E6-CFF
 	ProjectSection(SolutionItems) = preProject
 		src\Abc.Maybe.props = src\Abc.Maybe.props
 		src\Directory.Build.targets = src\Directory.Build.targets
-		src\MissingAttributes.cs = src\MissingAttributes.cs
 		src\NullableAttributes.cs = src\NullableAttributes.cs
 		src\README = src\README
 		src\Retail.props = src\Retail.props

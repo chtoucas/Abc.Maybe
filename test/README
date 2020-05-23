@@ -12,8 +12,6 @@ Of course, one can still use the dotnet command-line directly:
   > dotnet build Abc.PackageTests
   > dotnet build Abc.PackageTests /p:AllKnown=true
   > dotnet test Abc.PackageTests -f net48
-Beware, this won't work with "net45" and "net451" since they are not supported
-by xunit.runner.visualstudio.
 
 At any time, we can see the versions in use:
   > dotnet list Abc.PackageTests package --framework net48
