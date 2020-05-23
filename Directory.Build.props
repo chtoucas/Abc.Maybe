@@ -55,66 +55,48 @@
   <PropertyGroup>
     <!--
       IMPORTANT: do NOT use MSBuild property resolution $() when a property is
-      going to be parsed by a PowerShell script.
-      - MaxApiPlatform            Exe projects
-                                  eng\NETFrameworkTools.csproj
-                                  test\Blank.csproj
-      - LibraryPlatforms          Library projects
-      - SolutionPlatforms                                           Get-SolutionPlatforms()
-      - PackagePlatforms                                            Get-PackagePlatforms()
-      - MinClassicPlatforms       test\Abc.TestPackages.csproj      Get-SupportedPlatforms()
-      - MaxClassicPlatforms       test\Abc.TestPackages.csproj      Get-SupportedPlatforms()
-      - MinCorePlatforms          test\Abc.TestPackages.csproj      Get-SupportedPlatforms()
-      - MaxCorePlatforms          test\Abc.TestPackages.csproj      Get-SupportedPlatforms()
-
-      If/when we create an API depending on a new .NET Standard, "MaxApiPlatform"
-      should be the last available platform supporting it We can also update
-      "MaxApiPlatform" just to benefit from the last improvements it could bring.
-
-      The first listed framework in "LibraryPlatforms" is the one used by the
-      VS editor. Full NRT-analysis requires .NET Core 3.0 or above, .NET Standard
-      does not include the nullable annotations (version 2.1 defines the nullable
-      attributes but VS doesn't use them if I understand things correctly).
-      We use the version 3.1 instead of 3.0 because the former is LTS and the
-      latter is already EOL.
-
-      "SolutionPlatforms" lists the supported when building the __whole__
-      solution. Minimal versions are chosen in order to work with:
-      - Microsoft.Bcl.HashCode    requires .NET Framework >= 4.6.1
-      - xunit.runner.visualstudio requires .NET Framework >= 4.5.2
-      - BenchmarkDotNet           requires .NET Standard  >= 2.0
-
-      Supported platforms.
-      .NET Framework (Classic).
-        "MinClassicPlatforms" lists the last minor version of each major version.
-        https://support.microsoft.com/en-us/help/17455/lifecycle-faq-net-framework
-      .NET Core.
-        "MinCorePlatforms" lists the LTS versions and the latest one if not LTS.
-        https://dotnet.microsoft.com/platform/support/policy/dotnet-core
-        https://github.com/dotnet/core/blob/master/microsoft-support.md
+      going to be parsed by a PowerShell script, which means everything except
+      "MaxApiPlatform" and "LibraryPlatforms".
 
       For libraries, use
         <TargetFrameworks>$(LibraryPlatforms)</TargetFrameworks>
-      otherwise, use
+      otherwise use
         <TargetFramework>$(MaxApiPlatform)</TargetFramework>
 
-      IMPORTANT: update "LibraryPlatforms" and "SolutionPlatforms" when changing
-      "MaxApiPlatform".
+      Remarks:
+      - If/when we create an API depending on a new .NET Standard, "MaxApiPlatform"
+        should be the last available platform supporting it. We can also update
+        "MaxApiPlatform" just to benefit from the last improvements it could bring.
+      - The first listed framework in "LibraryPlatforms" is the one used by the
+        VS editor. Full NRT-analysis requires .NET Core 3.0 or above, .NET Standard
+        does not include the nullable annotations (version 2.1 defines the nullable
+        attributes but VS doesn't use them if I understand things correctly).
+        We use the version 3.1 instead of 3.0 because the former is LTS and the
+        latter is already EOL.
+      - .NET Framework (Classic).
+        "MinClassicPlatforms" lists the last minor version of each major version.
+        https://support.microsoft.com/en-us/help/17455/lifecycle-faq-net-framework
+      - .NET Core.
+        "MinCorePlatforms" lists the LTS versions and the latest one if not LTS.
+        https://dotnet.microsoft.com/platform/support/policy/dotnet-core
+        https://github.com/dotnet/core/blob/master/microsoft-support.md
+      - Minimal versions are chosen in order to work with:
+        * Microsoft.Bcl.HashCode    requires .NET Framework >= 4.6.1
+        * xunit.runner.visualstudio requires .NET Framework >= 4.5.2
+        * BenchmarkDotNet           requires .NET Standard  >= 2.0
     -->
     <MaxApiPlatform>netcoreapp3.1</MaxApiPlatform>
-    <LibraryPlatforms>netcoreapp3.1;netstandard2.0</LibraryPlatforms>
+    <LibraryPlatforms>$(MaxApiPlatform);netstandard2.0</LibraryPlatforms>
 
-    <SolutionPlatforms>netcoreapp3.1;netstandard2.1;netstandard2.0;net461</SolutionPlatforms>
     <PackagePlatforms>netstandard2.1;netstandard2.0;net461</PackagePlatforms>
 
     <MinClassicPlatforms>net48;net472;net462</MinClassicPlatforms>
     <MaxClassicPlatforms>net48;net472;net471;net47;net462;net461</MaxClassicPlatforms>
-
     <MinCorePlatforms>netcoreapp3.1;netcoreapp2.1</MinCorePlatforms>
     <MaxCorePlatforms>netcoreapp3.1;netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0</MaxCorePlatforms>
 
     <!--
-      See "SolutionPlatforms" and "PackagePlatforms".
+      See "MaxApiPlatform" and "PackagePlatforms".
       Profile 2.1
       - netcoreapp3.1 ie "MaxApiPlatform"
       - netstandard2.1

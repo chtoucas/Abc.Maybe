@@ -45,10 +45,7 @@ New-Alias "SAY-LOUDLY" Write-Green
 (Join-Path $ARTIFACTS_DIR "nuget-cache") | const NUGET_LOCAL_CACHE
 (Join-Path $ARTIFACTS_DIR "tools")       | const NET_FRAMEWORK_TOOLS_DIR
 
-# The props where we can informations related to the supported platforms, see:
-# - Get-SolutionPlatforms
-# - Get-PackagePlatforms
-# - Get-SupportedPlatforms
+# The props where we can informations related to supported platforms.
 const PLATFORMS_PROPS (Join-Path $ROOT_DIR "Directory.Build.props" -Resolve)
 
 # Reference project used to restore .NET Framework tools.
@@ -240,13 +237,15 @@ function Get-SolutionPlatforms {
     ___confess "Getting the supported platforms by the solution."
 
     [SelectXmlInfo[]] $nodes = [Xml] (Get-Content $PLATFORMS_PROPS) `
-        | Select-Xml -XPath "//Project/PropertyGroup/SolutionPlatforms" `
+        | Select-Xml -XPath "//Project/PropertyGroup/PackagePlatforms/.." `
 
     if ($nodes.Count -ne 1) {
         croak "The property file for ""$PLATFORMS_PROPS"" is not ""valid""."
     }
 
-    $platforms = $nodes[0].Node.InnerXML.Trim()
+    $pg = $nodes[0].Node
+    $maxApiPlatform = $pg.MaxApiPlatform.Trim()
+    $platforms = "$maxApiPlatform;" + $pg.PackagePlatforms.Trim()
 
     if ($asString) {
         # Ready for MSBuild.exe/dotnet.exe.
