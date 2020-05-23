@@ -78,14 +78,13 @@
       We use the version 3.1 instead of 3.0 because the former is LTS and the
       latter is already EOL.
 
-      "SolutionPlatforms" lists the supported when building the __whole__ solution.
-      It does NOT include "netstandard1.0", it is only supported by
-      Abc.Maybe.csproj.
-
-      Supported platforms. Dependencies:
+      "SolutionPlatforms" lists the supported when building the __whole__
+      solution. Minimal versions are chosen in order to work with:
       - Microsoft.Bcl.HashCode    requires .NET Framework >= 4.6.1
       - xunit.runner.visualstudio requires .NET Framework >= 4.5.2
       - BenchmarkDotNet           requires .NET Standard  >= 2.0
+
+      Supported platforms.
       .NET Framework (Classic).
         "MinClassicPlatforms" lists the last minor version of each major version.
         https://support.microsoft.com/en-us/help/17455/lifecycle-faq-net-framework

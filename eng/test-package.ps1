@@ -18,8 +18,8 @@ Specify the platform(s) for which to test the package.
 Unless there is one trailing asterisk (*), this parameter expects a single
 platform name. Otherwise, all platform whose name starts with the specified
 value (without the asterisk) will be selected. For instance, "net46*" is
-translated to "net46", "net461" and "net462". There limit case ("*") is a
-synonym for "-AllKnown -NoClassic:$false -NoCore:$false".
+translated to ""net461" and "net462". The limit case "*" is a synonym for
+"-AllKnown -NoClassic:$false -NoCore:$false".
 
 .PARAMETER AllKnown
 Test the package for ALL known platform versions (SLOW).
@@ -149,8 +149,6 @@ Looking for more help?
 
 # ------------------------------------------------------------------------------
 
-# NB: with PowerShell 6.1, there is something called dynamic validateSet, but
-# I prefer to stick with v5.1.
 function Approve-Platform {
     [CmdletBinding()]
     param(
