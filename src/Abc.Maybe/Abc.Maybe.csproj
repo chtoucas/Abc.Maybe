@@ -28,6 +28,44 @@
     </Otherwise>
   </Choose>
 
+  <!--
+    SourceLink? Does it require the customer to change a few VS settings.
+
+    TODO: pack.ps1 /p:Freeze=true,
+          Deterministic meaning in relation w/
+            InformationalVersion/FileVersion/...  in Retail.props,
+          RepositoryCommit/Branch
+    References
+    - https://github.com/dotnet/sourcelink/tree/master/docs
+    - https://github.com/clairernovotny/DeterministicBuilds
+    - https://github.com/NuGet/Home/issues/4142
+    - https://blog.paranoidcoding.com/2016/04/05/deterministic-builds-in-roslyn.html
+
+    Remove tmp fix for https://github.com/dotnet/sourcelink/issues/572
+    when we reach .NET Core version 3.1.300.
+
+  <PropertyGroup>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <TargetFrameworkMonikerAssemblyAttributesPath>$([System.IO.Path]::Combine('$(IntermediateOutputPath)','$(TargetFrameworkMoniker).AssemblyAttributes$(DefaultLanguageSourceExtension)'))</TargetFrameworkMonikerAssemblyAttributesPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedFiles Include="$(GeneratedAssemblyInfoFile)"/>
+  </ItemGroup>
+  -->
+  <!--
+    Embedded or pdbonly?
+    Embedded seems to work all the time (apparently there are situations
+    where a separate pdb can cause problems); one drawback is the increased
+    size of the dll (~8 Ko).
+
+    References
+    - https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/debug-compiler-option
+    - https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/making-an-image-easier-to-debug
+  -->
   <PropertyGroup Condition=" $(Retail) == 'true' ">
     <!-- *** BE VERY, VERY CAREFUL, BEFORE CHANGING THIS ***
       What we really want is sketched here but it does NOT work since
@@ -53,6 +91,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <!--<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />-->
   </ItemGroup>
 
 </Project>
