@@ -14,12 +14,12 @@ Abc.Maybe features an Option type for .NET.
 ### NuGet Package
 
 The NuGet package offers full support for:
-- .NET Standard 1.0 / 2.0 / 2.1.
+- .NET Standard 2.0 / 2.1.
 - .NET Framework 4.6.1.
 
 The public API is not the same for all targets. We currently define two profiles,
 - one is for .NET Standard 2.1.
-- one is for .NET Standard 1.0 / 2.0 and .NET Framework 4.6.1.
+- and the other is for .NET Standard 2.0 and .NET Framework 4.6.1.
   Of course, it is a subset of the previous one.
 
 ### Objectives/Features
@@ -30,7 +30,7 @@ The public API is not the same for all targets. We currently define two profiles
   - [x] Extensible.
   - [x] Incurring no significant overhead when used wisely.
 - [x] Being a good citizen of the .NET ecosystem.
-  - [x] .NET Standard 2.0, and the legacy .NET Framework 4.6.1.
+  - [x] .NET Standard 2.0, and .NET Framework 4.6.1.
   - [x] Equatable and comparable, both optionally structural.
   - [x] NRT-aware (NRT = Nullable Reference Types).
   - [x] Debugger-friendly.
