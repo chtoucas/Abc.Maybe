@@ -42,14 +42,10 @@
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
-  <!-- Define the public API for .NET Standard 2.0/2.1 and MaxApiPlatform -->
-  <ItemGroup Condition=" $(TargetFramework) == 'netstandard2.0' ">
-    <AdditionalFiles Include="PublicAPI\netstandard2.0\PublicAPI.Shipped.txt" />
-    <AdditionalFiles Include="PublicAPI\netstandard2.0\PublicAPI.Unshipped.txt" />
-  </ItemGroup>
-  <ItemGroup Condition=" $(TargetFramework) == 'netstandard2.1' or $(TargetFramework) == '$(MaxApiPlatform)' ">
-    <AdditionalFiles Include="PublicAPI\netstandard2.1\PublicAPI.Shipped.txt" />
-    <AdditionalFiles Include="PublicAPI\netstandard2.1\PublicAPI.Unshipped.txt" />
+  <!-- Define the public API -->
+  <ItemGroup>
+    <AdditionalFiles Include="PublicAPI\$(ApiProfileMoniker)\PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include="PublicAPI\$(ApiProfileMoniker)\PublicAPI.Unshipped.txt" />
   </ItemGroup>
 
   <ItemGroup>

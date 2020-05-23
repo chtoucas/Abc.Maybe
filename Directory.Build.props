@@ -51,7 +51,7 @@
     <RepositoryUrl>https://github.com/chtoucas/Abc.Maybe/</RepositoryUrl>
   </PropertyGroup>
 
-  <!-- Supported platforms -->
+  <!-- Supported platforms & API profile -->
   <PropertyGroup>
     <!--
       IMPORTANT: do NOT use MSBuild property resolution $() when a property is
@@ -110,6 +110,30 @@
 
     <MinCorePlatforms>netcoreapp3.1;netcoreapp2.1</MinCorePlatforms>
     <MaxCorePlatforms>netcoreapp3.1;netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0</MaxCorePlatforms>
+
+    <!--
+      FIXME: API profile + PublicAPI, test projects, package (netstandard1.0),
+      build.ps1 & pack.ps1.
+
+      See "SolutionPlatforms" and "PackagePlatforms".
+      Profile 2.1
+      - netcoreapp3.1 ie "MaxApiPlatform"
+      - netstandard2.1
+      Profile 2.0 (default)
+      - netstandard2.0
+      - netstandard1.0
+      - net461
+      - net452
+      - net451
+      - net45
+
+      D.B.targets is not the right place to define "ApiProfileMoniker" as we
+      need it in Abc.Maybe.csproj to define the PublicAPI files.
+      The only other place where we need it is D.B.targets, for API_PROFILE_21.
+    -->
+    <ApiProfileMoniker>netstandard2.0</ApiProfileMoniker>
+    <ApiProfileMoniker Condition=" $(TargetFramework) == 'netstandard2.1' ">netstandard2.1</ApiProfileMoniker>
+    <ApiProfileMoniker Condition=" $(TargetFramework) == $(MaxApiPlatform) ">netstandard2.1</ApiProfileMoniker>
   </PropertyGroup>
 
 </Project>
