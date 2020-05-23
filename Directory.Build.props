@@ -112,8 +112,8 @@
     <MaxCorePlatforms>netcoreapp3.1;netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0</MaxCorePlatforms>
 
     <!--
-      FIXME: API profile + PublicAPI, test projects, package (netstandard1.0),
-      build.ps1 & pack.ps1.
+      FIXME: test projects, package, build.ps1 & pack.ps1.
+      Replace netstandard1.0 by net45?
 
       See "SolutionPlatforms" and "PackagePlatforms".
       Profile 2.1
@@ -123,6 +123,7 @@
       - netstandard2.0
       - netstandard1.0
       - net461
+      - net46
       - net452
       - net451
       - net45

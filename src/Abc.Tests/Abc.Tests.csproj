@@ -18,17 +18,21 @@
     </None>
   </ItemGroup>
 
-  <!--
-    System.ValueTuple        .NET 4.6.1
-    Microsoft.Bcl.HashCode   .NET 4.6.1 / .NET Standard 2.0
-    Microsoft.Bcl.HashCode   does not support .NET Framework <= 4.6
-  -->
+  <!-- Dependencies -->
+  <!-- Microsoft.Bcl.HashCode does not support .NET Framework <= 4.6 -->
+  <!-- xunit.runner.visualstudio does not support .NET Framework <= 4.5.1 -->
+  <PropertyGroup>
+    <HashCodePackage>true</HashCodePackage>
+    <HashCodePackage Condition=" $(TargetFramework.StartsWith('net45')) ">false</HashCodePackage>
+    <HashCodePackage Condition=" $(TargetFramework) == 'net46' ">false</HashCodePackage>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild" Version="2.8.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0"
+                      Condition=" $(HashCodePackage) == 'true' " />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
