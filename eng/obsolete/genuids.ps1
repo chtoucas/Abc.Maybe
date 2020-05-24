@@ -5,7 +5,9 @@
 [CmdletBinding()]
 param()
 
-. (Join-Path $PSScriptRoot "..\common.ps1")
+. (Join-Path $PSScriptRoot "..\utils.ps1")
+
+# ------------------------------------------------------------------------------
 
 function Generate-UIDs {
     [CmdletBinding()]
@@ -28,6 +30,8 @@ function Generate-UIDs {
 
     $uids.Split(";")
 }
+
+# ------------------------------------------------------------------------------
 
 $fsi = (whereis "fsi.exe") ?? (Find-VsWhere -ExitOnError | Find-Fsi -ExitOnError)
 $fsx = Join-Path $PSScriptRoot "genuids.fsx" -Resolve
