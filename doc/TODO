@@ -9,10 +9,10 @@ equality and ordering comparisons.
 
 Deterministic build / Source Link
 - Deterministic
-  Retail.props
-    BuildNumber/RevisionNumber
-    build time in assembly description
-    Description -> Package Title?
+  Retail.props, non-deterministic attributes
+    AssemblyFileVersion
+    AssemblyInformationalVersion
+    AssemblyDescription
 - SourceLink
   RepositoryCommit/Branch
 - snupkg? Does it require the customer to change a few VS settings.

@@ -84,10 +84,11 @@
 
       <_MyMessage Condition=" $(PatchEquality) == 'true' ">$(_MyMessage)%0A| will patch the equality rules.</_MyMessage>
 
-      <_MyMessage>$(_MyMessage)%0A| %24(DefineConstants) = "$(DefineConstants)"</_MyMessage>
+      <_MyMessage>$(_MyMessage)%0A| %24(ApiProfileMoniker) = "$(ApiProfileMoniker)"</_MyMessage>
+      <_MyMessage>$(_MyMessage)%0A| %24(EnableSourceLink) = "$(EnableSourceLink)"</_MyMessage>
       <_MyMessage>$(_MyMessage)%0A| %24(DebugType) = "$(DebugType)"</_MyMessage>
       <_MyMessage>$(_MyMessage)%0A| %24(NoWarn) = "$(NoWarn)"</_MyMessage>
-      <_MyMessage>$(_MyMessage)%0A| %24(ApiProfileMoniker) = "$(ApiProfileMoniker)"</_MyMessage>
+      <_MyMessage>$(_MyMessage)%0A| %24(DefineConstants) = "$(DefineConstants)"</_MyMessage>
     </PropertyGroup>
 
     <Message Text="+ $(AssemblyName) for $(TargetFramework)%0A$(_MyMessage)" Importance="high" />
