@@ -7,6 +7,23 @@ Towards version 1.0.0
 Currently, the only thing blocking us for a 1.0.0 release is proper testing of
 equality and ordering comparisons.
 
+Deterministic build / Source Link
+- Deterministic
+  Retail.props
+    BuildNumber/RevisionNumber
+    build time in assembly description
+    Description -> Package Title?
+- SourceLink
+  RepositoryCommit/Branch
+- snupkg? Does it require the customer to change a few VS settings.
+- pack.ps1 /p:Freeze=true,
+- References
+  https://github.com/dotnet/sourcelink/tree/master/docs
+  https://github.com/clairernovotny/DeterministicBuilds
+  https://github.com/NuGet/Home/issues/4142
+  https://blog.paranoidcoding.com/2016/04/05/deterministic-builds-in-roslyn.html
+  https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/deterministic-compiler-option
+
 vNEXT
 -----
 
