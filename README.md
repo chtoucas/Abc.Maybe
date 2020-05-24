@@ -18,9 +18,8 @@ The NuGet package offers full support for:
 - .NET Framework 4.6.1.
 
 The public API is not the same for all targets. We currently define two profiles,
-- one is for .NET Standard 2.1.
-- and the other is for .NET Standard 2.0 and .NET Framework 4.6.1.
-  Of course, it is a subset of the previous one.
+one is for .NET Standard 2.1, and the other is for .NET Standard 2.0 and .NET
+Framework 4.6.1; of course, it is a subset of the previous one.
 
 ### Objectives/Features
 
