@@ -19,8 +19,9 @@ The NuGet package offers full support for:
 
 The public API is not the same for all targets. We currently define two profiles,
 one is for the platforms implementing .NET Standard 2.1, and the other is for
-those implementing .NET Standard 2.0, but also for .NET Framework 4.5.2 or later;
-of course, the latter is a subset of the former profile.
+those implementing .NET Standard 2.0, but also for versions of .NET Framework
+not covered by .NET Standard 2.0; of course, the former profile is
+a superset of the latter one.
 
 ### Objectives/Features
 
