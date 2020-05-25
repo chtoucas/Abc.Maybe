@@ -237,15 +237,17 @@ function Get-SolutionPlatforms {
     ___confess "Getting the supported platforms by the solution."
 
     [SelectXmlInfo[]] $nodes = [Xml] (Get-Content $PLATFORMS_PROPS) `
-        | Select-Xml -XPath "//Project/PropertyGroup/PackagePlatforms/.." `
+        | Select-Xml -XPath "//Project/PropertyGroup/SolutionPlatforms" `
+        #| Select-Xml -XPath "//Project/PropertyGroup/PackagePlatforms/.." `
 
     if ($nodes.Count -ne 1) {
         croak "The property file for ""$PLATFORMS_PROPS"" is not ""valid""."
     }
 
-    $pg = $nodes[0].Node
-    $maxApiPlatform = $pg.MaxApiPlatform.Trim()
-    $platforms = "$maxApiPlatform;" + $pg.PackagePlatforms.Trim()
+    $platforms = $nodes[0].Node.InnerXML.Trim()
+    #$pg = $nodes[0].Node
+    #$maxApiPlatform = $pg.MaxApiPlatform.Trim()
+    #$platforms = "$maxApiPlatform;" + $pg.PackagePlatforms.Trim()
 
     if ($asString) {
         # Ready for MSBuild.exe/dotnet.exe.
