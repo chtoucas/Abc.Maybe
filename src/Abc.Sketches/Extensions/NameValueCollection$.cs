@@ -1,5 +1,7 @@
 ﻿// See LICENSE in the project root for license information.
 
+#if !NETCOREAPP1_x // NameValueCollection
+
 namespace Abc.Extensions
 {
     using System;
@@ -58,3 +60,5 @@ namespace Abc.Extensions
         }
     }
 }
+
+#endif

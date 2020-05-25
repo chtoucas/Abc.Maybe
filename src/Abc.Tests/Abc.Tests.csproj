@@ -25,6 +25,7 @@
     <HashCodePackage>true</HashCodePackage>
     <HashCodePackage Condition=" $(TargetFramework.StartsWith('net45')) ">false</HashCodePackage>
     <HashCodePackage Condition=" $(TargetFramework) == 'net46' ">false</HashCodePackage>
+    <HashCodePackage Condition=" $(TargetFramework.StartsWith('netcoreapp1.')) ">false</HashCodePackage>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild" Version="2.8.1">

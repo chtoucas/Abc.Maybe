@@ -1,6 +1,6 @@
 ﻿// See LICENSE.dotnet in the project root for license information.
 
-#if NETSTANDARD1_x // Missing attributes
+#if (NETCOREAPP1_x || NETSTANDARD1_x) // Missing attributes
 
 namespace System
 {

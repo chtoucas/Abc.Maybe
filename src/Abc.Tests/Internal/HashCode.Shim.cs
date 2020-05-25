@@ -1,6 +1,6 @@
 ﻿// See LICENSE in the project root for license information.
 
-#if (NET45 || NET451 || NET452 || NET46) // System.HashCode
+#if (NET45 || NET451 || NET452 || NET46 || NETCOREAPP1_x) // System.HashCode
 
 using System;
 using System.Diagnostics.Contracts;

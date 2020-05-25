@@ -1,5 +1,7 @@
 ﻿// See LICENSE in the project root for license information.
 
+#if !NETCOREAPP1_x // System.Data.SqlTypes
+
 namespace Abc.Extensions
 {
     using System;
@@ -86,3 +88,5 @@ namespace Abc.Extensions
             => from x in MaybeT.SomeOrNone(@this) where !x.IsNull select x.Value;
     }
 }
+
+#endif
