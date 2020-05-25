@@ -43,12 +43,14 @@
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
   <!-- Tmp fix for https://github.com/dotnet/sourcelink/issues/572 -->
+  <!-- Should be OK now (by the way it should not have been here but in  D.B.targets)
   <PropertyGroup>
     <TargetFrameworkMonikerAssemblyAttributesPath>$([System.IO.Path]::Combine('$(IntermediateOutputPath)','$(TargetFrameworkMoniker).AssemblyAttributes$(DefaultLanguageSourceExtension)'))</TargetFrameworkMonikerAssemblyAttributesPath>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedFiles Include="$(GeneratedAssemblyInfoFile)" />
   </ItemGroup>
+  -->
 
   <!-- DebugType -->
   <!--<PropertyGroup Condition=" $(Retail) == 'true' ">-->
