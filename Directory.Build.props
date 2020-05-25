@@ -101,7 +101,7 @@
 
     <!--
       See "SolutionPlatforms" and "PackagePlatforms".
-      Profile 2.1: "netcoreapp3.1" ie "MaxApiPlatform" and "netstandard2.1".
+      Profile 2.1: "netstandard2.1" and "netcoreapp3.1" ie "MaxApiPlatform".
       Profile 2.0 (default): everything else.
 
       D.B.targets is not the right place to define "ApiProfileMoniker" as we

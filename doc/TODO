@@ -27,6 +27,11 @@ Deterministic build / Source Link
 vNEXT
 -----
 
+- NET Core 1.x and .NET Standard 1.0?
+  NetStandardImplicitPackageVersion
+  https://docs.microsoft.com/en-us/dotnet/core/tools/csproj
+  https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props
+  <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
 - Add overloads w/ IEqualityComparer<T> (true structural comparison).
 - "Lifted" comparison T w/ Maybe<T> to handle mixed type, eg Maybe<int?>,
   Maybe<int>, int? and int. This should be a custom MaybeComparer<T>. Do not
