@@ -8,7 +8,7 @@
 Test the package Abc.Maybe.
 
 .DESCRIPTION
-Test the package Abc.Maybe for net461, net462, net4(7,8)x and netcoreapp(2,3).x.
+Test the package Abc.Maybe for net4(5,6,7,8)x and netcoreapp(2,3).x.
 Matching .NET Framework Developer Packs or Targeting Packs must be installed
 locally, the later should suffice. The script will fail with error MSB3644 when
 it is not the case.
@@ -106,6 +106,9 @@ param(
 const TESTS_PROJECT_NAME "Abc.PackageTests"
 const TESTS_PROJECT (Join-Path $TEST_DIR $TESTS_PROJECT_NAME -Resolve)
 
+const XUNIT_PLATFORM "net452"
+const OLDSTYLE_PLATFORMS @("net451", "net45")
+
 #endregion
 ################################################################################
 #region Helpers.
@@ -190,6 +193,27 @@ function Approve-Version {
     if (-not $ok) {
         die "The specified version number is not well-formed: ""$version""."
     }
+}
+
+# ------------------------------------------------------------------------------
+
+$Script:___NoXunitConsole = $false
+
+function Find-XunitRunnerOnce {
+    [CmdletBinding()]
+    param()
+
+    ___confess "Finding xunit.console.exe."
+
+    if ($___NoXunitConsole) { warn "No Xunit console runner." ; return }
+
+    Restore-NETFrameworkTools | Out-Host
+
+    $path = Find-XunitRunner -Platform $XUNIT_PLATFORM
+
+    if (-not $path) { $Script:___NoXunitConsole = $true ; return }
+
+    $path
 }
 
 # ------------------------------------------------------------------------------
@@ -325,6 +349,61 @@ function Invoke-Build {
 
 # ------------------------------------------------------------------------------
 
+# .NET Framework 4.5/4.5.1 must be handled separately.
+# Since it's no longer officialy supported by Microsoft, we can remove them
+# if it ever becomes too much of a burden.
+# __Only works on Windows__
+# TODO: I wonder if it does really make sense at all (we actually use .NET 4.5.2).
+function Invoke-TestOldStyle {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateScript({ $_ -in $OLDSTYLE_PLATFORMS })]
+        [string] $platform,
+
+        [Parameter(Mandatory = $true, Position = 1)]
+        [ValidateNotNullOrEmpty()]
+        [string] $version,
+
+        [Parameter(Mandatory = $false, Position = 2)]
+        [string] $runtime,
+
+        [switch] $noRestore,
+        [switch] $noBuild
+    )
+
+    "`nTesting the package for ""$platform"" and {0}." -f (Get-RuntimeLabel $runtime) `
+        | SAY-LOUDLY
+
+    if (-not $IsWindows) { warn """$platform"" can only be tested on Windows." ; return }
+
+    if ($runtime) {
+        warn "Runtime parameter ""$runtime"" is ignored when targetting ""$platform""."
+    }
+
+    $xunit = Find-XunitRunnerOnce
+    if (-not $xunit) { warn "Skipping." ; return }
+
+    if (-not $noBuild) {
+        $args = "/p:AbcVersion=$version", "/p:AllKnown=true", "-f:$platform"
+        if ($runtime)   { $args += "--runtime:$runtime" }
+        if ($noRestore) { $args += "--no-restore" }
+
+        & dotnet build $TESTS_PROJECT --nologo $args
+            || die "Build failed when targeting ""$platform""."
+    }
+
+    # NB: Release, not Debug. This is hard-coded within the project file.
+    $asm = Join-Path $TESTS_PROJECT "bin\Release\$platform\$TESTS_PROJECT_NAME.dll" -Resolve
+
+    & $xunit $asm
+        || die "Test task failed when targeting ""$platform""."
+
+    say-softly "Test completed successfully."
+}
+
+# ------------------------------------------------------------------------------
+
 function Invoke-TestSingle {
     [CmdletBinding()]
     param(
@@ -342,6 +421,16 @@ function Invoke-TestSingle {
         [switch] $noRestore,
         [switch] $noBuild
     )
+
+    if ($platform -in $OLDSTYLE_PLATFORMS) {
+        Invoke-TestOldStyle `
+            -Platform   $platform `
+            -Version    $version `
+            -Runtime    $runtime `
+            -NoRestore: $noRestore `
+            -NoBuild:   $noBuild
+        return
+    }
 
     "`nTesting the package for ""$platform"" and {0}." -f (Get-RuntimeLabel $runtime) `
         | SAY-LOUDLY
@@ -406,7 +495,8 @@ function Invoke-TestAny {
         [string] $runtime
     )
 
-    $targetFrameworks = Get-TargetFrameworks $platformList
+    $targetFrameworks = $platformList `
+        | where { $_ -notin $OLDSTYLE_PLATFORMS } | Get-TargetFrameworks
 
     $args = "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
     if ($runtime) { $args += "--runtime:$runtime" }
@@ -415,6 +505,13 @@ function Invoke-TestAny {
         || die "Test task failed."
 
     say-softly "Test completed successfully."
+
+    say "`nContinuing with ""old-style"" platforms if any."
+    foreach ($platform in $OLDSTYLE_PLATFORMS) {
+        if ($platform -in $platformList) {
+            Invoke-TestOldStyle -Platform $platform -Version $version -Runtime $runtime
+        }
+    }
 }
 
 # ------------------------------------------------------------------------------

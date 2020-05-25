@@ -336,6 +336,36 @@ function Find-OpenCover {
     $path
 }
 
+# ------------------------------------------------------------------------------
+
+function Find-XunitRunner {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $platform,
+
+        [switch] $exitOnError
+    )
+
+    ___confess "Finding xunit.console.exe."
+
+    $version = Get-PackageReferenceVersion $NET_FRAMEWORK_TOOLS_PROJECT "xunit.runner.console" `
+        -ExitOnError:$exitOnError
+
+    $path = Join-Path $NET_FRAMEWORK_TOOLS_DIR `
+        "xunit.runner.console\$version\tools\$platform\xunit.console.exe"
+
+    if (-not (Test-Path $path)) {
+        return carp "Could not find Xunit Console Runner v$version. Maybe use -Restore?" `
+            -ExitOnError:$exitOnError
+    }
+
+    ___debug "xunit.console.exe found here: ""$path""."
+
+    $path
+}
+
 #endregion
 ################################################################################
 #region Restore tasks.

@@ -27,6 +27,8 @@ Default version (the one listed in Directory.Build.props).
   > dotnet build Abc.PackageTests -f net48
 At any time, we can see the versions in use:
   > dotnet list Abc.PackageTests package --framework net48
+Beware, this won't work with "net45" and "net451" since they are not supported
+by xunit.runner.visualstudio.
 
 Restore accepts params /p: and -v,
   > dotnet restore Abc.PackageTests -v n /p:AllKnown=true

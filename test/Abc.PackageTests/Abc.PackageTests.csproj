@@ -13,7 +13,6 @@
     <TargetFrameworks>$(MinClassicPlatforms);$(MinCorePlatforms)</TargetFrameworks>
     <TargetFrameworks Condition=" $(AllKnown) == 'true' ">$(MaxClassicPlatforms);$(MaxCorePlatforms)</TargetFrameworks>
 
-    <Configuration>Release</Configuration>
     <DebugType>none</DebugType>
   </PropertyGroup>
 
@@ -29,8 +28,14 @@
     <Compile Include="$(SourceRoot)Abc.Tests\**\*.cs" Exclude="@(FilesToExclude)" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <HashCodePackage>true</HashCodePackage>
+    <HashCodePackage Condition=" $(TargetFramework.StartsWith('net45')) ">false</HashCodePackage>
+    <HashCodePackage Condition=" $(TargetFramework) == 'net46' ">false</HashCodePackage>
+  </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0"
+                      Condition=" $(HashCodePackage) == 'true' " />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
