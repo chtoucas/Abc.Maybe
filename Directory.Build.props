@@ -97,7 +97,7 @@
     <MinCorePlatforms>netcoreapp3.1;netcoreapp2.1</MinCorePlatforms>
     <MaxCorePlatforms>netcoreapp3.1;netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0</MaxCorePlatforms>
 
-    <!--
+    <!-- FIXME: Abc.Tests and eng\build.ps1 /p:PrintSettings=true
       See "SolutionPlatforms" and "PackagePlatforms".
       Profile 2.1: "netstandard2.1" and "netcoreapp3.1" ie "MaxApiPlatform".
       Profile 2.0 (default): everything else.
