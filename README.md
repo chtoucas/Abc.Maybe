@@ -14,12 +14,13 @@ Abc.Maybe features an Option type for .NET.
 ### NuGet Package
 
 The NuGet package offers full support for:
-- .NET Standard 2.0 / 2.1.
-- .NET Framework 4.6.1.
+- .NET Standard 2.0 or later.
+- .NET Framework 4.5.2 or later.
 
 The public API is not the same for all targets. We currently define two profiles,
-one is for .NET Standard 2.1, and the other is for .NET Standard 2.0 and .NET
-Framework 4.6.1; of course, it is a subset of the previous one.
+one is for the platforms implementing .NET Standard 2.1, and the other is for
+those implementing .NET Standard 2.0, but also for .NET Framework 4.5.2 or later;
+of course, the latter is a subset of the former profile.
 
 ### Objectives/Features
 
