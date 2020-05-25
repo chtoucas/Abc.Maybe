@@ -1,6 +1,6 @@
 ﻿// See LICENSE in the project root for license information.
 
-#if !NETCOREAPP1_x // System.Data.SqlTypes
+#if !NETSTANDARD1_x // System.Data.SqlTypes
 
 namespace Abc.Extensions
 {

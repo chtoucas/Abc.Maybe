@@ -51,7 +51,7 @@
     <RepositoryUrl>https://github.com/chtoucas/Abc.Maybe/</RepositoryUrl>
   </PropertyGroup>
 
-  <!-- Supported platforms & API profile -->
+  <!-- Supported platforms & API profiles -->
   <PropertyGroup>
     <!--
       IMPORTANT: do NOT use MSBuild property resolution $() when a property is
@@ -73,15 +73,13 @@
         attributes but VS doesn't use them if I understand things correctly).
         We use the version 3.1 instead of 3.0 because the former is LTS and the
         latter is already EOL.
-      - "SolutionPlatforms" contains everything listed in "LibraryPlatforms" and
-        "PackagePlatforms", plus the min version for each familly of platforms.
-      - "PackagePlatforms" lists supported .NET Standards, and platforms not
-        covered by them that we intend to support.
       - .NET Framework (Classic).
         "MinClassicPlatforms" lists the last minor version of each major version.
+        "MaxClassicPlatforms" must contain "MinClassicPlatforms".
         https://support.microsoft.com/en-us/help/17455/lifecycle-faq-net-framework
       - .NET Core.
         "MinCorePlatforms" lists the LTS versions and the latest one if not LTS.
+        "MaxCorePlatforms" must contain "MinCorePlatforms".
         https://dotnet.microsoft.com/platform/support/policy/dotnet-core
         https://github.com/dotnet/core/blob/master/microsoft-support.md
       - Dependencies:
@@ -91,7 +89,7 @@
     <MaxApiPlatform>netcoreapp3.1</MaxApiPlatform>
     <LibraryPlatforms>$(MaxApiPlatform);netstandard2.0</LibraryPlatforms>
 
-    <SolutionPlatforms>netcoreapp3.1;netcoreapp1.0;netstandard2.1;netstandard2.0;net461;net452</SolutionPlatforms>
+    <SolutionPlatforms>netcoreapp3.1;netstandard2.1;netstandard2.0;net461;net452</SolutionPlatforms>
     <PackagePlatforms>netstandard2.1;netstandard2.0;net461;net452</PackagePlatforms>
 
     <MinClassicPlatforms>net48;net472;net462;net452</MinClassicPlatforms>

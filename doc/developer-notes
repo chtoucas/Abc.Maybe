@@ -1,6 +1,8 @@
 Developer Notes
 ===============
 
+Minimal requirement: .NET Core 3.1.300
+
 Versioning
 ----------
 
@@ -215,6 +217,10 @@ To find outdated NuGet references in supporting projects:
 NB: these commands will fail if the package were not restored before.
 NB: we used net48, but any other would do the job (and you can remove this).
 NB: Project test\Blank has no external references.
+
+Show / clear content of NuGet cache
+> dotnet nuget locals all -l
+> dotnet nuget locals all --clear
 
 Strong named key
 ----------------

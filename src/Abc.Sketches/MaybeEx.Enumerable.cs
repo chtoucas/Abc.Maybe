@@ -41,7 +41,7 @@ namespace Abc
         [Pure]
         public static Maybe<IEnumerable<T>> Collect<T>(IEnumerable<Maybe<T>> source)
         {
-#if !NETFRAMEWORK // Enumerable.Append
+#if !(NETFRAMEWORK || NETSTANDARD1_x) // Enumerable.Append
             return source.Aggregate(
                 Maybe.EmptyEnumerable<T>(),
                 (x, y) => x.ZipWith(y, Enumerable.Append));
@@ -52,7 +52,7 @@ namespace Abc
 #endif
         }
 
-#if NETFRAMEWORK // Enumerable.Append
+#if (NETFRAMEWORK || NETSTANDARD1_x) // Enumerable.Append
         private static IEnumerable<TSource> Append<TSource>(
             IEnumerable<TSource> source,
             TSource element)

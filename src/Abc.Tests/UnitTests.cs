@@ -2,27 +2,18 @@
 
 namespace Abc.Tests
 {
-    using System;
     using System.IO;
     using System.Runtime.InteropServices;
-#if !NETCOREAPP1_x // System.Runtime.Serialization
     using System.Runtime.Serialization.Formatters.Binary;
-#endif
 
     using Xunit;
 
     public static class UnitTests
     {
         [Fact]
-        public static void RuntimeSize()
-        {
+        public static void RuntimeSize() =>
             // 1 byte.
-#if NETCOREAPP1_x // Warning CS0618
-            Assert.Equal(1, Marshal.SizeOf<Unit>());
-#else
             Assert.Equal(1, Marshal.SizeOf(typeof(Unit)));
-#endif
-        }
 
         [Fact]
         public static void Singleton()
@@ -84,7 +75,6 @@ namespace Abc.Tests
         public static void ToString_CurrentCulture()
             => Assert.Equal("()", Unit.Default.ToString());
 
-#if !NETCOREAPP1_x // System.Runtime.Serialization
         [Fact]
         public static void Serialization()
         {
@@ -102,7 +92,5 @@ namespace Abc.Tests
             // Assert
             Assert.Equal(Unit.Default, unit);
         }
-#endif
-
     }
 }

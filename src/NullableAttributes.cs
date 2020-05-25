@@ -1,7 +1,7 @@
 ﻿// See LICENSE.dotnet in the project root for license information.
 
 #if !USE_ATTRS_FROM_ABC_MAYBE
-#if (NETFRAMEWORK || NETCOREAPP1_x || NETCOREAPP2_x || NETSTANDARD1_x || NETSTANDARD2_0) // Nullable attributes
+#if (NETSTANDARD2_0 || NETSTANDARD1_x || NETCOREAPP2_x || NETFRAMEWORK) // Nullable attributes
 #define INTERNAL_NULLABLE_ATTRIBUTES
 
 namespace System.Diagnostics.CodeAnalysis
