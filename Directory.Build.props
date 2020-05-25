@@ -80,21 +80,18 @@
         "MinCorePlatforms" lists the LTS versions and the latest one if not LTS.
         https://dotnet.microsoft.com/platform/support/policy/dotnet-core
         https://github.com/dotnet/core/blob/master/microsoft-support.md
-      - Minimal versions are chosen in order to work with:
+      - Dependencies:
         * Microsoft.Bcl.HashCode    requires .NET Framework >= 4.6.1
         * xunit.runner.visualstudio requires .NET Framework >= 4.5.2
-        * BenchmarkDotNet           requires .NET Standard  >= 2.0
     -->
     <MaxApiPlatform>netcoreapp3.1</MaxApiPlatform>
     <LibraryPlatforms>$(MaxApiPlatform);netstandard2.0</LibraryPlatforms>
 
-    <SolutionPlatforms>netcoreapp3.1;netstandard2.1;netstandard2.0;net461</SolutionPlatforms>
-    <!--<PackagePlatforms>netstandard2.1;netstandard2.0;netstandard1.0;net461</PackagePlatforms>-->
-    <PackagePlatforms>netstandard2.1;netstandard2.0;net461</PackagePlatforms>
+    <SolutionPlatforms>netcoreapp3.1;netstandard2.1;netstandard2.0;net461;net45</SolutionPlatforms>
+    <PackagePlatforms>netstandard2.1;netstandard2.0;netstandard1.0;net461;net45</PackagePlatforms>
 
     <MinClassicPlatforms>net48;net472;net462</MinClassicPlatforms>
-    <!--<MaxClassicPlatforms>net48;net472;net471;net47;net462;net461;net46;net452;net451;net45</MaxClassicPlatforms>-->
-    <MaxClassicPlatforms>net48;net472;net471;net47;net462;net461</MaxClassicPlatforms>
+    <MaxClassicPlatforms>net48;net472;net471;net47;net462;net461;net46;net452;net451;net45</MaxClassicPlatforms>
     <MinCorePlatforms>netcoreapp3.1;netcoreapp2.1</MinCorePlatforms>
     <MaxCorePlatforms>netcoreapp3.1;netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0</MaxCorePlatforms>
 
