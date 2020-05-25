@@ -14,9 +14,15 @@ namespace Abc.Tests
     public static class UnitTests
     {
         [Fact]
-        public static void RuntimeSize() =>
+        public static void RuntimeSize()
+        {
             // 1 byte.
+#if NETCOREAPP1_x // Warning CS0618
+            Assert.Equal(1, Marshal.SizeOf<Unit>());
+#else
             Assert.Equal(1, Marshal.SizeOf(typeof(Unit)));
+#endif
+        }
 
         [Fact]
         public static void Singleton()
