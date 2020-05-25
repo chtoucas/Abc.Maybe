@@ -21,8 +21,9 @@ namespace Abc.Utilities
         private EmptyIterator() { }
 
         // No one should ever call these properties.
-        [ExcludeFromCodeCoverage] [MaybeNull] public T Current => default;
-        [ExcludeFromCodeCoverage] [MaybeNull] object IEnumerator.Current => default;
+        // BONSANG! IEnumerator<T> interface.
+        [ExcludeFromCodeCoverage] public T Current => default!;
+        [ExcludeFromCodeCoverage] object? IEnumerator.Current => default;
 
         [Pure] public bool MoveNext() => false;
 

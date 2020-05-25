@@ -7,7 +7,7 @@ using System.Linq;
 
 internal sealed class AnagramEqualityComparer : EqualityComparer<string>
 {
-    public override bool Equals(string x, string y)
+    public override bool Equals(string? x, string? y)
     {
         if (ReferenceEquals(x, y)) { return true; }
         if (x is null || y is null) { return false; }
