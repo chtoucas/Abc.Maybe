@@ -1,11 +1,11 @@
 <Project>
 
+  <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets" />
+
   <!--
     Command-line options:
     - AbcVersion    Version of the package Abc.Maybe
   -->
-
-  <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets" />
 
   <Import Project="$(SourceRoot)Abc.Maybe.props" />
 

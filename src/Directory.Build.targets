@@ -1,5 +1,7 @@
 <Project>
 
+  <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets" />
+
   <!--
     Command-line options (default = disabled, to enable /p:XXX=true):
     - Retail                Meta-option
@@ -14,8 +16,6 @@
     - RelaxWarnings         default = false
     - RelaxAsyncWarnings    default = false
   -->
-
-  <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets" />
 
   <Import Project="$(MSBuildThisFileDirectory)Retail.props"
           Condition=" $(Retail) == 'true' and $(IsPackable) == 'true' " />
