@@ -10,7 +10,7 @@ Internal Changes
 - Very much improve all PowerShell scripts.
 - Enabled testing for a package with
   - .NET Core, version >= 2.0.
-  - .NET Framework, version >= 4.5.
+  - .NET Framework, version >= 4.5.2.
 - Added nullable annotations to the public API files.
 - Upgraded packages:
   * Microsoft.CodeAnalysis.FxCopAnalyzers 2.9.8 -> 3.0.0.
