@@ -5,8 +5,10 @@ namespace Abc
     using System;
     using System.IO;
     using System.Linq;
+#if !NETSTANDARD1_x
     using System.Runtime.Serialization;
     using System.Runtime.Serialization.Formatters.Binary;
+#endif
 
     using Xunit;
 
@@ -1285,6 +1287,7 @@ namespace Abc
         #endregion
     }
 
+#if !NETSTANDARD1_x // System.Runtime.Serialization
 
     // Serialization.
     public partial class MaybeTests
@@ -1397,4 +1400,6 @@ namespace Abc
             Assert.Throws<SerializationException>(() => formatter.Serialize(stream, some));
         }
     }
+
+#endif
 }

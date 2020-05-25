@@ -26,6 +26,11 @@ internal sealed class ReversedNaNComparer : IComparer
                 : Comparer<double>.Default.Compare(d0, right);
         }
 
+        // TODO: à revoir.
+#if NETSTANDARD1_x
+        return Comparer<object>.Default.Compare(x!, y!);
+#else
         return Comparer.Default.Compare(x, y);
+#endif
     }
 }

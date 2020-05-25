@@ -259,7 +259,7 @@ namespace Abc
             Assert.Equal(2L.GetHashCode(), lcmp.GetHashCode(Maybe.Some(2L)));
             Assert.Equal(uri.GetHashCode(), ucmp.GetHashCode(someUri));
 
-#if !(NETSTANDARD2_0 || NETFRAMEWORK) // GetHashCode(StringComparison)
+#if !(NETSTANDARD2_0 || NETSTANDARD1_x || NETFRAMEWORK) // GetHashCode(StringComparison)
             var scmp = MaybeComparer<string>.Default;
             Assert.Equal(text.GetHashCode(StringComparison.Ordinal), scmp.GetHashCode(someText));
 #endif
@@ -300,7 +300,7 @@ namespace Abc
             Assert.Equal(2L.GetHashCode(), lcmp.GetHashCode(Maybe.Some(2L)));
             Assert.Equal(uri.GetHashCode(), ucmp.GetHashCode(someUri));
 
-#if !(NETSTANDARD2_0 || NETFRAMEWORK) // GetHashCode(StringComparison)
+#if !(NETSTANDARD2_0 || NETSTANDARD1_x || NETFRAMEWORK) // GetHashCode(StringComparison)
             IEqualityComparer scmp = MaybeComparer<string>.Default;
             Assert.Equal(text.GetHashCode(StringComparison.Ordinal), scmp.GetHashCode(someText));
 #endif
@@ -447,7 +447,7 @@ namespace Abc
             Assert.Equal(2L.GetHashCode(), lcmp.GetHashCode(Maybe.Some(2L)));
             Assert.Equal(uri.GetHashCode(), ucmp.GetHashCode(someUri));
 
-#if !(NETSTANDARD2_0 || NETFRAMEWORK) // GetHashCode(StringComparison)
+#if !(NETSTANDARD2_0 || NETSTANDARD1_x || NETFRAMEWORK) // GetHashCode(StringComparison)
             var scmp = MaybeComparer<string>.Structural;
             Assert.Equal(text.GetHashCode(StringComparison.Ordinal), scmp.GetHashCode(someText));
 #endif

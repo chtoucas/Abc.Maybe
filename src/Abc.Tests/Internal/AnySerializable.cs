@@ -1,5 +1,7 @@
 ﻿// See LICENSE in the project root for license information.
 
+#if !NETSTANDARD1_x // System.Runtime.Serialization
+
 using System;
 using System.Diagnostics.CodeAnalysis;
 
@@ -22,3 +24,5 @@ internal sealed class AnySerializable : IEquatable<AnySerializable>
 
     public override int GetHashCode() => HashCode.Combine(Item1, Item2, Item3);
 }
+
+#endif
