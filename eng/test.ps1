@@ -113,8 +113,6 @@ try {
     if ($NoRestore)     { $args += "--no-restore" }
 
     # TODO: does not work.
-    # All platforms: replace "TargetFramework" by "TargetFrameworks" in csproj?
-    #   See build.ps1 too if we do so.
     # Fails with netcoreapp2.0???
     #   Unable to find "bin\Debug\netcoreapp2.0\testhost.dll".
     # Property IsTestProject?

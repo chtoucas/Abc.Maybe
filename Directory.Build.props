@@ -61,7 +61,10 @@
       For libraries, use
         <TargetFrameworks>$(LibraryPlatforms)</TargetFrameworks>
       otherwise use
+        <TargetFrameworks>$(MaxApiPlatform)</TargetFrameworks>
+      or
         <TargetFramework>$(MaxApiPlatform)</TargetFramework>
+      See comment in "src\Abc.Tests.csproj".
 
       Remarks:
       - If/when we create an API depending on a new .NET Standard, "MaxApiPlatform"

@@ -10,12 +10,10 @@ Build the solution for all supported platforms.
 .DESCRIPTION
 Build the solution for all supported platforms.
 To build a single project, specify its path via -ProjectPath.
+NB: the list of supported platforms can NOT be overriden.
 
 The default behaviour is to build libraries for all supported platforms, and to
 build exe projects only for "MaxApiPlatform".
-
-To build ALL projects (exe projects included) for ALL supported platforms,
-use -AllKnown. NB: the list of supported platforms can NOT be overriden.
 
 To target a single platform, use -Platform (no "s").
 
@@ -33,10 +31,6 @@ The runtime to build the project/solution for.
 
 .PARAMETER Platform
 The single platform to build the project/solution for.
-
-.PARAMETER AllKnown
-Build the project/solution (exe projects included) for ALL supported platforms.
-Ignored if -Platform is also set.
 
 .PARAMETER ListPlatforms
 Print the list of supported platforms, then exit.
@@ -62,7 +56,6 @@ param(
 
     [Parameter(Mandatory = $false)]
     [Alias("f")] [string] $Platform,
-    [Alias("a")] [switch] $AllKnown,
                  [switch] $ListPlatforms,
 
                  [switch] $Force,
@@ -90,7 +83,6 @@ Usage: reset.ps1 [arguments]
      -Runtime           the runtime to build the project/solution for.
 
   -f|-Platform          the platform to build the project/solution for.
-  -a|-AllKnown          build the project/solution for ALL supported platforms.
      -ListPlatforms     print the list of supported platforms, then exit.
 
      -Force             forces all dependencies to be resolved even if the last restore was successful.
@@ -160,10 +152,11 @@ try {
     else {
         $args += '/p:TargetFrameworks=\"' + ($platforms -join ";") + '\"'
 
-        # TODO: the option -AllKnown seems wrongs after all (exe projects).
-        if ($AllKnown) {
-            $args += "/p:TargetFramework="
-        }
+        # If one of the project use "TargetFramework" instead of
+        # "TargetFrameworks", we should add an option -AllKnown and
+        # if ($AllKnown) {
+        #     $args += "/p:TargetFramework="
+        # }
     }
 
     foreach ($arg in $Properties) {

@@ -1,7 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>$(MaxApiPlatform)</TargetFramework>
+    <!--
+      For testing multi-targets at once, this must be "TargetFrameworks"
+      not "TargetFramework".
+    -->
+    <TargetFrameworks>$(MaxApiPlatform)</TargetFrameworks>
 
     <!--
       IDE0002   Simplify Member Access
