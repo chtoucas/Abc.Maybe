@@ -3,15 +3,19 @@ Changelog for Abc.
 vNEXT
 -----
 
+
+2020-05-26, version 1.0.0-beta5
+-------------------------------
+
 Added
 - Support for SourceLink.
 
 Changed
-- Full support for .NET Standard 1.1+ / Core 2.0+ / Framework 4.5+.
+- Package targets:
+  * removed "netstandard1.0"
+  * added "netstandard1.1"
+  * added "net452".
 - DebugType from "embedded" or "full" to "portable" (package).
-
-Removed
-- Support for .NET Standard 1.0.
 
 Internal Changes
 - Very much improve all PowerShell scripts.
