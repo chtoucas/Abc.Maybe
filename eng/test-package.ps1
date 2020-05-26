@@ -496,8 +496,8 @@ function Invoke-TestAny {
         [string] $runtime
     )
 
-    $targetFrameworks = $platformList `
-        | where { $_ -notin $OLDSTYLE_PLATFORMS } | Get-TargetFrameworks
+    $frameworks = $platformList | where { $_ -notin $OLDSTYLE_PLATFORMS }
+    $targetFrameworks = Get-TargetFrameworks $frameworks
 
     $args = "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
     if ($runtime) { $args += "--runtime:$runtime" }
@@ -597,7 +597,7 @@ function Invoke-TestAll {
     $platformVer = $allKnown ? "ALL versions"
         : $noClassic ? "LTS versions"
         : $noCore ? "last minor version of each major version"
-        : "selected versions"
+        : "default versions"
 
     "`nBatch testing the package for $platformSet, $platformVer, and {0}." `
         -f (Get-RuntimeLabel $runtime) `
