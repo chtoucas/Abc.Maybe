@@ -50,6 +50,8 @@ param(
 const TEST_PROJECT_NAME "Abc.Tests"
 const TEST_PROJECT (Join-Path $SRC_DIR $TEST_PROJECT_NAME -Resolve)
 
+const OLDSTYLE_PLATFORMS @("net451", "net45")
+
 #endregion
 ################################################################################
 #region Helpers
@@ -87,7 +89,7 @@ try {
 
     $platforms = Get-TestPlatforms
     $minClassic, $maxClassic, $minCore, $maxCore  = Get-SupportedPlatforms
-    $allPlatforms = $maxCore + $maxClassic
+    $allPlatforms = ($maxCore + $maxClassic) | where { $_ -notin $OLDSTYLE_PLATFORMS }
 
     if ($ListPlatforms) {
         say ("Default platform set:`n- {0}" -f ($platforms -join "`n- "))
