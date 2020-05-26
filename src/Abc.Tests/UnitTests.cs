@@ -5,9 +5,10 @@ namespace Abc.Tests
 #if API_PROFILE_21 // ValueTuple
     using System;
 #endif
-    using System.IO;
     using System.Runtime.InteropServices;
+
 #if !NETSTANDARD1_x // System.Runtime.Serialization
+    using System.IO;
     using System.Runtime.Serialization.Formatters.Binary;
 #endif
 
@@ -16,15 +17,9 @@ namespace Abc.Tests
     public static class UnitTests
     {
         [Fact]
-        public static void RuntimeSize()
-        {
+        public static void RuntimeSize() =>
             // 1 byte.
-#if NETSTANDARD1_x // Marshal.SizeOf()
-            Assert.Equal(1, Marshal.SizeOf<Unit>());
-#else
             Assert.Equal(1, Marshal.SizeOf(typeof(Unit)));
-#endif
-        }
 
         [Fact]
         public static void Singleton()

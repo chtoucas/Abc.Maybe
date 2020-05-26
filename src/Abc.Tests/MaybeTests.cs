@@ -3,9 +3,10 @@
 namespace Abc
 {
     using System;
-    using System.IO;
     using System.Linq;
-#if !NETSTANDARD1_x
+
+#if !NETSTANDARD1_x // System.Runtime.Serialization
+    using System.IO;
     using System.Runtime.Serialization;
     using System.Runtime.Serialization.Formatters.Binary;
 #endif

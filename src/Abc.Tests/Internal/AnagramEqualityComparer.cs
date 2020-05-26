@@ -5,6 +5,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+// Beware, with .NET Standard 1.x, we must call ToCharArray() explicitely.
+
 internal sealed class AnagramEqualityComparer : EqualityComparer<string>
 {
     public override bool Equals(string? x, string? y)
@@ -13,9 +15,9 @@ internal sealed class AnagramEqualityComparer : EqualityComparer<string>
         if (x is null || y is null) { return false; }
         int length = x.Length;
         if (length != y.Length) { return false; }
-        using (var en = x.OrderBy(i => i).GetEnumerator())
+        using (var en = x.ToCharArray().OrderBy(c => c).GetEnumerator())
         {
-            foreach (char c in y.OrderBy(i => i))
+            foreach (char c in y.ToCharArray().OrderBy(c => c))
             {
                 en.MoveNext();
                 if (c != en.Current) { return false; }
@@ -28,7 +30,7 @@ internal sealed class AnagramEqualityComparer : EqualityComparer<string>
     {
         if (obj is null) { return 0; }
         int hash = obj.Length;
-        foreach (char c in obj)
+        foreach (char c in obj.ToCharArray())
         {
             hash ^= c;
         }
