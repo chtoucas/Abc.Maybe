@@ -70,18 +70,6 @@ Usage: reset.ps1 [arguments]
   -h|-Help              print this help and exit.
 
 Arguments starting with '/p:' are passed through to dotnet.exe.
-> test.ps1 /p:Retail=true
-> test.ps1 /p:HideInternals=true
-> test.ps1 /p:PatchEquality=true
-> test.ps1 /p:PrintSettings=true
-
-Examples.
-> test.ps1
-> test.ps1 /p:Retail=true
-> test.ps1 -c Release
-
-Looking for more help?
-> Get-Help -Detailed test.ps1
 
 "@
 }
@@ -112,12 +100,15 @@ try {
     if ($Runtime)       { $args += "--runtime:$runtime" }
     if ($NoRestore)     { $args += "--no-restore" }
 
-    # TODO: fails with netcoreapp2.0???
-    #   Unable to find "bin\Debug\netcoreapp2.0\testhost.dll".
-    # Property IsTestProject?
     if ($Platform)  {
         if ($Platform -notin $allPlatforms) {
             die "The specified platform is not supported: ""$Platform""."
+        }
+        if ($Platform -eq "netcoreapp2.0") {
+            # TODO: fails but works fine with test-package.ps1???
+            #   "Unable to find "bin\Debug\netcoreapp2.0\testhost.dll".
+            # Property IsTestProject? Microsoft.TestPlatform.TestHost?
+            die """dotnet test"" refuses to run when targetting ""netcoreapp2.0"", don't know why."
         }
 
         $args += "/p:TargetFrameworks=$Platform", "/p:TargetFramework=$Platform"
@@ -133,7 +124,6 @@ try {
         }
     }
 
-    # Do not invoke "dotnet restore" before, it will fail w/ -Platform.
     & dotnet test $TEST_PROJECT $args
         || die "Test task failed."
 }
