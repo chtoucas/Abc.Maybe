@@ -127,18 +127,4 @@
     <ApiProfileMoniker Condition=" $(TargetFramework) == $(MaxPlatform) ">netstandard2.1</ApiProfileMoniker>
   </PropertyGroup>
 
-  <!--
-    Microsoft.Bcl.HashCode does not support .NET Framework <= 4.6
-
-    We use "AddHashCodePackage" both in "src\Abc.Tests" and in "test\Abc.PackageTests".
-  -->
-  <PropertyGroup>
-    <AddHashCodePackage>true</AddHashCodePackage>
-  </PropertyGroup>
-  <PropertyGroup Condition=" $(TargetFramework) != '' ">
-    <AddHashCodePackage Condition=" $(TargetFramework.StartsWith('net45')) ">false</AddHashCodePackage>
-    <AddHashCodePackage Condition=" $(TargetFramework) == 'net46' ">false</AddHashCodePackage>
-    <AddHashCodePackage Condition=" $(TargetFramework.StartsWith('netstandard1.')) ">false</AddHashCodePackage>
-  </PropertyGroup>
-
 </Project>

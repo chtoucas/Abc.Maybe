@@ -1,11 +1,21 @@
 ﻿<Project>
 
+  <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets" />
+
   <!--
     Dependencies.
-    - Microsoft.Bcl.HashCode does not support .NET Framework <= 4.6, see D.B.props
+    - Microsoft.Bcl.HashCode does not support .NET Framework <= 4.6
     - Microsoft.NET.Test.Sdk can cause problems with older platforms, see "eng\test.ps1"
     - xunit.runner.visualstudio does not support .NET Framework <= 4.5.1
   -->
+
+  <PropertyGroup>
+    <AddHashCodePackage>true</AddHashCodePackage>
+    <AddHashCodePackage Condition=" $(TargetFramework.StartsWith('net45')) ">false</AddHashCodePackage>
+    <AddHashCodePackage Condition=" $(TargetFramework) == 'net46' ">false</AddHashCodePackage>
+    <AddHashCodePackage Condition=" $(TargetFramework.StartsWith('netstandard1.')) ">false</AddHashCodePackage>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0"
                       Condition=" $(AddHashCodePackage) == 'true' " />

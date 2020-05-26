@@ -28,6 +28,4 @@
     <Compile Include="$(SourceRoot)Abc.Tests\**\*.cs" Exclude="@(FilesToExclude)" />
   </ItemGroup>
 
-  <Import Project="$(SourceRoot)Abc.Tests\Packages.props" />
-
 </Project>
