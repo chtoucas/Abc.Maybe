@@ -51,7 +51,7 @@
     <RepositoryUrl>https://github.com/chtoucas/Abc.Maybe/</RepositoryUrl>
   </PropertyGroup>
 
-  <!-- Supported platforms & API profiles -->
+  <!-- Supported platforms -->
   <PropertyGroup>
     <!--
       IMPORTANT: do NOT use MSBuild property resolution $() when a property is
@@ -85,33 +85,21 @@
       - Dependencies:
         * Microsoft.Bcl.HashCode    requires .NET Framework >= 4.6.1
         * xunit.runner.visualstudio requires .NET Framework >= 4.5.2
-
-        Should work with .NET Standard 1.2 (after we fix ApiProfileMoniker).
-        https://dotnet.microsoft.com/platform/dotnet-standard#versions
     -->
     <MaxApiPlatform>netcoreapp3.1</MaxApiPlatform>
     <LibraryPlatforms>$(MaxApiPlatform);netstandard2.0</LibraryPlatforms>
 
-    <SolutionPlatforms>netcoreapp3.1;netstandard2.1;netstandard2.0;netstandard1.2;net461;net452</SolutionPlatforms>
+    <!--
+        Should work with .NET Standard 1.1.
+        https://dotnet.microsoft.com/platform/dotnet-standard#versions
+    -->
+    <SolutionPlatforms>netcoreapp3.1;netstandard2.1;netstandard2.0;net461;net452</SolutionPlatforms>
     <PackagePlatforms>netstandard2.1;netstandard2.0;net461;net452</PackagePlatforms>
 
     <MinClassicPlatforms>net48;net472;net462;net452</MinClassicPlatforms>
     <MaxClassicPlatforms>net48;net472;net471;net47;net462;net461;net46;net452</MaxClassicPlatforms>
     <MinCorePlatforms>netcoreapp3.1;netcoreapp2.1</MinCorePlatforms>
     <MaxCorePlatforms>netcoreapp3.1;netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0</MaxCorePlatforms>
-
-    <!-- FIXME: Abc.Tests and eng\build.ps1 /p:PrintSettings=true
-      See "SolutionPlatforms" and "PackagePlatforms".
-      Profile 2.1: "netstandard2.1" and "netcoreapp3.1" ie "MaxApiPlatform".
-      Profile 2.0 (default): everything else.
-
-      D.B.targets is not the right place to define "ApiProfileMoniker" as we
-      need it in Abc.Maybe.csproj to define the PublicAPI files.
-      The only other place where we need it is D.B.targets, for API_PROFILE_21.
-    -->
-    <ApiProfileMoniker>netstandard2.0</ApiProfileMoniker>
-    <ApiProfileMoniker Condition=" $(TargetFramework) == 'netstandard2.1' ">netstandard2.1</ApiProfileMoniker>
-    <ApiProfileMoniker Condition=" $(TargetFramework) == $(MaxApiPlatform) ">netstandard2.1</ApiProfileMoniker>
   </PropertyGroup>
 
 </Project>
