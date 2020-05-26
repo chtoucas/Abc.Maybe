@@ -117,7 +117,7 @@ Hello "this is the build script.`n"
 try {
     ___BEGIN___
 
-    $platforms = Get-SolutionPlatforms
+    $platforms = Get-BuildPlatforms
     $minClassic, $maxClassic, $minCore, $maxCore  = Get-SupportedPlatforms
     $allPlatforms = $maxCore + $maxClassic
 

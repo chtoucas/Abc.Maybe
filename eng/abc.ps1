@@ -228,7 +228,7 @@ function Get-PackageVersion {
 
 # ------------------------------------------------------------------------------
 
-function Get-SolutionPlatforms {
+function Get-BuildPlatforms {
     [CmdletBinding()]
     param(
         [switch] $asString
@@ -237,17 +237,13 @@ function Get-SolutionPlatforms {
     ___confess "Getting the supported platforms by the solution."
 
     [SelectXmlInfo[]] $nodes = [Xml] (Get-Content $PLATFORMS_PROPS) `
-        | Select-Xml -XPath "//Project/PropertyGroup/SolutionPlatforms" `
-        #| Select-Xml -XPath "//Project/PropertyGroup/PackagePlatforms/.." `
+        | Select-Xml -XPath "//Project/PropertyGroup/BuildPlatforms"
 
     if ($nodes.Count -ne 1) {
         croak "The property file for ""$PLATFORMS_PROPS"" is not ""valid""."
     }
 
     $platforms = $nodes[0].Node.InnerXML.Trim()
-    #$pg = $nodes[0].Node
-    #$maxApiPlatform = $pg.MaxApiPlatform.Trim()
-    #$platforms = "$maxApiPlatform;" + $pg.PackagePlatforms.Trim()
 
     if ($asString) {
         # Ready for MSBuild.exe/dotnet.exe.
@@ -288,7 +284,7 @@ function Get-TestPlatforms {
 
 # ------------------------------------------------------------------------------
 
-function Get-PackagePlatforms {
+function Get-PackPlatforms {
     [CmdletBinding()]
     param(
         [switch] $asString
@@ -297,7 +293,7 @@ function Get-PackagePlatforms {
     ___confess "Getting the supported platforms by the package."
 
     [SelectXmlInfo[]] $nodes = [Xml] (Get-Content $PLATFORMS_PROPS) `
-        | Select-Xml -XPath "//Project/PropertyGroup/PackagePlatforms" `
+        | Select-Xml -XPath "//Project/PropertyGroup/PackPlatforms" `
 
     if ($nodes.Count -ne 1) {
         croak "The property file for ""$PLATFORMS_PROPS"" is not ""valid""."
