@@ -112,8 +112,7 @@ try {
     if ($Runtime)       { $args += "--runtime:$runtime" }
     if ($NoRestore)     { $args += "--no-restore" }
 
-    # TODO: does not work.
-    # Fails with netcoreapp2.0???
+    # TODO: fails with netcoreapp2.0???
     #   Unable to find "bin\Debug\netcoreapp2.0\testhost.dll".
     # Property IsTestProject?
     if ($Platform)  {
