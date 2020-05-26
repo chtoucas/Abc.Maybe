@@ -14,7 +14,7 @@
       better keep it empty.
     -->
     <PreReleaseCycle>beta</PreReleaseCycle>
-    <PreReleaseNumber>4</PreReleaseNumber>
+    <PreReleaseNumber>5</PreReleaseNumber>
 
     <Title>A Safe Yet Effective Option Type</Title>
 

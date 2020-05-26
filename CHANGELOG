@@ -3,6 +3,9 @@ Changelog for Abc.
 vNEXT
 -----
 
+Added
+- Support for SourceLink.
+
 Changed
 - Full support for .NET Standard 1.1+ / Core 2.0+ / Framework 4.5+.
 - DebugType from "embedded" or "full" to "portable" (package).
