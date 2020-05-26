@@ -103,8 +103,8 @@ param(
 
 # ------------------------------------------------------------------------------
 
-const TESTS_PROJECT_NAME "Abc.PackageTests"
-const TESTS_PROJECT (Join-Path $TEST_DIR $TESTS_PROJECT_NAME -Resolve)
+const TEST_PROJECT_NAME "Abc.PackageTests"
+const TEST_PROJECT (Join-Path $TEST_DIR $TEST_PROJECT_NAME -Resolve)
 
 # NB: currently testing for these platforms is not enabled; see D.B.props.
 const XUNIT_PLATFORM "net452"
@@ -312,7 +312,7 @@ function Invoke-Restore {
     $args = "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
     if ($runtime)  { $args += "--runtime:$runtime" }
 
-    & dotnet restore $TESTS_PROJECT $args
+    & dotnet restore $TEST_PROJECT $args
         || die "Restore task failed."
 
     say-softly "Dependencies successfully restored."
@@ -342,7 +342,7 @@ function Invoke-Build {
     $args = "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
     if ($runtime)   { $args += "--runtime:$runtime" }
 
-    & dotnet build $TESTS_PROJECT $args
+    & dotnet build $TEST_PROJECT $args
         || die "Build task failed."
 
     say-softly "Project successfully built."
@@ -390,12 +390,12 @@ function Invoke-TestOldStyle {
         if ($runtime)   { $args += "--runtime:$runtime" }
         if ($noRestore) { $args += "--no-restore" }
 
-        & dotnet build $TESTS_PROJECT --nologo $args
+        & dotnet build $TEST_PROJECT --nologo $args
             || die "Build failed when targeting ""$platform""."
     }
 
     # NB: Release, not Debug. This is hard-coded within the project file.
-    $asm = Join-Path $TESTS_PROJECT "bin\Release\$platform\$TESTS_PROJECT_NAME.dll" -Resolve
+    $asm = Join-Path $TEST_PROJECT "bin\Release\$platform\$TEST_PROJECT_NAME.dll" -Resolve
 
     & $xunit $asm
         || die "Test task failed when targeting ""$platform""."
@@ -441,7 +441,7 @@ function Invoke-TestSingle {
     if ($noBuild)       { $args += "--no-build" }   # NB: no-build => no-restore
     elseif ($noRestore) { $args += "--no-restore" }
 
-    & dotnet test $TESTS_PROJECT --nologo $args
+    & dotnet test $TEST_PROJECT --nologo $args
         || die "Test task failed when targeting ""$platform""."
 
     say-softly "Test completed successfully."
@@ -502,7 +502,7 @@ function Invoke-TestAny {
     $args = "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
     if ($runtime) { $args += "--runtime:$runtime" }
 
-    & dotnet test $TESTS_PROJECT --nologo $args
+    & dotnet test $TEST_PROJECT --nologo $args
         || die "Test task failed."
 
     say-softly "Test completed successfully."
