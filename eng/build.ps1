@@ -33,13 +33,16 @@ The runtime to build the project/solution for.
 
 .PARAMETER Platform
 The single platform to build the project/solution for.
-Ignored if -AllKnown is also set and equals $true.
 
 .PARAMETER AllKnown
 Build the project/solution (exe projects included) for ALL supported platforms.
+Ignored if -Platform is also set.
 
 .PARAMETER ListPlatforms
-Display the list of all supported platforms, then exit.
+Print the list of supported platforms, then exit.
+
+.PARAMETER Force
+Forces all dependencies to be resolved even if the last restore was successful.
 
 .PARAMETER NoRestore
 Do not restore the project/solution.
@@ -58,10 +61,12 @@ param(
                  [string] $Runtime,
 
     [Parameter(Mandatory = $false)]
-                 [string] $Platform,
+    [Alias("f")] [string] $Platform,
+    [Alias("s")] [switch] $ValidatePlatform,
     [Alias("a")] [switch] $AllKnown,
-                 [switch] $ListPlatforms,
+    [Alias("l")] [switch] $ListPlatforms,
 
+                 [switch] $Force,
                  [switch] $NoRestore,
     [Alias("h")] [switch] $Help,
 
@@ -85,10 +90,11 @@ Usage: reset.ps1 [arguments]
   -c|-Configuration     the configuration to build the project/solution for.
      -Runtime           the runtime to build the project/solution for.
 
-     -Platform          the platform to build the project/solution for.
+  -f|-Platform          the platform to build the project/solution for.
   -a|-AllKnown          build the project/solution for ALL supported platforms.
-     -ListPlatforms     print the list of supported platforms, then exit.
+  -l|-ListPlatforms     print the list of supported platforms, then exit.
 
+     -Force             forces all dependencies to be resolved even if the last restore was successful.
      -NoRestore         do not restore the project/solution.
   -h|-Help              print this help and exit.
 
@@ -121,9 +127,12 @@ try {
     ___BEGIN___
 
     $platforms = Get-SolutionPlatforms
+    $minClassic, $maxClassic, $minCore, $maxCore  = Get-SupportedPlatforms
+    $allPlatforms = $maxCore + $maxClassic
 
     if ($ListPlatforms) {
-        say ("Supported platforms:`n- {0}" -f ($platforms -join "`n- "))
+        say ("Default platform set:`n- {0}" -f ($platforms -join "`n- "))
+        say ("`nSupported platforms (option -Platform):`n- {0}" -f ($allPlatforms -join "`n- "))
         exit
     }
 
@@ -139,19 +148,23 @@ try {
     $args = @()
     if ($Configuration) { $args += "-c:$Configuration" }
     if ($Runtime)       { $args += "--runtime:$runtime" }
+    if ($Force)         { $args += "--force" }
     if ($NoRestore)     { $args += "--no-restore" }
 
-    $args += '/p:TargetFrameworks=\"' + ($platforms -join ";") + '\"'
-
-    if ($AllKnown)  {
-        $args += "/p:TargetFramework="
-    }
-    elseif ($Platform)  {
-        if ($Platform -notin $platforms) {
+    if ($Platform)  {
+        if ($Platform -notin $allPlatforms) {
             die "The specified platform is not supported: ""$Platform""."
         }
 
-        $args += "/p:TargetFramework=$Platform"
+        $args += "/p:TargetFrameworks=$Platform", "/p:TargetFramework=$Platform"
+    }
+    else {
+        $args += '/p:TargetFrameworks=\"' + ($platforms -join ";") + '\"'
+
+        # TODO: the option -AllKnown seems wrongs after all (exe projects).
+        if ($AllKnown) {
+            $args += "/p:TargetFramework="
+        }
     }
 
     foreach ($arg in $Properties) {
