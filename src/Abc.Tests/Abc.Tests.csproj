@@ -19,15 +19,9 @@
   </ItemGroup>
 
   <!-- Dependencies -->
-  <!-- Microsoft.Bcl.HashCode    does not support .NET Framework <= 4.6 -->
-  <!-- Microsoft.NET.Test.Sdk    can cause problems with "eng\test.ps1" -->
+  <!-- Microsoft.Bcl.HashCode    does not support .NET Framework <= 4.6, see D.B.props -->
+  <!-- Microsoft.NET.Test.Sdk    can cause problems with older platforms, see "eng\test.ps1" -->
   <!-- xunit.runner.visualstudio does not support .NET Framework <= 4.5.1 -->
-  <PropertyGroup>
-    <HashCodePackage>true</HashCodePackage>
-    <HashCodePackage Condition=" $(TargetFramework.StartsWith('net45')) ">false</HashCodePackage>
-    <HashCodePackage Condition=" $(TargetFramework) == 'net46' ">false</HashCodePackage>
-    <HashCodePackage Condition=" $(TargetFramework.StartsWith('netstandard1.')) ">false</HashCodePackage>
-  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild" Version="2.8.1">
       <PrivateAssets>all</PrivateAssets>

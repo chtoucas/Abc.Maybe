@@ -64,7 +64,8 @@
         <TargetFrameworks>$(MaxPlatform)</TargetFrameworks>
       Do not use "TargetFramework" (no "s"), otherwise testing multi-targets
       at once won't work. Another benefit is that "TargetFramework" won't be
-      empty when importing in D.B.props.
+      empty when importing in D.B.props (important for what we do at the end
+      of this file).
 
       Remarks:
       - If/when we create an API depending on a new .NET Standard, "MaxPlatform"
@@ -102,6 +103,42 @@
     <MaxClassicPlatforms>net48;net472;net471;net47;net462;net461;net46;net452</MaxClassicPlatforms>
     <MinCorePlatforms>netcoreapp3.1;netcoreapp2.1</MinCorePlatforms>
     <MaxCorePlatforms>netcoreapp3.1;netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0</MaxCorePlatforms>
+  </PropertyGroup>
+
+  <!--
+    What follows only works if we use "TargetFrameworks" in MSBuild projects.
+  -->
+
+  <!-- API profiles -->
+  <PropertyGroup>
+    <!--
+      See "BuildPlatforms" and "PackPlatforms" above.
+      Profile 2.1: "netstandard2.1" and "netcoreapp3.1" ie "MaxPlatform".
+      Profile 2.0 (default): everything else.
+
+      In D.B.props, we use "ApiProfileMoniker" both in "src\Abc.Maybe" and in
+      D.B.targets.
+    -->
+    <ApiProfileMoniker>netstandard2.0</ApiProfileMoniker>
+  </PropertyGroup>
+  <PropertyGroup Condition=" $(TargetFramework) != '' ">
+    <ApiProfileMoniker Condition=" $(TargetFramework) == 'netstandard2.1' ">netstandard2.1</ApiProfileMoniker>
+    <ApiProfileMoniker Condition=" $(TargetFramework) == $(MaxPlatform) ">netstandard2.1</ApiProfileMoniker>
+  </PropertyGroup>
+
+  <!--
+    Microsoft.Bcl.HashCode does not support .NET Framework <= 4.6
+
+    In D.B.targets, we use "HashCodePackage" both in "src\Abc.Tests" and in
+    "test\Abc.PackageTests".
+  -->
+  <PropertyGroup>
+    <HashCodePackage>true</HashCodePackage>
+  </PropertyGroup>
+  <PropertyGroup Condition=" $(TargetFramework) != '' ">
+    <HashCodePackage Condition=" $(TargetFramework.StartsWith('net45')) ">false</HashCodePackage>
+    <HashCodePackage Condition=" $(TargetFramework) == 'net46' ">false</HashCodePackage>
+    <HashCodePackage Condition=" $(TargetFramework.StartsWith('netstandard1.')) ">false</HashCodePackage>
   </PropertyGroup>
 
 </Project>
