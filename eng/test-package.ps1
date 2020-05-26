@@ -278,7 +278,7 @@ function Get-RuntimeLabel {
 function Get-TargetFrameworks {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNull()]
         [string[]] $platformList
     )
