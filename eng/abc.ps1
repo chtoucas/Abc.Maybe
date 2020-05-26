@@ -260,6 +260,34 @@ function Get-SolutionPlatforms {
 
 # ------------------------------------------------------------------------------
 
+function Get-TestPlatforms {
+    [CmdletBinding()]
+    param(
+        [switch] $asString
+    )
+
+    ___confess "Getting the supported platforms by the test project."
+
+    [SelectXmlInfo[]] $nodes = [Xml] (Get-Content $PLATFORMS_PROPS) `
+        | Select-Xml -XPath "//Project/PropertyGroup/TestPlatforms" `
+
+    if ($nodes.Count -ne 1) {
+        croak "The property file for ""$PLATFORMS_PROPS"" is not ""valid""."
+    }
+
+    $platforms = $nodes[0].Node.InnerXML.Trim()
+
+    if ($asString) {
+        # Ready for MSBuild.exe/dotnet.exe.
+        return "\""$platforms\"""
+    }
+    else {
+        return $platforms.Split(";")
+    }
+}
+
+# ------------------------------------------------------------------------------
+
 function Get-PackagePlatforms {
     [CmdletBinding()]
     param(

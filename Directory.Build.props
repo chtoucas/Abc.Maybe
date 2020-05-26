@@ -56,7 +56,7 @@
     <!--
       IMPORTANT: do NOT use MSBuild property resolution $() when a property is
       going to be parsed by a PowerShell script, which means everything except
-      "MaxApiPlatform" and "LibraryPlatforms".
+      the first group of properties.
 
       For libraries, use
         <TargetFrameworks>$(LibraryPlatforms)</TargetFrameworks>
@@ -90,10 +90,21 @@
     <LibraryPlatforms>$(MaxApiPlatform);netstandard2.0</LibraryPlatforms>
 
     <!--
-        Should work with .NET Standard 1.1.
-        https://dotnet.microsoft.com/platform/dotnet-standard#versions
+      Do NOT add .NET Standard 1.0, v1.1 has everything we need but with
+      a much simpler dependency graph.
+      NB: does not cover "Abc.Tests" which has a fixed target.
+          In fact, dotnet will restore this project for the platforms listed
+          in "SolutionPlatforms", but it will build it only for "MaxApiPlatform".
+      https://dotnet.microsoft.com/platform/dotnet-standard#versions
+      https://github.com/dotnet/standard/blob/master/docs/versions.md
     -->
-    <SolutionPlatforms>netcoreapp3.1;netstandard2.1;netstandard2.0;net461;net452</SolutionPlatforms>
+    <SolutionPlatforms>netstandard2.1;netstandard1.1;netcoreapp3.1;netcoreapp2.0;net48;net45</SolutionPlatforms>
+
+    <!--
+      For older platforms, use "test-adapter-path" ???
+    -->
+    <TestPlatforms>netcoreapp3.1;netcoreapp2.1;net48;net452</TestPlatforms>
+
     <PackagePlatforms>netstandard2.1;netstandard2.0;net461;net452</PackagePlatforms>
 
     <MinClassicPlatforms>net48;net472;net462;net452</MinClassicPlatforms>
