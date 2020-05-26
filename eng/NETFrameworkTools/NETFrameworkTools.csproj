@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>$(MaxApiPlatform)</TargetFrameworks>
+    <TargetFrameworks>$(MaxPlatform)</TargetFrameworks>
     <RestorePackagesPath>../../__/tools/</RestorePackagesPath>
   </PropertyGroup>
 

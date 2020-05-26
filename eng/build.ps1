@@ -13,7 +13,7 @@ To build a single project, specify its path via -ProjectPath.
 NB: the list of supported platforms can NOT be overriden.
 
 The default behaviour is to build libraries for all supported platforms, and to
-build exe projects only for "MaxApiPlatform".
+build exe projects only for "MaxPlatform".
 
 To target a single platform, use -Platform (no "s").
 

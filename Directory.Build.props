@@ -61,21 +61,26 @@
       For libraries, use
         <TargetFrameworks>$(LibraryPlatforms)</TargetFrameworks>
       otherwise use
-        <TargetFrameworks>$(MaxApiPlatform)</TargetFrameworks>
-      or
-        <TargetFramework>$(MaxApiPlatform)</TargetFramework>
-      See comment in "src\Abc.Tests.csproj".
+        <TargetFrameworks>$(MaxPlatform)</TargetFrameworks>
+      Do not use "TargetFramework" (no "s"), otherwise testing multi-targets
+      at once won't work. Another benefit is that "TargetFramework" won't be
+      empty when importing in D.B.props.
 
       Remarks:
-      - If/when we create an API depending on a new .NET Standard, "MaxApiPlatform"
+      - If/when we create an API depending on a new .NET Standard, "MaxPlatform"
         should be the last available platform supporting it. We can also update
-        "MaxApiPlatform" just to benefit from the last improvements it could bring.
+        "MaxPlatform" just to benefit from the last improvements it could bring.
       - The first listed framework in "LibraryPlatforms" is the one used by the
         VS editor. Full NRT-analysis requires .NET Core 3.0 or above, .NET Standard
         does not include the nullable annotations (version 2.1 defines the nullable
         attributes but VS doesn't use them if I understand things correctly).
         We use the version 3.1 instead of 3.0 because the former is LTS and the
         latter is already EOL.
+      - Platforms grouped by dotnet tasks.
+        Do NOT add .NET Standard 1.0, v1.1 has everything we need but with
+        a much simpler dependency graph.
+        https://dotnet.microsoft.com/platform/dotnet-standard#versions
+        https://github.com/dotnet/standard/blob/master/docs/versions.md
       - .NET Framework (Classic).
         "MinClassicPlatforms" lists the last minor version of each major version.
         "MaxClassicPlatforms" must contain "MinClassicPlatforms".
@@ -85,23 +90,10 @@
         "MaxCorePlatforms" must contain "MinCorePlatforms".
         https://dotnet.microsoft.com/platform/support/policy/dotnet-core
         https://github.com/dotnet/core/blob/master/microsoft-support.md
-      - Dependencies (Abc.Tests):
-        * Microsoft.Bcl.HashCode    requires .NET Framework >= 4.6.1
-        * xunit.runner.visualstudio requires .NET Framework >= 4.5.2
     -->
-    <MaxApiPlatform>netcoreapp3.1</MaxApiPlatform>
-    <LibraryPlatforms>$(MaxApiPlatform);netstandard2.0</LibraryPlatforms>
+    <MaxPlatform>netcoreapp3.1</MaxPlatform>
+    <LibraryPlatforms>$(MaxPlatform);netstandard2.0</LibraryPlatforms>
 
-    <!--
-      Platforms grouped by dotnet tasks.
-      Do NOT add .NET Standard 1.0, v1.1 has everything we need but with
-      a much simpler dependency graph.
-      NB: does not cover "Abc.Tests" which has a fixed target.
-          In fact, dotnet will restore this project for the platforms listed
-          in "BuildPlatforms", but it will build it only for "MaxApiPlatform".
-      https://dotnet.microsoft.com/platform/dotnet-standard#versions
-      https://github.com/dotnet/standard/blob/master/docs/versions.md
-    -->
     <BuildPlatforms>netstandard2.1;netstandard1.1;netcoreapp3.1;netcoreapp2.0;net48;net45</BuildPlatforms>
     <TestPlatforms>netcoreapp3.1;netcoreapp2.0;net48;net452</TestPlatforms>
     <PackPlatforms>netstandard2.1;netstandard2.0;net461;net452</PackPlatforms>

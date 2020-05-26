@@ -8,7 +8,7 @@
   -->
 
   <PropertyGroup>
-    <TargetFramework>$(MaxApiPlatform)</TargetFramework>
+    <TargetFramework>$(MaxPlatform)</TargetFramework>
     <RestorePackagesPath>$(RepositoryRoot)__\nuget-cache\</RestorePackagesPath>
   </PropertyGroup>
 
