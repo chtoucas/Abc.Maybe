@@ -1,11 +1,16 @@
 <Project>
 
+  <PropertyGroup>
+    <MyAssemblyTitle Condition=" $(MyAssemblyTitle) == '' ">$(AssemblyName)</MyAssemblyTitle>
+    <AssemblyTitle>$(MyAssemblyTitle) [$(TargetFramework)]</AssemblyTitle>
+  </PropertyGroup>
+
   <!-- API profiles -->
   <PropertyGroup Condition=" $(ApiProfileMoniker) == '' ">
     <!--
       "ApiProfileMoniker" is also initialised within "src\Abc.Maybe.csproj".
 
-      See "SolutionPlatforms" and "PackagePlatforms" in D.B.props.
+      See "BuildPlatforms" and "PackPlatforms" in D.B.props.
       Profile 2.1: "netstandard2.1" and "netcoreapp3.1" ie "MaxApiPlatform".
       Profile 2.0 (default): everything else.
     -->

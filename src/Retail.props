@@ -31,7 +31,6 @@
     <InformationalVersion Condition=" $(RepositoryCommit) != '' ">$(InformationalVersion)+$(RepositoryCommit.Substring(0, 7))</InformationalVersion>
 
     <!-- Assembly description -->
-    <AssemblyTitle>$(MyAssemblyTitle) [$(TargetFramework)]</AssemblyTitle>
     <Description>$(MyAssemblyTitle), built [$([System.DateTime]::UtcNow.ToString("r"))].</Description>
   </PropertyGroup>
 
