@@ -3,7 +3,7 @@
   <!-- API profiles -->
   <PropertyGroup Condition=" $(ApiProfileMoniker) == '' ">
     <!--
-      "ApiProfileMoniker" is also initialised by Abc.Maybe.csproj.
+      "ApiProfileMoniker" is also initialised within "src\Abc.Maybe.csproj".
 
       See "SolutionPlatforms" and "PackagePlatforms" in D.B.props.
       Profile 2.1: "netstandard2.1" and "netcoreapp3.1" ie "MaxApiPlatform".

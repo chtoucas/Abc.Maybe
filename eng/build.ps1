@@ -62,9 +62,8 @@ param(
 
     [Parameter(Mandatory = $false)]
     [Alias("f")] [string] $Platform,
-    [Alias("s")] [switch] $ValidatePlatform,
     [Alias("a")] [switch] $AllKnown,
-    [Alias("l")] [switch] $ListPlatforms,
+                 [switch] $ListPlatforms,
 
                  [switch] $Force,
                  [switch] $NoRestore,
@@ -92,7 +91,7 @@ Usage: reset.ps1 [arguments]
 
   -f|-Platform          the platform to build the project/solution for.
   -a|-AllKnown          build the project/solution for ALL supported platforms.
-  -l|-ListPlatforms     print the list of supported platforms, then exit.
+     -ListPlatforms     print the list of supported platforms, then exit.
 
      -Force             forces all dependencies to be resolved even if the last restore was successful.
      -NoRestore         do not restore the project/solution.
