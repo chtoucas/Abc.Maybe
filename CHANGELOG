@@ -4,13 +4,17 @@ vNEXT
 -----
 
 Changed
-- DebugType from "full" to "pdbonly" for .NET Framework 4.6.1 (retail build).
+- Full support for .NET Standard 1.1+ / Core 2.0+ / Framework 4.5+.
+- DebugType from "embedded" or "full" to "portable" (package).
+
+Removed
+- Support for .NET Standard 1.0.
 
 Internal Changes
 - Very much improve all PowerShell scripts.
 - Enabled testing for a package with
   - .NET Core, version >= 2.0.
-  - .NET Framework, version >= 4.5.2.
+  - .NET Framework, version >= 4.5.
 - Added nullable annotations to the public API files.
 - Upgraded packages:
   * Microsoft.CodeAnalysis.FxCopAnalyzers 2.9.8 -> 3.0.0.
