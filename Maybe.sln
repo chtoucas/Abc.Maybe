@@ -36,6 +36,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eng", "eng", "{6D957FE8-23D
 		eng\README = eng\README
 		eng\reset.ps1 = eng\reset.ps1
 		eng\test-package.ps1 = eng\test-package.ps1
+		eng\test.ps1 = eng\test.ps1
 		eng\utils.ps1 = eng\utils.ps1
 	EndProjectSection
 EndProject
