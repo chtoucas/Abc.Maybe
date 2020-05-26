@@ -76,7 +76,7 @@ param(
     [Parameter(Mandatory = $false, Position = 0)]
                  [string] $Platform,
     [Alias("a")] [switch] $AllKnown,
-                 [switch] $ListPlatforms,
+    [Alias("l")] [switch] $ListPlatforms,
                  [switch] $NoClassic,
                  [switch] $NoCore,
 
@@ -122,7 +122,7 @@ Test the package Abc.Maybe.
 Usage: test-package.ps1 [arguments]
      -Platform      specify the platform(s) for which to test the package.
   -a|-AllKnown      test the package for ALL known platform versions (SLOW).
-     -ListPlatforms print the list of supported platforms, then exit.
+  -l|-ListPlatforms print the list of supported platforms, then exit.
      -NoClassic     exclude .NET Framework from the tests.
      -NoCore        exclude .NET Core from the tests.
 

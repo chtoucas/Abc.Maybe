@@ -56,7 +56,7 @@ param(
 
     [Parameter(Mandatory = $false)]
     [Alias("f")] [string] $Platform,
-                 [switch] $ListPlatforms,
+    [Alias("l")] [switch] $ListPlatforms,
 
                  [switch] $Force,
                  [switch] $NoRestore,
@@ -83,7 +83,7 @@ Usage: reset.ps1 [arguments]
      -Runtime           the runtime to build the project/solution for.
 
   -f|-Platform          the platform to build the project/solution for.
-     -ListPlatforms     print the list of supported platforms, then exit.
+  -l|-ListPlatforms     print the list of supported platforms, then exit.
 
      -Force             forces all dependencies to be resolved even if the last restore was successful.
      -NoRestore         do not restore the project/solution.

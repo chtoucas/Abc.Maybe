@@ -34,7 +34,7 @@ param(
 
     [Parameter(Mandatory = $false)]
     [Alias("f")] [string] $Platform,
-                 [switch] $ListPlatforms,
+    [Alias("l")] [switch] $ListPlatforms,
 
                  [switch] $NoRestore,
     [Alias("h")] [switch] $Help,
@@ -66,7 +66,7 @@ Usage: reset.ps1 [arguments]
      -Runtime           the runtime to test the project/solution for.
 
   -f|-Platform          the platform to test the project/solution for.
-     -ListPlatforms     print the list of supported platforms, then exit.
+  -l|-ListPlatforms     print the list of supported platforms, then exit.
 
      -NoRestore         do not restore the project/solution.
   -h|-Help              print this help and exit.

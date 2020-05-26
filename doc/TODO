@@ -16,7 +16,6 @@ Deterministic build / Source Link
 - SourceLink
   RepositoryCommit/Branch
 - snupkg? Does it require the customer to change a few VS settings.
-- pack.ps1 /p:Freeze=true,
 - References
   https://github.com/dotnet/sourcelink/tree/master/docs
   https://github.com/clairernovotny/DeterministicBuilds
@@ -27,11 +26,6 @@ Deterministic build / Source Link
 vNEXT
 -----
 
-- NET Core 1.x and .NET Standard 1.0?
-  NetStandardImplicitPackageVersion
-  https://docs.microsoft.com/en-us/dotnet/core/tools/csproj
-  https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props
-  <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
 - Add overloads w/ IEqualityComparer<T> (true structural comparison).
 - "Lifted" comparison T w/ Maybe<T> to handle mixed type, eg Maybe<int?>,
   Maybe<int>, int? and int. This should be a custom MaybeComparer<T>. Do not
@@ -61,6 +55,11 @@ Building & Packaging
 - code coverage?
 - Microsoft.NETFramework.ReferenceAssemblies
 - System.Runtime.CompilerServices.Unsafe
+- Old platforms?
+  NetStandardImplicitPackageVersion
+  <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+  https://docs.microsoft.com/en-us/dotnet/core/tools/csproj
+  https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props
 
 Testing
 -------

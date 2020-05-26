@@ -183,6 +183,7 @@ Common script/function parameters:
    -DryRun
    -Force
 -a|-AllXXX
+-l|-ListXXX
 -o|-Optimise
 -y|-Yes
 -v|-MyVerbose

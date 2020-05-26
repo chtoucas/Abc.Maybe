@@ -405,7 +405,6 @@ function Invoke-Publish {
     $source = Read-Host "Source [empty to push to the default source]"
     if ($source) { $args += "-s $source" }
 
-    # TODO: --interactive?
     $apiKey = Read-Host "API key [empty for no key]"
     if ($apiKey) { $args += "-k $apiKey" }
 
@@ -446,7 +445,7 @@ try {
     # 1. Reset the source tree.
     if ($Freeze -or $Reset) { Reset-SourceTree -Yes:($Freeze -or $Yes) }
     # 2. Get git metadata.
-    $branch, $commit, $uptodate = Get-GitMetadata -Yes:$Yes -ExitOnError:$Freeze
+    $branch, $commit, $gitok = Get-GitMetadata -Yes:$Yes -ExitOnError:$Freeze
     # 3. Generate build numbers.
     say "Generating build numbers."
     $buildNumber, $revisionNumber, $timestamp = Get-BuildNumbers
@@ -465,7 +464,7 @@ try {
         -BuildNumber      $buildNumber `
         -RevisionNumber   $revisionNumber `
         -CI:              $CI `
-        -EnableSourceLink:$uptodate `
+        -EnableSourceLink:$gitok `
         -MyVerbose:       $MyVerbose
 
     # Post-actions.
