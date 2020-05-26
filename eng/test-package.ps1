@@ -26,7 +26,7 @@ Test the package for ALL known platform versions (SLOW).
 Ignored if -Platform is also set and equals $true.
 
 .PARAMETER ListPlatforms
-Display the list of all supported platforms, then exit.
+Print the list of supported platforms, then exit.
 
 .PARAMETER NoClassic
 Exclude .NET Framework from the tests.
@@ -106,6 +106,7 @@ param(
 const TESTS_PROJECT_NAME "Abc.PackageTests"
 const TESTS_PROJECT (Join-Path $TEST_DIR $TESTS_PROJECT_NAME -Resolve)
 
+# NB: currently testing for these platforms is not enabled; see D.B.props.
 const XUNIT_PLATFORM "net452"
 const OLDSTYLE_PLATFORMS @("net451", "net45")
 
