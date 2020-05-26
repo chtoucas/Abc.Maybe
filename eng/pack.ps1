@@ -117,7 +117,7 @@ function Get-GitMetadata {
     if ($branch -eq "") { warn "The branch name will be empty." }
     if ($commit -eq "") { warn "The commit hash will be empty." }
 
-    return @($branch, $commit)
+    return @($branch, $commit, $ok)
 }
 
 # ------------------------------------------------------------------------------
@@ -292,6 +292,7 @@ function Invoke-Pack {
         [string] $revisionNumber,
 
         [switch] $ci,
+        [switch] $enableSourceLink,
         [switch] $myVerbose
     )
 
@@ -312,7 +313,8 @@ function Invoke-Pack {
         "/p:VersionSuffix=$versionSuffix",
         "--version-suffix:$versionSuffix"
 
-    if ($myVerbose) { $args += "/p:PrintSettings=true" }
+    if ($myVerbose)        { $args += "/p:PrintSettings=true" }
+    if ($enableSourceLink) { $args += "/p:EnableSourceLink=true" }
 
     if ($ci) {
         $output = $PKG_CI_OUTDIR
@@ -444,7 +446,7 @@ try {
     # 1. Reset the source tree.
     if ($Freeze -or $Reset) { Reset-SourceTree -Yes:($Freeze -or $Yes) }
     # 2. Get git metadata.
-    $branch, $commit = Get-GitMetadata -Yes:$Yes -ExitOnError:$Freeze
+    $branch, $commit, $uptodate = Get-GitMetadata -Yes:$Yes -ExitOnError:$Freeze
     # 3. Generate build numbers.
     say "Generating build numbers."
     $buildNumber, $revisionNumber, $timestamp = Get-BuildNumbers
@@ -463,6 +465,7 @@ try {
         -BuildNumber      $buildNumber `
         -RevisionNumber   $revisionNumber `
         -CI:              $CI `
+        -EnableSourceLink:$uptodate `
         -MyVerbose:       $MyVerbose
 
     # Post-actions.

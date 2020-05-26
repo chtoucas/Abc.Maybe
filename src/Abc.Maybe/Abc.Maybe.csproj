@@ -38,8 +38,7 @@
     <EnableSourceLink>false</EnableSourceLink>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" $(Freeze) == 'true' ">
-    <EnableSourceLink>true</EnableSourceLink>
+  <PropertyGroup Condition=" $(EnableSourceLink) == 'true' ">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
   <!-- Tmp fix for https://github.com/dotnet/sourcelink/issues/572 -->
