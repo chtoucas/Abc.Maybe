@@ -41,34 +41,23 @@
   <PropertyGroup Condition=" $(EnableSourceLink) == 'true' ">
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
-  <!-- Tmp fix for https://github.com/dotnet/sourcelink/issues/572 -->
-  <!-- Should be OK now (by the way it should not have been here but in  D.B.targets)
-  <PropertyGroup>
-    <TargetFrameworkMonikerAssemblyAttributesPath>$([System.IO.Path]::Combine('$(IntermediateOutputPath)','$(TargetFrameworkMoniker).AssemblyAttributes$(DefaultLanguageSourceExtension)'))</TargetFrameworkMonikerAssemblyAttributesPath>
-  </PropertyGroup>
-  <ItemGroup>
-    <EmbeddedFiles Include="$(GeneratedAssemblyInfoFile)" />
-  </ItemGroup>
-  -->
 
-  <!-- DebugType -->
-  <!--<PropertyGroup Condition=" $(Retail) == 'true' ">-->
-    <!-- *** BE VERY, VERY CAREFUL, BEFORE CHANGING THIS ***
-      What we really want is sketched here but it does NOT work since
-      "TargetFrameworkIdentifier" is not yet set. A good place where to put this
-      would be Directory.Build.targets, but it is too late according to this issue
-      https://github.com/Microsoft/msbuild/issues/2754.
-        <DebugType Condition=" $(TargetFrameworkIdentifier) == '.NETFramework' ">pdbonly</DebugType>
-        <DebugType Condition=" $(TargetFrameworkIdentifier) != '.NETFramework' ">embedded</DebugType>
-      References
-      - https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/debug-compiler-option
-      - https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/making-an-image-easier-to-debug
-    -->
-    <!--
+  <!--
+    DebugType *** BE VERY, VERY CAREFUL, BEFORE CHANGING THIS ***
+    What we really want is sketched here but it does NOT work since
+    "TargetFrameworkIdentifier" is not yet set. A good place where to put this
+    would be Directory.Build.targets, but it is too late according to this issue
+    https://github.com/Microsoft/msbuild/issues/2754.
+      <DebugType Condition=" $(TargetFrameworkIdentifier) == '.NETFramework' ">pdbonly</DebugType>
+      <DebugType Condition=" $(TargetFrameworkIdentifier) != '.NETFramework' ">embedded</DebugType>
+    References
+    - https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/debug-compiler-option
+    - https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/making-an-image-easier-to-debug
+  <PropertyGroup Condition=" $(Retail) == 'true' ">
     <DebugType>embedded</DebugType>
     <DebugType Condition=" $(TargetFramework.StartsWith('net4')) ">pdbonly</DebugType>
-    -->
-  <!--</PropertyGroup>-->
+  </PropertyGroup>
+  -->
 
   <!-- Public API -->
   <ItemGroup>
