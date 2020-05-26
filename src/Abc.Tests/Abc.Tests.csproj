@@ -24,6 +24,7 @@
 
   <!-- Dependencies -->
   <!-- Microsoft.Bcl.HashCode    does not support .NET Framework <= 4.6 -->
+  <!-- Microsoft.NET.Test.Sdk    can cause problems with "eng\test.ps1" -->
   <!-- xunit.runner.visualstudio does not support .NET Framework <= 4.5.1 -->
   <PropertyGroup>
     <HashCodePackage>true</HashCodePackage>
@@ -38,7 +39,8 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0"
                       Condition=" $(HashCodePackage) == 'true' " />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1"
+                      Condition=" $(BuildingInsideVisualStudio) == 'true' "/>
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">

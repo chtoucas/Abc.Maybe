@@ -100,19 +100,14 @@ try {
     if ($Runtime)       { $args += "--runtime:$runtime" }
     if ($NoRestore)     { $args += "--no-restore" }
 
+    # NB: may fail if the project references "Microsoft.NET.Test.Sdk".
+    # Now, it should be OK as we only include it when running VS.
     if ($Platform)  {
         if ($Platform -notin $allPlatforms) {
             die "The specified platform is not supported: ""$Platform""."
         }
-        if ($Platform -eq "netcoreapp2.0") {
-            # TODO: fails but works fine with test-package.ps1???
-            #   "Unable to find "bin\Debug\netcoreapp2.0\testhost.dll".
-            # Property IsTestProject? Microsoft.TestPlatform.TestHost?
-            die """dotnet test"" refuses to run when targetting ""netcoreapp2.0"", don't know why."
-        }
 
-        $args += "/p:TargetFrameworks=$Platform", "/p:TargetFramework=$Platform"
-        #$args += "-f:$Platform"
+        $args += "/p:TargetFrameworks=$Platform"
     }
     else {
         $args += '/p:TargetFrameworks=\"' + ($platforms -join ";") + '\"'
