@@ -332,6 +332,8 @@ function Invoke-Pack {
 
     # Do NOT use --no-restore or --no-build (options -Reset/-Freeze erase bin/obj).
     # RepositoryCommit and RepositoryBranch are standard props, do not remove them.
+    # I guess that we could remove them when "EnableSourceLink" is "true", but I
+    # haven't check that.
     & dotnet pack $project -c Release --nologo $args --output $output `
         /p:TargetFrameworks=$targetFrameworks `
         /p:BuildNumber=$buildNumber `
