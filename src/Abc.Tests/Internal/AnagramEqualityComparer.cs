@@ -5,7 +5,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-// Beware, with .NET Standard 1.x, we must call ToCharArray() explicitely.
+// Beware, with .NET Standard 1.x, we must call ToCharArray() explicitly.
 
 internal sealed class AnagramEqualityComparer : EqualityComparer<string>
 {
