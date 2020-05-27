@@ -55,16 +55,19 @@
   <!-- Supported platforms -->
   <PropertyGroup>
     <!--
-      IMPORTANT: do NOT use MSBuild property resolution $() when a property is
-      going to be parsed by a PowerShell script, which means everything except
-      the first group of properties.
-
       For libraries or test projects, use
         <TargetFrameworks>$(LibraryPlatforms)</TargetFrameworks>
       For exe, use
         <TargetFramework>$(MaxPlatform)</TargetFramework>
       Do not use "TargetFramework" (no "s"), otherwise testing multi-targets
       at once won't work.
+
+      Building the solution should work fine for
+      - .NET Standard   1.1 - 2.1
+      - .NET Core       2.0 - 3.1
+      - .NET Framework  4.5 - 4.8
+      Running the test suite is NOT possible w/ .NET Framework 4.5 / 4.5.1
+      (Xunit restriction) and, of course, .NET Standard.
 
       Remarks:
       - If/when we create an API depending on a new .NET Standard, "MaxPlatform"
@@ -94,9 +97,17 @@
     <MaxPlatform>netcoreapp3.1</MaxPlatform>
     <LibraryPlatforms>$(MaxPlatform);netstandard2.0</LibraryPlatforms>
 
+    <!--
+      IMPORTANT: below, do NOT use MSBuild property resolution $(), the content
+      must be in a form understandable to PowerShell.
+    -->
+
     <BuildPlatforms>netstandard2.1;netstandard1.1;netcoreapp3.1;netcoreapp2.0;net48;net45</BuildPlatforms>
     <TestPlatforms>netcoreapp3.1;netcoreapp2.0;net48;net452</TestPlatforms>
     <PackPlatforms>netstandard2.1;netstandard2.0;netstandard1.1;net461;net452</PackPlatforms>
+
+    <StandardPlatforms>netstandard1.6;netstandard1.5;netstandard1.4;netstandard1.3;netstandard1.2;netstandard1.1</StandardPlatforms>
+    <StandardPlatforms>netstandard2.1;netstandard2.0;$(StandardPlatforms)</StandardPlatforms>
 
     <MinClassicPlatforms>net48;net472;net462;net452</MinClassicPlatforms>
     <MaxClassicPlatforms>net48;net472;net471;net47;net462;net461;net46;net452;net451;net45</MaxClassicPlatforms>
