@@ -6,6 +6,9 @@ The actual test project is not here but in "src" and is called Abc.Tests.
 This directory contains test projects for the package.
 They are really meant to work with "eng\test-package.ps1".
 
+Benchmarks
+> dotnet run -p Abc.PerformanceTests
+
 ## Using dotnet.exe.
 
 Of course, one can still use the dotnet command-line directly:

@@ -2,7 +2,7 @@ README
 ------
 
 Core scripts.
-- build.ps1             build the solution.
+- build.ps1             build script.
 - test.ps1              test script.
 - cover.ps1             code coverage script.
 - pack.ps1              create a package.
@@ -10,7 +10,7 @@ Core scripts.
 
 Maintenance scripts.
 - freeze-api.ps1        update public API files.
-- reset.ps1             reset repository.
+- reset.ps1             reset the repository.
 
 Other files.
 - utils.ps1             generic helpers.
@@ -22,19 +22,12 @@ Obsolete files.
 - genuids.ps1           execute genuids.fsx.
 - Pack.tasks            MSBuild tasks when building packages.
 
-Tests
------
+Quick tests
+-----------
 
 Quickly run the test suite for the default target.
-> dotnet test src\Abc.Tests -c Release
+> dotnet test src\Abc.Tests
 > dotnet test src\Abc.Tests -c Release /p:Retail=true
-
-Multi-targeting at once does not work. To test for a single framework:
-> dotnet test /p:TargetFramework=net461
-
-Beware, we CANNOT write:
-> dotnet test -f net461
-because "net461" is not listed as a supported framework within the project file.
 
 Filtering
 > dotnet test --filter Category=XXXX
@@ -42,6 +35,3 @@ Filtering
 
 Dump the test suite.
 > dotnet test --list-tests
-
-Benchmarks
-> dotnet run -c Release -p perf
