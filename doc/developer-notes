@@ -72,6 +72,7 @@ Pre action, for beta -or- production packages.
 
 Post actions.
 a. For production packages, git tag (??? before, to get the correct branch ???)
+   https://git-scm.com/book/en/v2/Git-Basics-Tagging
 
 Multi-targeting
 ---------------
