@@ -69,6 +69,9 @@
       Running the test suite is NOT possible w/ .NET Framework 4.5 / 4.5.1
       (Xunit restriction) and, of course, .NET Standard.
 
+      The solution has very few external dependencies and are only related to
+      testing (see projects Abc.Testing and Abc.Tests).
+
       Remarks:
       - If/when we create an API depending on a new .NET Standard, "MaxPlatform"
         should be the last available platform supporting it. We can also update
@@ -82,17 +85,28 @@
       - Platforms grouped by dotnet tasks.
         Do NOT add .NET Standard 1.0, v1.1 has everything we need but with
         a much simpler dependency graph.
-        https://dotnet.microsoft.com/platform/dotnet-standard#versions
-        https://github.com/dotnet/standard/blob/master/docs/versions.md
       - .NET Framework (Classic).
         "MinClassicPlatforms" lists the last minor version of each major version.
         "MaxClassicPlatforms" must contain "MinClassicPlatforms".
-        https://support.microsoft.com/en-us/help/17455/lifecycle-faq-net-framework
       - .NET Core.
         "MinCorePlatforms" lists the LTS versions and the latest one if not LTS.
         "MaxCorePlatforms" must contain "MinCorePlatforms".
+
+      References
+      - .NET Standard versions.
+        https://dotnet.microsoft.com/platform/dotnet-standard#versions
+        https://github.com/dotnet/standard/blob/master/docs/versions.md
+      - Target frameworks
+        https://docs.microsoft.com/en-us/dotnet/standard/frameworks
+      - .NET Framework lifecycle.
+        https://support.microsoft.com/en-us/help/17455/lifecycle-faq-net-framework
+      - .NET Core lifecycle.
         https://dotnet.microsoft.com/platform/support/policy/dotnet-core
         https://github.com/dotnet/core/blob/master/microsoft-support.md
+      - Useful docs.
+        https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/cross-platform-targeting
+        https://docs.microsoft.com/en-us/dotnet/core/tutorials/libraries
+        https://docs.microsoft.com/en-us/dotnet/core/packages
     -->
     <MaxPlatform>netcoreapp3.1</MaxPlatform>
     <LibraryPlatforms>$(MaxPlatform);netstandard2.0</LibraryPlatforms>
