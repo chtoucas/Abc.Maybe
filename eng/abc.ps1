@@ -316,6 +316,7 @@ function Load-XmlTextual {
 
 # ------------------------------------------------------------------------------
 
+# Only for comma-separated property content declared only once.
 function Select-SingleProperty {
     [CmdletBinding()]
     param(
@@ -341,8 +342,10 @@ function Select-SingleProperty {
         croak "There is more than one property named ""$property""."
     }
 
-    # Remove any remaining white spaces.
-    $text = $nodes[0].Node.InnerText.Trim().Replace(" ", "")
+    # Remove inner white spaces, and leading or trailing white spaces and
+    # semi-commas. We could ceratinly have done it in a single call to Trim(),
+    # but it's clearer this way.
+    $text = $nodes[0].Node.InnerText.Trim().Trim(";").Replace(" ", "")
 
     if ($asString) {
         # Ready for MSBuild.exe/dotnet.exe.

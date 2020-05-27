@@ -102,17 +102,38 @@
       must be in a form understandable to PowerShell.
     -->
 
-    <BuildPlatforms>netstandard2.1;netstandard1.1;netcoreapp3.1;netcoreapp2.0;net48;net45</BuildPlatforms>
-    <TestPlatforms>netcoreapp3.1;netcoreapp2.0;net48;net452</TestPlatforms>
-    <PackPlatforms>netstandard2.1;netstandard2.0;netstandard1.1;net461;net452</PackPlatforms>
+    <BuildPlatforms>
+      netstandard2.1;netstandard1.1;
+      netcoreapp3.1;netcoreapp2.0;
+      net48;net45
+    </BuildPlatforms>
+    <TestPlatforms>
+      netcoreapp3.1;netcoreapp2.0;
+      net48;net452
+    </TestPlatforms>
+    <PackPlatforms>
+      netstandard2.1;netstandard2.0;netstandard1.1;
+      net461;net452
+    </PackPlatforms>
 
-    <StandardPlatforms>netstandard1.6;netstandard1.5;netstandard1.4;netstandard1.3;netstandard1.2;netstandard1.1</StandardPlatforms>
-    <StandardPlatforms>netstandard2.1;netstandard2.0;$(StandardPlatforms)</StandardPlatforms>
+    <SupportedStandards>
+      netstandard2.1;netstandard2.0;
+      netstandard1.6;netstandard1.5;netstandard1.4;netstandard1.3;netstandard1.2;netstandard1.1
+    </SupportedStandards>
 
     <MinClassicPlatforms>net48;net472;net462;net452</MinClassicPlatforms>
-    <MaxClassicPlatforms>net48;net472;net471;net47;net462;net461;net46;net452;net451;net45</MaxClassicPlatforms>
+    <MaxClassicPlatforms>
+      net48;
+      net472;net471;net47;
+      net462;net461;net46;
+      net452;net451;net45
+    </MaxClassicPlatforms>
+
     <MinCorePlatforms>netcoreapp3.1;netcoreapp2.1</MinCorePlatforms>
-    <MaxCorePlatforms>netcoreapp3.1;netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0</MaxCorePlatforms>
+    <MaxCorePlatforms>
+      netcoreapp3.1;netcoreapp3.0;
+      netcoreapp2.2;netcoreapp2.1;netcoreapp2.0
+    </MaxCorePlatforms>
   </PropertyGroup>
 
 </Project>
