@@ -8,7 +8,8 @@ Currently, the only thing blocking us for a 1.0.0 release is proper testing of
 equality and ordering comparisons.
 
 Deterministic build / Source Link
-- Non-deterministic attributes: AssemblyFileVersion & AssemblyDescription.
+- Non-deterministic attributes: AssemblyFileVersion, InformationalVersion (CI),
+  AssemblyTitle.
 - SourceLink: RepositoryCommit/Branch
 - snupkg? Does it require the customer to change a few VS settings.
 - References

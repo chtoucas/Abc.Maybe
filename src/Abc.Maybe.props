@@ -16,7 +16,11 @@
     <PreReleaseCycle>beta</PreReleaseCycle>
     <PreReleaseNumber>5</PreReleaseNumber>
 
+    <!-- Package title -->
     <Title>A Safe Yet Effective Option Type</Title>
+
+    <!-- Assembly description -->
+    <Description>Provides a fully-featured Option type, aka a Maybe type.</Description>
 
     <PackageDescription><![CDATA[
 Provides a fully-featured Option type, aka a Maybe type, with several companion helpers (parsing, LINQ).
