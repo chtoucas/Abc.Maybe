@@ -24,9 +24,10 @@
 
   <PropertyGroup>
     <AddHashCodePackage>true</AddHashCodePackage>
+    <AddHashCodePackage Condition=" $(TargetFramework.StartsWith('netstandard1.')) ">false</AddHashCodePackage>
+    <AddHashCodePackage Condition=" $(TargetFramework.StartsWith('uap10.')) ">false</AddHashCodePackage>
     <AddHashCodePackage Condition=" $(TargetFramework.StartsWith('net45')) ">false</AddHashCodePackage>
     <AddHashCodePackage Condition=" $(TargetFramework) == 'net46' ">false</AddHashCodePackage>
-    <AddHashCodePackage Condition=" $(TargetFramework.StartsWith('netstandard1.')) ">false</AddHashCodePackage>
   </PropertyGroup>
 
   <ItemGroup>
