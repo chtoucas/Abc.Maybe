@@ -377,7 +377,7 @@ function Invoke-TestOldStyle {
     if (-not $IsWindows) { warn """$platform"" can only be tested on Windows." ; return }
 
     if ($runtime) {
-        warn "Runtime parameter ""$runtime"" is ignored when targetting ""$platform""."
+        warn "Runtime parameter ""$runtime"" is ignored when targeting ""$platform""."
     }
 
     $xunit = Find-XunitRunnerOnce

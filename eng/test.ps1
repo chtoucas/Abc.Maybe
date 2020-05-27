@@ -108,13 +108,12 @@ try {
     # NB: may fail if the project references "Microsoft.NET.Test.Sdk".
     # Now, it should be OK as we only include it when running VS.
     #
-    # We still cannot target UAP while multi-targetting.
+    # We still cannot target UAP while multi-targeting at the same time.
     # It seems that it should be doable with .NET 5.
     # - https://github.com/novotnyllc/MSBuildSdkExtras
     # - https://github.com/dotnet/sdk/issues/491
     # - https://github.com/dotnet/sdk/issues/1408
     # - https://github.com/OPCFoundation/UA-.NETStandard/blob/c2ae8aac70b952d31bc5adaa5c4423ff63ebede6/SampleApplications/SDK/Opc.Ua.Server/Opc.Ua.Server.csproj
-
     if ($Platform)  {
         if (-not $NoCheck -and $Platform -notin $allPlatforms) {
             die "The specified platform is not supported: ""$Platform""."
