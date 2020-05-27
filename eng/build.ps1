@@ -38,6 +38,9 @@ Print the list of supported platforms, then exit.
 .PARAMETER Force
 Forces all dependencies to be resolved even if the last restore was successful.
 
+.PARAMETER NoCheck
+Do not check whether the specified platform is supported or not.
+
 .PARAMETER NoRestore
 Do not restore the project/solution.
 
@@ -59,6 +62,7 @@ param(
     [Alias("l")] [switch] $ListPlatforms,
 
                  [switch] $Force,
+                 [switch] $NoCheck,
                  [switch] $NoRestore,
     [Alias("h")] [switch] $Help,
 
@@ -86,6 +90,7 @@ Usage: reset.ps1 [arguments]
   -l|-ListPlatforms     print the list of supported platforms, then exit.
 
      -Force             forces all dependencies to be resolved even if the last restore was successful.
+     -NoCheck           do not check whether the specified platform is supported or not.
      -NoRestore         do not restore the project/solution.
   -h|-Help              print this help and exit.
 
@@ -143,11 +148,11 @@ try {
     if ($NoRestore)     { $args += "--no-restore" }
 
     if ($Platform)  {
-        if ($Platform -notin $allPlatforms) {
+        if (-not $NoCheck -and $Platform -notin $allPlatforms) {
             die "The specified platform is not supported: ""$Platform""."
         }
 
-        $args += "/p:TargetFrameworks=$Platform", "/p:TargetFramework=$Platform"
+        $args += "/p:TargetFrameworks=$Platform"
     }
     else {
         $args += '/p:TargetFrameworks=\"' + ($platforms -join ";") + '\"'
