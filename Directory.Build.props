@@ -5,6 +5,7 @@
     <SourceRoot>$(RepositoryRoot)src\</SourceRoot>
   </PropertyGroup>
 
+  <!-- Common settings -->
   <PropertyGroup>
     <RootNamespace>Abc</RootNamespace>
     <IsPackable>false</IsPackable>
@@ -58,10 +59,10 @@
       going to be parsed by a PowerShell script, which means everything except
       the first group of properties.
 
-      For libraries, use
+      For libraries or test projects, use
         <TargetFrameworks>$(LibraryPlatforms)</TargetFrameworks>
-      otherwise use
-        <TargetFrameworks>$(MaxPlatform)</TargetFrameworks>
+      For exe, use
+        <TargetFramework>$(MaxPlatform)</TargetFramework>
       Do not use "TargetFramework" (no "s"), otherwise testing multi-targets
       at once won't work.
 

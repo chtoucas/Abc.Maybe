@@ -1,17 +1,23 @@
 ﻿<Project>
 
+  <!--
+    This file is also loaded by "eng\Abc.PackageTests", but we don't want it
+    to load the D.B.targets of the source tree. If it ever becomes problematic,
+    we can simply move what we need to a separate props file.
+  -->
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets"
           Condition=" $(AssemblyName) == 'Abc.Tests' "/>
 
   <!--
-    Dependencies.
-    - Microsoft.Bcl.HashCode does not support .NET Framework <= 4.6
-    - Microsoft.NET.Test.Sdk can cause problems with older platforms, see "eng\test.ps1"
-    - xunit.runner.visualstudio does not support .NET Framework <= 4.5.1
+    - Microsoft.Bcl.HashCode does not support .NET Framework <= 4.6 and
+      .NET Standard 1.x.
+    - Microsoft.NET.Test.Sdk can cause problems with older platforms,
+      see "eng\test.ps1".
+    - xunit.runner.visualstudio.
       Warning NU1701. This is something that should not happen, except that we
       tweak "TargetFrameworks" in "eng\build.ps1". This is harmless since we
       are only building the project, we don't actually run it.
-      We could have added "xunit.runner.visualstudio" only when not targetting
+      Another option: only add "xunit.runner.visualstudio" when not targetting
       .Net Standard.
       https://docs.microsoft.com/en-us/dotnet/core/porting/third-party-deps#net-framework-compatibility-mode
   -->
