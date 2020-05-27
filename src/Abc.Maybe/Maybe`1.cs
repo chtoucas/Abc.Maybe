@@ -556,10 +556,11 @@ namespace Abc
         /// <remarks>
         /// <para>The weird behaviour with empty maybe's is the same one
         /// implemented by nullables.</para>
-        /// <para>For proper sorting, one MUST use
-        /// <see cref="CompareTo(Maybe{T})"/> or <see cref="MaybeComparer{T}"/>
-        /// as they produce a consistent total ordering.</para>
         /// </remarks>
+        // TODO: XML comments (MaybeComparer), here and below.
+        // <para>For proper sorting, one MUST use
+        // <see cref="CompareTo(Maybe{T})"/> or <see cref="MaybeComparer{T}"/>
+        // as they produce a consistent total ordering.</para>
         public static bool operator <(Maybe<T> left, Maybe<T> right) =>
             // Beware, this is NOT the same as
             //   left.CompareTo(right) < 0;
@@ -576,10 +577,10 @@ namespace Abc
         /// <remarks>
         /// <para>The weird behaviour with empty maybe's is the same one
         /// implemented by nullables.</para>
-        /// <para>For proper sorting, one MUST use
-        /// <see cref="CompareTo(Maybe{T})"/> or <see cref="MaybeComparer{T}"/>
-        /// as they produce a consistent total ordering.</para>
         /// </remarks>
+        // <para>For proper sorting, one MUST use
+        // <see cref="CompareTo(Maybe{T})"/> or <see cref="MaybeComparer{T}"/>
+        // as they produce a consistent total ordering.</para>
         public static bool operator <=(Maybe<T> left, Maybe<T> right) =>
             // Beware, this is NOT the same as
             //   left.CompareTo(right) <= 0;
@@ -596,10 +597,10 @@ namespace Abc
         /// <remarks>
         /// <para>The weird behaviour with empty maybe's is the same one
         /// implemented by nullables.</para>
-        /// <para>For proper sorting, one MUST use
-        /// <see cref="CompareTo(Maybe{T})"/> or <see cref="MaybeComparer{T}"/>
-        /// as they produce a consistent total ordering.</para>
         /// </remarks>
+        // <para>For proper sorting, one MUST use
+        // <see cref="CompareTo(Maybe{T})"/> or <see cref="MaybeComparer{T}"/>
+        // as they produce a consistent total ordering.</para>
         public static bool operator >(Maybe<T> left, Maybe<T> right) =>
             // Beware, this is NOT the same as
             //   left.CompareTo(right) > 0;
@@ -616,10 +617,10 @@ namespace Abc
         /// <remarks>
         /// <para>The weird behaviour with empty maybe's is the same one
         /// implemented by nullables.</para>
-        /// <para>For proper sorting, one MUST use
-        /// <see cref="CompareTo(Maybe{T})"/> or <see cref="MaybeComparer{T}"/>
-        /// as they produce a consistent total ordering.</para>
         /// </remarks>
+        // <para>For proper sorting, one MUST use
+        // <see cref="CompareTo(Maybe{T})"/> or <see cref="MaybeComparer{T}"/>
+        // as they produce a consistent total ordering.</para>
         public static bool operator >=(Maybe<T> left, Maybe<T> right) =>
             // Beware, this is NOT the same as
             //   left.CompareTo(right) >= 0;

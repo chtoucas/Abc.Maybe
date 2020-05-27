@@ -19,5 +19,8 @@ namespace Abc.Utilities
             => new InvalidOperationException(
                 "The flow of execution just reached a section of the code that should have been unreachable."
                 + $"{Environment.NewLine}Most certainly signals a coding error. Please report.");
+
+        public static readonly ArgumentException MaybeComparer_InvalidType
+            = new ArgumentException("Type of argument is not compatible with MaybeComparer<T>.");
     }
 }

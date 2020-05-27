@@ -37,14 +37,9 @@ Abc.Maybe<T>.XorElse(Abc.Maybe<T> other) -> Abc.Maybe<T>
 Abc.Maybe<T>.Yield() -> System.Collections.Generic.IEnumerable<T>!
 Abc.Maybe<T>.Yield(int count) -> System.Collections.Generic.IEnumerable<T>!
 Abc.Maybe<T>.ZipWith<TOther, TResult>(Abc.Maybe<TOther> other, System.Func<T, TOther, TResult>! zipper) -> Abc.Maybe<TResult>
-Abc.MaybeComparer<T>
-Abc.MaybeComparer<T>.MaybeComparer() -> void
 Abc.Unit
 Abc.Unit.Equals(Abc.Unit other) -> bool
 Abc.Unit.Unit() -> void
-abstract Abc.MaybeComparer<T>.Compare(Abc.Maybe<T> x, Abc.Maybe<T> y) -> int
-abstract Abc.MaybeComparer<T>.Equals(Abc.Maybe<T> x, Abc.Maybe<T> y) -> bool
-abstract Abc.MaybeComparer<T>.GetHashCode(Abc.Maybe<T> obj) -> int
 override Abc.Maybe<T>.Equals(object? obj) -> bool
 override Abc.Maybe<T>.GetHashCode() -> int
 override Abc.Maybe<T>.ToString() -> string!
@@ -143,8 +138,6 @@ static Abc.Maybe<T>.operator <=(Abc.Maybe<T> left, Abc.Maybe<T> right) -> bool
 static Abc.Maybe<T>.operator ==(Abc.Maybe<T> left, Abc.Maybe<T> right) -> bool
 static Abc.Maybe<T>.operator >(Abc.Maybe<T> left, Abc.Maybe<T> right) -> bool
 static Abc.Maybe<T>.operator >=(Abc.Maybe<T> left, Abc.Maybe<T> right) -> bool
-static Abc.MaybeComparer<T>.Default.get -> Abc.MaybeComparer<T>!
-static Abc.MaybeComparer<T>.Structural.get -> Abc.MaybeComparer<T>!
 static Abc.Unit.operator !=(Abc.Unit left, Abc.Unit right) -> bool
 static Abc.Unit.operator ==(Abc.Unit left, Abc.Unit right) -> bool
 static readonly Abc.Maybe.False -> Abc.Maybe<bool>

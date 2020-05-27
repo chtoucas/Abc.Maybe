@@ -1,5 +1,7 @@
 ﻿// See LICENSE in the project root for license information.
 
+//#define VISIBLE_INTERNALS
+
 namespace Abc
 {
     using System.Collections;
@@ -91,16 +93,26 @@ namespace Abc
         // Code size = 56 bytes, way to high (> 32 bytes).
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals(Maybe<T> x, Maybe<T> y) =>
+#if VISIBLE_INTERNALS
             // BONSANG! When IsSome is true, Value is NOT null.
             x.IsSome ? y.IsSome && EqualityComparer<T>.Default.Equals(x.Value!, y.Value!)
                 : !y.IsSome;
+#else
+            x.TryGetValue(out T left)
+                ? y.TryGetValue(out T right) && EqualityComparer<T>.Default.Equals(left, right)
+                : y.IsNone;
+#endif
 
         [Pure]
         // Code size = 29 bytes.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode(Maybe<T> obj) =>
             // BONSANG! When IsSome is true, Value is NOT null.
+#if VISIBLE_INTERNALS
             obj.IsSome ? EqualityComparer<T>.Default.GetHashCode(obj.Value!) : 0;
+#else
+            obj.TryGetValue(out T value) ? EqualityComparer<T>.Default.GetHashCode(value!) : 0;
+#endif
 
         // A total order for maybe's. The convention is that the empty maybe is
         // strictly less than any other maybe.
@@ -108,9 +120,15 @@ namespace Abc
         // Code size = 58 bytes, way to high (> 32 bytes).
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int Compare(Maybe<T> x, Maybe<T> y) =>
+#if VISIBLE_INTERNALS
             // BONSANG! When IsSome is true, Value is NOT null.
             x.IsSome ? y.IsSome ? Comparer<T>.Default.Compare(x.Value!, y.Value!) : 1
                 : y.IsSome ? -1 : 0;
+#else
+            x.TryGetValue(out T left) ? y.TryGetValue(out T right)
+                ? Comparer<T>.Default.Compare(left, right) : 1
+                : y.IsNone ? 0 : -1;
+#endif
 
         //
         // Equals() & GetHashCode() for the comparer itself.
@@ -132,24 +150,40 @@ namespace Abc
         // Code size = 66 bytes, way to high (> 32 bytes).
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals(Maybe<T> x, Maybe<T> y) =>
+#if VISIBLE_INTERNALS
             x.IsSome
                 ? y.IsSome && StructuralComparisons.StructuralEqualityComparer.Equals(x.Value, y.Value)
                 : !y.IsSome;
+#else
+            x.TryGetValue(out T left)
+                ? y.TryGetValue(out T right) && StructuralComparisons.StructuralEqualityComparer.Equals(left, right)
+                : y.IsNone;
+#endif
 
         [Pure]
         // Code size = 34 bytes.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode(Maybe<T> obj) =>
+#if VISIBLE_INTERNALS
             // BONSANG! When IsSome is true, Value is NOT null.
             obj.IsSome ? StructuralComparisons.StructuralEqualityComparer.GetHashCode(obj.Value!) : 0;
+#else
+            obj.TryGetValue(out T value) ? StructuralComparisons.StructuralEqualityComparer.GetHashCode(value!) : 0;
+#endif
 
         [Pure]
         // Code size = 68 bytes, way to high (> 32 bytes).
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int Compare(Maybe<T> x, Maybe<T> y) =>
+#if VISIBLE_INTERNALS
             x.IsSome
                 ? y.IsSome ? StructuralComparisons.StructuralComparer.Compare(x.Value, y.Value) : 1
                 : y.IsSome ? -1 : 0;
+#else
+            x.TryGetValue(out T left) ? y.TryGetValue(out T right)
+                ? StructuralComparisons.StructuralComparer.Compare(left, right) : 1
+                : y.IsNone ? 0 : -1;
+#endif
 
         //
         // Equals() & GetHashCode() for the comparer itself.
