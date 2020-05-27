@@ -8,6 +8,7 @@
     <MyAssemblyTitle Condition=" $(MyAssemblyTitle) == '' ">$(AssemblyName)</MyAssemblyTitle>
 
     <AssemblyTitle>$(MyAssemblyTitle) [$(TargetFramework)]</AssemblyTitle>
+    <Description Condition=" $(Deterministic) != 'true' ">$(MyAssemblyTitle), built [$([System.DateTime]::UtcNow.ToString("r"))].</Description>
   </PropertyGroup>
 
   <!-- API profiles -->

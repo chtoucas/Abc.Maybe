@@ -10,12 +10,10 @@
     Command-line options:
     - BuildNumber       default = PatchVersion
     - RevisionNumber    default = 0
-    - MyAssemblyTitle   default = AssemblyName
   -->
   <PropertyGroup>
     <BuildNumber Condition=" $(BuildNumber) == '' ">$(PatchVersion)</BuildNumber>
     <RevisionNumber Condition=" $(RevisionNumber) == '' ">0</RevisionNumber>
-    <MyAssemblyTitle Condition=" $(MyAssemblyTitle) == '' ">$(AssemblyName)</MyAssemblyTitle>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -29,9 +27,6 @@
     <InformationalVersion>$(MajorVersion).$(MinorVersion).$(PatchVersion)</InformationalVersion>
     <InformationalVersion Condition=" $(VersionSuffix) != '' ">$(InformationalVersion)-$(VersionSuffix)</InformationalVersion>
     <InformationalVersion Condition=" $(RepositoryCommit) != '' ">$(InformationalVersion)+$(RepositoryCommit.Substring(0, 7))</InformationalVersion>
-
-    <!-- Assembly description -->
-    <Description>$(MyAssemblyTitle), built [$([System.DateTime]::UtcNow.ToString("r"))].</Description>
   </PropertyGroup>
 
 </Project>
