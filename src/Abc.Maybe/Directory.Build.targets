@@ -1,0 +1,11 @@
+﻿<Project>
+
+  <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets" />
+
+  <!-- Public API -->
+  <ItemGroup>
+    <AdditionalFiles Include="PublicAPI\$(ApiProfileMoniker)\PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include="PublicAPI\$(ApiProfileMoniker)\PublicAPI.Unshipped.txt" />
+  </ItemGroup>
+
+</Project>

@@ -18,14 +18,11 @@
     </None>
   </ItemGroup>
 
-  <!-- Dependencies -->
   <ItemGroup>
     <PackageReference Include="coverlet.msbuild" Version="2.8.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1"
-                      Condition=" $(BuildingInsideVisualStudio) == 'true' "/>
   </ItemGroup>
 
   <ItemGroup>

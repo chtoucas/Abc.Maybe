@@ -27,6 +27,7 @@
     <NoWarnCS1591 Condition=" $(NoWarnCS1591) == '' ">true</NoWarnCS1591>
   </PropertyGroup>
 
+  <!-- Retail configuration -->
   <PropertyGroup Condition=" $(Retail) == 'true' ">
     <SignAssembly>true</SignAssembly>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
@@ -36,20 +37,17 @@
     <DefineConstants>$(DefineConstants);UNCHECKED</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" $(VisibleInternals) == 'true' ">
-    <DefineConstants>$(DefineConstants);INTERNALS_VISIBLE_TO</DefineConstants>
-    <!-- Abc.Testing uses the missing and the nullable attributes from Abc.Maybe -->
-    <DefineConstants Condition=" $(AssemblyName) == 'Abc.Testing' ">$(DefineConstants);USE_ATTRS_FROM_ABC_MAYBE</DefineConstants>
-  </PropertyGroup>
-
+  <!-- Compiler symbols -->
   <PropertyGroup>
     <DefineConstants Condition=" $(SignAssembly) == 'true' ">$(DefineConstants);SIGNED_ASSEMBLY</DefineConstants>
+    <DefineConstants Condition=" $(VisibleInternals) == 'true' ">$(DefineConstants);INTERNALS_VISIBLE_TO</DefineConstants>
     <DefineConstants Condition=" $(PatchEquality) == 'true' ">$(DefineConstants);PATCH_EQUALITY</DefineConstants>
 
     <!--<DefineConstants>$(DefineConstants);PLAIN_LINQ</DefineConstants>-->
     <!--<DefineConstants>$(DefineConstants);PURE_MAYBE</DefineConstants>-->
   </PropertyGroup>
 
+  <!-- Warnings -->
   <PropertyGroup>
     <!--
       CA1034  Nested types should not be visible
@@ -66,6 +64,7 @@
     <NoWarn Condition=" $(NoWarnX) != '' ">$(NoWarn);$(NoWarnX)</NoWarn>
   </PropertyGroup>
 
+  <!-- Package references -->
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
       <PrivateAssets>all</PrivateAssets>
@@ -73,6 +72,7 @@
     </PackageReference>
   </ItemGroup>
 
+  <!-- Verbose build settings -->
   <Target Name="PrintSettings" BeforeTargets="Compile"
           Condition=" $(PrintSettings) == 'true' and $(TargetFramework) != '' ">
     <PropertyGroup>
