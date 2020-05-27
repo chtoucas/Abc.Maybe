@@ -201,21 +201,12 @@ function Get-PackageVersion {
 
     $projectPath = Join-Path $SRC_DIR "$packageName.props" -Resolve
 
-    [SelectXmlInfo[]] $nodes = [Xml] (Get-Content $projectPath) `
-        | Select-Xml -XPath "//Project/PropertyGroup/MajorVersion/.."
-
-    if ($nodes.Count -ne 1) {
-        croak "The property file for ""$packageName"" is not ""valid""."
-    }
-
-    $pg = $nodes[0].Node
-
-    # NB: if one of the nodes does not actually exist, the function throws.
-    $major = $pg.MajorVersion.Trim()
-    $minor = $pg.MinorVersion.Trim()
-    $patch = $pg.PatchVersion.Trim()
-    $precy = $pg.PreReleaseCycle.Trim()
-    $preno = $pg.PreReleaseNumber.Trim()
+    $xml = Load-XmlTextual $projectPath
+    $major = Select-SingleProperty $xml "MajorVersion"
+    $minor = Select-SingleProperty $xml "MinorVersion"
+    $patch = Select-SingleProperty $xml "PatchVersion"
+    $precy = Select-SingleProperty $xml "PreReleaseCycle"
+    $preno = Select-SingleProperty $xml "PreReleaseNumber"
 
     if ($asString) {
         return $precy ? "$major.$minor.$patch-$precy$preno"
@@ -236,22 +227,8 @@ function Get-BuildPlatforms {
 
     ___confess "Getting the supported platforms by the solution."
 
-    [SelectXmlInfo[]] $nodes = [Xml] (Get-Content $PLATFORMS_PROPS) `
-        | Select-Xml -XPath "//Project/PropertyGroup/BuildPlatforms"
-
-    if ($nodes.Count -ne 1) {
-        croak "The property file for ""$PLATFORMS_PROPS"" is not ""valid""."
-    }
-
-    $platforms = $nodes[0].Node.InnerXML.Trim()
-
-    if ($asString) {
-        # Ready for MSBuild.exe/dotnet.exe.
-        return "\""$platforms\"""
-    }
-    else {
-        return $platforms.Split(";")
-    }
+    Load-XmlTextual $PLATFORMS_PROPS `
+        | Select-SingleProperty -Property "BuildPlatforms" -AsString:$asString
 }
 
 # ------------------------------------------------------------------------------
@@ -264,22 +241,8 @@ function Get-TestPlatforms {
 
     ___confess "Getting the supported platforms by the test project."
 
-    [SelectXmlInfo[]] $nodes = [Xml] (Get-Content $PLATFORMS_PROPS) `
-        | Select-Xml -XPath "//Project/PropertyGroup/TestPlatforms" `
-
-    if ($nodes.Count -ne 1) {
-        croak "The property file for ""$PLATFORMS_PROPS"" is not ""valid""."
-    }
-
-    $platforms = $nodes[0].Node.InnerXML.Trim()
-
-    if ($asString) {
-        # Ready for MSBuild.exe/dotnet.exe.
-        return "\""$platforms\"""
-    }
-    else {
-        return $platforms.Split(";")
-    }
+    Load-XmlTextual $PLATFORMS_PROPS `
+        | Select-SingleProperty -Property "TestPlatforms" -AsString:$asString
 }
 
 # ------------------------------------------------------------------------------
@@ -292,22 +255,8 @@ function Get-PackPlatforms {
 
     ___confess "Getting the supported platforms by the package."
 
-    [SelectXmlInfo[]] $nodes = [Xml] (Get-Content $PLATFORMS_PROPS) `
-        | Select-Xml -XPath "//Project/PropertyGroup/PackPlatforms" `
-
-    if ($nodes.Count -ne 1) {
-        croak "The property file for ""$PLATFORMS_PROPS"" is not ""valid""."
-    }
-
-    $platforms = $nodes[0].Node.InnerXML.Trim()
-
-    if ($asString) {
-        # Ready for MSBuild.exe/dotnet.exe.
-        return "\""$platforms\"""
-    }
-    else {
-        return $platforms.Split(";")
-    }
+    Load-XmlTextual $PLATFORMS_PROPS `
+        | Select-SingleProperty -Property "PackPlatforms" -AsString:$asString
 }
 
 # ------------------------------------------------------------------------------
@@ -318,21 +267,90 @@ function Get-SupportedPlatforms {
 
     ___confess "Getting the list of all supported platforms."
 
-    [SelectXmlInfo[]] $nodes = [Xml] (Get-Content $PLATFORMS_PROPS) `
-        | Select-Xml -XPath "//Project/PropertyGroup/MinClassicPlatforms/.." `
-
-    if ($nodes.Count -ne 1) {
-        croak "The property file for ""$PLATFORMS_PROPS"" is not ""valid""."
-    }
-
-    $pg = $nodes[0].Node
-
-    $minClassic = $pg.MinClassicPlatforms.Trim().Split(";")
-    $maxClassic = $pg.MaxClassicPlatforms.Trim().Split(";")
-    $minCore    = $pg.MinCorePlatforms.Trim().Split(";")
-    $maxCore    = $pg.MaxCorePlatforms.Trim().Split(";")
+    $xml = Load-XmlTextual $PLATFORMS_PROPS
+    $minClassic = Select-SingleProperty $xml "MinClassicPlatforms"
+    $maxClassic = Select-SingleProperty $xml "MaxClassicPlatforms"
+    $minCore    = Select-SingleProperty $xml "MinCorePlatforms"
+    $maxCore    = Select-SingleProperty $xml "MaxCorePlatforms"
 
     @($minClassic, $maxClassic, $minCore, $maxCore)
+}
+
+# ------------------------------------------------------------------------------
+
+function Get-SupportedStandards {
+    [CmdletBinding()]
+    param(
+        [switch] $asString
+    )
+
+    ___confess "Getting the supported platforms by the package."
+
+    Load-XmlTextual $PLATFORMS_PROPS `
+        | Select-SingleProperty -Property "SupportedStandards" -AsString:$asString
+}
+
+# ------------------------------------------------------------------------------
+
+function Load-XmlTextual {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $path
+    )
+
+    ___confess "Loading an XML document."
+
+    # We don't use
+    # > $xml = [Xml] (Get-Content $path)
+    # because we want to configure the handling of white spaces.
+    # NB: Xml is a type accelerator for System.Xml.XmlDocument.
+    $content = Get-Content $path
+    $xml = New-Object -TypeName System.Xml.XmlDocument
+    $xml.PreserveWhitespace = $false
+    $xml.LoadXml($content)
+
+    $xml
+}
+
+# ------------------------------------------------------------------------------
+
+function Select-SingleProperty {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [Xml] $xml,
+
+        [Parameter(Mandatory = $true, Position = 1)]
+        [ValidateNotNullOrEmpty()]
+        [string] $property,
+
+        [switch] $asString
+    )
+
+    ___confess "Querying an MSBuild project file for a single property."
+
+    [SelectXmlInfo[]] $nodes = $xml | Select-Xml -XPath "//Project/PropertyGroup/$property"
+
+    if ($nodes -eq $null -or $nodes.Count -eq 0) {
+        croak "Could not find a property named ""$property""."
+    }
+    elseif ($nodes.Count -gt 1) {
+        croak "There is more than one property named ""$property""."
+    }
+
+    # Remove any remaining white spaces.
+    $text = $nodes[0].Node.InnerText.Trim().Replace(" ", "")
+
+    if ($asString) {
+        # Ready for MSBuild.exe/dotnet.exe.
+        return "\""$text\"""
+    }
+    else {
+        return $text.Split(";")
+    }
 }
 
 #endregion
