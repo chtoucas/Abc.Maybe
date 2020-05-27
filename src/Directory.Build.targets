@@ -7,8 +7,10 @@
     - Retail                Meta-option
     - HideInternals         Abc.Maybe internals are hidden from Abc.Testing
                             NB: if Retail = true, HideInternals has no effect
-    - NoWarnX               More NoWarn's
-    - PatchEquality
+    - NoWarnX               Custom list of NoWarn's (for PS scripts)
+    - PatchEquality         Do NOT use this one...
+                            To prevent any accident, it is disabled when
+                            "Retail" equals "true".
     - PrintSettings         Enable target PrintSettings?
 
     Project configuration:
@@ -27,22 +29,24 @@
     <NoWarnCS1591 Condition=" $(NoWarnCS1591) == '' ">true</NoWarnCS1591>
   </PropertyGroup>
 
-  <!-- Retail configuration -->
+  <!-- Retail settings -->
   <PropertyGroup Condition=" $(Retail) == 'true' ">
     <SignAssembly>true</SignAssembly>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <VisibleInternals>false</VisibleInternals>
-
-    <DefineConstants>$(DefineConstants);UNCHECKED</DefineConstants>
   </PropertyGroup>
 
   <!-- Compiler symbols -->
   <PropertyGroup>
     <DefineConstants Condition=" $(SignAssembly) == 'true' ">$(DefineConstants);SIGNED_ASSEMBLY</DefineConstants>
     <DefineConstants Condition=" $(VisibleInternals) == 'true' ">$(DefineConstants);INTERNALS_VISIBLE_TO</DefineConstants>
-    <DefineConstants Condition=" $(PatchEquality) == 'true' ">$(DefineConstants);PATCH_EQUALITY</DefineConstants>
+    <DefineConstants Condition=" $(CheckForOverflowUnderflow) == 'false' ">$(DefineConstants);UNCHECKED</DefineConstants>
+  </PropertyGroup>
 
+  <!-- Compiler symbols (developer-only) -->
+  <PropertyGroup Condition=" $(Retail) != 'true' ">
+    <DefineConstants Condition=" $(PatchEquality) == 'true' ">$(DefineConstants);PATCH_EQUALITY</DefineConstants>
     <!--<DefineConstants>$(DefineConstants);PLAIN_LINQ</DefineConstants>-->
     <!--<DefineConstants>$(DefineConstants);PURE_MAYBE</DefineConstants>-->
   </PropertyGroup>
@@ -59,8 +63,6 @@
     <NoWarn Condition=" $(RelaxWarnings) == 'true' ">$(NoWarn);CA1034;CA1303;CA1707</NoWarn>
     <NoWarn Condition=" $(RelaxAsyncWarnings) == 'true' ">$(NoWarn);CA2007</NoWarn>
     <NoWarn Condition=" $(NoWarnCS1591) == 'true' ">$(NoWarn);CS1591</NoWarn>
-
-    <!-- Maybe append a custom list of excluded rules (for PS scripts) -->
     <NoWarn Condition=" $(NoWarnX) != '' ">$(NoWarn);$(NoWarnX)</NoWarn>
   </PropertyGroup>
 
@@ -72,7 +74,7 @@
     </PackageReference>
   </ItemGroup>
 
-  <!-- Verbose build settings -->
+  <!-- Target for verbose settings -->
   <Target Name="PrintSettings" BeforeTargets="Compile"
           Condition=" $(PrintSettings) == 'true' and $(TargetFramework) != '' ">
     <PropertyGroup>
