@@ -82,6 +82,7 @@
         attributes but VS doesn't use them if I understand things correctly).
         We use the version 3.1 instead of 3.0 because the former is LTS and the
         latter is already EOL.
+      - "LibraryPlatforms" contains one platform per API profile (see D.B.targets).
       - Platforms grouped by dotnet tasks.
         Do NOT add .NET Standard 1.0, v1.1 has everything we need but with
         a much simpler dependency graph.
@@ -129,11 +130,6 @@
       netstandard2.1;netstandard2.0;netstandard1.1;
       net461;net452
     </PackPlatforms>
-
-    <SupportedStandards>
-      netstandard2.1;netstandard2.0;
-      netstandard1.6;netstandard1.5;netstandard1.4;netstandard1.3;netstandard1.2;netstandard1.1
-    </SupportedStandards>
 
     <MinClassicPlatforms>net48;net472;net462;net452</MinClassicPlatforms>
     <MaxClassicPlatforms>

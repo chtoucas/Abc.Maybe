@@ -228,7 +228,7 @@ function Get-BuildPlatforms {
         [switch] $asString
     )
 
-    ___confess "Getting the supported platforms by the solution."
+    ___confess "Getting the list of platforms for ""dotnet build""."
 
     Load-XmlTextual $PLATFORMS_PROPS `
         | Select-SingleProperty -Property "BuildPlatforms" -AsString:$asString
@@ -242,7 +242,7 @@ function Get-TestPlatforms {
         [switch] $asString
     )
 
-    ___confess "Getting the supported platforms by the test project."
+    ___confess "Getting the list of platforms for ""dotnet test""."
 
     Load-XmlTextual $PLATFORMS_PROPS `
         | Select-SingleProperty -Property "TestPlatforms" -AsString:$asString
@@ -256,7 +256,7 @@ function Get-PackPlatforms {
         [switch] $asString
     )
 
-    ___confess "Getting the supported platforms by the package."
+    ___confess "Getting the list of platforms for ""dotnet pack""."
 
     Load-XmlTextual $PLATFORMS_PROPS `
         | Select-SingleProperty -Property "PackPlatforms" -AsString:$asString
@@ -277,20 +277,6 @@ function Get-SupportedPlatforms {
     $maxCore    = Select-SingleProperty $xml "MaxCorePlatforms"
 
     @($minClassic, $maxClassic, $minCore, $maxCore)
-}
-
-# ------------------------------------------------------------------------------
-
-function Get-SupportedStandards {
-    [CmdletBinding()]
-    param(
-        [switch] $asString
-    )
-
-    ___confess "Getting the supported platforms by the package."
-
-    Load-XmlTextual $PLATFORMS_PROPS `
-        | Select-SingleProperty -Property "SupportedStandards" -AsString:$asString
 }
 
 # ------------------------------------------------------------------------------
