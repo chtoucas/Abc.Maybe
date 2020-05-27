@@ -13,8 +13,8 @@
       If PreReleaseCycle is empty, then PreReleaseNumber is ignored, but we
       better keep it empty.
     -->
-    <PreReleaseCycle>beta</PreReleaseCycle>
-    <PreReleaseNumber>5</PreReleaseNumber>
+    <PreReleaseCycle></PreReleaseCycle>
+    <PreReleaseNumber></PreReleaseNumber>
 
     <!-- Package title -->
     <Title>A Safe Yet Effective Option Type</Title>
