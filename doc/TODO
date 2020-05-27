@@ -8,13 +8,8 @@ Currently, the only thing blocking us for a 1.0.0 release is proper testing of
 equality and ordering comparisons.
 
 Deterministic build / Source Link
-- Deterministic
-  Retail.props, non-deterministic attributes
-    AssemblyFileVersion
-    AssemblyInformationalVersion
-    AssemblyDescription
-- SourceLink
-  RepositoryCommit/Branch
+- Non-deterministic attributes: AssemblyFileVersion & AssemblyDescription.
+- SourceLink: RepositoryCommit/Branch
 - snupkg? Does it require the customer to change a few VS settings.
 - References
   https://github.com/dotnet/sourcelink/tree/master/docs

@@ -195,15 +195,16 @@ Common function parameters:
 Maintenance
 -----------
 
+> dotnet restore
+> dotnet list package --outdated
+> dotnet list eng\NETFrameworkTools package --outdated
+
 .NET Framework tools (see "eng\NETFrameworkTools"):
 - OpenCover, used by cover.ps1
 - xunit.runner.console, used by test-package.ps1
 
 .NET Core (local) tools:
 - ReportGenerator, used by cover.ps1
-
-To find outdated .NET Framework tools:
-> dotnet list eng\NETFrameworkTools package --outdated
 
 There seems to be no built-in way to find outdated .NET Core tools, but
 > dotnet tool update <packagename>

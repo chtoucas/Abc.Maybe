@@ -42,8 +42,8 @@
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
-  <!--
-    DebugType *** BE VERY, VERY CAREFUL, BEFORE CHANGING THIS ***
+  <!-- DebugType -->
+  <!-- *** BE VERY, VERY CAREFUL, BEFORE CHANGING THIS ***
     What we really want is sketched here but it does NOT work since
     "TargetFrameworkIdentifier" is not yet set. A good place where to put this
     would be Directory.Build.targets, but it is too late according to this issue
