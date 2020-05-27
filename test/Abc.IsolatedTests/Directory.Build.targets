@@ -1,0 +1,7 @@
+﻿<Project>
+
+  <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets" />
+
+  <Import Project="$(SourceRoot)Abc.Tests\Directory.Build.targets" />
+
+</Project>

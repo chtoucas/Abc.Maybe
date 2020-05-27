@@ -42,7 +42,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eng", "eng", "{6D957FE8-23D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{73C72FF8-FF25-49A3-A241-4959FEFC8C81}"
 	ProjectSection(SolutionItems) = preProject
-		test\Abc.PackageTests\Abc.PackageTests.csproj = test\Abc.PackageTests\Abc.PackageTests.csproj
 		test\Abc.PerformanceTests\Abc.PerformanceTests.csproj = test\Abc.PerformanceTests\Abc.PerformanceTests.csproj
 		test\Blank\Blank.csproj = test\Blank\Blank.csproj
 		test\Directory.Build.props = test\Directory.Build.props
@@ -55,6 +54,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NETFrameworkTools", "NETFra
 	ProjectSection(SolutionItems) = preProject
 		eng\NETFrameworkTools\Directory.Build.targets = eng\NETFrameworkTools\Directory.Build.targets
 		eng\NETFrameworkTools\NETFrameworkTools.csproj = eng\NETFrameworkTools\NETFrameworkTools.csproj
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Abc.PackageTests", "Abc.PackageTests", "{2E81C9F7-6E5A-4B07-BE46-C71ADF4750DD}"
+	ProjectSection(SolutionItems) = preProject
+		test\Abc.PackageTests\Abc.PackageTests.csproj = test\Abc.PackageTests\Abc.PackageTests.csproj
+		test\Abc.PackageTests\AssemblyInfo.cs = test\Abc.PackageTests\AssemblyInfo.cs
+		test\Abc.PackageTests\Directory.Build.targets = test\Abc.PackageTests\Directory.Build.targets
 	EndProjectSection
 EndProject
 Global
@@ -88,6 +94,7 @@ Global
 		{6D957FE8-23D0-4985-A91C-F1CC399AA453} = {4B926891-DAB0-4792-AB7B-E1A0C001843A}
 		{73C72FF8-FF25-49A3-A241-4959FEFC8C81} = {4B926891-DAB0-4792-AB7B-E1A0C001843A}
 		{9DE2F491-0AAE-44F8-870F-28422DCFEA54} = {6D957FE8-23D0-4985-A91C-F1CC399AA453}
+		{2E81C9F7-6E5A-4B07-BE46-C71ADF4750DD} = {73C72FF8-FF25-49A3-A241-4959FEFC8C81}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1739E5AC-504C-40F8-968B-64F1F620D3C3}
