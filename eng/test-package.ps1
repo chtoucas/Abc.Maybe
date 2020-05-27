@@ -106,9 +106,7 @@ param(
 const TEST_PROJECT_NAME "Abc.PackageTests"
 const TEST_PROJECT (Join-Path $TEST_DIR $TEST_PROJECT_NAME -Resolve)
 
-# NB: currently testing for these platforms is not enabled; see D.B.props.
-const XUNIT_PLATFORM "net452"
-const OLDSTYLE_PLATFORMS @("net451", "net45")
+const OLDSTYLE_XUNIT_RUNNER_PLATFORM "net452"
 
 #endregion
 ################################################################################
@@ -210,7 +208,7 @@ function Find-XunitRunnerOnce {
 
     Restore-NETFrameworkTools | Out-Host
 
-    $path = Find-XunitRunner -Platform $XUNIT_PLATFORM
+    $path = Find-XunitRunner -Platform $OLDSTYLE_XUNIT_RUNNER_PLATFORM
 
     if (-not $path) { $Script:___NoXunitConsole = $true ; return }
 
@@ -359,7 +357,7 @@ function Invoke-TestOldStyle {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, Position = 0)]
-        [ValidateScript({ $_ -in $OLDSTYLE_PLATFORMS })]
+        [ValidateScript({ $_ -in $OLDSTYLE_XUNIT_PLATFORMS })]
         [string] $platform,
 
         [Parameter(Mandatory = $true, Position = 1)]
@@ -423,7 +421,7 @@ function Invoke-TestSingle {
         [switch] $noBuild
     )
 
-    if ($platform -in $OLDSTYLE_PLATFORMS) {
+    if ($platform -in $OLDSTYLE_XUNIT_PLATFORMS) {
         Invoke-TestOldStyle `
             -Platform   $platform `
             -Version    $version `
@@ -496,7 +494,7 @@ function Invoke-TestAny {
         [string] $runtime
     )
 
-    $frameworks = $platformList | where { $_ -notin $OLDSTYLE_PLATFORMS }
+    $frameworks = $platformList | where { $_ -notin $OLDSTYLE_XUNIT_PLATFORMS }
     $targetFrameworks = Get-TargetFrameworks $frameworks
 
     $args = "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
@@ -508,7 +506,7 @@ function Invoke-TestAny {
     say-softly "Test completed successfully."
 
     say "`nContinuing with ""old-style"" platforms if any."
-    foreach ($platform in $OLDSTYLE_PLATFORMS) {
+    foreach ($platform in $OLDSTYLE_XUNIT_PLATFORMS) {
         if ($platform -in $platformList) {
             Invoke-TestOldStyle -Platform $platform -Version $version -Runtime $runtime
         }

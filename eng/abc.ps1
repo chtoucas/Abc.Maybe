@@ -48,6 +48,9 @@ New-Alias "SAY-LOUDLY" Write-Green
 # The props where we can informations related to supported platforms.
 const PLATFORMS_PROPS (Join-Path $ROOT_DIR "Directory.Build.props" -Resolve)
 
+# .NET Framework versions not supported by Xunit.
+const OLDSTYLE_XUNIT_PLATFORMS @("net451", "net45")
+
 # Reference project used to restore .NET Framework tools.
 # NB: we need the project file (not the directory) since we are going to parse it.
 const NET_FRAMEWORK_TOOLS_PROJECT `
