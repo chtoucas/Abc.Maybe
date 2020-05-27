@@ -29,6 +29,7 @@ namespace Abc
         public static void Main()
         {
             string artifactsPath = GetArtifactsPath();
+
             var config = GetCustomConfig(artifactsPath, shortRunJob: true)
                 .WithLocalSettings();
 
@@ -42,7 +43,7 @@ namespace Abc
             // - typeof(Program).Assembly.Location
             // - Process.GetCurrentProcess().MainModule.FileName
             string baseDir = AppContext.BaseDirectory;
-            int len = baseDir.LastIndexOf("src\\perf\\bin", StringComparison.OrdinalIgnoreCase);
+            int len = baseDir.LastIndexOf("test\\Abc.PerformanceTests\\bin", StringComparison.OrdinalIgnoreCase);
             if (len == -1) { throw new NotSupportedException(); }
             return baseDir.Substring(0, len) + "__\\benchmarks";
         }
