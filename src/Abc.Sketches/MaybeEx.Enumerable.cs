@@ -41,18 +41,18 @@ namespace Abc
         [Pure]
         public static Maybe<IEnumerable<T>> Collect<T>(IEnumerable<Maybe<T>> source)
         {
-#if !(NETFRAMEWORK || NETSTANDARD1_x) // Enumerable.Append
-            return source.Aggregate(
-                Maybe.EmptyEnumerable<T>(),
-                (x, y) => x.ZipWith(y, Enumerable.Append));
-#else
+#if NETSTANDARD1_x || NETFRAMEWORK // Enumerable.Append
             return source.Aggregate(
                 Maybe.EmptyEnumerable<T>(),
                 (x, y) => x.ZipWith(y, Append));
+#else
+            return source.Aggregate(
+                Maybe.EmptyEnumerable<T>(),
+                (x, y) => x.ZipWith(y, Enumerable.Append));
 #endif
         }
 
-#if (NETFRAMEWORK || NETSTANDARD1_x) // Enumerable.Append
+#if NETSTANDARD1_x || NETFRAMEWORK // Enumerable.Append
         private static IEnumerable<TSource> Append<TSource>(
             IEnumerable<TSource> source,
             TSource element)

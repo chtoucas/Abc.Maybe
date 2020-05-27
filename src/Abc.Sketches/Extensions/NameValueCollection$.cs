@@ -1,6 +1,6 @@
 ﻿// See LICENSE in the project root for license information.
 
-#if !NETSTANDARD1_x // NameValueCollection
+#if API_PROFILE_21 // NameValueCollection (not part of netstandard1.x)
 
 namespace Abc.Extensions
 {

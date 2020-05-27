@@ -1,6 +1,6 @@
 ﻿// See LICENSE in the project root for license information.
 
-#if !NETSTANDARD1_x // System.Data.SqlTypes
+#if API_PROFILE_21 // System.Data.SqlTypes (not part of netstandard1.x)
 
 namespace Abc.Extensions
 {

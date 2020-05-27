@@ -108,10 +108,10 @@ namespace Abc.Linq
             var source = Enumerable.Empty<T>();
             var expected = Maybe<T>.None;
 
-#if !(NETFRAMEWORK || NETCOREAPP2_x) // Enumerable.Empty
-            Assert.Null(source as IList<T>);
-#else
+#if NETCOREAPP2_x || NETFRAMEWORK // Enumerable.Empty
             Assert.Empty(source as IList<T>);
+#else
+            Assert.Null(source as IList<T>);
 #endif
 
             Assert.Equal(expected, source.RunOnce().FirstOrNone());
