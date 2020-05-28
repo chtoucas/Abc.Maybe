@@ -50,10 +50,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{73C72FF8-F
 		test\README = test\README
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NETFrameworkTools", "NETFrameworkTools", "{9DE2F491-0AAE-44F8-870F-28422DCFEA54}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NETFxTools", "NETFxTools", "{9DE2F491-0AAE-44F8-870F-28422DCFEA54}"
 	ProjectSection(SolutionItems) = preProject
-		eng\NETFrameworkTools\Directory.Build.targets = eng\NETFrameworkTools\Directory.Build.targets
-		eng\NETFrameworkTools\NETFrameworkTools.csproj = eng\NETFrameworkTools\NETFrameworkTools.csproj
+		eng\NETFxTools\Directory.Build.targets = eng\NETFxTools\Directory.Build.targets
+		eng\NETFxTools\NETFxTools.csproj = eng\NETFxTools\NETFxTools.csproj
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Abc.PackageTests", "Abc.PackageTests", "{2E81C9F7-6E5A-4B07-BE46-C71ADF4750DD}"

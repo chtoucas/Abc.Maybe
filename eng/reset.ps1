@@ -45,7 +45,7 @@ try {
     # 1) __\coverlet\
     # 2) __\opencover\
     # 3) __\tools\
-    # 4) eng\NETFrameworkTools\
+    # 4) eng\NETFxTools\
 
     Reset-SourceTree      -Yes:$Yes
     Reset-TestTree        -Yes:$Yes
@@ -56,7 +56,7 @@ try {
     if ($Restore) {
         SAY-LOUDLY "`nRestoring dependencies, please wait..."
 
-        Restore-NETFrameworkTools
+        Restore-NETFxTools
         Restore-NETCoreTools
         Restore-Solution
 

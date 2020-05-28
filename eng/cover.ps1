@@ -89,7 +89,7 @@ function Invoke-Restore {
 
     SAY-LOUDLY "`nRestoring dependencies, please wait..."
 
-    Restore-NETFrameworkTools
+    Restore-NETFxTools
     Restore-NETCoreTools
     Restore-Solution
 

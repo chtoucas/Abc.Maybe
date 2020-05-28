@@ -208,7 +208,7 @@ function Find-XunitRunnerOnce {
 
     if ($___NoXunitConsole) { warn "No Xunit console runner." ; return }
 
-    Restore-NETFrameworkTools | Out-Host
+    Restore-NETFxTools | Out-Host
 
     $path = Find-XunitRunner -Platform $OLDSTYLE_XUNIT_RUNNER_PLATFORM
 

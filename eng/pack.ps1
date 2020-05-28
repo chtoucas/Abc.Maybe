@@ -317,7 +317,7 @@ function Invoke-Pack {
     if ($myVerbose)        { $args += "/p:PrintSettings=true" }
     if ($enableSourceLink) { $args += "/p:EnableSourceLink=true" }
     # Settings this option to "true" does not change anything, it is already its
-    # default value, but it might in the future.
+    # default value, but that might in the future.
     if ($deterministic)    { $args += "/p:Deterministic=true" }
 
     if ($ci) {

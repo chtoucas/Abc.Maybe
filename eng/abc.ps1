@@ -54,7 +54,7 @@ const OLDSTYLE_XUNIT_PLATFORMS @("net451", "net45")
 # Reference project used to restore .NET Framework tools.
 # NB: we need the project file (not the directory) since we are going to parse it.
 const NET_FRAMEWORK_TOOLS_PROJECT `
-    (Join-Path $ENG_DIR "NETFrameworkTools\NETFrameworkTools.csproj" -Resolve)
+    (Join-Path $ENG_DIR "NETFxTools\NETFxTools.csproj" -Resolve)
 
 #endregion
 ################################################################################
@@ -407,7 +407,7 @@ function Find-XunitRunner {
 ################################################################################
 #region Restore tasks.
 
-function Restore-NETFrameworkTools {
+function Restore-NETFxTools {
     [CmdletBinding()]
     param()
 
