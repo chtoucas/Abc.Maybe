@@ -9,6 +9,7 @@ Test the package Abc.Maybe.
 
 .DESCRIPTION
 Test the package Abc.Maybe for net4(5,6,7,8)x and netcoreapp(2,3).x.
+To some extent, the script can even test older versions (see -Version).
 Matching .NET Framework Developer Packs or Targeting Packs must be installed
 locally, the later should suffice. The script will fail with error MSB3644 when
 it is not the case.
@@ -37,17 +38,18 @@ Exclude .NET Core from the tests.
 Ignored if -Platform is also set and equals $true.
 
 .PARAMETER Version
-Specify a version of the package Abc.Maybe.
+Pick a specific version of the package Abc.Maybe.
 When no version is specified, we use the last one from the local NuGet feed.
 If the later is empty, we use the one found in Abc.Maybe.props.
-If the matching package is not public and does NOT exist in the local NuGet
-cache/feed, the script will fail.
+Beware, if the matching package does NOT exist in the local NuGet cache/feed,
+the script will fail in the following cases:
+- the package has not yet been published to NuGet.Org.
+- the package has been published but there has been breaking changes in between.
 Ignored if -NoCI is also set and equals $true.
 
 .PARAMETER NoCI
 Force using the package version found in Abc.Maybe.props.
-If the matching package is not public and does NOT exist in the local NuGet
-cache/feed, the script will fail.
+See warnings in -Version.
 
 .PARAMETER Runtime
 The target runtime to test the package for.
@@ -124,7 +126,7 @@ Usage: test-package.ps1 [arguments]
      -NoClassic     exclude .NET Framework from the tests.
      -NoCore        exclude .NET Core from the tests.
 
-     -Version       specify a version of the package Abc.Maybe.
+     -Version       pick a specific version of the package Abc.Maybe.
      -NoCI          force using the package version found in Abc.Maybe.props.
 
      -Runtime       specify a target runtime to test for.
@@ -217,9 +219,8 @@ function Find-XunitRunnerOnce {
 
 # ------------------------------------------------------------------------------
 
-# When there is a problem, we revert to -NoCI, nevertheless the process can
-# still fail in the end when the package is a release one and has not yet been
-# published to NuGet.Org.
+# When there is a problem, we revert to -NoCI, which could be problematic (see
+# warnings in -Version).
 function Find-LastLocalVersion {
     [CmdletBinding()]
     param(
