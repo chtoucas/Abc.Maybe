@@ -25,10 +25,10 @@ try {
     # System.Diagnostics.FileVersionInfo
     $fileInfo = Get-Item $path | % VersionInfo
 
-    SAY-LOUDLY "`nAssembly Full Name."
+    SAY-LOUDLY "`nAssembly's Full Name."
     say $asm.FullName
 
-    SAY-LOUDLY "`nAssembly Version Attributes."
+    SAY-LOUDLY "`nAssembly's Version Attributes."
     say ("AssemblyVersion      = {0}" -f $asm.GetName().Version)
     say ("FileVersion          = {0}" -f $fileInfo.FileVersion)
     say ("InformationalVersion = {0}" -f $fileInfo.ProductVersion)
