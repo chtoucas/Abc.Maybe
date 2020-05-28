@@ -1,18 +1,16 @@
 TODO
 ====
 
-Towards version 1.0.0
----------------------
-
-Currently, the only thing blocking us for a 1.0.0 release is proper testing of
-equality and ordering comparisons.
-
-SourceLink
+Source Link
+- Move conf from Abc.Maybe.csproj to D.B.(props/targets)?
 - snupkg? Does it require the customer to change a few VS settings.
 
-Deterministic
-- Non-deterministic attributes: AssemblyFileVersion, InformationalVersion (CI)
-  [$([System.DateTime]::UtcNow.ToString("r"))]
+Deterministic build
+- Default to non-deterministic? Enable only when: pack.ps1 -Freeze
+- Non-deterministic attributes:
+  * AssemblyFileVersion (build/revision numbers)
+  * InformationalVersion (CI-only)
+  * [$([System.DateTime]::UtcNow.ToString("r"))]
 - References
   https://github.com/dotnet/sourcelink/tree/master/docs
   https://github.com/clairernovotny/DeterministicBuilds
@@ -23,6 +21,7 @@ Deterministic
 vNEXT
 -----
 
+- MaybeComparer<T>, proper testing of equality and ordering comparisons.
 - Add overloads w/ IEqualityComparer<T> (true structural comparison).
 - "Lifted" comparison T w/ Maybe<T> to handle mixed type, eg Maybe<int?>,
   Maybe<int>, int? and int. This should be a custom MaybeComparer<T>. Do not

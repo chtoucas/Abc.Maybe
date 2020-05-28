@@ -66,46 +66,34 @@ Pre action, for beta -or- production packages.
 2. Update CHANGELOG
 3. Run eng\pack.ps1 -NoCI -y              Create the package
 4. Run eng\test-package.ps1 -NoCI -a -y   Test the result
-6. Git commit
+6. Git commit ("Change version number")
 7. Run script eng\pack.ps1 -Freeze        Recreate, and maybe publish the package
 8. Publish package                        Only if not yet done
 
 Post actions.
-a. For production packages, git tag (??? before, to get the correct branch ???)
+a. For production packages, git tag, then publish.
+   > git tag vX.Y.Z
+   > git tag -a vX.Y.Z -m "Bla bla"
+   > git push origin vX.Y.Z
+   Or do it within GitHub website.
    https://git-scm.com/book/en/v2/Git-Basics-Tagging
 
 Multi-targeting
 ---------------
 
-Supported standards.
-- .NET Standard 2.1
-- .NET Standard 2.0    (NETSTANDARD2_0)
-Supported platforms.
-- .NET Framework 4.6.1 (NETFRAMEWORK)
-  We use NETFRAMEWORK, not NET461, since this is the only .NET Framework version
-  we intend to enable during build.
-Inside VS, we only use .NET Standard 2.0 and .NET Core 3.1 (this one is added so
-that we benefit from full NRT-analysis).
+Inside VS, we only use .NET Standard 2.0 and .NET Core 3.1 (see D.B.props).
 
-IMPORTANT, after adding or removing a framework, we must update
-- Directory.Build.props (MaxApiPlatform)
-- Directory.Build.targets (DefineConstants)
-- Abc.Maybe.csproj (PublicAPI)
-- qbuild.cmd
-- pack.ps1
+IMPORTANT, after adding or removing a framework, if necessary, update the
+top-level D.B.props and D.B.targets.
 
 API differences. We try to minimize them by defining only two "profiles" that
 match exactly a .NET Standard version:
 - Profile 2.1 for .NET Standard 2.1
-- Profile 2.0 for .NET Standard 2.0 & .NET Framework 4.6.1.
+- Profile 2.0 for .NET Standard 2.0 and earlier versions.
 Profile 2.1 is a superset of Profile 2.0.
-If we add a profile 2.2, it must be a superset of profile 2.1:
-in Directory.Build.targets, both API_PROFILE_22 and API_PROFILE_21 are defined
-for the new profile.
-See https://github.com/dotnet/standard
 
-If there are for say things we could do w/ .NET Standard 2.1 but not w/ .NET Core
-3.1, we have two cases:
+If there are, for say, things we could do w/ .NET Standard 2.1 but not w/
+.NET Core 3.1, we have two cases:
 - Use PlatformNotSupportedException for things that could be supported within in
   a given profile but are not actually.
 - Simply do not do it if it can't be done, eg when a type would appear in the
@@ -130,10 +118,6 @@ We only handle two special cases:
     - Enumerable.Empty<T>() is empty when cast to IList<T>.
       The result is null w/ .NET Standard or .NET Core.
     - DateTime parsing.
-
-https://docs.microsoft.com/en-us/dotnet/standard/net-standard
-https://dotnet.microsoft.com/platform/dotnet-standard
-https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/cross-platform-targeting
 
 Development
 -----------
