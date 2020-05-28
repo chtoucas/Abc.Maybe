@@ -63,6 +63,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Abc.PackageTests", "Abc.Pac
 		test\Abc.PackageTests\Directory.Build.targets = test\Abc.PackageTests\Directory.Build.targets
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Abc.NETFxTests", "Abc.NETFxTests", "{9A41554A-41F7-4C66-AFFD-D520ACEDFC54}"
+	ProjectSection(SolutionItems) = preProject
+		test\Abc.NETFxTests\Abc.NETFxTests.csproj = test\Abc.NETFxTests\Abc.NETFxTests.csproj
+		test\Abc.NETFxTests\AssemblyInfo.cs = test\Abc.NETFxTests\AssemblyInfo.cs
+		test\Abc.NETFxTests\Directory.Build.targets = test\Abc.NETFxTests\Directory.Build.targets
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +102,7 @@ Global
 		{73C72FF8-FF25-49A3-A241-4959FEFC8C81} = {4B926891-DAB0-4792-AB7B-E1A0C001843A}
 		{9DE2F491-0AAE-44F8-870F-28422DCFEA54} = {6D957FE8-23D0-4985-A91C-F1CC399AA453}
 		{2E81C9F7-6E5A-4B07-BE46-C71ADF4750DD} = {73C72FF8-FF25-49A3-A241-4959FEFC8C81}
+		{9A41554A-41F7-4C66-AFFD-D520ACEDFC54} = {73C72FF8-FF25-49A3-A241-4959FEFC8C81}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1739E5AC-504C-40F8-968B-64F1F620D3C3}
