@@ -3,23 +3,26 @@ Changelog for Abc.
 vNEXT
 -----
 
-Removed
-- MaybeComparer<T>
+
+2020-05-27, version 1.0.0
+-------------------------
+
+First stable release.
+
+Changes:
+- [REMOVED] MaybeComparer<T> postponed to another release.
 
 2020-05-26, version 1.0.0-beta5
 -------------------------------
 
-Added
-- Support for SourceLink.
+Changes:
+- Package:
+  - Removed "netstandard1.0".
+  - Added "netstandard1.1" and "net452".
+  - Added support for Source Link.
+  - Changed "DebugType" from "embedded" or "full" to "portable".
 
-Changed
-- Package targets:
-  * removed "netstandard1.0"
-  * added "netstandard1.1"
-  * added "net452".
-- DebugType from "embedded" or "full" to "portable" (package).
-
-Internal Changes
+Internal changes:
 - Very much improve all PowerShell scripts.
 - Enabled testing for a package with
   - .NET Core, version >= 2.0.
@@ -33,11 +36,9 @@ Internal Changes
 2020-04-27, version 1.0.0-beta4
 -------------------------------
 
-Added
-- Support for .NET Framework 4.6.1.
-- Support for .NET Standard 1.0, but only for Abc.Maybe (completely untested).
-
-Changed
+Changes:
+- Added support for .NET Framework 4.6.1.
+- Added support for .NET Standard 1.0, but only for Abc.Maybe (completely untested).
 - Simplified Squash(Maybe<T?>) where T : class, and apply attribute Advanced.
 - Removed attribute Advanced from Flatten().
 - Package:
@@ -45,7 +46,7 @@ Changed
   - Added .NET Standard 1.0.
   - Removed .NET Core 3.1.
 
-Internal Changes
+Internal changes:
 - Defined two API profiles:
   Profile 2.0: .NET Standard 1.0 / 2.0 and .NET Framework 4.6.1.
   Profile 2.1: .NET Standard 2.1
@@ -55,7 +56,7 @@ Internal Changes
 2020-04-24, version 1.0.0-beta3
 -------------------------------
 
-Changed
+Changes:
 - MaybeComparer<T>.GetHashCode() now throws when "obj" is null.
 - Removed the notnull constraint on the result type of Switch().
 - Applied attribute EditorBrowsable to Maybe<T>.GetEnumerator() and
@@ -63,49 +64,41 @@ Changed
 - Structural comparison is now possible when the generic type params differ.
 - License changed from BSD-2-Clause to BSD-3-Clause.
 
-Internal Changes
+Internal changes:
 - Renamed project Abc.Future to Abc.Sketches.
 - Ensured that all projects have well-formed XML comments.
-- Imrpoved the build system.
+- Improved the build system.
 - Upgraded packages:
   * Microsoft.NET.Test.Sdk 16.5.0 -> 16.6.0.
 
 2020-04-17, version 1.0.0-beta2
 -------------------------------
 
-Added
+Changes:
+- [REMOVED] Maybe.Of() with a struct constraint; use Maybe.Of() followed by Squash().
+- [REMOVED] Maybe.Flatten() with a struct constraint; use Maybe.Flatten() followed by Squash().
 - Maybe<T> now supports binary serialization.
-
-Changed
 - With the previous version, I changed the behaviour of ElementAtOrNone(), it was
   wrong. It clearly contradicts the XML comments, let's roll back.
-
-Removed
-- Maybe.Of() with a struct constraint; use Maybe.Of() followed by Squash().
-- Maybe.Flatten() with a struct constraint; use Maybe.Flatten() followed by Squash().
 
 2020-04-16, version 1.0.0-beta1
 -------------------------------
 
-Added
+Changes:
+- [REMOVED] Maybe<T>.Skip(); use Maybe<T>.IsNone with Maybe.Unit or Maybe.Zero.
 - New versions of Maybe.Squash()
     static Maybe.Squash<T>(this Maybe<T>) where T : class
     static Maybe.Squash<T>(this Maybe<Maybe<T>>) where T : class
     static Maybe.Squash<T>(this in Maybe<Maybe<T?>>) where T : struct
   to complement the existing one
     static Maybe.Squash<T>(this in Maybe<T?>) where T : struct
-
-Changed
 - [OBSOLETE] Maybe.Flatten() with a struct constraint; use Maybe.Squash().
 - Removed the "in" parameter modifier used by the Maybe.Flatten() with no generic
   type constraint.
 - LINQ ElementAtOrNone() no longer returns an empty maybe if the index is out of
   range but rather throws an ArgumentOutOfRangeException.
 
-Removed
-- Maybe<T>.Skip(); use Maybe<T>.IsNone with Maybe.Unit or Maybe.Zero.
-
-Internal Changes
+Internal changes:
 - New script eng\freeze-api.ps1.
 - New option to hard clean the solution before packing.
 - Upgraded packages:
@@ -114,13 +107,13 @@ Internal Changes
 2020-04-12, version 1.0.0-alpha3
 --------------------------------
 
-Changed
+Changes:
 - [BREAKING] MaybeComparer<T>, complete rewrite, optionally structural.
 - Applied attribute EditorBrowsable to methods reserved for advanced scenarios.
 - Strong-name the public assembly.
 - Embed the debug symbols.
 
-Internal Changes
+Internal changes:
 - New perf project.
 - Rewrote most scripts using PowerShell.
 - Better build system.
@@ -131,21 +124,17 @@ Internal Changes
 2020-04-03, version 1.0.0-alpha-2
 ---------------------------------
 
-Added
-- The NuGet package now includes the pdb.
-
-Changed
+Changes:
 - [BREAKING] Maybe<T>.OrElseAsync() now expects a factory rather than a task.
 - [BREAKING] Maybe.Compose() and Maybe.ComposeBack() now return a "maybe" rather
   than an anonymous function.
+- [REMOVED] Maybe<T>.GroupJoin(); use Maybe<T>.SelectMany() instead.
+- [REMOVED] Maybe<T>.SwitchAsync(); use Maybe<T>.Switch() instead.
+- [REMOVED] Qperators.ZipAny(); use LINQ Zip followed by Maybe.CollectAny().
+- The NuGet package now includes the pdb.
 - Async methods now use eager validation.
 
-Removed
-- Maybe<T>.GroupJoin(); use Maybe<T>.SelectMany() instead.
-- Maybe<T>.SwitchAsync(); use Maybe<T>.Switch() instead.
-- Qperators.ZipAny(); use LINQ Zip followed by Maybe.CollectAny().
-
-Internal Changes
+Internal changes:
 - Full test coverage.
 - Replaced OpenCover by Coverlet as the default tool for test coverage.
 - New project Abc.Future for experimental code.
