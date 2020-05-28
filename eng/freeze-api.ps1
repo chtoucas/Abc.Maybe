@@ -28,10 +28,12 @@ function Update-PublicAPI {
 
     SAY-LOUDLY "`nProcessing $dir"
 
+    $annotations = "#nullable enable"
+
     $shippedPath = Join-Path $dir "PublicAPI.Shipped.txt" -Resolve
     $shipped = Get-Content $shippedPath
 
-    if (-not $shipped) { $shipped = @() }
+    if (-not $shipped) { $shipped = @($annotations) }
 
     $unshippedPath = Join-Path $dir "PublicAPI.Unshipped.txt" -Resolve
     $unshipped = Get-Content $unshippedPath
@@ -44,7 +46,8 @@ function Update-PublicAPI {
                 $item = $item.Substring($removedPrefix.Length)
                 $removed += $item
             }
-            else {
+            # We ignore annotations.
+            elseif (-not $item.StartsWith("#", "InvariantCultureIgnoreCase")) {
                 $shipped += $item
             }
         }
@@ -57,7 +60,7 @@ function Update-PublicAPI {
         | Out-File $shippedPath -Encoding UTF8
 
     say "  Writing PublicAPI.Unshipped.txt."
-    "" | Out-File $unshippedPath -Encoding UTF8
+    $annotations | Out-File $unshippedPath -Encoding UTF8
 
     say-softly "Directory successfully processed."
 }
