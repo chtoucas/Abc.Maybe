@@ -1,7 +1,5 @@
 ﻿// See LICENSE in the project root for license information.
 
-//#define VISIBLE_INTERNALS
-
 namespace Abc
 {
     using System.Collections;
