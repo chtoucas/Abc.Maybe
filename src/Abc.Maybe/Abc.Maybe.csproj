@@ -3,6 +3,9 @@
   <PropertyGroup>
     <TargetFrameworks>$(LibraryPlatforms)</TargetFrameworks>
     <IsPackable>true</IsPackable>
+
+    <!-- Only used to ease moving code from here to Sketches and vice versa -->
+    <DefineConstants>$(DefineConstants);VISIBLE_INTERNALS</DefineConstants>
   </PropertyGroup>
 
   <!-- Debug/Release -->
@@ -29,7 +32,7 @@
     </Otherwise>
   </Choose>
 
-  <!-- SourceLink -->
+  <!-- Source Link -->
   <PropertyGroup>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
