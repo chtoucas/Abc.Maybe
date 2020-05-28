@@ -324,6 +324,7 @@ function Select-SingleProperty {
 
     [SelectXmlInfo[]] $nodes = $xml | Select-Xml -XPath "//Project/PropertyGroup/$property"
 
+    # NB: I guess we could just check (-not $nodes).
     if ($nodes -eq $null -or $nodes.Count -eq 0) {
         croak "Could not find a property named ""$property""."
     }

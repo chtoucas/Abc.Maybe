@@ -18,8 +18,8 @@ The NuGet package offers full support for:
 - .NET Framework 4.5 or later.
 
 The public API is not the same for all targets. We currently define two profiles,
-one is for the platforms implementing .NET Standard 2.1, and the other is for
-those preceding it.
+one is for the [platforms implementing .NET Standard 2.1](https://dotnet.microsoft.com/platform/dotnet-standard#versions),
+and the other is for those preceding it.
 
 ### Objectives/Features
 
@@ -28,17 +28,17 @@ those preceding it.
   - [x] Curated API largely inspired by Haskell's Maybe.
   - [x] Extensible.
   - [x] Incurring no significant overhead when used wisely.
-- [x] Being a good citizen of the .NET ecosystem.
-  - [x] .NET Standard 2.0, and .NET Framework 4.6.1.
-  - [x] Equatable and comparable, both optionally structural.
-  - [x] NRT-aware (NRT = Nullable Reference Types).
-  - [x] Debugger-friendly.
+- [ ] Being a good citizen of the .NET ecosystem.
+  - [x] .NET Standard 2.0 and .NET Framework 4.6.1.
+  - [x] Aware of Nullable Reference Types (NRT).
+  - [x] Debugger-friendly, Source Link.
   - [x] Strongly named assembly.
+  - [ ] Deterministic build.
 - [ ] Being well tested.
   - [x] 100% test coverage.
   - [ ] Wide range of functional tests.
 - [ ] Being well documented.
-  - [ ] XML comments with integrated examples.
+  - [ ] XML comments with code samples.
   - [x] Quick start.
   - [ ] Provides guidance.
   - [ ] Samples.
