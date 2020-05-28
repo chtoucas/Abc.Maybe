@@ -235,7 +235,7 @@ function Remove-Dir {
     ___confess "Deleting directory ""$path""."
 
     if (-not (Test-Path $path)) {
-        return ___debug "Skipping ""$path""; the path does NOT exist."
+        return ___debug "Skipping ""$path""; the file does NOT exist."
     }
     if (-not [System.IO.Path]::IsPathRooted($path)) {
         return carp "Skipping ""$path""; the path MUST be absolute."
@@ -257,7 +257,7 @@ function Remove-BinAndObj {
     ___confess "Deleting ""bin"" and ""obj"" directories within ""$path""."
 
     if (-not (Test-Path $path)) {
-        return ___debug "Skipping ""$path""; the path does NOT exist."
+        return ___debug "Skipping ""$path""; the file does NOT exist."
     }
     if (-not [System.IO.Path]::IsPathRooted($path)) {
         return carp "Skipping ""$path""; the path MUST be absolute."
