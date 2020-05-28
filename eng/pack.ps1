@@ -406,7 +406,7 @@ function Invoke-Publish {
 
     SAY-LOUDLY "`nPublishing the package -or- Preparing the command to do so."
 
-    $args = @()
+    $args = @("--force-english-output")
 
     $source = Read-Host "Source [empty to push to the default source]"
     if ($source) { $args += "-s $source" }
@@ -416,14 +416,11 @@ function Invoke-Publish {
 
     if (yesno "Do you want me to publish the package for you?") {
         warn "Not yet activated."
-        SAY-LOUDLY "`n---`nTo publish the package:"
-        SAY-LOUDLY "> dotnet nuget push --force-english-output $packageFile $args"
-        #& dotnet nuget push --force-english-output $packageFile $args
+        #& dotnet nuget push $packageFile $args
     }
-    else {
-        SAY-LOUDLY "`n---`nTo publish the package:"
-        SAY-LOUDLY "> dotnet nuget push $packageFile $args"
-    }
+
+    SAY-LOUDLY "`n---`nTo publish the package:"
+    SAY-LOUDLY "> dotnet nuget push $packageFile $args"
 }
 
 #endregion
