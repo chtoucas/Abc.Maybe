@@ -3,6 +3,8 @@ Changelog for Abc.
 vNEXT
 -----
 
+Internal changes:
+- freeze-api.ps1 now understands the annotation "#nullable enable".
 
 2020-05-27, version 1.0.0
 -------------------------
@@ -10,7 +12,7 @@ vNEXT
 First stable release.
 
 Changes:
-- [REMOVED] MaybeComparer<T> postponed to another release.
+- [REMOVED] MaybeComparer<T> is postponed to another release.
 
 2020-05-26, version 1.0.0-beta5
 -------------------------------
