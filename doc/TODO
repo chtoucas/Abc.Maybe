@@ -34,9 +34,7 @@ Misc tasks.
   Add coverlet.collector to the test project. Coverity?
   xunit.runner.console -> core app
 
-Building & Packaging
---------------------
-
+Building & Packaging.
 - We use TargetFrameworkIdentifier ('.NETFramework') and NETFRAMEWORK instead
   of TargetFramework and NET461, is it such a good idea?
   https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives/preprocessor-if
