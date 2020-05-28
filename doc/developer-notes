@@ -31,10 +31,10 @@ Changelog
 
 Sections.
 - Changes.
-  Binary breaking changes MUST be prefixed w/ [BREAKING] and appeared first.
-  Removed features MUST be prefixed w/ [REMOVED].
+  Binary breaking changes MUST be prefixed w/ [BREAKING] and appear first.
+  Removed features MUST be prefixed w/ [REMOVED] and appear just after.
   NB: any item appearing here obviously introduces a breaking change.
-  New obsolete methods MUST be prefixed w/ [OBSOLETE] and appear just after.
+  Obsolete methods MUST be prefixed w/ [OBSOLETE].
 - Fixes, for any bug fixes.
 - Security, in case of vulnerabilities.
 - Internal changes, for changes that are of no interest outside the project.
@@ -152,9 +152,27 @@ MSBuild project files are __read__ in the following order:
 1. Directory.Build.props
 2. XXX.csproj
 3. Directory.Build.targets
-4. Retail.props (maybe)
-5. XXX.props    (maybe)
-6. src\Directory.Build.targets
+4. src\Directory.Build.targets
+5. Retail.props (maybe)
+6. XXX.props    (maybe)
+7. src\XXX\Directory.Build.targets
+
+Deterministic builds?
+There are too many side factors to take into account to ensure identical outputs
+across compilations. For instance, the cwd may change depending on the build
+machine. Anyway, it doesn't matter to this project.
+
+Here are a few things that are definitely non-deterministics.
+
+Pseudo-CI builds do not ensure that the git metadata is up to date, the attribute
+"InformationalVersion" includes a timestamp, etc.
+
+The attribute "AssemblyFileVersion" may contain build/revision numbers that
+are time-dependent but this could be changed very easily (see src\Retail.props).
+
+References
+- https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/deterministic-compiler-option
+- https://blog.paranoidcoding.com/2016/04/05/deterministic-builds-in-roslyn.html
 
 Tools
 -----

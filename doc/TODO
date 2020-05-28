@@ -4,19 +4,7 @@ TODO
 Source Link
 - Move conf from Abc.Maybe.csproj to D.B.(props/targets)?
 - snupkg? Does it require the customer to change a few VS settings.
-
-Deterministic build
-- Default to non-deterministic? Enable only when: pack.ps1 -Freeze
-- Non-deterministic attributes:
-  * AssemblyFileVersion (build/revision numbers)
-  * InformationalVersion (CI-only)
-  * [$([System.DateTime]::UtcNow.ToString("r"))]
-- References
-  https://github.com/dotnet/sourcelink/tree/master/docs
-  https://github.com/clairernovotny/DeterministicBuilds
   https://github.com/NuGet/Home/issues/4142
-  https://blog.paranoidcoding.com/2016/04/05/deterministic-builds-in-roslyn.html
-  https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/deterministic-compiler-option
 
 vNEXT
 -----
@@ -40,6 +28,11 @@ vNEXT
 Misc tasks.
 - FIXME, TODO and REVIEW within the code.
 - Localise user messages (ExceptionFactory)?
+- Perf tool (LINQ, nulls, iterable), .NET Core tool for benchmarkdotnet.
+- BannedApiAnalyzers?
+- Replace coverlet.msbuild by coverlet-console? Use runsettings.
+  Add coverlet.collector to the test project. Coverity?
+  xunit.runner.console -> core app
 
 Building & Packaging
 --------------------
@@ -52,8 +45,7 @@ Building & Packaging
 - Microsoft.NETFramework.ReferenceAssemblies
 - System.Runtime.CompilerServices.Unsafe
 - Old platforms?
-  NetStandardImplicitPackageVersion
-  <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+  NetStandardImplicitPackageVersion, DisableImplicitFrameworkReferences
   https://docs.microsoft.com/en-us/dotnet/core/tools/csproj
   https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props
 
@@ -72,13 +64,6 @@ Testing is well underway but there is still a lot to be done.
 - Maybe<Func<>>
 - delegates that return null.
 - Check published packages (upgrade, debugging experience).
-
-Misc tasks.
-- Perf tool (LINQ, nulls, iterable), .NET Core tool for benchmarkdotnet.
-- BannedApiAnalyzers?
-- Replace coverlet.msbuild by coverlet-console? Use runsettings.
-  Add coverlet.collector to the test project. Coverity?
-  xunit.runner.console -> core app
 
 Documentation
 -------------

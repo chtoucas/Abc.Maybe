@@ -28,12 +28,11 @@ and the other is for those preceding it.
   - [x] Curated API largely inspired by Haskell's Maybe.
   - [x] Extensible.
   - [x] Incurring no significant overhead when used wisely.
-- [ ] Being a good citizen of the .NET ecosystem.
+- [x] Being a good citizen of the .NET ecosystem.
   - [x] .NET Standard 2.0 and .NET Framework 4.6.1.
   - [x] Aware of Nullable Reference Types (NRT).
   - [x] Debugger-friendly, Source Link.
   - [x] Strongly named assembly.
-  - [ ] Deterministic build.
 - [ ] Being well tested.
   - [x] 100% test coverage.
   - [ ] Wide range of functional tests.
