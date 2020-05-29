@@ -164,8 +164,7 @@ machine. Anyway, it doesn't matter to this project.
 
 Here are a few things that are definitely non-deterministics.
 
-Pseudo-CI builds do not ensure that the git metadata is up to date, the attribute
-"InformationalVersion" includes a timestamp, etc.
+Pseudo-CI builds do not ensure that the git metadata is up to date.
 
 The attribute "AssemblyFileVersion" may contain build/revision numbers that
 are time-dependent but this could be changed very easily (see src\Retail.props).

@@ -194,25 +194,24 @@ function Get-ActualVersion {
         if ($precy) {
             # With a prerelease label, we increase the prerelease number.
             $preno  = 1 + [int]$preno
-            $suffix = "$precy$preno-ci-$timestamp"
         }
         else {
             # Without a prerelease label, we increase the patch number.
             $patch  = 1 + [int]$patch
-            $suffix = "ci-$timestamp"
         }
-    }
-    else {
-        $suffix = $precy ? "$precy$preno" : ""
     }
 
     $prefix = "$major.$minor.$patch"
+    $suffix = $precy ? "$precy$preno" : ""
 
-    ___debug "Version suffix: ""$suffix""."
+    $pkgversion = $suffix ? "$prefix-$suffix" : $prefix
+    if ($ci) { $pkgversion = "$pkgversion-ci-$timestamp" }
+
     ___debug "Version prefix: ""$prefix""."
+    ___debug "Version suffix: ""$suffix""."
+    ___debug "Package version: ""$pkgversion""."
 
-    $suffix ? @("$prefix-$suffix", $prefix, $suffix)
-        : @($prefix, $prefix, "")
+     @($pkgversion, $prefix, $suffix)
 }
 
 # ------------------------------------------------------------------------------
@@ -226,7 +225,7 @@ function Get-PackageFile {
 
         [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
-        [string] $version,
+        [string] $packageVersion,
 
         [switch] $ci,
         [switch] $yes
@@ -234,7 +233,7 @@ function Get-PackageFile {
 
     say "Getting package filepath."
 
-    $path = Join-Path ($ci ? $PKG_CI_OUTDIR : $PKG_OUTDIR) "$projectName.$version.nupkg"
+    $path = Join-Path ($ci ? $PKG_CI_OUTDIR : $PKG_OUTDIR) "$projectName.$packageVersion.nupkg"
 
     ___debug "Package file: ""$path""."
 
@@ -242,7 +241,7 @@ function Get-PackageFile {
     # NB: not necessary for CI packages, the filename is unique.
     if (-not $ci -and (Test-Path $path)) {
         if (-not $yes) {
-            warn "A package with the same version ($version) already exists."
+            warn "A package with the same version ($packageVersion) already exists."
             guard "Do you wish to proceed anyway?"
         }
 
@@ -268,7 +267,7 @@ function Invoke-Pack {
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $version,
+        [string] $packageVersion,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -297,7 +296,7 @@ function Invoke-Pack {
         [switch] $myVerbose
     )
 
-    "`nPacking v$version --- build {0}, rev. {1} on branch ""{2}"", commit ""{3}""." -f `
+    "`nPacking v$packageVersion --- build {0}, rev. {1} on branch ""{2}"", commit ""{3}""." -f `
         ($buildNumber ? $buildNumber : "???"),
         ($revisionNumber ? $revisionNumber : "???"),
         ($repositoryBranch ? $repositoryBranch : "???"),
@@ -310,6 +309,7 @@ function Invoke-Pack {
     # NB: this is not something that we have to do for non-CI packages, since
     # in that case we don't patch the suffix, but let's not bother.
     $args = `
+        "/p:PackageVersion=$packageVersion",
         "/p:VersionPrefix=$versionPrefix",
         "/p:VersionSuffix=$versionSuffix",
         "--version-suffix:$versionSuffix"
@@ -318,7 +318,7 @@ function Invoke-Pack {
     if ($enableSourceLink) { $args += "/p:EnableSourceLink=true" }
     # Settings this option to "true" does not change anything, it is already its
     # default value, but that might in the future.
-    if ($deterministic)    { $args += "/p:Deterministic=true" }
+    #if ($deterministic)    { $args += "/p:Deterministic=true" }
 
     if ($ci) {
         $output = $PKG_CI_OUTDIR
@@ -366,7 +366,7 @@ function Invoke-PushLocal {
 
         [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
-        [string] $version
+        [string] $packageVersion
     )
 
     SAY-LOUDLY "`nPushing the package to the local NuGet feed/cache."
@@ -388,7 +388,7 @@ function Invoke-PushLocal {
     say "Updating the local NuGet cache"
     $project = Join-Path $TEST_DIR "Blank" -Resolve
 
-    & dotnet restore $project /p:AbcVersion=$version
+    & dotnet restore $project /p:AbcVersion=$packageVersion
         || die "Failed to update the local NuGet cache."
 
     say-softly "Package successfully installed."
@@ -452,14 +452,14 @@ try {
     # 3. Generate build numbers.
     say "Generating build numbers."
     $buildNumber, $revisionNumber, $timestamp = Get-BuildNumbers
-    # 4. Get package version.
-    $version, $prefix, $suffix = Get-ActualVersion $ProjectName $timestamp -CI:$CI
+    # 4. Get package/asm version.
+    $pkgversion, $prefix, $suffix = Get-ActualVersion $ProjectName $timestamp -CI:$CI
     # 5. Get package file.
-    $packageFile = Get-PackageFile $ProjectName $version -Yes:($Freeze -or $Yes) -CI:$CI
+    $pkgfile = Get-PackageFile $ProjectName $pkgversion -Yes:($Freeze -or $Yes) -CI:$CI
 
     Invoke-Pack `
         -ProjectName      $ProjectName `
-        -Version          $version `
+        -PackageVersion   $pkgversion `
         -VersionPrefix    $prefix `
         -VersionSuffix    $suffix `
         -RepositoryBranch $branch `
@@ -473,7 +473,7 @@ try {
 
     # Post-actions.
     if ($CI) {
-        Invoke-PushLocal $packageFile $version
+        Invoke-PushLocal $pkgfile $pkgversion
     }
     else {
         if ($Freeze) {
@@ -488,20 +488,20 @@ try {
             Reset-PackageCIOutDir -Yes:$true
             Reset-LocalNuGet      -Yes:$true
 
-            Invoke-Publish $packageFile
+            Invoke-Publish $pkgfile
         }
         else {
             # If we don't reset the local NuGet cache, Invoke-PushLocal won't
             # update it with a new version of the package (the feed part is fine,
             # but we always remove cache and feed entry together, see
             # Reset-LocalNuGet).
-            Remove-PackageFromLocalNuGet $ProjectName $version
+            Remove-PackageFromLocalNuGet $ProjectName $pkgversion
 
             if (-not $yes) {
                 guard "Push the package to the local NuGet feed/cache?"
             }
 
-            Invoke-PushLocal $packageFile $version
+            Invoke-PushLocal $pkgfile $pkgversion
 
             SAY-LOUDLY "`n---`nNow, you can test the package. For instance,"
             SAY-LOUDLY "> eng\test-package.ps1 -NoCI -a -y"
