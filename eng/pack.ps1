@@ -283,11 +283,9 @@ function Invoke-Pack {
         [string] $repositoryCommit,
 
         [Parameter(Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
         [string] $buildNumber,
 
         [Parameter(Mandatory = $false)]
-        [ValidateNotNullOrEmpty()]
         [string] $revisionNumber,
 
         [switch] $deterministic,
