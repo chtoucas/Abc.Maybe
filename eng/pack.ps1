@@ -293,7 +293,7 @@ function Invoke-Pack {
         [Parameter(Mandatory = $false)]
         [string] $revisionNumber,
 
-        [switch] $deterministic,
+        [switch] $enableSourceLink,
         [switch] $ci,
         [switch] $myVerbose
     )
@@ -316,9 +316,8 @@ function Invoke-Pack {
         "/p:VersionSuffix=$versionSuffix",
         "--version-suffix:$versionSuffix"
 
-    if ($myVerbose)     { $args += "/p:PrintSettings=true" }
-    if ($deterministic) { $args += "/p:EnableSourceLink=true" }
-                   else { $args += "/p:Deterministic=false" }
+    if ($myVerbose)        { $args += "/p:PrintSettings=true" }
+    if ($enableSourceLink) { $args += "/p:EnableSourceLink=true" }
 
     if ($ci) {
         $output = $PKG_CI_OUTDIR
@@ -448,7 +447,7 @@ try {
     # 1. Reset the source tree.
     if ($Freeze -or $Reset) { Reset-SourceTree -Yes:($Freeze -or $Yes) }
     # 2. Get git metadata.
-    $branch, $commit, $deterministic = Get-GitMetadata -Yes:$Yes -ExitOnError:$Freeze
+    $branch, $commit, $gitok = Get-GitMetadata -Yes:$Yes -ExitOnError:$Freeze
     # 3. Generate build numbers.
     say "Generating build numbers."
     $buildNumber, $revisionNumber, $timestamp = Get-BuildNumbers
@@ -466,7 +465,7 @@ try {
         -RepositoryCommit $commit `
         -BuildNumber      $buildNumber `
         -RevisionNumber   $revisionNumber `
-        -Deterministic:   $deterministic `
+        -EnableSourceLink:$gitok `
         -CI:              $CI `
         -MyVerbose:       $MyVerbose
 
