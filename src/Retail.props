@@ -1,32 +1,47 @@
 <Project>
 
-  <!--
-    If the file does not exist, the import won't fail but the compilation will
-    since the version numbers will be invalid, eg VersionPrefix="..".
-  -->
   <Import Project="$(MSBuildThisFileDirectory)$(AssemblyName).props" />
 
   <!--
     Command-line options:
-    - BuildNumber       default = PatchVersion
-    - RevisionNumber    default = 0
-  -->
-  <PropertyGroup>
-    <BuildNumber Condition=" $(BuildNumber) == '' ">$(PatchVersion)</BuildNumber>
-    <RevisionNumber Condition=" $(RevisionNumber) == '' ">0</RevisionNumber>
-  </PropertyGroup>
+    - BuildNumber
+    - RevisionNumber
 
+    Remarks:
+    - No script should ever tweak MajorVersion or MinorVersion.
+    - VersionPrefix & VersionSuffix maybe set externally (eng\pack.ps1)
+    - Do NOT rely on PatchVersion, PreReleaseCycle or PreReleaseNumber, except
+      for settings VersionPrefix & VersionSuffix. Only use:
+      * VersionPrefix
+      * VersionSuffix
+      * MajorVersion
+      * MinorVersion
+  -->
   <PropertyGroup>
     <VersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</VersionPrefix>
     <VersionSuffix Condition=" $(PreReleaseCycle) != '' ">$(PreReleaseCycle)$(PreReleaseNumber)</VersionSuffix>
 
     <AssemblyVersion>$(MajorVersion).$(MinorVersion).0.0</AssemblyVersion>
-    <FileVersion>$(MajorVersion).$(MinorVersion).$(BuildNumber).$(RevisionNumber)</FileVersion>
 
     <!-- Informational version = semantic version -->
     <InformationalVersion>$(VersionPrefix)</InformationalVersion>
     <InformationalVersion Condition=" $(VersionSuffix) != '' ">$(InformationalVersion)-$(VersionSuffix)</InformationalVersion>
     <InformationalVersion Condition=" $(RepositoryCommit) != '' ">$(InformationalVersion)+$(RepositoryCommit.Substring(0, 7))</InformationalVersion>
   </PropertyGroup>
+
+  <Choose>
+    <When Condition=" $(BuildNumber) != '' and $(RevisionNumber) != '' ">
+      <PropertyGroup>
+        <FileVersion>$(MajorVersion).$(MinorVersion).$(BuildNumber).$(RevisionNumber)</FileVersion>
+      </PropertyGroup>
+    </When>
+
+    <Otherwise>
+      <PropertyGroup>
+        <FileVersion>$(VersionPrefix).0</FileVersion>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
 
 </Project>
