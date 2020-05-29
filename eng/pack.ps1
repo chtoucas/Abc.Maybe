@@ -292,7 +292,6 @@ function Invoke-Pack {
 
         [switch] $deterministic,
         [switch] $ci,
-        [switch] $enableSourceLink,
         [switch] $myVerbose
     )
 
@@ -303,9 +302,9 @@ function Invoke-Pack {
         ($repositoryCommit ? $repositoryCommit.Substring(0, 7) : "???") `
         | SAY-LOUDLY
 
-    # VersionSuffix is for Retail.props, but it is not enough, we MUST
-    # also specify --version-suffix (not sure it is necessary any more, but
-    # I prefer to play safe).
+    # VersionSuffix is for Retail.props, but it is not enough, we MUST also
+    # specify --version-suffix (not sure it is necessary any more, but I prefer
+    # to play safe).
     # NB: this is not something that we have to do for non-CI packages, since
     # in that case we don't patch the suffix, but let's not bother.
     $args = `
@@ -314,11 +313,9 @@ function Invoke-Pack {
         "/p:VersionSuffix=$versionSuffix",
         "--version-suffix:$versionSuffix"
 
-    if ($myVerbose)        { $args += "/p:PrintSettings=true" }
-    if ($enableSourceLink) { $args += "/p:EnableSourceLink=true" }
-    # Settings this option to "true" does not change anything, it is already its
-    # default value, but that might in the future.
-    #if ($deterministic)    { $args += "/p:Deterministic=true" }
+    if ($myVerbose)     { $args += "/p:PrintSettings=true" }
+    if ($deterministic) { $args += "/p:EnableSourceLink=true" }
+                   else { $args += "/p:Deterministic=false" }
 
     if ($ci) {
         $output = $PKG_CI_OUTDIR
@@ -448,7 +445,7 @@ try {
     # 1. Reset the source tree.
     if ($Freeze -or $Reset) { Reset-SourceTree -Yes:($Freeze -or $Yes) }
     # 2. Get git metadata.
-    $branch, $commit, $gitok = Get-GitMetadata -Yes:$Yes -ExitOnError:$Freeze
+    $branch, $commit, $deterministic = Get-GitMetadata -Yes:$Yes -ExitOnError:$Freeze
     # 3. Generate build numbers.
     say "Generating build numbers."
     $buildNumber, $revisionNumber, $timestamp = Get-BuildNumbers
@@ -466,9 +463,8 @@ try {
         -RepositoryCommit $commit `
         -BuildNumber      $buildNumber `
         -RevisionNumber   $revisionNumber `
-        -Deterministic:   $Freeze `
+        -Deterministic:   $deterministic `
         -CI:              $CI `
-        -EnableSourceLink:$gitok `
         -MyVerbose:       $MyVerbose
 
     # Post-actions.
