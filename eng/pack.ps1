@@ -101,7 +101,7 @@ function Get-GitMetadata {
         elseif ($yes)     { warn "The package description won't include any git metadata." }
         else              { guard "Continue even without any git metadata?" }
 
-        return @("", "")
+        return @("", "", $false)
     }
 
     # Keep Approve-GitStatus before $yes: we always want to see a warning

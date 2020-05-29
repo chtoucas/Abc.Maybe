@@ -3,8 +3,9 @@ TODO
 
 Pack (determinism): changelog + explain + clean up developer notes.
 
+Resetting nuget cache: be less destructive.
+
 Source Link
-- Move conf from Abc.Maybe.csproj to D.B.(props/targets)?
 - snupkg? It requires the user to configure the NuGet.org symbol server in VS.
   https://github.com/NuGet/Home/issues/4142
   https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink
