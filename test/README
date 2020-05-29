@@ -35,12 +35,12 @@ by xunit.runner.visualstudio.
 
 Restore accepts params /p: and -v,
   > dotnet restore Abc.PackageTests -v n /p:AllKnown=true
-  > dotnet restore Abc.PackageTests -v n /p:AbcVersion=1.0.0-ci-20200502.T081916
-  > dotnet restore Abc.PackageTests -v n /p:AllKnown=true /p:AbcVersion=1.0.0-ci-20200502.T081916
+  > dotnet restore Abc.PackageTests -v n /p:AbcVersion=1.0.0-ci-20200502T081916
+  > dotnet restore Abc.PackageTests -v n /p:AllKnown=true /p:AbcVersion=1.0.0-ci-20200502T081916
 Build accepts params /p: (net46 requires AllKnown, -v is available but too verbose),
   > dotnet build Abc.PackageTests /p:AllKnown=true
   > dotnet build Abc.PackageTests /p:AllKnown=true -f net46
-  > dotnet build Abc.PackageTests /p:AllKnown=true -f net46 /p:AbcVersion=1.0.0-ci-20200502.T081916
+  > dotnet build Abc.PackageTests /p:AllKnown=true -f net46 /p:AbcVersion=1.0.0-ci-20200502T081916
 List package does NOT accept params /p: and -v.
 
 ## Restore/build traps.
@@ -53,18 +53,18 @@ last restored version we must use the option --no-restore.
   > dotnet list Abc.PackageTests package --framework net48
   Abc.PackageTests uses the default version (no surprise).
 - If we restore with /p:AbcVersion
-  > dotnet restore Abc.PackageTests -v n /p:AbcVersion=1.0.0-ci-20200502.T081916
+  > dotnet restore Abc.PackageTests -v n /p:AbcVersion=1.0.0-ci-20200502T081916
   > dotnet list Abc.PackageTests package --framework net48
-  Abc.PackageTests uses version 1.0.0-ci-20200502.T081916 (no surprise).
+  Abc.PackageTests uses version 1.0.0-ci-20200502T081916 (no surprise).
 - If we build without /p:AbcVersion
   > dotnet build Abc.PackageTests -f net48
   > dotnet list Abc.PackageTests package --framework net48
   **Abc.PackageTests is back to the _default_ version**
 - If we restore with /p:AbcVersion
-  > dotnet build Abc.PackageTests -f net48 /p:AbcVersion=1.0.0-ci-20200502.T081916
+  > dotnet build Abc.PackageTests -f net48 /p:AbcVersion=1.0.0-ci-20200502T081916
   > dotnet list Abc.PackageTests package --framework net48
-  Abc.PackageTests uses version 1.0.0-ci-20200502.T081916.
+  Abc.PackageTests uses version 1.0.0-ci-20200502T081916.
 - If we build without /p:AbcVersion BUT with --no-restore
   > dotnet build Abc.PackageTests -f net48 --no-restore
   > dotnet list Abc.PackageTests package --framework net48
-  Abc.PackageTests uses the last restored version: 1.0.0-ci-20200502.T081916.
+  Abc.PackageTests uses the last restored version: 1.0.0-ci-20200502T081916.

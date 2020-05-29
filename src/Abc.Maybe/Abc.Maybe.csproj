@@ -34,14 +34,16 @@
 
   <!-- Source Link -->
   <PropertyGroup>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 
+    <!-- Setting EnableSourceLink to false does not truely disable Source Link :-( -->
     <EnableSourceLink>false</EnableSourceLink>
+    <!-- We will do that our own way -->
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" $(EnableSourceLink) == 'true' ">
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
 

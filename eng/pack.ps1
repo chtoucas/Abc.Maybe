@@ -149,7 +149,7 @@ public class GetBuildNumbersCmdlet : Cmdlet
 
         var buildnum  = (ushort)halfdays;
         var revnum    = (ushort)seconds;
-        var timestamp = String.Format("{0:yyyyMMdd}.T{0:HHmmss}", now);
+        var timestamp = String.Format("{0:yyyyMMdd}T{0:HHmmss}", now);
 
         WriteDebug($"Build number: \"{buildnum}\".");
         WriteDebug($"Build revision: \"{revnum}\".");
@@ -184,13 +184,13 @@ function Get-ActualVersion {
     if ($ci) {
         if (-not $timestamp) {
             ___debug "The timestamp is empty, let's regenerate it."
-            $timestamp = "{0:yyyyMMdd}.T{0:HHmmss}" -f (Get-Date).ToUniversalTime()
+            $timestamp = "{0:yyyyMMdd}T{0:HHmmss}" -f (Get-Date).ToUniversalTime()
         }
 
         # For CI packages, we use SemVer 2.0.0, and we ensure that the package
         # is seen as a prerelease of what could be the next version. Examples:
-        # - "1.2.3"       -> "1.2.4-ci-20201231-T121212".
-        # - "1.2.3-beta4" -> "1.2.3-beta5-ci-20201231-T121212".
+        # - "1.2.3"       -> "1.2.4-ci-20201231T121212".
+        # - "1.2.3-beta4" -> "1.2.3-beta5-ci-20201231T121212".
         if ($precy) {
             # With a prerelease label, we increase the prerelease number.
             $preno  = 1 + [int]$preno
@@ -202,10 +202,15 @@ function Get-ActualVersion {
     }
 
     $prefix = "$major.$minor.$patch"
-    $suffix = $precy ? "$precy$preno" : ""
+    if ($ci) {
+        $suffix = $precy ? "$precy$preno-ci" : "ci"
+    }
+    else {
+        $suffix = $precy ? "$precy$preno" : ""
+    }
 
     $pkgversion = $suffix ? "$prefix-$suffix" : $prefix
-    if ($ci) { $pkgversion = "$pkgversion-ci-$timestamp" }
+    if ($ci) { $pkgversion = "$pkgversion-$timestamp" }
 
     ___debug "Version prefix: ""$prefix""."
     ___debug "Version suffix: ""$suffix""."
