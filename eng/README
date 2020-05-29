@@ -13,7 +13,7 @@ Maintenance scripts.
 - reset.ps1             reset the repository.
 
 Other files.
-- asm.ps1               retrieve avrious assembly infos.
+- asm.ps1               retrieve various assembly infos.
 - utils.ps1             generic helpers.
 - abc.ps1               project-specific helpers.
 - NETFxTools            blank project used to restore .NET Framework tools.
