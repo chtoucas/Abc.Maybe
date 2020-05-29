@@ -1,10 +1,15 @@
 TODO
 ====
 
+Pack (determinism)
+We should use a PackageVersion.
+https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets#pack-target
+
 Source Link
 - Move conf from Abc.Maybe.csproj to D.B.(props/targets)?
-- snupkg? Does it require the customer to change a few VS settings.
+- snupkg? It requires the user to configure the NuGet.org symbol server in VS.
   https://github.com/NuGet/Home/issues/4142
+  https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink
 
 vNEXT
 -----

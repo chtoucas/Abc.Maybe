@@ -157,7 +157,7 @@ MSBuild project files are __read__ in the following order:
 6. XXX.props    (maybe)
 7. src\XXX\Directory.Build.targets
 
-Deterministic builds?
+Deterministic builds? (what follows is actually incorrect)
 There are too many side factors to take into account to ensure identical outputs
 across compilations. For instance, the cwd may change depending on the build
 machine. Anyway, it doesn't matter to this project.
