@@ -6,9 +6,8 @@
     <PatchVersion>0</PatchVersion>
 
     <!--
-      Format: empty -or- (alpha|beta|rc)[1-9][0-9]?
-      Do not use "." or "-" to separate alphas from digits (SemVer 1.0.0).
-      alpha1 < alpha2 < ... < alpha11 < ... < beta1 < ... < rc1 < ...
+      Format: empty -or- (alpha|beta)[1-9][0-9]?
+        alpha1 < alpha2 < ... < alpha11 < ... < beta1 < ...
       If PreReleaseCycle is not empty, we expect PreReleaseNumber to be > 0.
       If PreReleaseCycle is empty, then PreReleaseNumber is ignored, but we
       better keep it empty.
