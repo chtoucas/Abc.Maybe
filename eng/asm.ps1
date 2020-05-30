@@ -45,7 +45,7 @@ try {
         $Path = Join-Path (Get-Location) $Path -Resolve
     }
 
-    $asm = [System.Reflection.Assembly]::LoadFile($Path)
+    $asm = [System.Reflection.AssemblyName]::GetAssemblyName($Path)
     # System.Diagnostics.FileVersionInfo
     $fileInfo = Get-Item $Path | % VersionInfo
 
@@ -58,7 +58,7 @@ try {
     }
 
     SAY-LOUDLY "`nAssembly's Version Attributes."
-    say ("AssemblyVersion      = {0}" -f $asm.GetName().Version)
+    say ("AssemblyVersion      = {0}" -f $asm.Version)
     say ("FileVersion          = {0}" -f $fileInfo.FileVersion)
     say ("InformationalVersion = {0}" -f $fileInfo.ProductVersion)
 
