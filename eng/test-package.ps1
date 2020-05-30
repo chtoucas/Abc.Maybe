@@ -37,6 +37,9 @@ Ignored if -Platform is also set and equals $true.
 Exclude .NET Core from the tests.
 Ignored if -Platform is also set and equals $true.
 
+.PARAMETER Configuration
+Specify the configuration to test for. Default = "Release".
+
 .PARAMETER Version
 Pick a specific version of the package Abc.Maybe.
 When no version is specified, we use the last one from the local NuGet feed.
@@ -82,15 +85,21 @@ param(
                  [switch] $NoClassic,
                  [switch] $NoCore,
 
-    # Package version.
+    # Configuration.
     #
     [Parameter(Mandatory = $false, Position = 1)]
+    [ValidateSet("Debug", "Release")]
+    [Alias("c")] [string] $Configuration = "Release",
+
+    # Package version.
+    #
+    [Parameter(Mandatory = $false, Position = 2)]
                  [string] $Version,
                  [switch] $NoCI,
 
     # Runtime selection.
     #
-    [Parameter(Mandatory = $false, Position = 2)]
+    [Parameter(Mandatory = $false, Position = 3)]
                  [string] $Runtime,
 
     # Other parameters.
@@ -125,6 +134,8 @@ Usage: test-package.ps1 [arguments]
   -l|-ListPlatforms print the list of supported platforms, then exit.
      -NoClassic     exclude .NET Framework from the tests.
      -NoCore        exclude .NET Core from the tests.
+
+  -c|-Configuration specify the configuration to test for.
 
      -Version       pick a specific version of the package Abc.Maybe.
      -NoCI          force using the package version found in Abc.Maybe.props.
@@ -290,17 +301,21 @@ function Get-TargetFrameworks {
 #region Tasks.
 
 function Invoke-Restore {
-    [CmdletBinding()]
+    [CmdletBinding(PositionalBinding = $false)]
     param(
-        [Parameter(Mandatory = $true, Position = 0)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNull()]
         [string[]] $platformList,
 
-        [Parameter(Mandatory = $true, Position = 1)]
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $configuration,
+
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $version,
 
-        [Parameter(Mandatory = $false, Position = 2)]
+        [Parameter(Mandatory = $false)]
         [string] $runtime
     )
 
@@ -320,17 +335,21 @@ function Invoke-Restore {
 # ------------------------------------------------------------------------------
 
 function Invoke-Build {
-    [CmdletBinding()]
+    [CmdletBinding(PositionalBinding = $false)]
     param(
-        [Parameter(Mandatory = $true, Position = 0)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNull()]
         [string[]] $platformList,
 
-        [Parameter(Mandatory = $true, Position = 1)]
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $configuration,
+
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $version,
 
-        [Parameter(Mandatory = $false, Position = 2)]
+        [Parameter(Mandatory = $false)]
         [string] $runtime
     )
 
@@ -338,8 +357,11 @@ function Invoke-Build {
 
     $targetFrameworks = Get-TargetFrameworks $platformList
 
-    $args = "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
-    if ($runtime)   { $args += "--runtime:$runtime" }
+    $args = `
+        "-c:$configuration",
+        "/p:AbcVersion=$version",
+        "/p:TargetFrameworks=$targetFrameworks"
+    if ($runtime) { $args += "--runtime:$runtime" }
 
     & dotnet build $TEST_PROJECT $args
         || die "Build task failed."
@@ -355,17 +377,21 @@ function Invoke-Build {
 # __Only works on Windows__
 # TODO: I wonder if it does really make sense at all (we actually use .NET 4.5.2).
 function Invoke-TestOldStyle {
-    [CmdletBinding()]
+    [CmdletBinding(PositionalBinding = $false)]
     param(
-        [Parameter(Mandatory = $true, Position = 0)]
+        [Parameter(Mandatory = $true)]
         [ValidateScript({ $_ -in $OLDSTYLE_XUNIT_PLATFORMS })]
         [string] $platform,
 
-        [Parameter(Mandatory = $true, Position = 1)]
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $configuration,
+
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $version,
 
-        [Parameter(Mandatory = $false, Position = 2)]
+        [Parameter(Mandatory = $false)]
         [string] $runtime,
 
         [switch] $noRestore,
@@ -385,7 +411,11 @@ function Invoke-TestOldStyle {
     if (-not $xunit) { warn "Skipping." ; return }
 
     if (-not $noBuild) {
-        $args = "/p:AbcVersion=$version", "/p:AllKnown=true", "-f:$platform"
+        $args = `
+            "-c:$configuration",
+            "-f:$platform",
+            "/p:AbcVersion=$version",
+            "/p:AllKnown=true"
         if ($runtime)   { $args += "--runtime:$runtime" }
         if ($noRestore) { $args += "--no-restore" }
 
@@ -393,8 +423,7 @@ function Invoke-TestOldStyle {
             || die "Build failed when targeting ""$platform""."
     }
 
-    # NB: Release, not Debug. This is hard-coded within the project file.
-    $asm = Join-Path $TEST_PROJECT "bin\Release\$platform\$TEST_PROJECT_NAME.dll" -Resolve
+    $asm = Join-Path $TEST_PROJECT "bin\$configuration\$platform\$TEST_PROJECT_NAME.dll" -Resolve
 
     & $xunit $asm
         || die "Test task failed when targeting ""$platform""."
@@ -405,17 +434,21 @@ function Invoke-TestOldStyle {
 # ------------------------------------------------------------------------------
 
 function Invoke-TestSingle {
-    [CmdletBinding()]
+    [CmdletBinding(PositionalBinding = $false)]
     param(
-        [Parameter(Mandatory = $true, Position = 0)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $platform,
 
-        [Parameter(Mandatory = $true, Position = 1)]
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $configuration,
+
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $version,
 
-        [Parameter(Mandatory = $false, Position = 2)]
+        [Parameter(Mandatory = $false)]
         [string] $runtime,
 
         [switch] $noRestore,
@@ -424,18 +457,23 @@ function Invoke-TestSingle {
 
     if ($platform -in $OLDSTYLE_XUNIT_PLATFORMS) {
         Invoke-TestOldStyle `
-            -Platform   $platform `
-            -Version    $version `
-            -Runtime    $runtime `
-            -NoRestore: $noRestore `
-            -NoBuild:   $noBuild
+            -Platform      $platform `
+            -Configuration $configuration `
+            -Version       $version `
+            -Runtime       $runtime `
+            -NoRestore:    $noRestore `
+            -NoBuild:      $noBuild
         return
     }
 
     "`nTesting the package for ""$platform"" and {0}." -f (Get-RuntimeLabel $runtime) `
         | SAY-LOUDLY
 
-    $args = "/p:AbcVersion=$version", "/p:AllKnown=true", "-f:$platform"
+    $args = `
+        "-c:$configuration",
+        "-f:$platform",
+        "/p:AbcVersion=$version",
+        "/p:AllKnown=true"
     if ($runtime)       { $args += "--runtime:$runtime" }
     if ($noBuild)       { $args += "--no-build" }   # NB: no-build => no-restore
     elseif ($noRestore) { $args += "--no-restore" }
@@ -449,17 +487,21 @@ function Invoke-TestSingle {
 # ------------------------------------------------------------------------------
 
 function Invoke-TestManyInteractive {
-    [CmdletBinding()]
+    [CmdletBinding(PositionalBinding = $false)]
     param(
-        [Parameter(Mandatory = $true, Position = 0)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNull()]
         [string[]] $platformList,
 
-        [Parameter(Mandatory = $true, Position = 1)]
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $configuration,
+
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $version,
 
-        [Parameter(Mandatory = $false, Position = 2)]
+        [Parameter(Mandatory = $false)]
         [string] $runtime,
 
         [switch] $noRestore,
@@ -469,11 +511,12 @@ function Invoke-TestManyInteractive {
     foreach ($platform in $platformList) {
         if (yesno "`nTest the package for ""$platform""?") {
             Invoke-TestSingle `
-                -Platform   $platform `
-                -Version    $version `
-                -Runtime    $runtime `
-                -NoRestore: $noRestore `
-                -NoBuild:   $noBuild
+                -Platform      $platform `
+                -Configuration $configuration `
+                -Version       $version `
+                -Runtime       $runtime `
+                -NoRestore:    $noRestore `
+                -NoBuild:      $noBuild
         }
     }
 }
@@ -481,24 +524,31 @@ function Invoke-TestManyInteractive {
 # ------------------------------------------------------------------------------
 
 function Invoke-TestAny {
-    [CmdletBinding()]
+    [CmdletBinding(PositionalBinding = $false)]
     param(
-        [Parameter(Mandatory = $true, Position = 0)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNull()]
         [string[]] $platformList,
 
-        [Parameter(Mandatory = $true, Position = 1)]
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $configuration,
+
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $version,
 
-        [Parameter(Mandatory = $false, Position = 2)]
+        [Parameter(Mandatory = $false)]
         [string] $runtime
     )
 
     $frameworks = $platformList | where { $_ -notin $OLDSTYLE_XUNIT_PLATFORMS }
     $targetFrameworks = Get-TargetFrameworks $frameworks
 
-    $args = "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
+    $args = `
+        "-c:$configuration",
+        "/p:AbcVersion=$version",
+        "/p:TargetFrameworks=$targetFrameworks"
     if ($runtime) { $args += "--runtime:$runtime" }
 
     & dotnet test $TEST_PROJECT --nologo $args
@@ -509,7 +559,11 @@ function Invoke-TestAny {
     say "`nContinuing with ""old-style"" platforms if any."
     foreach ($platform in $OLDSTYLE_XUNIT_PLATFORMS) {
         if ($platform -in $platformList) {
-            Invoke-TestOldStyle -Platform $platform -Version $version -Runtime $runtime
+            Invoke-TestOldStyle `
+                -Platform      $platform `
+                -Configuration $configuration `
+                -Version       $version `
+                -Runtime       $runtime
         }
     }
 }
@@ -517,21 +571,25 @@ function Invoke-TestAny {
 # ------------------------------------------------------------------------------
 
 function Invoke-TestMany {
-    [CmdletBinding()]
+    [CmdletBinding(PositionalBinding = $false)]
     param(
-        [Parameter(Mandatory = $true, Position = 0)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNull()]
         [string[]] $platformList,
 
-        [Parameter(Mandatory = $true, Position = 1)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $filter,
 
-        [Parameter(Mandatory = $true, Position = 2)]
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $configuration,
+
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $version,
 
-        [Parameter(Mandatory = $false, Position = 3)]
+        [Parameter(Mandatory = $false)]
         [string] $runtime
     )
 
@@ -552,7 +610,11 @@ function Invoke-TestMany {
 
         say "Only ""$platform"" was left after filtering the list of known platforms."
 
-        Invoke-TestSingle -Platform $platform -Version  $version -Runtime  $runtime
+        Invoke-TestSingle `
+            -Platform      $platform `
+            -Configuration $configuration `
+            -Version       $version `
+            -Runtime       $runtime
         return
     }
 
@@ -562,25 +624,30 @@ function Invoke-TestMany {
     SAY-LOUDLY "`nBatch testing the package."
 
     Invoke-TestAny `
-        -PlatformList $filteredPlatforms `
-        -Version      $version `
-        -Runtime      $runtime
+        -PlatformList  $filteredPlatforms `
+        -Configuration $configuration `
+        -Version       $version `
+        -Runtime       $runtime
 }
 
 # ------------------------------------------------------------------------------
 
 function Invoke-TestAll {
-    [CmdletBinding()]
+    [CmdletBinding(PositionalBinding = $false)]
     param(
-        [Parameter(Mandatory = $true, Position = 0)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNull()]
         [string[]] $platformList,
 
-        [Parameter(Mandatory = $true, Position = 1)]
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $configuration,
+
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $version,
 
-        [Parameter(Mandatory = $false, Position = 2)]
+        [Parameter(Mandatory = $false)]
         [string] $runtime,
 
         [switch] $allKnown,
@@ -603,9 +670,10 @@ function Invoke-TestAll {
         | SAY-LOUDLY
 
     Invoke-TestAny `
-        -PlatformList $platformList `
-        -Version      $version `
-        -Runtime      $runtime
+        -PlatformList  $platformList `
+        -Configuration $configuration `
+        -Version       $version `
+        -Runtime       $runtime
 }
 
 #endregion
@@ -687,30 +755,40 @@ Supported .NET Core (maximal and minimal sets):
 
         if ($Yes -or (yesno "`nTest the package for all selected platforms at once (SLOW)?")) {
             Invoke-TestAll `
-                -PlatformList $platformList `
-                -Version      $Version `
-                -Runtime      $Runtime `
-                -AllKnown:    $AllKnown `
-                -NoClassic:   $NoClassic `
-                -NoCore:      $NoCore
+                -PlatformList  $platformList `
+                -Configuration $Configuration `
+                -Version       $Version `
+                -Runtime       $Runtime `
+                -AllKnown:     $AllKnown `
+                -NoClassic:    $NoClassic `
+                -NoCore:       $NoCore
         }
         else {
             # Building or restoring the solution only once should speed up things a bit.
             if ($Optimise) {
-                Invoke-Build   -PlatformList $platformList -Version $Version -Runtime $Runtime
+                Invoke-Build `
+                    -PlatformList  $platformList `
+                    -Configuration $Configuration `
+                    -Version       $Version `
+                    -Runtime       $Runtime
             }
             else {
-                Invoke-Restore -PlatformList $platformList -Version $Version -Runtime $Runtime
+                Invoke-Restore `
+                    -PlatformList  $platformList `
+                    -Configuration $Configuration `
+                    -Version       $Version `
+                    -Runtime       $Runtime
             }
 
             SAY-LOUDLY "`nNow, you will have the opportunity to choose which platform to test the package for."
 
             Invoke-TestManyInteractive `
-                -PlatformList $platformList `
-                -Version      $Version `
-                -Runtime      $Runtime `
-                -NoBuild:     $Optimise `
-                -NoRestore:   $true
+                -PlatformList  $platformList `
+                -Configuration $Configuration `
+                -Version       $Version `
+                -Runtime       $Runtime `
+                -NoBuild:      $Optimise `
+                -NoRestore:    $true
         }
     }
     else {
@@ -718,17 +796,22 @@ Supported .NET Core (maximal and minimal sets):
 
         if ($Platform.EndsWith("*")) {
             Invoke-TestMany `
-                -PlatformList $knownPlatforms `
-                -Filter       $Platform `
-                -Version      $Version `
-                -Runtime      $Runtime
+                -PlatformList  $knownPlatforms `
+                -Filter        $Platform `
+                -Configuration $Configuration `
+                -Version       $Version `
+                -Runtime       $Runtime
         }
         else {
             # Validating the platform name is not mandatory but, if we don't,
             # the script fails silently when the platform is not supported here.
             Approve-Platform -Platform $Platform -KnownPlatforms $knownPlatforms
 
-            Invoke-TestSingle -Platform $Platform -Version $Version -Runtime $Runtime
+            Invoke-TestSingle `
+                -Platform      $Platform `
+                -Configuration $Configuration `
+                -Version       $Version `
+                -Runtime       $Runtime
         }
     }
 }
