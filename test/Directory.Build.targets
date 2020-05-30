@@ -5,6 +5,7 @@
   <!--
     Command-line options:
     - AbcVersion    Version of the package Abc.Maybe
+    - Live          default = false
   -->
 
   <Import Project="$(SourceRoot)Abc.Maybe.props" />
@@ -14,8 +15,18 @@
     <AbcVersion Condition=" $(PreReleaseCycle) != '' ">$(AbcVersion)-$(PreReleaseCycle)$(PreReleaseNumber)</AbcVersion>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Abc.Maybe" Version="$(AbcVersion)" />
-  </ItemGroup>
+  <Choose>
+    <When Condition=" $(Live) == 'true' and $(AssemblyName) == 'Abc.PerformanceTests' ">
+      <ItemGroup>
+        <ProjectReference Include="$(SourceRoot)Abc.Maybe\Abc.Maybe.csproj" />
+      </ItemGroup>
+    </When>
+
+    <Otherwise>
+      <ItemGroup>
+        <PackageReference Include="Abc.Maybe" Version="$(AbcVersion)" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
 
 </Project>
