@@ -1,17 +1,18 @@
 <Project>
 
   <!--
-    Command-line options:
-    - LiveSource  default = false
+    Command-line options: "Live" (default = true).
   -->
   <PropertyGroup>
-    <ParentDBTargets>..\Directory.Build.targets</ParentDBTargets>
-    <ParentDBTargets Condition=" $(LiveSource) == 'true' ">..\$(ParentDBTargets)</ParentDBTargets>
+    <Live>true</Live>
+
+    <ParentDBTargets Condition=" $(Live) == 'true' ">..\..\Directory.Build.targets</ParentDBTargets>
+    <ParentDBTargets Condition=" $(Live) != 'true' ">..\Directory.Build.targets</ParentDBTargets>
   </PropertyGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)$(ParentDBTargets)" />
 
-  <ItemGroup Condition=" $(LiveSource) == 'true' ">
+  <ItemGroup Condition=" $(Live) == 'true' ">
     <ProjectReference Include="$(SourceRoot)Abc.Maybe\Abc.Maybe.csproj" />
   </ItemGroup>
 
