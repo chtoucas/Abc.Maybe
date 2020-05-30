@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>$(MaxPlatform)</TargetFramework>
-    <RestorePackagesPath>../../__/tools/</RestorePackagesPath>
+    <RestorePackagesPath>$(ArtifactsRoot)tools\</RestorePackagesPath>
   </PropertyGroup>
 
   <ItemGroup>

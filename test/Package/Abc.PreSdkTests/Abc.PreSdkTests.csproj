@@ -1,7 +1,7 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <AssemblyName>Abc.NETFxTests</AssemblyName>
+    <AssemblyName>Abc.PreSdkTests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
 
     <OutputType>Library</OutputType>

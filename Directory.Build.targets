@@ -13,7 +13,7 @@
   <!-- API profiles -->
   <PropertyGroup>
     <!--
-      See "BuildPlatforms" and "PackPlatforms" n D.B.props.
+      See "BuildPlatforms" and "PackPlatforms" in D.B.props.
       Profile 2.1: "netstandard2.1" and "netcoreapp3.1" ie "MaxPlatform".
       Profile 2.0 (default): everything else.
     -->

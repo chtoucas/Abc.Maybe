@@ -3,6 +3,7 @@
   <PropertyGroup>
     <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>
     <SourceRoot>$(RepositoryRoot)src\</SourceRoot>
+    <ArtifactsRoot>$(RepositoryRoot)__\</ArtifactsRoot>
   </PropertyGroup>
 
   <!-- Common settings -->

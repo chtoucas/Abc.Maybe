@@ -1,9 +1,9 @@
 ﻿<Project>
 
   <!--
-    This file is also loaded by "eng\Abc.PackageTests", but we don't want it
-    to load the D.B.targets of the source tree. If it ever becomes problematic,
-    we can simply move what we need to a separate props file.
+    This file is also loaded by the projects in "test\Package", but we don't want
+    them to load the D.B.targets from the source tree. If it ever becomes
+    problematic, we can simply move what we need to a separate props file.
   -->
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets"
           Condition=" $(AssemblyName) == 'Abc.Tests' "/>

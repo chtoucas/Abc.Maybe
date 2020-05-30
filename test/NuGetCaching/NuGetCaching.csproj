@@ -9,7 +9,7 @@
 
   <PropertyGroup>
     <TargetFramework>$(MaxPlatform)</TargetFramework>
-    <RestorePackagesPath>$(RepositoryRoot)__\nuget-cache\</RestorePackagesPath>
+    <RestorePackagesPath>$(ArtifactsRoot)nuget-cache\</RestorePackagesPath>
   </PropertyGroup>
 
 </Project>

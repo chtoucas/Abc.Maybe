@@ -16,16 +16,4 @@
     <DebugType>none</DebugType>
   </PropertyGroup>
 
-  <!-- Source files -->
-  <ItemGroup>
-    <FilesToExclude Include="$(SourceRoot)**\AssemblyInfo.cs" />
-    <FilesToExclude Include="$(SourceRoot)**\bin\**\*.*" />
-    <FilesToExclude Include="$(SourceRoot)**\obj\**\*.*" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="$(SourceRoot)Abc.Sketches\**\*.cs" Exclude="@(FilesToExclude)" />
-    <Compile Include="$(SourceRoot)Abc.Testing\**\*.cs" Exclude="@(FilesToExclude)" />
-    <Compile Include="$(SourceRoot)Abc.Tests\**\*.cs" Exclude="@(FilesToExclude)" />
-  </ItemGroup>
-
 </Project>

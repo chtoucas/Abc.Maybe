@@ -385,7 +385,7 @@ function Invoke-PushLocal {
     # This is not such a big problem, but I prefer not to pollute it with
     # CI packages (or versions we are going to publish).
     say "Updating the local NuGet cache"
-    $project = Join-Path $TEST_DIR "Blank" -Resolve
+    $project = Join-Path $TEST_DIR "NuGetCaching" -Resolve
 
     & dotnet restore $project /p:AbcVersion=$packageVersion
         || die "Failed to update the local NuGet cache."

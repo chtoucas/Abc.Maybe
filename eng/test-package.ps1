@@ -105,8 +105,8 @@ param(
 
 # ------------------------------------------------------------------------------
 
-const TEST_PROJECT_NAME "Abc.PackageTests"
-const TEST_PROJECT (Join-Path $TEST_DIR $TEST_PROJECT_NAME -Resolve)
+const TEST_PROJECT_NAME "Abc.SdkTests"
+const TEST_PROJECT (Join-Path $TEST_PACK_DIR $TEST_PROJECT_NAME -Resolve)
 
 const OLDSTYLE_XUNIT_RUNNER_PLATFORM "net452"
 
@@ -304,7 +304,7 @@ function Invoke-Restore {
         [string] $runtime
     )
 
-    SAY-LOUDLY "`nRestoring dependencies for Abc.PackageTests, please wait..."
+    SAY-LOUDLY "`nRestoring dependencies for $TEST_PROJECT_NAME, please wait..."
 
     $targetFrameworks = Get-TargetFrameworks $platformList
 
@@ -334,7 +334,7 @@ function Invoke-Build {
         [string] $runtime
     )
 
-    SAY-LOUDLY "`nBuilding Abc.PackageTests, please wait..."
+    SAY-LOUDLY "`nBuilding $TEST_PROJECT_NAME, please wait..."
 
     $targetFrameworks = Get-TargetFrameworks $platformList
 
