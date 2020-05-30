@@ -25,6 +25,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <Import Project="$(MSBuildThisFileDirectory)PackageReferences.targets" />
+
   <ItemGroup>
     <ProjectReference Include="..\Abc.Maybe\Abc.Maybe.csproj" />
     <ProjectReference Include="..\Abc.Sketches\Abc.Sketches.csproj" />

@@ -12,8 +12,6 @@
   <PropertyGroup>
     <TargetFrameworks>$(MinClassicPlatforms);$(MinCorePlatforms)</TargetFrameworks>
     <TargetFrameworks Condition=" $(AllKnown) == 'true' ">$(MaxClassicPlatforms);$(MaxCorePlatforms)</TargetFrameworks>
-
-    <DebugType>none</DebugType>
   </PropertyGroup>
 
 </Project>

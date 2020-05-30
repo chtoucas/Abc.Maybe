@@ -2,7 +2,11 @@
 
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets" />
 
-  <Import Project="$(SourceRoot)Abc.Tests\Directory.Build.targets" />
+  <Import Project="$(SourceRoot)Abc.Tests\PackageReferences.targets" />
+
+  <PropertyGroup>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
 
   <ItemGroup>
     <FilesToExclude Include="$(SourceRoot)**\AssemblyInfo.cs" />

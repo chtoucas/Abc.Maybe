@@ -65,6 +65,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Performance", "Performance", "{77CD86BC-8513-4B6D-90AB-338C5913A14E}"
 	ProjectSection(SolutionItems) = preProject
 		test\Performance\Abc.PerformanceTests.csproj = test\Performance\Abc.PerformanceTests.csproj
+		test\Performance\Directory.Build.targets = test\Performance\Directory.Build.targets
 	EndProjectSection
 EndProject
 Global

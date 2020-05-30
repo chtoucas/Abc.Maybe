@@ -1,14 +1,7 @@
 ﻿<Project>
 
   <!--
-    This file is also loaded by the projects in "test\Package", but we don't want
-    them to load the D.B.targets from the source tree. If it ever becomes
-    problematic, we can simply move what we need to a separate props file.
-  -->
-  <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets"
-          Condition=" $(AssemblyName) == 'Abc.Tests' "/>
-
-  <!--
+    This file is also loaded by the projects in "test\Package".
     - Microsoft.Bcl.HashCode does not support .NET Framework <= 4.6 and
       .NET Standard 1.x.
     - Microsoft.NET.Test.Sdk can cause problems with older platforms,
