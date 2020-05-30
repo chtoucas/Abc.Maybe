@@ -1,14 +1,7 @@
 TODO
 ====
 
-Pack (determinism): changelog + explain + clean up developer notes.
-
-Resetting nuget cache: be less destructive.
-
-Source Link
-- snupkg? It requires the user to configure the NuGet.org symbol server in VS.
-  https://github.com/NuGet/Home/issues/4142
-  https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink
+Resetting the local NuGet cache/feed could be less destructive.
 
 vNEXT
 -----

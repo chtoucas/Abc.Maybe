@@ -145,8 +145,8 @@ Useful tools.
 - NuGet Package Explorer
 - ILDasm, ILSpy, dotPeek
 
-Build
------
+Build & Pack
+------------
 
 MSBuild project files are __read__ in the following order:
 1. Directory.Build.props
@@ -157,19 +157,25 @@ MSBuild project files are __read__ in the following order:
 6. XXX.props    (maybe)
 7. src\XXX\Directory.Build.targets
 
-Deterministic builds? (what follows is actually incorrect)
-There are too many side factors to take into account to ensure identical outputs
+Source Link.
+We don't create a seperate symbols package. The PDB's are rather small, and it
+works all the time (no need to configure the NuGet.org symbol server in VS).
+
+Deterministic builds?
+There are many side factors to take into account to ensure identical outputs
 across compilations. For instance, the cwd may change depending on the build
-machine. Anyway, it doesn't matter to this project.
+machine. Anyway, deterministic build is the default MSBuild setting, and we
+only check that NuGetPackageExplorer reports the package as deterministic.
+Furthermore, we ensure that there are no uncommited changes before creating a
+package.
 
-Here are a few things that are definitely non-deterministics.
+One thing that is definitely non-deterministic is the attribute
+"AssemblyFileVersion" as it may contain build/revision numbers that
+are time-dependent, but this is entirely done prior to compilation, and therefore
+can be easily reproduced afterwards.
 
-Pseudo-CI builds do not ensure that the git metadata is up to date.
-
-The attribute "AssemblyFileVersion" may contain build/revision numbers that
-are time-dependent but this could be changed very easily (see src\Retail.props).
-
-References
+References.
+- https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink
 - https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/deterministic-compiler-option
 - https://blog.paranoidcoding.com/2016/04/05/deterministic-builds-in-roslyn.html
 
