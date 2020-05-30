@@ -11,9 +11,9 @@ Run the Code Coverage script and build human-readable reports.
 Run the Code Coverage script w/ either Coverlet (default) or OpenCover,
 then optionally build human-readable reports and badges.
 
-This script does NOT execute an implicit restore, therefore it may fail with not
-even a single warning... eg w/ Coverlet. If needed, use the option -Restore
-which instructs the script to explicitly restore the required dependencies.
+This script does NOT execute an implicit restore. If needed, use the option
+-Restore which instructs the script to explicitly restore the required
+dependencies.
 
 OpenCover is slow when compared to Coverlet, but we get risk hotspots
 (NPath complexity, crap score) and a list of unvisited methods.
@@ -246,6 +246,12 @@ try {
             # the test project.
             Invoke-Coverlet -Configuration $Configuration -Output $outXml
         }
+    }
+
+    if (-not $OpenCover) {
+        $platform = (Get-MaxPlatform).ToLowerInvariant()
+
+        $outXml = Join-Path $outDir "$tool.$platform.xml"
     }
 
     if ($NoReport) {

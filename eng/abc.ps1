@@ -222,6 +222,18 @@ function Get-PackageVersion {
 
 # ------------------------------------------------------------------------------
 
+function Get-MaxPlatform {
+    [CmdletBinding()]
+    param()
+
+    ___confess "Getting the default platform used by the solution."
+
+    Load-XmlTextual $PLATFORMS_PROPS `
+        | Select-RawProperty -Property "MaxPlatform"
+}
+
+# ------------------------------------------------------------------------------
+
 function Get-BuildPlatforms {
     [CmdletBinding()]
     param(
@@ -301,6 +313,40 @@ function Load-XmlTextual {
     $xml.LoadXml($content)
 
     $xml
+}
+
+# ------------------------------------------------------------------------------
+
+# Only for property declared only once.
+function Select-RawProperty {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [ValidateNotNullOrEmpty()]
+        [Xml] $xml,
+
+        [Parameter(Mandatory = $true, Position = 1)]
+        [ValidateNotNullOrEmpty()]
+        [string] $property,
+
+        [switch] $noTrim
+    )
+
+    ___confess "Querying an MSBuild project file for a single property."
+
+    [SelectXmlInfo[]] $nodes = $xml | Select-Xml -XPath "//Project/PropertyGroup/$property"
+
+    # NB: I guess we could just check (-not $nodes).
+    if ($nodes -eq $null -or $nodes.Count -eq 0) {
+        croak "Could not find a property named ""$property""."
+    }
+    elseif ($nodes.Count -gt 1) {
+        croak "There is more than one property named ""$property""."
+    }
+
+    $text = $nodes[0].Node.InnerText
+
+    $noTrim ? $text : $text.Trim()
 }
 
 # ------------------------------------------------------------------------------
