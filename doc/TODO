@@ -34,16 +34,13 @@ Misc tasks.
 - Localise user messages (ExceptionFactory)?
 - Perf tool (LINQ, nulls, iterable), .NET Core tool for benchmarkdotnet.
 - BannedApiAnalyzers?
-- Replace coverlet.msbuild by coverlet-console? Use runsettings.
-  Add coverlet.collector to the test project. Coverity?
-  xunit.runner.console -> core app
+- Code coverage
+  Multi-platforms?
+  Replace coverlet.msbuild by coverlet-console? Use runsettings.
+  Add coverlet.collector to the test project.
 
-Building & Packaging.
-- We use TargetFrameworkIdentifier ('.NETFramework') and NETFRAMEWORK instead
-  of TargetFramework and NET461, is it such a good idea?
-  https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives/preprocessor-if
+???
 - https://github.com/dotnet/announcements/issues/31
-- code coverage?
 - Microsoft.NETFramework.ReferenceAssemblies
 - System.Runtime.CompilerServices.Unsafe
 - Old platforms?
