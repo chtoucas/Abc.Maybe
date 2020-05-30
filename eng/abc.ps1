@@ -32,21 +32,21 @@ New-Alias "SAY-LOUDLY" Write-Green
 # All paths are ABSOLUTE.
 
 # Root directory = absolute path of the parent directory.
-(Get-Item $PSScriptRoot).Parent.FullName | const ROOT_DIR
+(Get-Item $PSScriptRoot).Parent.FullName     | const ROOT_DIR
 # Core directories.
-(Join-Path $ROOT_DIR "eng"  -Resolve)    | const ENG_DIR
-(Join-Path $ROOT_DIR "src"  -Resolve)    | const SRC_DIR
-(Join-Path $ROOT_DIR "test" -Resolve)    | const TEST_DIR
-(Join-Path $ROOT_DIR "__"   -Resolve)    | const ARTIFACTS_DIR
+(Join-Path $ROOT_DIR "eng"  -Resolve)        | const ENG_DIR
+(Join-Path $ROOT_DIR "src"  -Resolve)        | const SRC_DIR
+(Join-Path $ROOT_DIR "test" -Resolve)        | const TEST_DIR
+(Join-Path $ROOT_DIR "__"   -Resolve)        | const ARTIFACTS_DIR
 # Test directories.
 (Join-Path $TEST_DIR "Package" -Resolve)     | const TEST_PACK_DIR
 (Join-Path $TEST_DIR "Performance" -Resolve) | const TEST_PERF_DIR
 # Artifacts directories. No -Resolve, dir does not necessary exist.
-(Join-Path $ARTIFACTS_DIR "packages")    | const PKG_OUTDIR
-(Join-Path $ARTIFACTS_DIR "packages-ci") | const PKG_CI_OUTDIR
-(Join-Path $ARTIFACTS_DIR "nuget-feed")  | const NUGET_LOCAL_FEED
-(Join-Path $ARTIFACTS_DIR "nuget-cache") | const NUGET_LOCAL_CACHE
-(Join-Path $ARTIFACTS_DIR "tools")       | const NET_FRAMEWORK_TOOLS_DIR
+(Join-Path $ARTIFACTS_DIR "packages")        | const PKG_OUTDIR
+(Join-Path $ARTIFACTS_DIR "packages-ci")     | const PKG_CI_OUTDIR
+(Join-Path $ARTIFACTS_DIR "nuget-feed")      | const NUGET_LOCAL_FEED
+(Join-Path $ARTIFACTS_DIR "nuget-cache")     | const NUGET_LOCAL_CACHE
+(Join-Path $ARTIFACTS_DIR "tools")           | const NET_FRAMEWORK_TOOLS_DIR
 
 # The props where we can informations related to supported platforms.
 const PLATFORMS_PROPS (Join-Path $ROOT_DIR "Directory.Build.props" -Resolve)
