@@ -188,6 +188,7 @@ Common script/function parameters:
    -Restore
    -DryRun
    -Force
+-c|-Configuration
 -a|-AllXXX
 -l|-ListXXX
 -o|-Optimise
