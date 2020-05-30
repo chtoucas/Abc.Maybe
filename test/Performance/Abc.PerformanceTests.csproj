@@ -3,7 +3,6 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>$(MaxPlatform)</TargetFramework>
-    <Configuration>Release</Configuration>
 
     <!-- BenchmarkDotNet requires that we specify an exact lang version -->
     <LangVersion>8.0</LangVersion>
