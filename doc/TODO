@@ -1,67 +1,45 @@
 TODO
 ====
 
-vNEXT
------
-
 - Add overloads w/ IEqualityComparer<T> (true structural comparison).
 - "Lifted" comparison T w/ Maybe<T> to handle mixed type, eg Maybe<int?>,
   Maybe<int>, int? and int. This should be a custom MaybeComparer<T>. Do not
   implement IEquatable<T> (T == Maybe<T>), IComparable<T> this would be misleading?
-- More May helpers w/ Span<T>.
 - LINQ: optimize, more ops.
   "Monadic" LINQ. Output Maybe<IEnumerable<T>> and LINQ ops.
 - Utilities to write code in the ROP style (Railway Oriented Programming).
-- Extensions.
-- Async (configurable, enumerable).
+- Async Enumerable.
+- Serialization (XML)
+-  Misc tasks.
+  * FIXME, TODO and REVIEW within the code.
+  * Localise user messages (ExceptionFactory)?
+
+Tools.
 - Roslyn Analyzer:
   * Of(), Flatten(). Squash(Maybe<T?>) where T : class
   * SelectMany(), ZipWith(), Bind().
-- Serialization (XML)
-
-Misc tasks.
-- FIXME, TODO and REVIEW within the code.
-- Localise user messages (ExceptionFactory)?
 - Perf tool (LINQ, nulls, iterable), .NET Core tool for benchmarkdotnet.
-- BannedApiAnalyzers?
-- Code coverage
-  Multi-platforms?
-  Replace coverlet.msbuild by coverlet-console? Use runsettings.
-  Add coverlet.collector to the test project.
-
-???
-- https://github.com/dotnet/announcements/issues/31
-- Microsoft.NETFramework.ReferenceAssemblies
-- System.Runtime.CompilerServices.Unsafe
-- Old platforms?
-  NetStandardImplicitPackageVersion, DisableImplicitFrameworkReferences
-  https://docs.microsoft.com/en-us/dotnet/core/tools/csproj
-  https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props
+- Instead of coverlet.msbuild, use coverlet collector / console.
 
 Testing
 -------
 
 Testing is well underway but there is still a lot to be done.
+Fixed naming schema, split tests, more functional tests.
 
-- Naming tests: explain rules in this doc and fix the tests themselves if necessary.
-- Split tests.
-- More functional tests.
 - MaybeComparer<T>, proper testing of equality and ordering comparisons.
-  Expand comparison tests (order and equality).
-  See NONGENERIC_MAYBE
+  Expand comparison tests (order and equality). See NONGENERIC_MAYBE
   Structural comparisons w/ structural types.
   https://stackoverflow.com/questions/4968580/why-arent-istructuralequatable-and-istructuralcomparable-generic
 - Maybe<Func<>>
 - delegates that return null.
-- Check published packages (upgrade, debugging experience).
 
 Documentation
 -------------
 
 - XML comments with complete examples.
   https://github.com/dotnet/dotnet-api-docs/wiki
-  When done, filter out Abc.Maybe in Directory.Build.targets (NoWarn), and add
-  <NoWarn /> for Retail builds?
+  When done, configure Abc.Maybe to wanr on missing XML comments.
 - Sample code w/ C#, VB and F#.
 
 - A bit of marketing, compare to other option types.
