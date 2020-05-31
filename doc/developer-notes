@@ -70,10 +70,13 @@ Pre action, for beta -or- production packages.
 Post actions.
 a. For production packages, git tag, then publish.
    > git tag vX.Y.Z
+   or
    > git tag -a vX.Y.Z -m "Bla bla"
+   then
    > git push origin vX.Y.Z
    Or do it within GitHub website.
    https://git-scm.com/book/en/v2/Git-Basics-Tagging
+b. Update the page Releases on github.
 
 Multi-targeting
 ---------------
