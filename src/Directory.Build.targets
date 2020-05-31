@@ -35,6 +35,8 @@
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <VisibleInternals>false</VisibleInternals>
+
+    <DebugType Condition=" $(TargetFrameworkIdentifier) == '.NETFramework' ">pdbonly</DebugType>
   </PropertyGroup>
 
   <!-- Compiler symbols -->

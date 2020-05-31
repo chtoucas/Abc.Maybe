@@ -3,6 +3,9 @@ Changelog for Abc.
 vNEXT
 -----
 
+Changes.
+- For older Windows-only platforms, use "pdbonly" instead of "portable".
+
 Internal changes:
 - Fix freeze-api.ps1, it didn't handle the annotation "#nullable enable".
 - Fix cover.ps1 when using Coverlet. Now that the test project uses

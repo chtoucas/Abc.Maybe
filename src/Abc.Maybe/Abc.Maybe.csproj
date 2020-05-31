@@ -46,23 +46,6 @@
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
-  <!-- DebugType -->
-  <!-- *** BE VERY, VERY CAREFUL, BEFORE CHANGING THIS ***
-    What we really want is sketched here but it does NOT work since
-    "TargetFrameworkIdentifier" is not yet set. A good place where to put this
-    would be Directory.Build.targets, but it is too late according to this issue
-    https://github.com/Microsoft/msbuild/issues/2754.
-      <DebugType Condition=" $(TargetFrameworkIdentifier) == '.NETFramework' ">pdbonly</DebugType>
-      <DebugType Condition=" $(TargetFrameworkIdentifier) != '.NETFramework' ">embedded</DebugType>
-    References
-    - https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/debug-compiler-option
-    - https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/making-an-image-easier-to-debug
-  <PropertyGroup Condition=" $(Retail) == 'true' ">
-    <DebugType>embedded</DebugType>
-    <DebugType Condition=" $(TargetFramework.StartsWith('net4')) ">pdbonly</DebugType>
-  </PropertyGroup>
-  -->
-
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.0.0">
       <PrivateAssets>all</PrivateAssets>
@@ -73,4 +56,22 @@
   <ItemGroup Condition=" $(EnableSourceLink) == 'true' ">
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
+
+  <!-- DebugType -->
+  <!-- *** BE VERY, VERY CAREFUL, BEFORE CHANGING THIS ***
+    For Windows-only platforms, we use the legacy PDB format, otherwise we stick
+    to the new "portable" format.
+    I had trouble with this one, setting "DebugType" in D.B.targets had no
+    effect whatsoever, so I had to initialise it here, but it appears to have
+    been fixed by Microsoft.
+    References
+    - https://github.com/Microsoft/msbuild/issues/2754
+    - https://github.com/dotnet/core/blob/master/Documentation/diagnostics/portable_pdb.md
+    - https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/debug-compiler-option
+    - https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/making-an-image-easier-to-debug
+    Below, we cannot use "TargetFrameworkIdentifier", it has not yet been set.
+  <PropertyGroup Condition=" $(Retail) == 'true' ">
+    <DebugType Condition=" $(TargetFramework.StartsWith('net4')) ">pdbonly</DebugType>
+  </PropertyGroup>
+  -->
 </Project>
