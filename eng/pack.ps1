@@ -23,11 +23,16 @@ script resets the repository, and stops when there are uncommited changes or if
 it cannot retrieve git metadata.
 
 If this behaviour happens to be too strict and you are in a hurry, you can use:
-PS> pack.ps1 -NoCI -Yes
+PS> pack.ps1 -NoCI -Force -Yes
 In that event, do not forget to reset the repository thereafter.
 
 .PARAMETER Reset
 Hard clean (reset) the source directory before anything else?
+
+.PARAMETER Force
+Currently does only one thing, enable Source Link even if there are uncommited
+changes.
+Ignored if -Freeze is also set and equals $true.
 
 .PARAMETER Yes
 Do not ask for confirmation, mostly?
@@ -46,6 +51,7 @@ param(
                  [switch] $Freeze,
 
                  [switch] $Reset,
+                 [switch] $Force,
     [Alias("y")] [switch] $Yes,
     [Alias("v")] [switch] $MyVerbose,
     [Alias("h")] [switch] $Help
@@ -71,6 +77,7 @@ Usage: pack.ps1 [arguments]
      -Freeze     create a package ready to be published to NuGet.Org?
 
      -Reset      reset the solution before anything else?
+     -Force
   -y|-Yes        do not ask for confirmation, mostly?
   -v|-MyVerbose  display settings used to compile each DLL?
   -h|-Help       print this help then exit?
@@ -468,7 +475,7 @@ try {
         -RepositoryCommit $commit `
         -BuildNumber      $buildNumber `
         -RevisionNumber   $revisionNumber `
-        -EnableSourceLink:$gitok `
+        -EnableSourceLink:($Force -or $gitok) `
         -CI:              $CI `
         -MyVerbose:       $MyVerbose
 

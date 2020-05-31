@@ -3,8 +3,12 @@ Changelog for Abc.
 vNEXT
 -----
 
+2020-05-31, version 1.0.1
+-------------------------
+
 Changes.
 - For older Windows-only platforms, use "pdbonly" instead of "portable".
+  This change only affects builds with option /p:Retail=true.
 
 Internal changes:
 - Fix freeze-api.ps1, it didn't handle the annotation "#nullable enable".
