@@ -34,7 +34,10 @@ Do NOT build HTML/text reports and badges w/ ReportGenerator.
 This option and -NoCoverage are mutually exclusive.
 
 .PARAMETER Restore
-Restore NuGet packages and tools before anything else.
+Restore the solution.
+
+.PARAMETER RestoreTools
+Restore OpenCover and ReportGenerator before anything else.
 
 .PARAMETER Help
 Print help text then exit.
@@ -46,6 +49,7 @@ param(
                  [switch] $NoReport,
 
                  [switch] $Restore,
+                 [switch] $RestoreTools,
     [Alias("h")] [switch] $Help
 )
 
@@ -61,12 +65,13 @@ function Print-Help {
 Run the Code Coverage script and build human-readable reports.
 
 Usage: cover.ps1 [arguments]
-     -OpenCover   use OpenCover instead of Coverlet.
-     -NoCoverage  do NOT run any Code Coverage tool.
-     -NoReport    do NOT run ReportGenerator.
+     -OpenCover     use OpenCover instead of Coverlet.
+     -NoCoverage    do NOT run any Code Coverage tool.
+     -NoReport      do NOT run ReportGenerator.
 
-     -Restore     restore NuGet packages and tools before anything else.
-  -h|-Help        print this help then exit.
+     -Restore       restore the solution.
+     -RestoreTools  restore OpenCover and ReportGenerator before anything else.
+  -h|-Help          print this help then exit.
 
 Examples.
 > cover.ps1                       # Run Coverlet then build reports and badges
@@ -83,17 +88,56 @@ Looking for more help?
 ################################################################################
 #region Tasks.
 
-function Invoke-Restore {
+function Invoke-RestoreTools {
     [CmdletBinding()]
     param()
 
     SAY-LOUDLY "`nRestoring dependencies, please wait..."
 
+    # OpenCover.
     Restore-NETFxTools
+    # Report Generator.
     Restore-NETCoreTools
-    Restore-Solution
 
     say-softly "Dependencies successfully restored."
+}
+
+# ------------------------------------------------------------------------------
+
+function Invoke-Coverlet {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateNotNullOrEmpty()]
+        [string] $configuration,
+
+        [Parameter(Mandatory = $true, Position = 1)]
+        [ValidateNotNullOrEmpty()]
+        [string] $output,
+
+        [switch] $restore
+    )
+
+    SAY-LOUDLY "`nRunning Coverlet."
+
+    $args = "--nologo", "-c:$configuration"
+    if (-not $restore) { $args += "--no-restore" }
+
+    $excludes = `
+        "[Abc*]System.Diagnostics.CodeAnalysis.*",
+        "[Abc*]System.Runtime.CompilerServices.*",
+        "[Abc*]Microsoft.CodeAnalysis.*"
+    $exclude = '\"' + ($excludes -Join ",") + '\"'
+
+    & dotnet test $args `
+        /p:CollectCoverage=true `
+        /p:CoverletOutputFormat=opencover `
+        /p:CoverletOutput=$output `
+        /p:Include="[Abc.Maybe]*" `
+        /p:Exclude=$exclude
+        || die "Coverlet failed."
+
+    say-softly "Coverlet completed successfully."
 }
 
 # ------------------------------------------------------------------------------
@@ -111,12 +155,17 @@ function Invoke-OpenCover {
 
         [Parameter(Mandatory = $true, Position = 2)]
         [ValidateNotNullOrEmpty()]
-        [string] $output
+        [string] $output,
+
+        [switch] $restore
     )
 
     SAY-LOUDLY "`nRunning OpenCover."
 
     if (-not $IsWindows) { die "OpenCover.exe only works on Windows." }
+
+    # I prefer to restore the solution outside the OpenCover process.
+    if ($restore) { Restore-Solution }
 
     $filters = `
         "+[Abc.Maybe]*",
@@ -141,40 +190,6 @@ function Invoke-OpenCover {
         || die "OpenCover failed."
 
     say-softly "OpenCover completed successfully."
-}
-
-# ------------------------------------------------------------------------------
-
-function Invoke-Coverlet {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true, Position = 0)]
-        [ValidateNotNullOrEmpty()]
-        [string] $configuration,
-
-        [Parameter(Mandatory = $true, Position = 1)]
-        [ValidateNotNullOrEmpty()]
-        [string] $output
-    )
-
-    SAY-LOUDLY "`nRunning Coverlet."
-
-    $excludes = `
-        "[Abc*]System.Diagnostics.CodeAnalysis.*",
-        "[Abc*]System.Runtime.CompilerServices.*",
-        "[Abc*]Microsoft.CodeAnalysis.*"
-    $exclude = '\"' + ($excludes -Join ",") + '\"'
-
-    & dotnet test --nologo --no-restore `
-        -c $configuration `
-        /p:CollectCoverage=true `
-        /p:CoverletOutputFormat=opencover `
-        /p:CoverletOutput=$output `
-        /p:Include="[Abc.Maybe]*" `
-        /p:Exclude=$exclude
-        || die "Coverlet failed."
-
-    say-softly "Coverlet completed successfully."
 }
 
 # ------------------------------------------------------------------------------
@@ -230,7 +245,7 @@ try {
         mkdir -Force -Path $outDir | Out-Null
     }
 
-    if ($Restore) { Invoke-Restore }
+    if ($RestoreTools) { Invoke-RestoreTools }
 
     if ($NoCoverage) {
         say "`nOn your request, we do not run any Code Coverage tool."
@@ -238,13 +253,19 @@ try {
     else {
         if ($OpenCover) {
             Find-OpenCover -ExitOnError `
-                | Invoke-OpenCover -Configuration $Configuration -Output $outXml
+                | Invoke-OpenCover `
+                    -Configuration $Configuration `
+                    -Output        $outXml `
+                    -Restore:      $Restore
         }
         else {
             # For coverlet.msbuild the path must be absolute if we want the
             # result to be put within the directory for artifacts and not below
             # the test project.
-            Invoke-Coverlet -Configuration $Configuration -Output $outXml
+            Invoke-Coverlet `
+                -Configuration $Configuration `
+                -Output        $outXml `
+                -Restore:      $Restore
         }
     }
 
