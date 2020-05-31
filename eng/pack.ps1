@@ -12,10 +12,10 @@ Create a NuGet package.
 The default behaviour is to build a CI package.
 
 .PARAMETER NoCI
-Create a non-CI package.
+Create a non-CI package?
 
 .PARAMETER Freeze
-Create a package ready to be published to NuGet.Org.
+Create a package ready to be published to NuGet.Org?
 
 This is a meta-option, it automatically sets -NoCI. The resulting package is no
 different from the one you would get using only -NoCI, but, in addition, the
@@ -27,18 +27,18 @@ PS> pack.ps1 -NoCI -Yes
 In that event, do not forget to reset the repository thereafter.
 
 .PARAMETER Reset
-Hard clean (reset) the source directory before anything else.
+Hard clean (reset) the source directory before anything else?
 
 .PARAMETER Yes
-Do not ask for confirmation, mostly.
+Do not ask for confirmation, mostly?
 Only one exception: after having created a package w/ option -Freeze on, the
 script will enter in an interactive mode.
 
 .PARAMETER MyVerbose
-Verbose mode. We print the settings in use before compiling each assembly.
+Verbose mode. We print the settings in use before compiling each assembly?
 
 .PARAMETER Help
-Print help text then exit.
+Print help text then exit?
 #>
 [CmdletBinding()]
 param(
@@ -67,13 +67,13 @@ function Print-Help {
 Create a NuGet package for Abc.Maybe.
 
 Usage: pack.ps1 [arguments]
-     -NoCI       create a non-CI package.
-     -Freeze     create a package ready to be published to NuGet.Org.
+     -NoCI       create a non-CI package?
+     -Freeze     create a package ready to be published to NuGet.Org?
 
-     -Reset      reset the solution before anything else.
-  -y|-Yes        do not ask for confirmation, mostly.
-  -v|-MyVerbose  display settings used to compile each DLL.
-  -h|-Help       print this help then exit.
+     -Reset      reset the solution before anything else?
+  -y|-Yes        do not ask for confirmation, mostly?
+  -v|-MyVerbose  display settings used to compile each DLL?
+  -h|-Help       print this help then exit?
 
 Examples.
 > pack.ps1                # Create a CI package

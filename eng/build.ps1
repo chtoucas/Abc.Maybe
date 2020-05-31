@@ -33,16 +33,16 @@ The runtime to build the project/solution for.
 The single platform to build the project/solution for.
 
 .PARAMETER ListPlatforms
-Print the list of supported platforms, then exit.
+Print the list of supported platforms, then exit?
 
 .PARAMETER Force
-Forces all dependencies to be resolved even if the last restore was successful.
+Forces all dependencies to be resolved even if the last restore was successful?
 
 .PARAMETER NoCheck
-Do not check whether the specified platform is supported or not.
+Do not check whether the specified platform is supported or not?
 
 .PARAMETER NoRestore
-Do not restore the project/solution.
+Do not restore the project/solution?
 
 #>
 [CmdletBinding(PositionalBinding = $false)]
@@ -87,12 +87,12 @@ Usage: reset.ps1 [arguments]
      -Runtime           the runtime to build the project/solution for.
 
   -f|-Platform          the platform to build the project/solution for.
-  -l|-ListPlatforms     print the list of supported platforms, then exit.
+  -l|-ListPlatforms     print the list of supported platforms, then exit?
 
-     -Force             forces all dependencies to be resolved even if the last restore was successful.
-     -NoCheck           do not check whether the specified platform is supported or not.
-     -NoRestore         do not restore the project/solution.
-  -h|-Help              print this help and exit.
+     -Force             forces all dependencies to be resolved even if the last restore was successful?
+     -NoCheck           do not check whether the specified platform is supported or not?
+     -NoRestore         do not restore the project/solution?
+  -h|-Help              print this help and exit?
 
 Arguments starting with '/p:' are passed through to dotnet.exe.
 > build.ps1 /p:Retail=true

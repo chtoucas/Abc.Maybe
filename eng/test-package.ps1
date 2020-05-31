@@ -23,18 +23,18 @@ translated to ""net461" and "net462". The limit case "*" is a synonym for
 "-AllKnown -NoClassic:$false -NoCore:$false".
 
 .PARAMETER AllKnown
-Test the package for ALL known platform versions (SLOW).
+Test the package for ALL known platform versions (SLOW)?
 Ignored if -Platform is also set and equals $true.
 
 .PARAMETER ListPlatforms
-Print the list of supported platforms, then exit.
+Print the list of supported platforms, then exit?
 
 .PARAMETER NoClassic
-Exclude .NET Framework from the tests.
+Exclude .NET Framework from the tests?
 Ignored if -Platform is also set and equals $true.
 
 .PARAMETER NoCore
-Exclude .NET Core from the tests.
+Exclude .NET Core from the tests?
 Ignored if -Platform is also set and equals $true.
 
 .PARAMETER Configuration
@@ -51,7 +51,7 @@ the script will fail in the following cases:
 Ignored if -NoCI is also set and equals $true.
 
 .PARAMETER NoCI
-Force using the package version found in Abc.Maybe.props.
+Force using the package version found in Abc.Maybe.props?
 See warnings in -Version.
 
 .PARAMETER Runtime
@@ -63,16 +63,16 @@ For instance, runtime can be "win10-x64" or "win10-x86".
 See https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
 
 .PARAMETER Reset
-Hard clean (reset) the source and test directories before anything else.
+Hard clean (reset) the source and test directories before anything else?
 
 .PARAMETER Optimise
-Attempt to speed up things a bit when testing many platforms, one at a time.
+Attempt to speed up things a bit when testing many platforms, one at a time?
 
 .PARAMETER Yes
-Do not ask for confirmation.
+Do not ask for confirmation?
 
 .PARAMETER Help
-Print help text then exit.
+Print help text then exit?
 #>
 [CmdletBinding()]
 param(
@@ -130,22 +130,22 @@ Test the package Abc.Maybe.
 
 Usage: test-package.ps1 [arguments]
      -Platform      specify the platform(s) for which to test the package.
-  -a|-AllKnown      test the package for ALL known platform versions (SLOW).
-  -l|-ListPlatforms print the list of supported platforms, then exit.
-     -NoClassic     exclude .NET Framework from the tests.
-     -NoCore        exclude .NET Core from the tests.
+  -a|-AllKnown      test the package for ALL known platform versions (SLOW)?
+  -l|-ListPlatforms print the list of supported platforms, then exit?
+     -NoClassic     exclude .NET Framework from the tests?
+     -NoCore        exclude .NET Core from the tests?
 
   -c|-Configuration specify the configuration to test for.
 
      -Version       pick a specific version of the package Abc.Maybe.
-     -NoCI          force using the package version found in Abc.Maybe.props.
+     -NoCI          force using the package version found in Abc.Maybe.props?
 
      -Runtime       specify a target runtime to test for.
 
-     -Reset         reset the solution before anything else.
-  -o|-Optimise      attempt to speed up things a bit when testing many platforms one at a time.
-  -y|-Yes           do not ask for confirmation before running any test.
-  -h|-Help          print this help then exit.
+     -Reset         reset the solution before anything else?
+  -o|-Optimise      attempt to speed up things a bit when testing many platforms one at a time?
+  -y|-Yes           do not ask for confirmation before running any test?
+  -h|-Help          print this help then exit?
 
 Examples.
 > test-package.ps1                              # selected versions of .NET Core and .NET Framework

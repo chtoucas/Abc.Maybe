@@ -22,25 +22,25 @@ makes the two tools complementary --- line counts may differ too but
 that's just a detail.
 
 .PARAMETER OpenCover
-Use OpenCover instead of Coverlet. *Only works on Windows*
+Use OpenCover instead of Coverlet? *Only works on Windows*
 Ignored if -NoCoverage is also set and equals $true.
 
 .PARAMETER NoCoverage
-Do NOT run any Code Coverage tool.
+Do NOT run any Code Coverage tool?
 This option and -NoReport are mutually exclusive.
 
 .PARAMETER NoReport
-Do NOT build HTML/text reports and badges w/ ReportGenerator.
+Do NOT build HTML/text reports and badges w/ ReportGenerator?
 This option and -NoCoverage are mutually exclusive.
 
 .PARAMETER Restore
-Restore the solution.
+Restore the solution?
 
 .PARAMETER RestoreTools
-Restore OpenCover and ReportGenerator before anything else.
+Restore OpenCover and ReportGenerator before anything else?
 
 .PARAMETER Help
-Print help text then exit.
+Print help text then exit?
 #>
 [CmdletBinding()]
 param(
@@ -65,13 +65,13 @@ function Print-Help {
 Run the Code Coverage script and build human-readable reports.
 
 Usage: cover.ps1 [arguments]
-     -OpenCover     use OpenCover instead of Coverlet.
-     -NoCoverage    do NOT run any Code Coverage tool.
-     -NoReport      do NOT run ReportGenerator.
+     -OpenCover     use OpenCover instead of Coverlet?
+     -NoCoverage    do NOT run any Code Coverage tool?
+     -NoReport      do NOT run ReportGenerator?
 
-     -Restore       restore the solution.
-     -RestoreTools  restore OpenCover and ReportGenerator before anything else.
-  -h|-Help          print this help then exit.
+     -Restore       restore the solution?
+     -RestoreTools  restore OpenCover and ReportGenerator before anything else?
+  -h|-Help          print this help then exit?
 
 Examples.
 > cover.ps1                       # Run Coverlet then build reports and badges
