@@ -5,7 +5,7 @@
 [CmdletBinding()]
 param()
 
-. (Join-Path $PSScriptRoot "eng\abc.ps1")
+. (Join-Path $PSScriptRoot "abc.ps1")
 
 function raise {
     [CmdletBinding()]
