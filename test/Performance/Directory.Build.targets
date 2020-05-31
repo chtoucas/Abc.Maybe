@@ -1,10 +1,13 @@
 <Project>
 
   <!--
-    Command-line options: "Live" (default = true).
+    Command-line option: "Live", default value:
+    - Within VS, Live = true, ie use the project Abc.Maybe.
+    - Outside VS, Live = false, ie use the package Abc.Maybe.
   -->
   <PropertyGroup>
-    <Live>true</Live>
+    <Live>false</Live>
+    <Live Condition=" $(BuildingInsideVisualStudio) == 'true' ">true</Live>
 
     <ParentDBTargets Condition=" $(Live) == 'true' ">..\..\Directory.Build.targets</ParentDBTargets>
     <ParentDBTargets Condition=" $(Live) != 'true' ">..\Directory.Build.targets</ParentDBTargets>
