@@ -3,7 +3,7 @@
   <PropertyGroup>
     <MajorVersion>1</MajorVersion>
     <MinorVersion>0</MinorVersion>
-    <PatchVersion>0</PatchVersion>
+    <PatchVersion>1</PatchVersion>
 
     <!--
       Format: empty -or- (alpha|beta)[1-9][0-9]?
