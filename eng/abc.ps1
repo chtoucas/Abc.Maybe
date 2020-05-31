@@ -558,7 +558,7 @@ function Reset-PackageOutDir {
                 say-softly "Output directory for packages was deleted."
             }
             else {
-                ___debug "Clearing output directory for packages."
+                ___debug "Cleaning output directory for packages."
 
                 ls $PKG_OUTDIR -Include "*.nupkg" -Recurse `
                     | foreach { ___debug "Deleting ""$_""." ; rm $_.FullName }
@@ -589,7 +589,7 @@ function Reset-PackageCIOutDir {
                 say-softly "Output directory for CI packages was deleted."
             }
             else {
-                ___debug "Clearing output directory for CI packages."
+                ___debug "Cleaning output directory for CI packages."
 
                 ls $PKG_CI_OUTDIR -Include "*.nupkg" -Recurse `
                     | foreach { ___debug "Deleting ""$_""." ; rm $_.FullName }
@@ -610,7 +610,7 @@ function Reset-LocalNuGet {
 
     if ($yes) { say "`nResetting local NuGet feed/cache." }
 
-    if ($yes -or (yesno "`nClear local NuGet feed/cache?")) {
+    if ($yes -or (yesno "`nReset local NuGet feed/cache?")) {
         # When we reset the NuGet feed, better to clear the cache too, this is
         # not mandatory but it keeps cache and feed in sync.
         # The inverse is also true.
@@ -620,13 +620,13 @@ function Reset-LocalNuGet {
         #
         # We can't delete the directories, otherwise "dotnet restore" will fail.
 
-        ___confess "Clearing local NuGet feed."
+        ___confess "Cleaning local NuGet feed."
         ls $NUGET_LOCAL_FEED -Exclude "_._" `
             | foreach { ___debug "Deleting ""$_""." ; rm $_ -Recurse }
         say-softly "Local NuGet feed was cleared."
 
         if ($all) {
-            ___confess "Clearing local NuGet cache."
+            ___confess "Cleaning local NuGet cache."
             ls $NUGET_LOCAL_CACHE -Exclude "_._" `
                 | foreach { ___debug "Deleting ""$_""." ; rm $_ -Recurse }
             say-softly "Local NuGet cache was cleared."

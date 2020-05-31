@@ -68,6 +68,32 @@ function Reset-EngTree {
     }
 }
 
+# ------------------------------------------------------------------------------
+
+function Reset-NETFxTools {
+    [CmdletBinding()]
+    param(
+                     [switch] $all,
+        [Alias("y")] [switch] $yes
+    )
+
+    if ($yes) { say "`nResetting local .NET Frameworks tools." }
+
+    if ($yes -or (yesno "`nReset local .NET Frameworks tools?")) {
+        if ($all) {
+            ___confess "Deleting cache for .NET Frameworks tools."
+            Remove-Dir $NET_FRAMEWORK_TOOLS_DIR
+            say-softly "Cache for local .NET Frameworks tools was deleted."
+        }
+        else {
+            ___confess "Cleaning cache for .NET Frameworks tools."
+            Remove-Dir (Join-Path $NET_FRAMEWORK_TOOLS_DIR "opencover")
+            Remove-Dir (Join-Path $NET_FRAMEWORK_TOOLS_DIR "xunit.runner.console")
+            say-softly "Cache for local .NET Frameworks tools was cleaned."
+        }
+    }
+}
+
 #endregion
 ################################################################################
 #region Main.
@@ -105,6 +131,8 @@ try {
         Delete-Artifacts "benchmarks" -Yes:$Yes
         Delete-Artifacts "coverlet"   -Yes:$Yes
         Delete-Artifacts "opencover"  -Yes:$Yes
+
+        Reset-NETFxTools -Yes:$Yes -All:$WipeOut
     }
 
     if ($Restore) {

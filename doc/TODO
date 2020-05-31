@@ -19,9 +19,6 @@ vNEXT
   * SelectMany(), ZipWith(), Bind().
 - Serialization (XML)
 
-Tools
-- reset.ps1: we could also reset "__\tools".
-
 Misc tasks.
 - FIXME, TODO and REVIEW within the code.
 - Localise user messages (ExceptionFactory)?
