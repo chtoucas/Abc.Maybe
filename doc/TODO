@@ -4,7 +4,6 @@ TODO
 vNEXT
 -----
 
-- MaybeComparer<T>, proper testing of equality and ordering comparisons.
 - Add overloads w/ IEqualityComparer<T> (true structural comparison).
 - "Lifted" comparison T w/ Maybe<T> to handle mixed type, eg Maybe<int?>,
   Maybe<int>, int? and int. This should be a custom MaybeComparer<T>. Do not
@@ -51,7 +50,8 @@ Testing is well underway but there is still a lot to be done.
 - Naming tests: explain rules in this doc and fix the tests themselves if necessary.
 - Split tests.
 - More functional tests.
-- Expand comparison tests (order and equality).
+- MaybeComparer<T>, proper testing of equality and ordering comparisons.
+  Expand comparison tests (order and equality).
   See NONGENERIC_MAYBE
   Structural comparisons w/ structural types.
   https://stackoverflow.com/questions/4968580/why-arent-istructuralequatable-and-istructuralcomparable-generic
