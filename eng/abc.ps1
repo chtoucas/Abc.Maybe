@@ -51,13 +51,13 @@ New-Alias "SAY-LOUDLY" Write-Green
 # The props where we can informations related to supported platforms.
 const PLATFORMS_PROPS (Join-Path $ROOT_DIR "Directory.Build.props" -Resolve)
 
-# .NET Framework versions not supported by Xunit.
-const OLDSTYLE_XUNIT_PLATFORMS @("net451", "net45")
-
 # Reference project used to restore .NET Framework tools.
 # NB: we need the project file (not the directory) since we are going to parse it.
 const NET_FRAMEWORK_TOOLS_PROJECT `
     (Join-Path $ENG_DIR "NETFxTools\NETFxTools.csproj" -Resolve)
+
+# .NET Framework versions not supported by Xunit.
+const OLDSTYLE_XUNIT_PLATFORMS @("net451", "net45")
 
 #endregion
 ################################################################################
@@ -625,18 +625,18 @@ function Remove-PackageFromLocalNuGet {
 
         [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
-        [string] $version
+        [string] $packageVersion
     )
 
     say "Removing obsolete package data from local NuGet feed/cache."
 
     ___confess "Removing package from the local NuGet cache."
     Join-Path $NUGET_LOCAL_CACHE $packageName.ToLower() `
-        | Join-Path -ChildPath $version `
+        | Join-Path -ChildPath $packageVersion `
         | Remove-Dir
 
     ___confess "Removing package from the local NuGet feed."
-    $oldFilepath = Join-Path $NUGET_LOCAL_FEED "$packageName.$version.nupkg"
+    $oldFilepath = Join-Path $NUGET_LOCAL_FEED "$packageName.$packageVersion.nupkg"
     if (Test-Path $oldFilepath) {
         rm $oldFilepath
     }

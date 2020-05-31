@@ -53,6 +53,10 @@ param(
 
 . (Join-Path $PSScriptRoot "abc.ps1")
 
+# ------------------------------------------------------------------------------
+
+const NUGET_CACHING_PROJECT (Join-Path $TEST_DIR "NuGetCaching" -Resolve)
+
 #endregion
 ################################################################################
 #region Helpers
@@ -385,9 +389,8 @@ function Invoke-PushLocal {
     # This is not such a big problem, but I prefer not to pollute it with
     # CI packages (or versions we are going to publish).
     say "Updating the local NuGet cache"
-    $project = Join-Path $TEST_DIR "NuGetCaching" -Resolve
 
-    & dotnet restore $project /p:AbcVersion=$packageVersion
+    & dotnet restore $NUGET_CACHING_PROJECT /p:AbcVersion=$packageVersion
         || die "Failed to update the local NuGet cache."
 
     say-softly "Package successfully installed."
