@@ -99,7 +99,7 @@ try {
     Reset-TestTree        -Yes:$Yes
     Reset-PackageOutDir   -Yes:$Yes -Delete:$WipeOut
     Reset-PackageCIOutDir -Yes:$Yes -Delete:$WipeOut
-    Reset-LocalNuGet      -Yes:$Yes
+    Reset-LocalNuGet      -Yes:$Yes -All:$WipeOut
 
     if ($Extended) {
         Delete-Artifacts "benchmarks" -Yes:$Yes

@@ -494,7 +494,7 @@ try {
         else {
             # If we don't reset the local NuGet cache, Invoke-PushLocal won't
             # update it with a new version of the package (the feed part is fine,
-            # but we always remove cache and feed entry together, see
+            # but we always remove cache and feed entries together, see
             # Reset-LocalNuGet).
             Remove-PackageFromLocalNuGet $ProjectName $pkgversion
 

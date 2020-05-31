@@ -604,6 +604,7 @@ function Reset-PackageCIOutDir {
 function Reset-LocalNuGet {
     [CmdletBinding()]
     param(
+                     [switch] $all,
         [Alias("y")] [switch] $yes
     )
 
@@ -624,10 +625,17 @@ function Reset-LocalNuGet {
             | foreach { ___debug "Deleting ""$_""." ; rm $_ -Recurse }
         say-softly "Local NuGet feed was cleared."
 
-        ___confess "Clearing local NuGet cache."
-        ls $NUGET_LOCAL_CACHE -Exclude "_._" `
-            | foreach { ___debug "Deleting ""$_""." ; rm $_ -Recurse }
-        say-softly "Local NuGet cache was cleared."
+        if ($all) {
+            ___confess "Clearing local NuGet cache."
+            ls $NUGET_LOCAL_CACHE -Exclude "_._" `
+                | foreach { ___debug "Deleting ""$_""." ; rm $_ -Recurse }
+            say-softly "Local NuGet cache was cleared."
+        }
+        else {
+            ___confess "Removing Abc.Maybe from the local NuGet cache."
+            Remove-Dir (Join-Path $NUGET_LOCAL_CACHE "abc.maybe")
+            say-softly "Abc.Maybe was removed from the local NuGet cache."
+        }
     }
 }
 
