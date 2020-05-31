@@ -19,10 +19,6 @@ The single platform to test the project/solution for.
 .PARAMETER ListPlatforms
 Print the list of supported platforms, then exit?
 
-.PARAMETER Fast
-Quickly run the test suite, no fuzz?
-All other options are ignored.
-
 .PARAMETER NoCheck
 Do not check whether the specified platform is supported or not?
 
@@ -43,7 +39,6 @@ param(
     [Alias("f")] [string] $Platform,
     [Alias("l")] [switch] $ListPlatforms,
 
-                 [switch] $Plain,
                  [switch] $NoCheck,
                  [switch] $NoRestore,
     [Alias("h")] [switch] $Help,
@@ -75,7 +70,6 @@ Usage: reset.ps1 [arguments]
   -f|-Platform          the platform to test the project/solution for.
   -l|-ListPlatforms     print the list of supported platforms, then exit?
 
-     -Fast              quickly run the test suite, no fuzz?
      -NoCheck           do not check whether the specified platform is supported or not?
      -NoRestore         do not restore the project/solution?
   -h|-Help              print this help and exit?
@@ -95,15 +89,6 @@ Hello "this is the test script.`n"
 
 try {
     ___BEGIN___
-
-    if ($Fast) {
-        $args = "-c:Release", "--no-restore"
-
-        & dotnet test $TEST_PROJECT $args
-            || die "Test task failed."
-
-        exit
-    }
 
     $platforms = Get-TestPlatforms
     $minClassic, $maxClassic, $minCore, $maxCore  = Get-SupportedPlatforms
