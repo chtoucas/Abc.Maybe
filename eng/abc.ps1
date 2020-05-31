@@ -543,20 +543,28 @@ function Reset-TestTree {
 function Reset-PackageOutDir {
     [CmdletBinding()]
     param(
+                     [switch] $delete,
         [Alias("y")] [switch] $yes
     )
 
     if ($yes) { say "`nResetting output directory for packages." }
 
-    if ($yes -or (yesno "`nClear output directory for packages?")) {
-        ___debug "Clearing output directory for packages."
-
+    if ($yes -or (yesno "`nReset output directory for packages?")) {
         if (Test-Path $PKG_OUTDIR) {
-            ls $PKG_OUTDIR -Include "*.nupkg" -Recurse `
-                | foreach { ___debug "Deleting ""$_""." ; rm $_.FullName }
-        }
+            if ($delete) {
+                ___debug "Deleting output directory for packages."
 
-        say-softly "Output directory for packages was cleared."
+                Remove-Dir $PKG_OUTDIR
+                say-softly "Output directory for packages was deleted."
+            }
+            else {
+                ___debug "Clearing output directory for packages."
+
+                ls $PKG_OUTDIR -Include "*.nupkg" -Recurse `
+                    | foreach { ___debug "Deleting ""$_""." ; rm $_.FullName }
+                say-softly "Output directory for packages was cleared."
+            }
+        }
     }
 }
 
@@ -565,20 +573,29 @@ function Reset-PackageOutDir {
 function Reset-PackageCIOutDir {
     [CmdletBinding()]
     param(
+                     [switch] $delete,
         [Alias("y")] [switch] $yes
     )
 
     if ($yes) { say "`nResetting output directory for CI packages." }
 
-    if ($yes -or (yesno "`nClear output directory for CI packages?")) {
-        ___debug "Clearing output directory for CI packages."
+    if ($yes -or (yesno "`nReset output directory for CI packages?")) {
 
         if (Test-Path $PKG_CI_OUTDIR) {
-            ls $PKG_CI_OUTDIR -Include "*.nupkg" -Recurse `
-                | foreach { ___debug "Deleting ""$_""." ; rm $_.FullName }
-        }
+            if ($delete) {
+                ___debug "Deleting output directory for CI packages."
 
-        say-softly "Output directory for CI packages was cleared."
+                Remove-Dir $PKG_CI_OUTDIR
+                say-softly "Output directory for CI packages was deleted."
+            }
+            else {
+                ___debug "Clearing output directory for CI packages."
+
+                ls $PKG_CI_OUTDIR -Include "*.nupkg" -Recurse `
+                    | foreach { ___debug "Deleting ""$_""." ; rm $_.FullName }
+                say-softly "Output directory for CI packages was cleared."
+            }
+        }
     }
 }
 

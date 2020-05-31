@@ -188,6 +188,7 @@ Common script/function parameters:
    -Restore
    -DryRun
    -Force
+-f|-Platform
 -c|-Configuration
 -a|-AllXXX
 -l|-ListXXX
@@ -212,6 +213,7 @@ Maintenance
 
 .NET Core (local) tools:
 - ReportGenerator, used by cover.ps1
+- SourceLink, not used by any script
 
 There seems to be no built-in way to find outdated .NET Core tools, but
 > dotnet tool update <packagename>

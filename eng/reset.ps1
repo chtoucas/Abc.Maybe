@@ -7,17 +7,21 @@
 .SYNOPSIS
 Reset the repository.
 
+.PARAMETER WipeOut
+Enable hard reset?
+
 .PARAMETER Extended
-Delete even more untracked files.
+Delete even more temporary files?
 
 .PARAMETER Restore
-Restore NuGet packages and tools thereafter.
+Restore NuGet packages and tools thereafter?
 
 .PARAMETER Yes
-Do not ask for confirmation.
+Do not ask for confirmation?
 #>
 [CmdletBinding()]
 param(
+    [Alias("w")] [switch] $WipeOut,
     [Alias("x")] [switch] $Extended,
                  [switch] $Restore,
     [Alias("y")] [switch] $Yes,
@@ -74,9 +78,11 @@ if ($Help) {
 Reset the repository.
 
 Usage: reset.ps1 [arguments]
-     -Restore  restore NuGet packages and tools thereafter.
-  -y|-Yes      do not ask for confirmation.
-  -h|-Help     print this help and exit.
+  -w|-WipeOut  enable hard reset?
+  -x|-Extended delete even more temporary files?
+     -Restore  restore NuGet packages and tools thereafter?
+  -y|-Yes      do not ask for confirmation?
+  -h|-Help     print this help and exit?
 
 "@
 
@@ -91,8 +97,8 @@ try {
     Reset-EngTree         -Yes:$Yes
     Reset-SourceTree      -Yes:$Yes
     Reset-TestTree        -Yes:$Yes
-    Reset-PackageOutDir   -Yes:$Yes
-    Reset-PackageCIOutDir -Yes:$Yes
+    Reset-PackageOutDir   -Yes:$Yes -Delete:$WipeOut
+    Reset-PackageCIOutDir -Yes:$Yes -Delete:$WipeOut
     Reset-LocalNuGet      -Yes:$Yes
 
     if ($Extended) {
