@@ -204,9 +204,9 @@ Maintenance
 
 > dotnet restore
 > dotnet list package --outdated
-> dotnet list eng\NETFrameworkTools package --outdated
+> dotnet list eng\NETFxTools package --outdated
 
-.NET Framework tools (see "eng\NETFrameworkTools"):
+.NET Framework tools (see "eng\NETFxTools"):
 - OpenCover, used by cover.ps1
 - xunit.runner.console, used by test-package.ps1
 

@@ -11,6 +11,8 @@ Internal changes:
   - Disable Source Link when there are uncommited changes.
   - Remove the timestamp from the informational version.
 - New script asm.ps1 to retrieve informations about an assembly.
+- Upgraded packages:
+  * coverlet.msbuild 2.8.1 -> 2.9.0.
 
 2020-05-27, version 1.0.0
 -------------------------

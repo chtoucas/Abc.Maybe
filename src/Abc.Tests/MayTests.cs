@@ -647,7 +647,7 @@ namespace Abc
 #pragma warning restore CA1305
 
         // FIXME: time designators w/ .NET 4.6.1.
-#if NETFRAMEWORK // DateTime
+#if NETFRAMEWORK // DateTime - Time Designators
         [Fact(Skip = ".NET Framework and Time Designators")]
 #else
         [Fact]
