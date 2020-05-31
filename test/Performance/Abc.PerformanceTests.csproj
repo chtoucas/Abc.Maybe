@@ -7,6 +7,14 @@
     <!-- BenchmarkDotNet requires that we specify an exact lang version -->
     <LangVersion>8.0</LangVersion>
 
+    <!--
+      CA1034  Nested types should not be visible
+      CA1303  Do not pass literals as localized parameters
+      CA1707  Identifiers should not contain underscores
+      CA1822  Mark members as static
+    -->
+    <NoWarn>$(NoWarn);CA1034;CA1303;CA1707;CA1822</NoWarn>
+
     <DefineConstants Condition=" $(BenchmarkHarness) == 'true' ">$(DefineConstants);BENCHMARK_HARNESS</DefineConstants>
   </PropertyGroup>
 
@@ -18,6 +26,10 @@
 
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>
