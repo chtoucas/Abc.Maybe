@@ -2,6 +2,12 @@
 
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets" />
 
+  <PropertyGroup Condition=" $(Retail) == 'true' and $(VersionSuffix) == '' ">
+    <PackageReleaseNotes><![CDATA[
+See CHANGELOG in project root and [$(RepositoryUrl)releases/tag/v$(VersionPrefix)].
+]]></PackageReleaseNotes>
+  </PropertyGroup>
+
   <!-- Public API -->
   <ItemGroup>
     <AdditionalFiles Include="PublicAPI\$(ApiProfileMoniker)\PublicAPI.Shipped.txt" />
