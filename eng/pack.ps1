@@ -77,7 +77,7 @@ Usage: pack.ps1 [arguments]
      -Freeze     create a package ready to be published to NuGet.Org?
 
      -Reset      reset the solution before anything else?
-     -Force
+     -Force      enable Source Link even if there are uncommited changes?
   -y|-Yes        do not ask for confirmation, mostly?
   -v|-MyVerbose  display settings used to compile each DLL?
   -h|-Help       print this help then exit?
@@ -417,19 +417,22 @@ function Invoke-Publish {
 
     $args = @("--force-english-output")
 
-    $source = Read-Host "Source [empty to push to the default source]"
-    if ($source) { $args += "-s $source" }
+    #$source = Read-Host "Source [empty to push to the default source]"
+    #if ($source) { $args += "-s $source" }
 
-    $apiKey = Read-Host "API key [empty for no key]"
-    if ($apiKey) { $args += "-k $apiKey" }
+    #$apiKey = Read-Host "API key [empty for no key]"
+    #if ($apiKey) { $args += "-k $apiKey" }
 
     if (yesno "Do you want me to publish the package for you?") {
-        warn "Not yet activated."
-        #& dotnet nuget push $packageFile $args
-    }
+        & dotnet nuget push $packageFile $args
+            || die "Failed to publish the package."
 
-    SAY-LOUDLY "`n---`nTo publish the package:"
-    SAY-LOUDLY "> dotnet nuget push $packageFile $args"
+        say-softly "Package successfully published."
+    }
+    else {
+        SAY-LOUDLY "`n---`nTo publish the package:"
+        SAY-LOUDLY "> dotnet nuget push $packageFile $args"
+    }
 }
 
 #endregion

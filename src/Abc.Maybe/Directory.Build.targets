@@ -4,7 +4,9 @@
 
   <PropertyGroup Condition=" $(Retail) == 'true' and $(VersionSuffix) == '' ">
     <PackageReleaseNotes><![CDATA[
-See CHANGELOG in project root and [$(RepositoryUrl)releases/tag/v$(VersionPrefix)].
+See CHANGELOG in project root.
+
+$(RepositoryUrl)releases/tag/v$(VersionPrefix)
 ]]></PackageReleaseNotes>
   </PropertyGroup>
 
