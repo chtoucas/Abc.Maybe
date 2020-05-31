@@ -66,6 +66,7 @@ function Reset-EngTree {
 
 #endregion
 ################################################################################
+#region Main.
 
 if ($Help) {
     say @"
@@ -95,8 +96,6 @@ try {
     Reset-LocalNuGet      -Yes:$Yes
 
     if ($Extended) {
-        # TODO: reset folder "__\tools\".
-
         Delete-Artifacts "benchmarks" -Yes:$Yes
         Delete-Artifacts "coverlet"   -Yes:$Yes
         Delete-Artifacts "opencover"  -Yes:$Yes
@@ -119,4 +118,5 @@ finally {
     ___END___
 }
 
+#endregion
 ################################################################################

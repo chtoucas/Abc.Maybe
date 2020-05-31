@@ -1,8 +1,6 @@
 TODO
 ====
 
-Resetting the local NuGet cache/feed could be less destructive.
-
 vNEXT
 -----
 
@@ -21,6 +19,10 @@ vNEXT
   * Of(), Flatten(). Squash(Maybe<T?>) where T : class
   * SelectMany(), ZipWith(), Bind().
 - Serialization (XML)
+
+Tools
+- Resetting the local NuGet cache/feed could be less destructive.
+  We should also reset "__\tools".
 
 Misc tasks.
 - FIXME, TODO and REVIEW within the code.
