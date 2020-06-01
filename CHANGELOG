@@ -3,10 +3,13 @@ Changelog for Abc.
 vNEXT
 -----
 
+Internal changes:
+- Scripts, new options to turn off code analysis and to enable verbose mode.
+
 2020-05-31, version 1.0.1
 -------------------------
 
-Changes.
+Changes:
 - For older Windows-only platforms, use "pdbonly" instead of "portable".
   This change only affects builds with option /p:Retail=true.
 

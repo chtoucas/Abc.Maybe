@@ -3,6 +3,7 @@ README
 
 Core scripts.
 - build.ps1             build script.
+- harness.cmd           plain test harness.
 - test.ps1              test script.
 - cover.ps1             code coverage script.
 - pack.ps1              create a package.
