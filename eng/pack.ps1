@@ -42,7 +42,7 @@ Only one exception: after having created a package w/ option -Freeze on, the
 script will enter in an interactive mode.
 
 .PARAMETER MyVerbose
-Verbose mode. We print the settings in use before compiling each assembly?
+Verbose mode? Print the settings in use before compiling each assembly.
 
 .PARAMETER Help
 Print help text then exit?

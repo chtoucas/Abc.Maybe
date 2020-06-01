@@ -23,6 +23,9 @@ Furthermore, the results differ slightly (LINQ and async so far) which
 makes the two tools complementary --- line counts may differ too but
 that's just a detail.
 
+.PARAMETER Configuration
+The configuration to test the solution for. Default (explicit) = "Debug".
+
 .PARAMETER OpenCover
 Use OpenCover instead of Coverlet? *Only works on Windows*
 Ignored if -NoCoverage is also set and equals $true.
@@ -41,11 +44,18 @@ Restore the solution?
 .PARAMETER RestoreTools
 Restore OpenCover and ReportGenerator before anything else?
 
+.PARAMETER MyVerbose
+Verbose mode? Print the settings in use before compiling each assembly.
+
 .PARAMETER Help
 Print help text then exit?
 #>
 [CmdletBinding()]
 param(
+    [Parameter(Mandatory = $false, Position = 0)]
+    [ValidateSet("Debug", "Release")]
+    [Alias("c")] [string] $Configuration = "Debug",
+
                  [switch] $OpenCover,
                  [switch] $NoCoverage,
                  [switch] $NoReport,
@@ -67,13 +77,15 @@ function Print-Help {
 Run the Code Coverage script and build human-readable reports.
 
 Usage: cover.ps1 [arguments]
-     -OpenCover     use OpenCover instead of Coverlet?
-     -NoCoverage    do NOT run any Code Coverage tool?
-     -NoReport      do NOT run ReportGenerator?
+  -c|-Configuration  the configuration to test the solution for.
 
-     -Restore       restore the solution?
-     -RestoreTools  restore OpenCover and ReportGenerator before anything else?
-  -h|-Help          print this help then exit?
+     -OpenCover      use OpenCover instead of Coverlet?
+     -NoCoverage     do NOT run any Code Coverage tool?
+     -NoReport       do NOT run ReportGenerator?
+
+     -Restore        restore the solution?
+     -RestoreTools   restore OpenCover and ReportGenerator before anything else?
+  -h|-Help           print this help then exit?
 
 Examples.
 > cover.ps1                       # Run Coverlet then build reports and badges
@@ -240,8 +252,6 @@ function Invoke-ReportGenerator {
 if ($Help) { Print-Help ; exit }
 
 Hello "this is the Code Coverage script."
-
-readonly Configuration "Debug"
 
 try {
     ___BEGIN___

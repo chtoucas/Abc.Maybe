@@ -21,12 +21,20 @@ The single platform to test the project/solution for.
 .PARAMETER ListPlatforms
 Print the list of supported platforms, then exit?
 
+.PARAMETER NoAnalyzers
+Turn off source code analysis?
+
 .PARAMETER NoCheck
 Do not check whether the specified platform is supported or not?
 
 .PARAMETER NoRestore
 Do not restore the project/solution?
 
+.PARAMETER MyVerbose
+Verbose mode? Print the settings in use before compiling each assembly.
+
+.PARAMETER Help
+Print help text then exit?
 #>
 [CmdletBinding(PositionalBinding = $false)]
 param(
@@ -41,8 +49,10 @@ param(
     [Alias("f")] [string] $Platform,
     [Alias("l")] [switch] $ListPlatforms,
 
+                 [switch] $NoAnalyzers,
                  [switch] $NoCheck,
                  [switch] $NoRestore,
+    [Alias("v")] [switch] $MyVerbose,
     [Alias("h")] [switch] $Help,
 
     [Parameter(Mandatory=$false, ValueFromRemainingArguments = $true)]
@@ -72,8 +82,10 @@ Usage: reset.ps1 [arguments]
   -f|-Platform       the platform to test the project/solution for.
   -l|-ListPlatforms  print the list of supported platforms, then exit?
 
+     -NoAnalyzers    turn off source code analysis?
      -NoCheck        do not check whether the specified platform is supported or not?
      -NoRestore      do not restore the project/solution?
+  -v|-MyVerbose      display settings used to compile each DLL?
   -h|-Help           print this help and exit?
 
 Arguments starting with '/p:' are passed through to dotnet.exe.
@@ -106,6 +118,8 @@ try {
     if ($Configuration) { $args += "-c:$Configuration" }
     if ($Runtime)       { $args += "--runtime:$runtime" }
     if ($NoRestore)     { $args += "--no-restore" }
+    if ($NoAnalyzers)   { $args += "/p:RunAnalyzers=false" }
+    if ($MyVerbose)     { $args += "/p:PrintSettings=true" }
 
     # NB: may fail if the project references "Microsoft.NET.Test.Sdk".
     # Now, it should be OK as we only include it when running VS.

@@ -40,12 +40,20 @@ Print the list of supported platforms, then exit?
 .PARAMETER Force
 Forces all dependencies to be resolved even if the last restore was successful?
 
+.PARAMETER NoAnalyzers
+Turn off source code analysis?
+
 .PARAMETER NoCheck
 Do not check whether the specified platform is supported or not?
 
 .PARAMETER NoRestore
 Do not restore the project/solution?
 
+.PARAMETER MyVerbose
+Verbose mode? Print the settings in use before compiling each assembly.
+
+.PARAMETER Help
+Print help text then exit?
 #>
 [CmdletBinding(PositionalBinding = $false)]
 param(
@@ -64,8 +72,10 @@ param(
     [Alias("l")] [switch] $ListPlatforms,
 
                  [switch] $Force,
+                 [switch] $NoAnalyzers,
                  [switch] $NoCheck,
                  [switch] $NoRestore,
+    [Alias("v")] [switch] $MyVerbose,
     [Alias("h")] [switch] $Help,
 
     [Parameter(Mandatory=$false, ValueFromRemainingArguments = $true)]
@@ -92,15 +102,16 @@ Usage: reset.ps1 [arguments]
   -l|-ListPlatforms  print the list of supported platforms, then exit?
 
      -Force          forces all dependencies to be resolved even if the last restore was successful?
+     -NoAnalyzers    turn off source code analysis?
      -NoCheck        do not check whether the specified platform is supported or not?
      -NoRestore      do not restore the project/solution?
+  -v|-MyVerbose      display settings used to compile each DLL?
   -h|-Help           print this help and exit?
 
 Arguments starting with '/p:' are passed through to dotnet.exe.
 > build.ps1 /p:Retail=true
 > build.ps1 /p:HideInternals=true
 > build.ps1 /p:PatchEquality=true
-> build.ps1 /p:PrintSettings=true
 
 Examples.
 > build.ps1                                 #
@@ -148,6 +159,8 @@ try {
     if ($Runtime)       { $args += "--runtime:$runtime" }
     if ($Force)         { $args += "--force" }
     if ($NoRestore)     { $args += "--no-restore" }
+    if ($NoAnalyzers)   { $args += "/p:RunAnalyzers=false" }
+    if ($MyVerbose)     { $args += "/p:PrintSettings=true" }
 
     if ($Platform)  {
         if (-not $NoCheck -and $Platform -notin $allPlatforms) {
