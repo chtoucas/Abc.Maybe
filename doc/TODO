@@ -17,6 +17,7 @@ Tools.
   * SelectMany(), ZipWith(), Bind().
 - Perf tool (LINQ, nulls, iterable), .NET Core tool for benchmarkdotnet.
 - Azure pipelines.
+  https://www.meziantou.net/computing-code-coverage-for-a-dotnet-core-project-with-azure-devops-and-coverlet.htm
 - Instead of coverlet.msbuild, use coverlet.collector?
   Currently it cannot work since we only reference "Microsoft.NET.Test.Sdk"
   when running VS.
