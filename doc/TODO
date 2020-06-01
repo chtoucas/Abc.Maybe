@@ -19,7 +19,9 @@ Tools.
   * Of(), Flatten(). Squash(Maybe<T?>) where T : class
   * SelectMany(), ZipWith(), Bind().
 - Perf tool (LINQ, nulls, iterable), .NET Core tool for benchmarkdotnet.
-- Instead of coverlet.msbuild, use coverlet collector / console.
+- Instead of coverlet.msbuild, use coverlet.collector?
+  Currently it cannot work since we only reference "Microsoft.NET.Test.Sdk"
+  when running VS.
 
 Testing
 -------
