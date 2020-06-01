@@ -2,9 +2,6 @@ TODO
 ====
 
 - Add overloads w/ IEqualityComparer<T> (true structural comparison).
-- "Lifted" comparison T w/ Maybe<T> to handle mixed type, eg Maybe<int?>,
-  Maybe<int>, int? and int. This should be a custom MaybeComparer<T>. Do not
-  implement IEquatable<T> (T == Maybe<T>), IComparable<T> this would be misleading?
 - LINQ: optimize, more ops.
   "Monadic" LINQ. Output Maybe<IEnumerable<T>> and LINQ ops.
 - Utilities to write code in the ROP style (Railway Oriented Programming).
@@ -19,6 +16,7 @@ Tools.
   * Of(), Flatten(). Squash(Maybe<T?>) where T : class
   * SelectMany(), ZipWith(), Bind().
 - Perf tool (LINQ, nulls, iterable), .NET Core tool for benchmarkdotnet.
+- Azure pipelines.
 - Instead of coverlet.msbuild, use coverlet.collector?
   Currently it cannot work since we only reference "Microsoft.NET.Test.Sdk"
   when running VS.
@@ -39,24 +37,30 @@ Fixed naming schema, split tests, more functional tests.
 Documentation
 -------------
 
-- XML comments with complete examples.
-  https://github.com/dotnet/dotnet-api-docs/wiki
-  When done, configure Abc.Maybe to wanr on missing XML comments.
-- Sample code w/ C#, VB and F#.
+XML comments with complete examples.
+Help: https://github.com/dotnet/dotnet-api-docs/wiki
+When done, configure Abc.Maybe to wanr on missing XML comments.
 
-- A bit of marketing, compare to other option types.
-- Struct really? Explain and compare to ValueTuple.
-  https://docs.microsoft.com/en-gb/dotnet/csharp/tuples
-  http://mustoverride.com/tuples_structs/
-  https://docs.microsoft.com/en-us/archive/msdn-magazine/2018/june/csharp-tuple-trouble-why-csharp-tuples-get-to-break-the-guidelines
-  https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/value-options
-  https://github.com/fsharp/fslang-design/blob/master/FSharp.Core-4.5.0.0/FS-1057-valueoption.md
-- Nullable attributes and notnull constraint.
-  It would make a lot of sense to add a notnull constraint on the T of Maybe<T>,
-  but it worries me a bit (I need to gain more experience with the new NRT). It
-  would allow to warn a user trying to create a Maybe<int?> or a Maybe<string?>.
-  https://docs.microsoft.com/en-us/dotnet/csharp/nullable-attributes
-  https://devblogs.microsoft.com/dotnet/try-out-nullable-reference-types/
-  https://devblogs.microsoft.com/dotnet/nullable-reference-types-in-csharp/
-  https://devblogs.microsoft.com/dotnet/embracing-nullable-reference-types/
-- https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets
+Sample code w/ C#, VB and F#.
+
+A bit of marketing, compare to other option types.
+
+"Lifted" comparison T w/ Maybe<T> to handle mixed type, eg Maybe<int?>,
+Maybe<int>, int? and int. See custom MaybeComparer<T>. Do not implement
+IEquatable<T> (T == Maybe<T>), IComparable<T> this would be misleading?
+
+Struct really? Explain and compare to ValueTuple.
+- https://docs.microsoft.com/en-gb/dotnet/csharp/tuples
+- http://mustoverride.com/tuples_structs/
+- https://docs.microsoft.com/en-us/archive/msdn-magazine/2018/june/csharp-tuple-trouble-why-csharp-tuples-get-to-break-the-guidelines
+- https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/value-options
+- https://github.com/fsharp/fslang-design/blob/master/FSharp.Core-4.5.0.0/FS-1057-valueoption.md
+
+Nullable attributes and notnull constraint.
+It would make a lot of sense to add a notnull constraint on the T of Maybe<T>,
+but it worries me a bit (I need to gain more experience with the new NRT). It
+would allow to warn a user trying to create a Maybe<int?> or a Maybe<string?>.
+- https://docs.microsoft.com/en-us/dotnet/csharp/nullable-attributes
+- https://devblogs.microsoft.com/dotnet/try-out-nullable-reference-types/
+- https://devblogs.microsoft.com/dotnet/nullable-reference-types-in-csharp/
+- https://devblogs.microsoft.com/dotnet/embracing-nullable-reference-types/

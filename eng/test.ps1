@@ -128,6 +128,7 @@ try {
     # - https://github.com/dotnet/sdk/issues/1408
     # - https://github.com/dotnet/sdk/issues/491
     # - https://github.com/novotnyllc/MSBuildSdkExtras
+    # See Xunit website too.
     if ($Platform)  {
         if (-not $NoCheck -and $Platform -notin $allPlatforms) {
             die "The specified platform is not supported: ""$Platform""."
