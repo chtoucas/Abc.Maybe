@@ -1,5 +1,7 @@
 # See LICENSE in the project root for license information.
 
+#Requires -Version 7
+
 ################################################################################
 #region Preamble.
 
@@ -120,21 +122,32 @@ function Invoke-Coverlet {
 
     SAY-LOUDLY "`nRunning Coverlet."
 
-    $args = "--nologo", "-c:$configuration"
+    $args = "--nologo", "-c:$configuration", "/p:RunAnalyzers=false"
     if (-not $restore) { $args += "--no-restore" }
 
-    $excludes = `
-        "[Abc*]System.Diagnostics.CodeAnalysis.*",
-        "[Abc*]System.Runtime.CompilerServices.*",
-        "[Abc*]Microsoft.CodeAnalysis.*"
-    $exclude = '\"' + ($excludes -Join ",") + '\"'
+    # Namespaces to exclude, files "src\(Missing|Nullable)Atributes.cs":
+    # - System
+    # - System.Diagnostics.CodeAnalysis
+    # - System.Diagnostics.Contracts
+    # - System.Runtime.CompilerServices (no longer needed?)
+    # - Microsoft.CodeAnalysis          (not needed w/ Coverlet)
+    #   for "Microsoft.CodeAnalysis.EmbeddedAttribute"
+    # Coverlet formats:
+    # - /p:Exclude=\"XXX,YYY,ZZZ\"
+    # - /p:Exclude="XXX%2cYYY%2cZZZ"
+    # For instance,
+    #   $excludes = `
+    #       "[Abc*]System.Diagnostics.CodeAnalysis.*",
+    #       "[Abc*]Microsoft.CodeAnalysis.*"
+    #   $exclude = '\"' + ($excludes -join ",") + '\"'
+    #   $exclude = '"' + ($excludes -join "%2c") + '"'
 
     & dotnet test $args `
         /p:CollectCoverage=true `
         /p:CoverletOutputFormat=opencover `
         /p:CoverletOutput=$output `
         /p:Include="[Abc.Maybe]*" `
-        /p:Exclude=$exclude
+        /p:Exclude="[Abc.Maybe]System.*"
         || die "Coverlet failed."
 
     say-softly "Coverlet completed successfully."
@@ -167,14 +180,16 @@ function Invoke-OpenCover {
     # I prefer to restore the solution outside the OpenCover process.
     if ($restore) { Restore-Solution }
 
+    # See comments in Invoke-Coverlet.
     $filters = `
         "+[Abc.Maybe]*",
         "-[Abc.Sketches]*",
         "-[Abc.Test*]*",
-        "-[Abc*]System.Diagnostics.CodeAnalysis.*",
-        "-[Abc*]System.Runtime.CompilerServices.*",
-        "-[Abc*]Microsoft.CodeAnalysis.*"
+        "-[Abc*]System.*",
+        "-[Abc*]Microsoft.*"
     $filter = "$filters"
+
+    $dotnetargs = "-c $configuration /p:RunAnalyzers=false /p:DebugType=full"
 
     # See https://github.com/opencover/opencover/wiki/Usage
     & $openCover `
@@ -184,7 +199,7 @@ function Invoke-OpenCover {
         -showunvisited `
         -output:$output `
         -target:dotnet.exe `
-        -targetargs:"test -v quiet -c $configuration --nologo --no-restore /p:DebugType=Full" `
+        -targetargs:"test -v quiet --no-restore --nologo $dotnetargs" `
         -filter:$filter `
         -excludebyattribute:*.ExcludeFromCodeCoverageAttribute
         || die "OpenCover failed."
