@@ -10,7 +10,7 @@
 Run the test suite for all supported platforms.
 
 .PARAMETER Configuration
-The configuration to test the project/solution for. Default = "Debug".
+The configuration to test the project/solution for. Default (implicit) = "Debug".
 
 .PARAMETER Runtime
 The runtime to test the project/solution for.
@@ -66,15 +66,15 @@ function Print-Help {
 Run the test suite for all supported platforms.
 
 Usage: reset.ps1 [arguments]
-  -c|-Configuration     the configuration to test the project/solution for.
-     -Runtime           the runtime to test the project/solution for.
+  -c|-Configuration  the configuration to test the project/solution for.
+     -Runtime        the runtime to test the project/solution for.
 
-  -f|-Platform          the platform to test the project/solution for.
-  -l|-ListPlatforms     print the list of supported platforms, then exit?
+  -f|-Platform       the platform to test the project/solution for.
+  -l|-ListPlatforms  print the list of supported platforms, then exit?
 
-     -NoCheck           do not check whether the specified platform is supported or not?
-     -NoRestore         do not restore the project/solution?
-  -h|-Help              print this help and exit?
+     -NoCheck        do not check whether the specified platform is supported or not?
+     -NoRestore      do not restore the project/solution?
+  -h|-Help           print this help and exit?
 
 Arguments starting with '/p:' are passed through to dotnet.exe.
 

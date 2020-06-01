@@ -85,9 +85,9 @@ Usage: pack.ps1 [arguments]
   -h|-Help       print this help then exit?
 
 Examples.
-> pack.ps1                # Create a CI package
-> pack.ps1 -NoCI -Yes     # Create a non-CI package, ignore uncommited changes
-> pack.ps1 -Freeze        # Create a package ready to be published to NuGet.Org
+> pack.ps1                    # Create a CI package
+> pack.ps1 -NoCI -Yes -Force  # Create a non-CI package, ignore uncommited changes
+> pack.ps1 -Freeze            # Create a package ready to be published to NuGet.Org
 
 Looking for more help?
 > Get-Help -Detailed pack.ps1

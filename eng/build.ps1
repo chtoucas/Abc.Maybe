@@ -26,7 +26,7 @@ project into a library.
 The project to build. Default = solution.
 
 .PARAMETER Configuration
-The configuration to build the project/solution for. Default = "Debug".
+The configuration to build the project/solution for. Default (implicit) = "Debug".
 
 .PARAMETER Runtime
 The runtime to build the project/solution for.
@@ -84,17 +84,17 @@ function Print-Help {
 Build the solution for all supported platforms.
 
 Usage: reset.ps1 [arguments]
-  -p|-ProjectPath       the project to build.
-  -c|-Configuration     the configuration to build the project/solution for.
-     -Runtime           the runtime to build the project/solution for.
+  -p|-ProjectPath    the project to build.
+  -c|-Configuration  the configuration to build the project/solution for.
+     -Runtime        the runtime to build the project/solution for.
 
-  -f|-Platform          the platform to build the project/solution for.
-  -l|-ListPlatforms     print the list of supported platforms, then exit?
+  -f|-Platform       the platform to build the project/solution for.
+  -l|-ListPlatforms  print the list of supported platforms, then exit?
 
-     -Force             forces all dependencies to be resolved even if the last restore was successful?
-     -NoCheck           do not check whether the specified platform is supported or not?
-     -NoRestore         do not restore the project/solution?
-  -h|-Help              print this help and exit?
+     -Force          forces all dependencies to be resolved even if the last restore was successful?
+     -NoCheck        do not check whether the specified platform is supported or not?
+     -NoRestore      do not restore the project/solution?
+  -h|-Help           print this help and exit?
 
 Arguments starting with '/p:' are passed through to dotnet.exe.
 > build.ps1 /p:Retail=true

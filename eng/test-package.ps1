@@ -40,7 +40,7 @@ Exclude .NET Core from the tests?
 Ignored if -Platform is also set and equals $true.
 
 .PARAMETER Configuration
-Specify the configuration to test for. Default = "Release".
+Specify the configuration to test for. Default (explicit) = "Release".
 
 .PARAMETER Version
 Pick a specific version of the package Abc.Maybe.
@@ -131,23 +131,23 @@ function Print-Help {
 Test the package Abc.Maybe.
 
 Usage: test-package.ps1 [arguments]
-     -Platform      specify the platform(s) for which to test the package.
-  -a|-AllKnown      test the package for ALL known platform versions (SLOW)?
-  -l|-ListPlatforms print the list of supported platforms, then exit?
-     -NoClassic     exclude .NET Framework from the tests?
-     -NoCore        exclude .NET Core from the tests?
+     -Platform       specify the platform(s) for which to test the package.
+  -a|-AllKnown       test the package for ALL known platform versions (SLOW)?
+  -l|-ListPlatforms  print the list of supported platforms, then exit?
+     -NoClassic      exclude .NET Framework from the tests?
+     -NoCore         exclude .NET Core from the tests?
 
-  -c|-Configuration specify the configuration to test for.
+  -c|-Configuration  specify the configuration to test for.
 
-     -Version       pick a specific version of the package Abc.Maybe.
-     -NoCI          force using the package version found in Abc.Maybe.props?
+     -Version        pick a specific version of the package Abc.Maybe.
+     -NoCI           force using the package version found in Abc.Maybe.props?
 
-     -Runtime       specify a target runtime to test for.
+     -Runtime        specify a target runtime to test for.
 
-     -Reset         reset the solution before anything else?
-  -o|-Optimise      attempt to speed up things a bit when testing many platforms one at a time?
-  -y|-Yes           do not ask for confirmation before running any test?
-  -h|-Help          print this help then exit?
+     -Reset          reset the solution before anything else?
+  -o|-Optimise       attempt to speed up things a bit when testing many platforms one at a time?
+  -y|-Yes            do not ask for confirmation before running any test?
+  -h|-Help           print this help then exit?
 
 Examples.
 > test-package.ps1                              # selected versions of .NET Core and .NET Framework
