@@ -1,6 +1,7 @@
 # See LICENSE.dotnet in the project root for license information.
-
 # Adapted from https://github.com/dotnet/roslyn/tree/master/scripts/PublicApi
+
+#Requires -Version 7
 
 <#
 .SYNOPSIS
