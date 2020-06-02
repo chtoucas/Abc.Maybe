@@ -3,15 +3,19 @@ Changelog for Abc.
 vNEXT
 -----
 
+Changes:
+- Azure Pipelines, see https://chtoucas.visualstudio.com/Abc.Maybe
+
 Internal changes:
-- Scripts, new options to turn off code analysis and to enable verbose mode.
+- Scripts, new options to turn off code analysis or to enable verbose mode.
+- New script "eng\harness.cmd" to quickly run the test suite.
 
 2020-05-31, version 1.0.1
 -------------------------
 
 Changes:
 - For older Windows-only platforms, use "pdbonly" instead of "portable".
-  This change only affects builds with option /p:Retail=true.
+  This change only applies to builds with option /p:Retail=true.
 
 Internal changes:
 - Fix freeze-api.ps1, it didn't handle the annotation "#nullable enable".
