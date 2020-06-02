@@ -42,7 +42,7 @@ steps:
       displayName: 'Create CC Report'
       inputs:
         reports: 'src/Abc.Tests/coverage.netcoreapp3.1.cobertura.xml'
-        targetdir: '$(Build.SourcesDirectory)/__/azure/'
+        targetdir: '__/azure/'
         reporttypes: 'HtmlInline_AzurePipelines;Cobertura'
 
   - task: PublishCodeCoverageResults@1
