@@ -10,6 +10,7 @@ Speed up build time
 Linux build
 Artifacts retention?
 Add
+  env: DOTNET_CLI_TELEMETRY_OPTOUT = 1
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
 References
   https://docs.microsoft.com/en-gb/azure/devops/pipelines/create-first-pipeline?view=azure-devops&tabs=net%2Cyaml%2Cbrowser%2Ctfs-2018-2
