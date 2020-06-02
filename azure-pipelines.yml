@@ -19,7 +19,9 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  buildConfiguration: Release
+  configuration: 'Release'
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
 
 steps:
   - task: DotNetCoreCLI@2
@@ -27,26 +29,25 @@ steps:
     inputs:
       command: 'build'
       projects: 'Maybe.sln'
-      arguments: '-c $(BuildConfiguration)'
+      arguments: '-c $(configuration)'
 
   - task: DotNetCoreCLI@2
     displayName: 'Test'
     inputs:
       command: 'test'
       projects: 'src/Abc.Tests/Abc.Tests.csproj'
-      arguments: '-c $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Include="[Abc.Maybe]*" /p:Exclude="[Abc.Maybe]System.*"'
+      arguments: '-c $(configuration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Include="[Abc.Maybe]*" /p:Exclude="[Abc.Maybe]System.*"'
       nobuild: true
 
   - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
     displayName: 'Create CC Report'
     inputs:
       reports: 'src/Abc.Tests/coverage.netcoreapp3.1.cobertura.xml'
-      targetdir: '__/azure/'
-      reporttypes: 'HtmlInline_AzurePipelines;Cobertura'
+      targetdir: '$(Agent.TempDirectory)'
+      reporttypes: 'Cobertura'
 
   - task: PublishCodeCoverageResults@1
     displayName: 'Publish CC Report'
     inputs:
       codeCoverageTool: Cobertura
-      summaryFileLocation: '$(Build.SourcesDirectory)/__/azure/Cobertura.xml'
-      #reportDirectory: '$(Build.SourcesDirectory)/__/azure/'
+      summaryFileLocation: '$(Agent.TempDirectory)/Cobertura.xml'
