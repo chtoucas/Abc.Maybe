@@ -22,7 +22,7 @@ steps:
     displayName: 'Build'
     inputs:
       command: 'build'
-      projects: 'src/**/*.csproj'
+      projects: 'src/Abc.Tests/Abc.Tests.csproj'
       arguments: '-c $(BuildConfiguration)'
 
   - task: DotNetCoreCLI@2
