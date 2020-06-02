@@ -5,16 +5,10 @@ CLOW: Azure pipelines.
 https://aka.ms/yaml
 Include instead of Exclude?
 Enable Source Link for Azure?
-Speed up build time
-  https://docs.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#netnuget
+How to speed up build time?
 Linux build
 Artifacts retention?
-Add
-  env: DOTNET_CLI_TELEMETRY_OPTOUT = 1
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
 References
-  https://docs.microsoft.com/en-gb/azure/devops/pipelines/create-first-pipeline?view=azure-devops&tabs=net%2Cyaml%2Cbrowser%2Ctfs-2018-2
-  https://docs.microsoft.com/en-gb/azure/devops/pipelines/repos/github?view=azure-devops&tabs=yaml
   https://docs.microsoft.com/en-gb/azure/devops/pipelines/ecosystems/dotnet-core?view=azure-devops
   https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=azure-devops
   https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/visual-studio-build?view=azure-devops
@@ -22,7 +16,6 @@ References
   https://github.com/actions/virtual-environments
   https://github.com/microsoft/azure-pipelines-yaml/blob/master/templates/.net-desktop.yml
   https://docs.microsoft.com/en-gb/azure/devops/pipelines/apps/windows/dot-net?view=azure-devops&tabs=github
-  https://www.meziantou.net/computing-code-coverage-for-a-dotnet-core-project-with-azure-devops-and-coverlet.htm
 
 Code.
 - Add overloads w/ IEqualityComparer<T> (true structural comparison).
