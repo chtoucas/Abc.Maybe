@@ -1,0 +1,35 @@
+
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+    - releases/*
+  paths:
+    exclude:
+    - doc/*
+    - eng/*
+    - test/*
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  buildConfiguration: Release
+
+steps:
+  - task: DotNetCoreCLI@2
+    displayName: 'Build'
+    inputs:
+      command: 'build'
+      projects: 'src/**/*.csproj'
+      arguments: '-c $(BuildConfiguration)'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Test'
+    inputs:
+      command: 'test'
+      arguments: '-c $(BuildConfiguration)'
+      projects: 'src/Abc.Tests/Abc.Tests.csproj'
+      nobuild: true
+    
