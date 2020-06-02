@@ -2,9 +2,9 @@
 
 Abc.Maybe features an Option type for .NET.
 
-|NuGet|Coverlet|OpenCover|
-|-----|--------|---------|
-| [![NuGet](https://img.shields.io/nuget/v/Abc.Maybe.svg)](https://www.nuget.org/packages/Abc.Maybe/) | [![Coverlet](./__/coverlet.svg)](./__/coverlet.txt) | [![OpenCover](./__/opencover.svg)](./__/opencover.txt) |
+|NuGet|CI|Coverlet|OpenCover|
+|-----|--|--------|---------|
+| [![NuGet](https://img.shields.io/nuget/v/Abc.Maybe.svg)](https://www.nuget.org/packages/Abc.Maybe/) | [![Build Status](https://chtoucas.visualstudio.com/Abc.Maybe/_apis/build/status/chtoucas.Abc.Maybe?branchName=master)](https://chtoucas.visualstudio.com/Abc.Maybe/_build/latest?definitionId=1&branchName=master) | [![Coverlet](./__/coverlet.svg)](./__/coverlet.txt) | [![OpenCover](./__/opencover.svg)](./__/opencover.txt) |
 
 - [Documentation](doc/README.md)
 - [Usage Guidelines](doc/usage-guidelines.md)
