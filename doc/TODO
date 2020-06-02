@@ -1,23 +1,9 @@
 TODO
 ====
 
-CLOW: Azure pipelines.
-https://aka.ms/yaml
-Include instead of Exclude?
-Enable Source Link for Azure?
-How to speed up build time?
-Linux build
-Artifacts retention?
-References
-  https://docs.microsoft.com/en-gb/azure/devops/pipelines/ecosystems/dotnet-core?view=azure-devops
-  https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=azure-devops
-  https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/visual-studio-build?view=azure-devops
-  https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-code-coverage-results?view=azure-devops
-  https://github.com/actions/virtual-environments
-  https://github.com/microsoft/azure-pipelines-yaml/blob/master/templates/.net-desktop.yml
-  https://docs.microsoft.com/en-gb/azure/devops/pipelines/apps/windows/dot-net?view=azure-devops&tabs=github
+Code
+----
 
-Code.
 - Add overloads w/ IEqualityComparer<T> (true structural comparison).
 - LINQ: optimize, more ops.
   "Monadic" LINQ. Output Maybe<IEnumerable<T>> and LINQ ops.
@@ -28,14 +14,16 @@ Code.
   * FIXME, TODO and REVIEW within the code.
   * Localise user messages (ExceptionFactory)?
 
-Tools.
+Tools
+-----
+
 - Roslyn Analyzer:
   * Of(), Flatten(). Squash(Maybe<T?>) where T : class
   * SelectMany(), ZipWith(), Bind().
 - Perf tool (LINQ, nulls, iterable), .NET Core tool for benchmarkdotnet.
 - Instead of coverlet.msbuild, use coverlet.collector?
   Currently it cannot work since we only reference "Microsoft.NET.Test.Sdk"
-  when running VS.
+  when running VS. Furthermore, coverlet.msbuild simplifies
 
 Testing
 -------
@@ -80,3 +68,16 @@ would allow to warn a user trying to create a Maybe<int?> or a Maybe<string?>.
 - https://devblogs.microsoft.com/dotnet/try-out-nullable-reference-types/
 - https://devblogs.microsoft.com/dotnet/nullable-reference-types-in-csharp/
 - https://devblogs.microsoft.com/dotnet/embracing-nullable-reference-types/
+
+Azure pipelines
+-------------
+
+Include instead of Exclude? Linux build? Enable Source Link?
+Is it possible to speed up the build? Artifacts retention?
+
+Release pipeline, test all supported platforms.
+
+References
+- https://github.com/actions/virtual-environments
+- https://github.com/microsoft/azure-pipelines-yaml/blob/master/templates/.net-desktop.yml
+- https://docs.microsoft.com/en-gb/azure/devops/pipelines/apps/windows/dot-net?view=azure-devops&tabs=github
