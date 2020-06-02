@@ -9,8 +9,6 @@ xunit.trx
 __/**
 !__/coverlet.svg
 !__/coverlet.txt
-!__/opencover.svg
-!__/opencover.txt
 !__/nuget-cache/_._
 !__/nuget-feed/_._
 
