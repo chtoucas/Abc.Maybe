@@ -39,11 +39,11 @@ steps:
       nobuild: true
 
   - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
-      displayName: 'Create CC Report'
-      inputs:
-        reports: 'src/Abc.Tests/coverage.netcoreapp3.1.cobertura.xml'
-        targetdir: '__/azure/'
-        reporttypes: 'HtmlInline_AzurePipelines;Cobertura'
+    displayName: 'Create CC Report'
+    inputs:
+      reports: 'src/Abc.Tests/coverage.netcoreapp3.1.cobertura.xml'
+      targetdir: '__/azure/'
+      reporttypes: 'HtmlInline_AzurePipelines;Cobertura'
 
   - task: PublishCodeCoverageResults@1
     displayName: 'Publish CC Report'
