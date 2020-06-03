@@ -104,21 +104,25 @@ If there are, for say, things we could do w/ .NET Standard 2.1 but not w/
   I could have added a dependency on System.ValueTuple (NuGet), but I prefer
   not to. I really do not want to add any dependency to our NuGet package.
 
-We only handle two special cases:
-- NETSTANDARD2_0 || NETFRAMEWORK
-  * Nullable attributes (added)
-  * Span<> (disabled)
-- NETFRAMEWORK
-  * ValueTuple (disabled)
-    Only available starting from .NET Framework 4.7.
-  * Enumerable.Append and Enumerable.Prepend (added)
-    Only available starting from .NET Framework 4.7.1.
-  * Code Analysis warnings.
-  * Test project:
-    - String.GetHashCode(StringComparison) does not exist.
-    - Enumerable.Empty<T>() is empty when cast to IList<T>.
-      The result is null w/ .NET Standard or .NET Core.
-    - DateTime parsing.
+Compiler Symbols
+----------------
+
+In "D.B.targets".
+- NETSTANDARD1_x
+- NETCOREAPP2_x
+- API_PROFILE_21
+- CONTRACTS_FULL (standard symbol)
+
+In "src\D.B.targets".
+- SIGNED_ASSEMBLY
+- INTERNALS_VISIBLE_TO
+- UNCHECKED
+- PATCH_EQUALITY
+
+Project-specific symbols.
+- VISIBLE_INTERNALS         in Abc.Maybe
+- USE_ATTRS_FROM_ABC_MAYBE  in Abc.Testing
+- BENCHMARK_HARNESS         in Abc.Performance.Tests
 
 Development
 -----------
