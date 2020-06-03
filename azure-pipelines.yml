@@ -34,7 +34,7 @@ steps:
       useGlobalJson: true
 
   - task: DotNetCoreCLI@2
-    displayName: 'Check .NET version'
+    displayName: 'Print .NET version'
     inputs:
       command: custom
       custom: '--info'
@@ -46,7 +46,7 @@ steps:
       projects: '$(mainSolution)'
       feedsToUse: config
       nugetConfigPath: '$(nugetConfig)'
-      verbosityRestore: 'minimal'
+      verbosityRestore: 'normal'
 
   - task: DotNetCoreCLI@2
     displayName: 'Build'
@@ -60,7 +60,8 @@ steps:
     inputs:
       command: 'test'
       projects: 'src/Abc.Tests/Abc.Tests.csproj'
-      arguments: '-c $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Include="[Abc.Maybe]*" /p:Exclude="[Abc.Maybe]System.*"'
+      #arguments: '-c $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Include="[Abc.Maybe]*" /p:Exclude="[Abc.Maybe]System.*"'
+      arguments: '-c $(buildConfiguration)'
       nobuild: true
 
 #  - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
