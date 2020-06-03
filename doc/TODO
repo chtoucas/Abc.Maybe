@@ -76,30 +76,13 @@ Include instead of Exclude? Enable Source Link?
 Is it possible to speed up the build? Artifacts retention?
 
 NuGet caching.
-
-MSBuild
-- ContinuousIntegrationBuild = true for Azure and GitHub
-  See also Abc.Maybe.csproj.
-- In D.B.props/targets
-<PropertyGroup>
-  <ContinuousIntegrationBuild>false</ContinuousIntegrationBuild>
-  <ContinuousIntegrationBuild Condition=" $(TF_BUILD) == 'true' ">true</ContinuousIntegrationBuild>
-  <ContinuousIntegrationBuild Condition=" $(GITHUB_ACTIONS) == 'true' ">true</ContinuousIntegrationBuild>
-</PropertyGroup>
+ContinuousIntegrationBuild in Abc.Maybe.csproj.
 <PropertyGroup Condition=" $(ContinuousIntegrationBuild) == 'true' ">
   <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   <RestoreLockedMode>true</RestoreLockedMode>
   <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
   <!--<NoWarn>NU1603</NoWarn>-->
 </PropertyGroup>
-Add NuGet.config?
-<?xml version="1.0" encoding="utf-8"?>
-<configuration>
-  <packageSources>
-    <clear />
-    <add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" />
-  </packageSources>
-</configuration>
 
 https://github.com/clairernovotny/DeterministicBuilds
 https://devblogs.microsoft.com/nuget/enable-repeatable-package-restores-using-a-lock-file/
