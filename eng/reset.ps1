@@ -146,8 +146,8 @@ try {
 
         Reset-NETFxTools -Yes:$Yes -All:$WipeOut
 
-        rm (Join-Path $ARTIFACTS_DIR "opencover.svg")
-        rm (Join-Path $ARTIFACTS_DIR "opencover.txt")
+        # Remove "opencover.svg" and "opencover.txt"
+        rm (Join-Path $ARTIFACTS_DIR "opencover.*")
     }
 
     if ($Restore) {
