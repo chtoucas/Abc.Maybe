@@ -189,7 +189,7 @@ References.
 Azure pipelines
 ---------------
 
-To skip CI for individual commits: [skip azurepipelines] in the commit message.
+To skip CI for individual commits: [skip azp] in the commit message.
 https://docs.microsoft.com/en-us/azure/devops/pipelines/repos/github?view=azure-devops&tabs=yaml#skipping-ci-for-individual-commits
 
 Tools
