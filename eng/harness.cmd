@@ -4,6 +4,7 @@
 :: Examples:
 :: > harness /p:DebugType=none
 :: > harness --no-build
+:: > harness --logger:"console;verbosity=normal"
 :: > harness --logger "trx;LogFileName=..\..\..\xunit.trx"
 :: > harness --filter Category=XXXX
 :: > harness --filter Priority!=XXX

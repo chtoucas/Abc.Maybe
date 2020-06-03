@@ -186,6 +186,12 @@ References.
 - https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/deterministic-compiler-option
 - https://blog.paranoidcoding.com/2016/04/05/deterministic-builds-in-roslyn.html
 
+Azure pipelines
+---------------
+
+To skip CI for individual commits: [skip azurepipelines] in the commit message.
+https://docs.microsoft.com/en-us/azure/devops/pipelines/repos/github?view=azure-devops&tabs=yaml#skipping-ci-for-individual-commits
+
 Tools
 -----
 
