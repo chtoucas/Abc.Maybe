@@ -35,7 +35,6 @@
   <!-- Source Link -->
   <PropertyGroup>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-
     <!-- Setting EnableSourceLink to false does not truely disable Source Link :-( -->
     <EnableSourceLink>false</EnableSourceLink>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
@@ -61,7 +60,7 @@
   </ItemGroup>
 
   <!-- DebugType -->
-  <!-- *** BE VERY, VERY CAREFUL, BEFORE CHANGING THIS ***
+  <!--
     For Windows-only platforms, we use the legacy PDB format, otherwise we stick
     to the new "portable" format.
     I had trouble with this one, setting "DebugType" in D.B.targets had no

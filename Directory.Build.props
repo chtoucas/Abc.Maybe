@@ -6,13 +6,12 @@
     <ArtifactsRoot>$(RepositoryRoot)__\</ArtifactsRoot>
   </PropertyGroup>
 
-  <!-- Continuous Integration
+  <!-- Continuous Integration -->
   <PropertyGroup>
     <ContinuousIntegrationBuild>false</ContinuousIntegrationBuild>
     <ContinuousIntegrationBuild Condition=" $(TF_BUILD) == 'true' ">true</ContinuousIntegrationBuild>
     <ContinuousIntegrationBuild Condition=" $(GITHUB_ACTIONS) == 'true' ">true</ContinuousIntegrationBuild>
   </PropertyGroup>
-  -->
 
   <!-- Common settings -->
   <PropertyGroup>

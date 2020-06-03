@@ -55,7 +55,7 @@ steps:
     inputs:
       command: 'build'
       projects: '$(mainSolution)'
-      arguments: '-c $(buildConfiguration) --no-restore'
+      arguments: '-c $(buildConfiguration) --no-restore /p:PrintSettings=true'
 
   - task: DotNetCoreCLI@2
     displayName: 'Test'
