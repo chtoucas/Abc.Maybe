@@ -112,6 +112,16 @@ Usage: reset.ps1 [arguments]
   -y|-Yes      do not ask for confirmation?
   -h|-Help     print this help and exit?
 
+Examples.
+> reset.ps1 -y          # Soft reset, no confirmation
+> reset.ps1 -w -x -y    # Hard reset, no confirmation
+
+To reset the repository to its pristine state, git.exe is a better tool for the job.
+> git.exe fetch origin
+> git.exe reset --hard origin/master
+> git.exe clean -d --dry-run
+> git.exe clean -d --force
+
 "@
 
     exit
@@ -135,6 +145,9 @@ try {
         Delete-Artifacts "opencover"  -Yes:$Yes
 
         Reset-NETFxTools -Yes:$Yes -All:$WipeOut
+
+        rm (Join-Path $ARTIFACTS_DIR "opencover.svg")
+        rm (Join-Path $ARTIFACTS_DIR "opencover.txt")
     }
 
     if ($Restore) {
