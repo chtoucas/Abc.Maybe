@@ -46,6 +46,7 @@ steps:
       projects: '$(mainSolution)'
       feedsToUse: config
       nugetConfigPath: '$(nugetConfig)'
+      verbosityRestore: 'minimal'
 
   - task: DotNetCoreCLI@2
     displayName: 'Build'
