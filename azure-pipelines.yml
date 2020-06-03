@@ -19,7 +19,8 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  configuration: 'Release'
+  buildConfiguration: 'Release'
+  buildTarget: 'netcoreapp3.1'
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
 
@@ -29,20 +30,20 @@ steps:
     inputs:
       command: 'build'
       projects: 'Maybe.sln'
-      arguments: '-c $(configuration)'
+      arguments: '-c $(buildConfiguration)'
 
   - task: DotNetCoreCLI@2
     displayName: 'Test'
     inputs:
       command: 'test'
       projects: 'src/Abc.Tests/Abc.Tests.csproj'
-      arguments: '-c $(configuration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Include="[Abc.Maybe]*" /p:Exclude="[Abc.Maybe]System.*"'
+      arguments: '-c $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Include="[Abc.Maybe]*" /p:Exclude="[Abc.Maybe]System.*"'
       nobuild: true
 
   - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
     displayName: 'Create CC Report'
     inputs:
-      reports: 'src/Abc.Tests/coverage.netcoreapp3.1.cobertura.xml'
+      reports: 'src/Abc.Tests/coverage.$(buildTarget).cobertura.xml'
       targetdir: '$(Agent.TempDirectory)'
       reporttypes: 'Cobertura'
 
