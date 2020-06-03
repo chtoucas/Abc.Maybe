@@ -70,12 +70,47 @@ would allow to warn a user trying to create a Maybe<int?> or a Maybe<string?>.
 - https://devblogs.microsoft.com/dotnet/embracing-nullable-reference-types/
 
 Azure pipelines
--------------
+---------------
 
-Include instead of Exclude? Linux build? Enable Source Link?
+Include instead of Exclude? Enable Source Link?
 Is it possible to speed up the build? Artifacts retention?
 
+NuGet caching.
+
+MSBuild
+- ContinuousIntegrationBuild = true for Azure and GitHub
+  See also Abc.Maybe.csproj.
+- In D.B.props/targets
+<PropertyGroup>
+  <ContinuousIntegrationBuild>false</ContinuousIntegrationBuild>
+  <ContinuousIntegrationBuild Condition=" $(TF_BUILD) == 'true' ">true</ContinuousIntegrationBuild>
+  <ContinuousIntegrationBuild Condition=" $(GITHUB_ACTIONS) == 'true' ">true</ContinuousIntegrationBuild>
+</PropertyGroup>
+<PropertyGroup Condition=" $(ContinuousIntegrationBuild) == 'true' ">
+  <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  <RestoreLockedMode>true</RestoreLockedMode>
+  <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+  <!--<NoWarn>NU1603</NoWarn>-->
+</PropertyGroup>
+Add NuGet.config?
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <packageSources>
+    <clear />
+    <add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" />
+  </packageSources>
+</configuration>
+
+https://github.com/clairernovotny/DeterministicBuilds
+https://devblogs.microsoft.com/nuget/enable-repeatable-package-restores-using-a-lock-file/
+https://docs.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#netnuget
+https://blog.soenneker.com/how-to-setup-nuget-caching-in-azure-devops-8d94c57b5321
+http://blog.ctaggart.com/2019/03/using-nuget-lock-file-for-reproducible.html
+
 Release pipeline, test all supported platforms.
+
+Linux job?
+https://xunit.net/docs/getting-started/multi-target/non-windows
 
 References
 - https://github.com/actions/virtual-environments
