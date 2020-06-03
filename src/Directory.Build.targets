@@ -75,6 +75,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup Condition=" $(EnableSourceLink) == 'true' ">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
 
   <!-- Target for verbose settings -->
   <Target Name="PrintSettings" BeforeTargets="Compile"
