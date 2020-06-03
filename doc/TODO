@@ -72,11 +72,12 @@ would allow to warn a user trying to create a Maybe<int?> or a Maybe<string?>.
 Azure pipelines
 ---------------
 
+Coverlet...
+
 Include instead of Exclude? Enable Source Link?
 Is it possible to speed up the build? Artifacts retention?
 
 NuGet caching.
-ContinuousIntegrationBuild in Abc.Maybe.csproj.
 <PropertyGroup Condition=" $(ContinuousIntegrationBuild) == 'true' ">
   <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   <RestoreLockedMode>true</RestoreLockedMode>
