@@ -40,15 +40,15 @@ steps:
       arguments: '-c $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Include="[Abc.Maybe]*" /p:Exclude="[Abc.Maybe]System.*"'
       nobuild: true
 
-  - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
-    displayName: 'Create CC Report'
-    inputs:
-      reports: 'src/Abc.Tests/coverage.$(buildTarget).cobertura.xml'
-      targetdir: '$(Agent.TempDirectory)'
-      reporttypes: 'Cobertura'
+#  - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
+#    displayName: 'Create CC Report'
+#    inputs:
+#      reports: 'src/Abc.Tests/coverage.$(buildTarget).cobertura.xml'
+#      targetdir: '$(Agent.TempDirectory)'
+#      reporttypes: 'Cobertura'
 
-  - task: PublishCodeCoverageResults@1
-    displayName: 'Publish CC Report'
-    inputs:
-      codeCoverageTool: Cobertura
-      summaryFileLocation: '$(Agent.TempDirectory)/Cobertura.xml'
+#  - task: PublishCodeCoverageResults@1
+#    displayName: 'Publish CC Report'
+#    inputs:
+#      codeCoverageTool: Cobertura
+#      summaryFileLocation: '$(Agent.TempDirectory)/Cobertura.xml'
