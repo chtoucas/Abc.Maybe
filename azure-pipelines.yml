@@ -28,10 +28,9 @@ variables:
 
 steps:
   - task: UseDotNet@2
-    displayName: 'Use .NET Core 3.1.300'
+    displayName: 'Use global.json'
     inputs:
       packageType: sdk
-      #version: 3.1.300
       useGlobalJson: true
 
   - task: DotNetCoreCLI@2
