@@ -84,14 +84,14 @@ Multi-targeting
 Inside VS, we only use .NET Standard 2.0 and .NET Core 3.1 (see D.B.props).
 
 IMPORTANT, after adding or removing a framework, if necessary, update the
-top-level D.B.props and D.B.targets.
+top-level D.B.props and D.B.targets. Be sure to update "azure-pipelines.yml" too.
 
 API differences. We try to minimize them by defining only two "profiles" that
 match exactly a .NET Standard version:
-- Profile 2.1 for .NET Standard 2.1
-- Profile 2.0 for .NET Standard 2.0 and earlier versions.
+- Profile 2.1 for .NET Standard 2.1.
+- Profile 2.0 for for the platforms preceding it.
 Profile 2.1 is a superset of Profile 2.0.
-NBB: attributes are NOT considered to be part of the API.
+NB: attributes are NOT considered to be part of the API.
 
 If there are, for say, things we could do w/ .NET Standard 2.1 but not w/
 .NET Core 3.1, we have two cases:
