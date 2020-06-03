@@ -25,6 +25,7 @@ variables:
   nugetConfig: 'NuGet.config'
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  NUGET_XMLDOC_MODE: 'skip'
 
 steps:
   - task: UseDotNet@2
@@ -61,7 +62,7 @@ steps:
       command: 'test'
       projects: 'src/Abc.Tests/Abc.Tests.csproj'
       #arguments: '-c $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Include="[Abc.Maybe]*" /p:Exclude="[Abc.Maybe]System.*"'
-      arguments: '-c $(buildConfiguration)'
+      arguments: '-c $(buildConfiguration) --collect:"XPlat Code Coverage"'
       nobuild: true
 
 #  - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
