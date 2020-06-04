@@ -22,7 +22,7 @@ pool:
 variables:
   mainSolution: 'Maybe.sln'
   buildConfiguration: 'Release'
-  buildTarget: 'netcoreapp3.1'
+  #buildTarget: 'netcoreapp3.1'
   nugetConfig: 'NuGet.config'
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
@@ -69,6 +69,7 @@ steps:
   - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
     displayName: 'Create CC Report'
     inputs:
+      # WARNING: uncomment variables.buildTarget too.
       #reports: 'src/Abc.Tests/coverage.$(buildTarget).cobertura.xml'
       reports: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
       targetdir: '$(Agent.TempDirectory)'
