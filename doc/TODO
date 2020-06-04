@@ -14,12 +14,14 @@ Code
   * FIXME, TODO and REVIEW within the code.
   * Localise user messages (ExceptionFactory)?
 
-- RestoreSources
-  https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/Examples/MSBuild/DeterministicBuild/Directory.Build.props
+Bugs.
+- EnableSourceLink no longer prevents coverlet to run, but it fails when we set
+  UseSourceLink=true (see cover.ps1 & coverlet.runsettings).
 
 Tools
 -----
 
+- Use MSBuild prop "RestoreSources"?
 - Roslyn Analyzer:
   * Of(), Flatten(). Squash(Maybe<T?>) where T : class
   * SelectMany(), ZipWith(), Bind().
@@ -75,11 +77,6 @@ would allow to warn a user trying to create a Maybe<int?> or a Maybe<string?>.
 Azure pipelines
 ---------------
 
-Coverlet...
-- EnableSourceLink no longer prevents coverlet to run, but it fails when we set
-  UseSourceLink=true (cover.ps1 & runsettings).
-- test.ps1 & test-package.ps1
-
 Include instead of Exclude? Artifacts retention?
 
 NuGet caching.
@@ -89,12 +86,6 @@ NuGet caching.
   <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
   <!--<NoWarn>NU1603</NoWarn>-->
 </PropertyGroup>
-
-https://github.com/clairernovotny/DeterministicBuilds
-https://devblogs.microsoft.com/nuget/enable-repeatable-package-restores-using-a-lock-file/
-https://docs.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#netnuget
-https://blog.soenneker.com/how-to-setup-nuget-caching-in-azure-devops-8d94c57b5321
-http://blog.ctaggart.com/2019/03/using-nuget-lock-file-for-reproducible.html
 
 Release pipeline, test all supported platforms.
 
