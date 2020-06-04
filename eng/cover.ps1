@@ -26,6 +26,11 @@ that's just a detail.
 .PARAMETER Configuration
 The configuration to test the solution for. Default (explicit) = "Debug".
 
+.PARAMETER Collector
+Use "coverlet.collector" instead of "coverlet.msbuild?
+When this option is set and equals $true, we NEVER run ReportGenerator, we could
+make it work but I don't think it's worth the trouble.
+
 .PARAMETER OpenCover
 Use OpenCover instead of Coverlet? *Only works on Windows*
 Ignored if -NoCoverage is also set and equals $true.
@@ -56,6 +61,7 @@ param(
     [ValidateSet("Debug", "Release")]
     [Alias("c")] [string] $Configuration = "Debug",
 
+                 [switch] $Collector,
                  [switch] $OpenCover,
                  [switch] $NoCoverage,
                  [switch] $NoReport,
@@ -79,6 +85,7 @@ Run the Code Coverage script and build human-readable reports.
 Usage: cover.ps1 [arguments]
   -c|-Configuration  the configuration to test the solution for.
 
+     -Collector      use "coverlet.collector" instead of "coverlet.msbuild"?
      -OpenCover      use OpenCover instead of Coverlet?
      -NoCoverage     do NOT run any Code Coverage tool?
      -NoReport       do NOT run ReportGenerator?
@@ -118,7 +125,7 @@ function Invoke-RestoreTools {
 
 # ------------------------------------------------------------------------------
 
-function Invoke-Coverlet {
+function Invoke-CoverletMSBuild {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, Position = 0)]
@@ -127,7 +134,7 @@ function Invoke-Coverlet {
 
         [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNullOrEmpty()]
-        [string] $output,
+        [string] $outXml,
 
         [switch] $noRestore
     )
@@ -158,7 +165,7 @@ function Invoke-Coverlet {
         /p:EnableSourceLink=true `
         /p:CollectCoverage=true `
         /p:CoverletOutputFormat=opencover `
-        /p:CoverletOutput=$output `
+        /p:CoverletOutput=$outXml `
         /p:Include="[Abc.Maybe]*" `
         /p:Exclude="[Abc.Maybe]System.*"
         || die "Coverlet failed."
@@ -168,12 +175,16 @@ function Invoke-Coverlet {
 
 # ------------------------------------------------------------------------------
 
-function Invoke-Coverlet2 {
+function Invoke-CoverletCollector {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $true, Position = 0)]
         [ValidateNotNullOrEmpty()]
         [string] $configuration,
+
+        [Parameter(Mandatory = $true, Position = 1)]
+        [ValidateNotNullOrEmpty()]
+        [string] $outDir,
 
         [switch] $noRestore
     )
@@ -183,7 +194,10 @@ function Invoke-Coverlet2 {
     $args = "--nologo", "-c:$configuration", "/p:RunAnalyzers=false"
     if ($noRestore) { $args += "--no-restore" }
 
+    # "dotnet test" changes $outDir by appending a Guid whose value does not
+    # seem predictable...
     & dotnet test $args `
+        --results-directory $outDir `
         /p:EnableSourceLink=true `
         --collect:"XPlat Code Coverage" `
         --settings coverlet.runsettings `
@@ -207,7 +221,7 @@ function Invoke-OpenCover {
 
         [Parameter(Mandatory = $true, Position = 2)]
         [ValidateNotNullOrEmpty()]
-        [string] $output,
+        [string] $outXml,
 
         [switch] $noRestore
     )
@@ -236,7 +250,7 @@ function Invoke-OpenCover {
         -register:user `
         -hideskipped:All `
         -showunvisited `
-        -output:$output `
+        -output:$outXml `
         -target:dotnet.exe `
         -targetargs:"test -v quiet --no-restore --nologo $dotnetargs" `
         -filter:$filter `
@@ -299,6 +313,16 @@ try {
 
     if ($RestoreTools) { Invoke-RestoreTools }
 
+    if ($Collector) {
+        Invoke-CoverletCollector `
+            -Configuration $Configuration `
+            -OutDir        $outDir `
+            -NoRestore:    $NoRestore
+
+        # We stop here, see the comments within Invoke-CoverletCollector.
+        exit
+    }
+
     if ($NoCoverage) {
         say "`nOn your request, we do not run any Code Coverage tool."
     }
@@ -307,16 +331,16 @@ try {
             Find-OpenCover -ExitOnError `
                 | Invoke-OpenCover `
                     -Configuration $Configuration `
-                    -Output        $outXml `
+                    -OutXml        $outXml `
                     -NoRestore:    $NoRestore
         }
         else {
             # For coverlet.msbuild the path must be absolute if we want the
             # result to be put within the directory for artifacts and not below
             # the test project.
-            Invoke-Coverlet `
+            Invoke-CoverletMSBuild `
                 -Configuration $Configuration `
-                -Output        $outXml `
+                -OutXml        $outXml `
                 -NoRestore:    $NoRestore
         }
     }
