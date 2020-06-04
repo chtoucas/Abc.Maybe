@@ -1,5 +1,7 @@
 <Project>
 
+  <Import Project="$(MSBuildThisFileDirectory)TmpFix.targets" />
+
   <!--
     Command-line options:
     - MyAssemblyTitle   default = AssemblyName

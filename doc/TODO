@@ -14,6 +14,9 @@ Code
   * FIXME, TODO and REVIEW within the code.
   * Localise user messages (ExceptionFactory)?
 
+- RestoreSources
+  https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/Examples/MSBuild/DeterministicBuild/Directory.Build.props
+
 Tools
 -----
 
@@ -73,9 +76,14 @@ Azure pipelines
 ---------------
 
 Coverlet...
+- EnableSourceLink no longer prevents coverlet to run, but it fails when we set
+  UseSourceLink=true (cover.ps1 & runsettings).
+- w/ Source Link -> empty
+- AZP report
+- script cover.ps1
+- test.ps1 & test-package.ps1
 
-Include instead of Exclude? Enable Source Link?
-Is it possible to speed up the build? Artifacts retention?
+Include instead of Exclude? Artifacts retention?
 
 NuGet caching.
 <PropertyGroup Condition=" $(ContinuousIntegrationBuild) == 'true' ">

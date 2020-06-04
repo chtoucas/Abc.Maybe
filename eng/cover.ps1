@@ -155,6 +155,7 @@ function Invoke-Coverlet {
     #   $exclude = '"' + ($excludes -join "%2c") + '"'
 
     & dotnet test $args `
+        /p:EnableSourceLink=true `
         /p:CollectCoverage=true `
         /p:CoverletOutputFormat=opencover `
         /p:CoverletOutput=$output `
@@ -183,6 +184,7 @@ function Invoke-Coverlet2 {
     if ($noRestore) { $args += "--no-restore" }
 
     & dotnet test $args `
+        /p:EnableSourceLink=true `
         --collect:"XPlat Code Coverage" `
         --settings coverlet.runsettings `
         || die "Coverlet failed."

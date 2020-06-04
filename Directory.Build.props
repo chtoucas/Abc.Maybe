@@ -6,35 +6,32 @@
     <ArtifactsRoot>$(RepositoryRoot)__\</ArtifactsRoot>
   </PropertyGroup>
 
-  <!-- Continuous Integration / Source Link -->
+  <!-- Continuous Integration -->
   <PropertyGroup>
-    <EnableSourceLink>false</EnableSourceLink>
-
     <ContinuousIntegrationBuild>false</ContinuousIntegrationBuild>
     <ContinuousIntegrationBuild Condition=" $(TF_BUILD) == 'true' ">true</ContinuousIntegrationBuild>
     <ContinuousIntegrationBuild Condition=" $(GITHUB_ACTIONS) == 'true' ">true</ContinuousIntegrationBuild>
+  </PropertyGroup>
 
-    <!-- If it is a CI build, then we enable Source Link, and vice versa.
-      When ContinuousIntegrationBuild equals "true" and Configuration equals
-      "Release", "SourceRoot" must not be empty.
-        <ItemGroup Condition=" $(ContinuousIntegrationBuild) == 'true' ">
-          <SourceRoot Include="$(RepositoryRoot)/"/>
-        </ItemGroup>
-      Maybe the following setting could also prevent the build to fail.
-        <DeterministicSourcePaths>false</DeterministicSourcePaths>
-    -->
-      <EnableSourceLink Condition=" $(ContinuousIntegrationBuild) == 'true' ">true</EnableSourceLink>
-      <ContinuousIntegrationBuild Condition=" $(EnableSourceLink) == 'true' ">true</ContinuousIntegrationBuild>
+  <!-- Source Link -->
+  <PropertyGroup>
+    <EnableSourceLink>false</EnableSourceLink>
+    <!-- For CI builds, we always enable Source Link -->
+    <EnableSourceLink Condition=" $(ContinuousIntegrationBuild) == 'true' ">true</EnableSourceLink>
 
-      <!-- Source Link -->
-      <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-      <!-- Setting EnableSourceLink to false does not truely disable Source Link :-( -->
-      <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-    </PropertyGroup>
-    <PropertyGroup Condition=" $(EnableSourceLink) == 'true' ">
-      <PublishRepositoryUrl>true</PublishRepositoryUrl>
-      <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    </PropertyGroup>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <!-- Setting EnableSourceLink to false does not truely disable Source Link :-( -->
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" $(EnableSourceLink) == 'true' ">
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <DeterministicSourcePaths>true</DeterministicSourcePaths>
+  </PropertyGroup>
+  <!-- No longer necessary?
+  <ItemGroup>
+    <SourceRoot Include="$(RepositoryRoot)/"/>
+  </ItemGroup>-->
 
   <!-- Common settings -->
   <PropertyGroup>
