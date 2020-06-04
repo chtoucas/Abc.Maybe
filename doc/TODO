@@ -5,7 +5,7 @@ CLOW:
 - cover.ps1 add option -MyVerbose (-v minimal /p:PrintSettings=true)
   AZP too. Why does it not display anything with Abc.Tests?
   Add option -Verbosity.
-- Add quotes in MSBuild, not necessary...
+- Add quotes in MSBuild, not a priority...
 - EnableSourceLink no longer prevents coverlet to run, but it fails when we set
   UseSourceLink=true (see cover.ps1 & coverlet.runsettings).
 
@@ -30,9 +30,6 @@ Tools
   * Of(), Flatten(). Squash(Maybe<T?>) where T : class
   * SelectMany(), ZipWith(), Bind().
 - Perf tool (LINQ, nulls, iterable), .NET Core tool for benchmarkdotnet.
-- Instead of coverlet.msbuild, use coverlet.collector?
-  Currently it cannot work since we only reference "Microsoft.NET.Test.Sdk"
-  when running VS. Furthermore, coverlet.msbuild simplifies
 
 Testing
 -------
