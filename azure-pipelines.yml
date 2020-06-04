@@ -63,7 +63,7 @@ steps:
       command: 'test'
       projects: 'src/Abc.Tests/Abc.Tests.csproj'
       #arguments: '-c $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Include="[Abc.Maybe]*" /p:Exclude="[Abc.Maybe]System.*"'
-      arguments: '-c $(buildConfiguration) --collect:"XPlat Code Coverage"'
+      arguments: '-c $(buildConfiguration) --collect:"XPlat Code Coverage" --settings coverlet.runsettings'
       nobuild: true
 
 #  - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4

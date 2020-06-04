@@ -5,6 +5,7 @@ vNEXT
 
 Internal changes:
 - Azure Pipelines, see https://chtoucas.visualstudio.com/Abc.Maybe
+- Always enable "Microsoft.NET.Test.Sdk" and "coverlet.collector".
 - Scripts, new options to turn off code analysis or to enable verbose mode.
 - New script "eng\harness.cmd" to quickly run the test suite.
 - Upgraded packages:
