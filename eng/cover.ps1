@@ -38,8 +38,8 @@ This option and -NoReport are mutually exclusive.
 Do NOT build HTML/text reports and badges w/ ReportGenerator?
 This option and -NoCoverage are mutually exclusive.
 
-.PARAMETER Restore
-Restore the solution?
+.PARAMETER NoRestore
+Do not restore the solution?
 
 .PARAMETER RestoreTools
 Restore OpenCover and ReportGenerator before anything else?
@@ -60,7 +60,7 @@ param(
                  [switch] $NoCoverage,
                  [switch] $NoReport,
 
-                 [switch] $Restore,
+                 [switch] $NoRestore,
                  [switch] $RestoreTools,
     [Alias("h")] [switch] $Help
 )
@@ -83,7 +83,7 @@ Usage: cover.ps1 [arguments]
      -NoCoverage     do NOT run any Code Coverage tool?
      -NoReport       do NOT run ReportGenerator?
 
-     -Restore        restore the solution?
+     -NoRestore      do not restore the solution?
      -RestoreTools   restore OpenCover and ReportGenerator before anything else?
   -h|-Help           print this help then exit?
 
@@ -129,13 +129,13 @@ function Invoke-Coverlet {
         [ValidateNotNullOrEmpty()]
         [string] $output,
 
-        [switch] $restore
+        [switch] $noRestore
     )
 
-    SAY-LOUDLY "`nRunning Coverlet."
+    SAY-LOUDLY "`nRunning Coverlet (MSBuild)."
 
     $args = "--nologo", "-c:$configuration", "/p:RunAnalyzers=false"
-    if (-not $restore) { $args += "--no-restore" }
+    if ($noRestore) { $args += "--no-restore" }
 
     # Namespaces to exclude, files "src\(Missing|Nullable)Atributes.cs":
     # - System
@@ -167,6 +167,31 @@ function Invoke-Coverlet {
 
 # ------------------------------------------------------------------------------
 
+function Invoke-Coverlet2 {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $configuration,
+
+        [switch] $noRestore
+    )
+
+    SAY-LOUDLY "`nRunning Coverlet (Collector)."
+
+    $args = "--nologo", "-c:$configuration", "/p:RunAnalyzers=false"
+    if ($noRestore) { $args += "--no-restore" }
+
+    & dotnet test $args `
+        --collect:"XPlat Code Coverage" `
+        --settings coverlet.runsettings `
+        || die "Coverlet failed."
+
+    say-softly "Coverlet completed successfully."
+}
+
+# ------------------------------------------------------------------------------
+
 function Invoke-OpenCover {
     [CmdletBinding()]
     param(
@@ -182,7 +207,7 @@ function Invoke-OpenCover {
         [ValidateNotNullOrEmpty()]
         [string] $output,
 
-        [switch] $restore
+        [switch] $noRestore
     )
 
     SAY-LOUDLY "`nRunning OpenCover."
@@ -190,7 +215,7 @@ function Invoke-OpenCover {
     if (-not $IsWindows) { die "OpenCover.exe only works on Windows." }
 
     # I prefer to restore the solution outside the OpenCover process.
-    if ($restore) { Restore-Solution }
+    if (-not $noRestore) { Restore-Solution }
 
     # See comments in Invoke-Coverlet.
     $filters = `
@@ -281,7 +306,7 @@ try {
                 | Invoke-OpenCover `
                     -Configuration $Configuration `
                     -Output        $outXml `
-                    -Restore:      $Restore
+                    -NoRestore:    $NoRestore
         }
         else {
             # For coverlet.msbuild the path must be absolute if we want the
@@ -290,7 +315,7 @@ try {
             Invoke-Coverlet `
                 -Configuration $Configuration `
                 -Output        $outXml `
-                -Restore:      $Restore
+                -NoRestore:    $NoRestore
         }
     }
 
