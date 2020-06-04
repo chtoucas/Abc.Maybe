@@ -1,6 +1,16 @@
 TODO
 ====
 
+CLOW:
+- test.ps1 fails when targetting 'netcoreapp2.0'.
+  It restores the wrong xunit.runner.visualstudio???? (see NU1701)
+  Removing "Microsoft.NET.Test.Sdk" fixed this, but it no longer does.
+- cover.ps1 add option -MyVerbose (-v minimal /p:PrintSettings=true)
+  AZP too. Why does it not display anything with Abc.Tests?
+- Add quotes in MSBuild, not necessary...
+- EnableSourceLink no longer prevents coverlet to run, but it fails when we set
+  UseSourceLink=true (see cover.ps1 & coverlet.runsettings).
+
 Code
 ----
 
@@ -13,10 +23,6 @@ Code
 -  Misc.
   * FIXME, TODO and REVIEW within the code.
   * Localise user messages (ExceptionFactory)?
-
-Bugs.
-- EnableSourceLink no longer prevents coverlet to run, but it fails when we set
-  UseSourceLink=true (see cover.ps1 & coverlet.runsettings).
 
 Tools
 -----
