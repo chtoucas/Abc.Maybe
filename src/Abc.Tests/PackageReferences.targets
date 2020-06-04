@@ -4,8 +4,7 @@
     This file is also loaded by the projects in "test\Package".
     - Microsoft.Bcl.HashCode does not support .NET Framework <= 4.6 and
       .NET Standard 1.x.
-    - Microsoft.NET.Test.Sdk can cause problems with older platforms,
-      see "eng\test.ps1". Conditional on $(BuildingInsideVisualStudio)?
+    - Microsoft.NET.Test.Sdk can cause problems with older platforms.
     - xunit.runner.visualstudio.
       Warning NU1701. This is something that should not happen, except that we
       tweak "TargetFrameworks" in "eng\build.ps1". This is harmless since we
@@ -21,14 +20,19 @@
     <AddHashCodePackage Condition=" $(TargetFramework.StartsWith('net45')) ">false</AddHashCodePackage>
     <AddHashCodePackage Condition=" $(TargetFramework) == 'net46' ">false</AddHashCodePackage>
   </PropertyGroup>
+  <PropertyGroup>
+    <XunitVersion>2.4.2</XunitVersion>
+    <XunitVersion Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">2.4.1</XunitVersion>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0"
                       Condition=" '$(AddHashCodePackage)' == 'true' " />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1"
+                      Condition=" '$(TargetFramework)' != 'netcoreapp2.0' "/>
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.2">
+    <PackageReference Include="xunit.runner.visualstudio" Version="$(XunitVersion)">
       <NoWarn Condition=" $(TargetFrameworks.Contains('netstandard')) != '' ">NU1701</NoWarn>
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
