@@ -15,7 +15,7 @@
     <ContinuousIntegrationBuild Condition=" $(GITHUB_ACTIONS) == 'true' ">true</ContinuousIntegrationBuild>
 
     <!-- If it is a CI build, then we enable Source Link, and vice versa.
-      Whe ContinuousIntegrationBuild equals "true" and Configuration equals
+      When ContinuousIntegrationBuild equals "true" and Configuration equals
       "Release", "SourceRoot" must not be empty.
         <ItemGroup Condition=" $(ContinuousIntegrationBuild) == 'true' ">
           <SourceRoot Include="$(RepositoryRoot)/"/>
