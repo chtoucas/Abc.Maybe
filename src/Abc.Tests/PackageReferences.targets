@@ -2,10 +2,7 @@
 
   <!--
     This file is also loaded by the projects in "test\Package".
-    - Microsoft.Bcl.HashCode does not support .NET Framework <= 4.6 and
-      .NET Standard 1.x.
-    - Microsoft.NET.Test.Sdk can cause problems with older platforms.
-    - xunit.runner.visualstudio.
+    xunit.runner.visualstudio.
       Warning NU1701. This is something that should not happen, except that we
       tweak "TargetFrameworks" in "eng\build.ps1". This is harmless since we
       are only building the project, we don't actually run it.
@@ -23,6 +20,8 @@
   <PropertyGroup>
     <XunitVersion>2.4.2</XunitVersion>
     <XunitVersion Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">2.4.1</XunitVersion>
+    <XunitVersion Condition=" '$(TargetFramework)' == 'net45' ">2.4.1</XunitVersion>
+    <XunitVersion Condition=" '$(TargetFramework)' == 'net451' ">2.4.1</XunitVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -33,7 +32,7 @@
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="$(XunitVersion)">
-      <NoWarn Condition=" $(TargetFrameworks.Contains('netstandard')) != '' ">NU1701</NoWarn>
+      <NoWarn Condition=" $(TargetFramework.StartsWith('netstandard')) ">NU1701</NoWarn>
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
