@@ -1,6 +1,5 @@
 
 trigger:
-  # I have a tendency to push several small commits at once...
   batch: true
   branches:
     include:
