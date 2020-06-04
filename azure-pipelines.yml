@@ -69,7 +69,8 @@ steps:
   - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
     displayName: 'Create CC Report'
     inputs:
-      reports: 'src/Abc.Tests/**/coverage.$(buildTarget).cobertura.xml'
+      #reports: 'src/Abc.Tests/coverage.$(buildTarget).cobertura.xml'
+      reports: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
       targetdir: '$(Agent.TempDirectory)'
       reporttypes: 'Cobertura'
 
