@@ -1,6 +1,6 @@
 <Project>
 
-  <Import Project="$(MSBuildThisFileDirectory)TmpFix.targets" />
+  <Import Project="$(MSBuildThisFileDirectory)TmpFixes.targets" />
 
   <!--
     Command-line options:

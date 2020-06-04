@@ -78,7 +78,6 @@ Azure pipelines
 Coverlet...
 - EnableSourceLink no longer prevents coverlet to run, but it fails when we set
   UseSourceLink=true (cover.ps1 & runsettings).
-- w/ Source Link -> empty
 - AZP report
 - script cover.ps1
 - test.ps1 & test-package.ps1

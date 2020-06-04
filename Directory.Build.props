@@ -31,7 +31,8 @@
   <!-- No longer necessary?
   <ItemGroup>
     <SourceRoot Include="$(RepositoryRoot)/"/>
-  </ItemGroup>-->
+  </ItemGroup>
+  -->
 
   <!-- Common settings -->
   <PropertyGroup>
