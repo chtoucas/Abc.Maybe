@@ -20,35 +20,35 @@
   -->
 
   <Import Project="$(MSBuildThisFileDirectory)Retail.props"
-          Condition=" $(Retail) == 'true' and $(IsPackable) == 'true' " />
+          Condition=" '$(Retail)' == 'true' and '$(IsPackable)' == 'true' " />
 
   <PropertyGroup>
     <VisibleInternals>true</VisibleInternals>
-    <VisibleInternals Condition=" $(HideInternals) == 'true' ">false</VisibleInternals>
+    <VisibleInternals Condition=" '$(HideInternals)' == 'true' ">false</VisibleInternals>
 
-    <NoWarnCS1591 Condition=" $(NoWarnCS1591) == '' ">true</NoWarnCS1591>
+    <NoWarnCS1591 Condition=" '$(NoWarnCS1591)' == '' ">true</NoWarnCS1591>
   </PropertyGroup>
 
   <!-- Retail settings -->
-  <PropertyGroup Condition=" $(Retail) == 'true' ">
+  <PropertyGroup Condition=" '$(Retail)' == 'true' ">
     <SignAssembly>true</SignAssembly>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <VisibleInternals>false</VisibleInternals>
 
-    <DebugType Condition=" $(TargetFrameworkIdentifier) == '.NETFramework' ">pdbonly</DebugType>
+    <DebugType Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">pdbonly</DebugType>
   </PropertyGroup>
 
   <!-- Compiler symbols -->
   <PropertyGroup>
-    <DefineConstants Condition=" $(SignAssembly) == 'true' ">$(DefineConstants);SIGNED_ASSEMBLY</DefineConstants>
-    <DefineConstants Condition=" $(VisibleInternals) == 'true' ">$(DefineConstants);INTERNALS_VISIBLE_TO</DefineConstants>
-    <DefineConstants Condition=" $(CheckForOverflowUnderflow) == 'false' ">$(DefineConstants);UNCHECKED</DefineConstants>
+    <DefineConstants Condition=" '$(SignAssembly)' == 'true' ">$(DefineConstants);SIGNED_ASSEMBLY</DefineConstants>
+    <DefineConstants Condition=" '$(VisibleInternals)' == 'true' ">$(DefineConstants);INTERNALS_VISIBLE_TO</DefineConstants>
+    <DefineConstants Condition=" '$(CheckForOverflowUnderflow)' == 'false' ">$(DefineConstants);UNCHECKED</DefineConstants>
   </PropertyGroup>
 
   <!-- Compiler symbols (developement-only) -->
-  <PropertyGroup Condition=" $(Retail) != 'true' ">
-    <DefineConstants Condition=" $(PatchEquality) == 'true' ">$(DefineConstants);PATCH_EQUALITY</DefineConstants>
+  <PropertyGroup Condition=" '$(Retail)' != 'true' ">
+    <DefineConstants Condition=" '$(PatchEquality)' == 'true' ">$(DefineConstants);PATCH_EQUALITY</DefineConstants>
     <!--<DefineConstants>$(DefineConstants);PLAIN_LINQ</DefineConstants>-->
     <!--<DefineConstants>$(DefineConstants);PURE_MAYBE</DefineConstants>-->
   </PropertyGroup>
@@ -62,10 +62,10 @@
       CA2007  Consider calling ConfigureAwait on the awaited task
       CS1591  Missing XML comment for publicly visible type or member 'Type_or_Member'
     -->
-    <NoWarn Condition=" $(RelaxWarnings) == 'true' ">$(NoWarn);CA1034;CA1303;CA1707</NoWarn>
-    <NoWarn Condition=" $(RelaxAsyncWarnings) == 'true' ">$(NoWarn);CA2007</NoWarn>
-    <NoWarn Condition=" $(NoWarnCS1591) == 'true' ">$(NoWarn);CS1591</NoWarn>
-    <NoWarn Condition=" $(NoWarnX) != '' ">$(NoWarn);$(NoWarnX)</NoWarn>
+    <NoWarn Condition=" '$(RelaxWarnings)' == 'true' ">$(NoWarn);CA1034;CA1303;CA1707</NoWarn>
+    <NoWarn Condition=" '$(RelaxAsyncWarnings)' == 'true' ">$(NoWarn);CA2007</NoWarn>
+    <NoWarn Condition=" '$(NoWarnCS1591)' == 'true' ">$(NoWarn);CS1591</NoWarn>
+    <NoWarn Condition=" '$(NoWarnX)' != '' ">$(NoWarn);$(NoWarnX)</NoWarn>
   </PropertyGroup>
 
   <!-- Package references -->
@@ -75,21 +75,21 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup Condition=" $(EnableSourceLink) == 'true' ">
+  <ItemGroup Condition=" '$(EnableSourceLink)' == 'true' ">
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 
   <!-- Target for verbose settings -->
-  <Target Name="PrintSettings" BeforeTargets="Compile"
-          Condition=" $(PrintSettings) == 'true' and $(TargetFramework) != '' ">
+  <Target Name="PrintSettingsBeforeCompile" BeforeTargets="Compile"
+          Condition=" '$(PrintSettings)' == 'true' and '$(TargetFramework)' != '' ">
     <PropertyGroup>
-      <_MyMessage Condition=" $(VisibleInternals) == 'true' ">| will NOT hide its internals.</_MyMessage>
-      <_MyMessage Condition=" $(VisibleInternals) != 'true' ">| will hide its internals.</_MyMessage>
+      <_MyMessage Condition=" '$(VisibleInternals)' == 'true' ">| will NOT hide its internals.</_MyMessage>
+      <_MyMessage Condition=" '$(VisibleInternals)' != 'true' ">| will hide its internals.</_MyMessage>
 
-      <_MyMessage Condition=" $(CheckForOverflowUnderflow) == 'true' ">$(_MyMessage)%0A| will use checked arithmetic.</_MyMessage>
-      <_MyMessage Condition=" $(CheckForOverflowUnderflow) != 'true' ">$(_MyMessage)%0A| will NOT use checked arithmetic.</_MyMessage>
+      <_MyMessage Condition=" '$(CheckForOverflowUnderflow)' == 'true' ">$(_MyMessage)%0A| will use checked arithmetic.</_MyMessage>
+      <_MyMessage Condition=" '$(CheckForOverflowUnderflow)' != 'true' ">$(_MyMessage)%0A| will NOT use checked arithmetic.</_MyMessage>
 
-      <_MyMessage Condition=" $(PatchEquality) == 'true' ">$(_MyMessage)%0A| will patch the equality rules.</_MyMessage>
+      <_MyMessage Condition=" '$(PatchEquality)' == 'true' ">$(_MyMessage)%0A| will patch the equality rules.</_MyMessage>
 
       <_MyMessage>$(_MyMessage)%0A| %24(ApiProfileMoniker) = "$(ApiProfileMoniker)"</_MyMessage>
       <_MyMessage>$(_MyMessage)%0A| %24(ContinuousIntegrationBuild) = "$(ContinuousIntegrationBuild)"</_MyMessage>
