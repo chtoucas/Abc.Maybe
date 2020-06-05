@@ -4,11 +4,13 @@ vNEXT
 -----
 
 Internal changes:
-- Azure Pipelines, see https://chtoucas.visualstudio.com/Abc.Maybe
-- Always enable "Microsoft.NET.Test.Sdk" and "coverlet.collector".
+- Set up Azure Pipelines, see https://chtoucas.visualstudio.com/Abc.Maybe
+- Always enable "coverlet.collector" and only load "coverlet.msbuild" when
+  explicitly requested.
 - When enabled, Source Link now processes all projects in "src".
+- Tweak package and platform selections for projects Abc.Tests & Abc.SdkTests.
 - Scripts, new options to turn off code analysis or to enable verbose mode.
-- New script "eng\harness.cmd" to quickly run the test suite.
+- New plain script "eng\harness.cmd" to quickly run the test suite.
 - Upgraded packages:
   * xunit.runner.visualstudio 2.4.1 -> 2.4.2.
 
