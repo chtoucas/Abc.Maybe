@@ -2,9 +2,8 @@ TODO
 ====
 
 CLOW: CI
-- GitHub: add multi-platforms.
-- Enhanced testing.
-- Linux job?
+- AZP: new pipeline for full testing.
+- GitHub: target windows/macos. Exclude some paths?
   https://xunit.net/docs/getting-started/multi-target/non-windows
 
 Code
