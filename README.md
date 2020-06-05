@@ -20,12 +20,13 @@ Abc.Maybe features an Option type for .NET. Supports .NET Standard 1.1 or later.
   - [x] Extensible.
   - [x] Incurring no significant overhead when used wisely.
 - [x] Being a good citizen of the .NET ecosystem.
-  - [x] .NET Standard 2.0 and .NET Framework 4.6.1.
+  - [x] .NET Standard 1.1+.
   - [x] Aware of Nullable Reference Types (NRT).
   - [x] Debugger-friendly, Source Link.
   - [x] Strongly named assembly.
 - [ ] Being well tested.
   - [x] 100% test coverage.
+  - [x] Tested on Windows, Linux and MacOS.
   - [ ] Wide range of functional tests.
 - [ ] Being well documented.
   - [ ] XML comments with code samples.

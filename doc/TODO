@@ -3,8 +3,7 @@ TODO
 
 CLOW: CI
 - AZP: new pipeline for full testing.
-- GitHub: target windows/macos. Exclude some paths?
-  https://xunit.net/docs/getting-started/multi-target/non-windows
+- https://xunit.net/docs/getting-started/multi-target/non-windows
 
 Code
 ----
