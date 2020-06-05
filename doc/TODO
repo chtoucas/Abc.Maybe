@@ -8,7 +8,6 @@ Code
 - LINQ: optimize, more ops.
   "Monadic" LINQ. Output Maybe<IEnumerable<T>> and LINQ ops.
 - Async Enumerable.
-- Utilities to write code in the ROP style (Railway Oriented Programming).
 - Serialization (XML)
 -  Misc.
   * FIXME, TODO and REVIEW within the code.
@@ -21,9 +20,9 @@ Tools
   * Property "RestoreSources" in "test".
 - Scripts
   * Add option -Verbosity?
-  * cover.ps1 add option -MyVerbose
-  * Verbosity tweak for "dotnet test": -v minimal /p:PrintSettings=true.
-    cover.ps1, AZP and test-package.ps1.
+  * Add option -MyVerbose to test-package.ps1.
+  * Verbosity tweak for "dotnet test": -v minimal /p:PrintSettings=true
+    has no effect with a test project. When resolved, update AZP.
 - EnableSourceLink no longer prevents coverlet to run, but it fails when we set
   UseSourceLink=true (see cover.ps1 & coverlet.runsettings). All paths are still
   local too.

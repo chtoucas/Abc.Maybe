@@ -49,6 +49,9 @@ Do not restore the solution?
 .PARAMETER RestoreTools
 Restore OpenCover and ReportGenerator before anything else?
 
+.PARAMETER MyVerbose
+Verbose mode? Print the settings in use before compiling each assembly.
+
 .PARAMETER Help
 Print help text then exit?
 #>
@@ -65,10 +68,16 @@ param(
 
                  [switch] $NoRestore,
                  [switch] $RestoreTools,
+    [Alias("v")] [switch] $MyVerbose,
     [Alias("h")] [switch] $Help
 )
 
 . (Join-Path $PSScriptRoot "abc.ps1")
+
+# ------------------------------------------------------------------------------
+
+const TEST_PROJECT_NAME "Abc.Tests"
+const TEST_PROJECT (Join-Path $SRC_DIR $TEST_PROJECT_NAME -Resolve)
 
 #endregion
 ################################################################################
@@ -89,6 +98,7 @@ Usage: cover.ps1 [arguments]
 
      -NoRestore      do not restore the solution?
      -RestoreTools   restore OpenCover and ReportGenerator before anything else?
+  -v|-MyVerbose      display settings used to compile each DLL?
   -h|-Help           print this help then exit?
 
 Examples.
@@ -133,13 +143,15 @@ function Invoke-CoverletMSBuild {
         [ValidateNotNullOrEmpty()]
         [string] $outXml,
 
-        [switch] $noRestore
+        [switch] $noRestore,
+        [switch] $myVerbose
     )
 
     SAY-LOUDLY "`nRunning Coverlet (MSBuild)."
 
     $args = "--nologo", "-c:$configuration", "/p:RunAnalyzers=false"
     if ($noRestore) { $args += "--no-restore" }
+    if ($myVerbose) { $args += "-v:minimal", "/p:PrintSettings=true" }
 
     # Namespaces to exclude, files "src\(Missing|Nullable)Atributes.cs":
     # - System
@@ -158,7 +170,7 @@ function Invoke-CoverletMSBuild {
     #   $exclude = '\"' + ($excludes -join ",") + '\"'
     #   $exclude = '"' + ($excludes -join "%2c") + '"'
 
-    & dotnet test $args `
+    & dotnet test $TEST_PROJECT $args `
         /p:EnableSourceLink=true `
         /p:CollectCoverage=true `
         /p:CoverletOutputFormat=opencover `
@@ -183,17 +195,19 @@ function Invoke-CoverletCollector {
         [ValidateNotNullOrEmpty()]
         [string] $outDir,
 
-        [switch] $noRestore
+        [switch] $noRestore,
+        [switch] $myVerbose
     )
 
     SAY-LOUDLY "`nRunning Coverlet (Collector)."
 
     $args = "--nologo", "-c:$configuration", "/p:RunAnalyzers=false"
     if ($noRestore) { $args += "--no-restore" }
+    if ($myVerbose) { $args += "-v:minimal", "/p:PrintSettings=true" }
 
     # "dotnet test" changes $outDir by appending a Guid whose value does not
     # seem predictable...
-    & dotnet test $args `
+    & dotnet test $TEST_PROJECT $args `
         --results-directory $outDir `
         /p:EnableSourceLink=true `
         --collect:"XPlat Code Coverage" `
@@ -220,7 +234,8 @@ function Invoke-OpenCover {
         [ValidateNotNullOrEmpty()]
         [string] $outXml,
 
-        [switch] $noRestore
+        [switch] $noRestore,
+        [switch] $myVerbose
     )
 
     SAY-LOUDLY "`nRunning OpenCover."
@@ -239,7 +254,11 @@ function Invoke-OpenCover {
         "-[Abc*]Microsoft.*"
     $filter = "$filters"
 
-    $dotnetargs = "-c $configuration /p:RunAnalyzers=false /p:DebugType=full"
+    $args = "-c:$configuration", "/p:RunAnalyzers=false", "/p:DebugType=full"
+    if ($myVerbose) { $args += "-v:minimal", "/p:PrintSettings=true" }
+               else { $args += "-v:quiet" }
+
+    $dotnetargs = "$args"
 
     # See https://github.com/opencover/opencover/wiki/Usage
     & $openCover `
@@ -249,7 +268,7 @@ function Invoke-OpenCover {
         -showunvisited `
         -output:$outXml `
         -target:dotnet.exe `
-        -targetargs:"test -v quiet --no-restore --nologo $dotnetargs" `
+        -targetargs:"test $TEST_PROJECT --no-restore --nologo $dotnetargs" `
         -filter:$filter `
         -excludebyattribute:*.ExcludeFromCodeCoverageAttribute
         || die "OpenCover failed."
@@ -314,7 +333,8 @@ try {
         Invoke-CoverletCollector `
             -Configuration $Configuration `
             -OutDir        $outDir `
-            -NoRestore:    $NoRestore
+            -NoRestore:    $NoRestore `
+            -MyVerbose:    $myVerbose
 
         # We stop here, see the comments within Invoke-CoverletCollector.
         exit
@@ -329,7 +349,8 @@ try {
                 | Invoke-OpenCover `
                     -Configuration $Configuration `
                     -OutXml        $outXml `
-                    -NoRestore:    $NoRestore
+                    -NoRestore:    $NoRestore `
+                    -MyVerbose:    $myVerbose
         }
         else {
             # For coverlet.msbuild the path must be absolute if we want the
@@ -338,7 +359,8 @@ try {
             Invoke-CoverletMSBuild `
                 -Configuration $Configuration `
                 -OutXml        $outXml `
-                -NoRestore:    $NoRestore
+                -NoRestore:    $NoRestore `
+                -MyVerbose:    $myVerbose
         }
     }
 
