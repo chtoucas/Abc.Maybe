@@ -3,15 +3,24 @@ name: Test
 on:
   push:
     branches: [ master ]
+    paths-ignore:
+    - '__/*'
+    - 'doc/*'
+    - 'eng/*'
+    - 'test/*'
+    - 'CHANGELOG'
+    - 'LICENSE*'
+    - 'README.md'
+    - 'azure-pipelines.yml'
 
 jobs:
   test:
     runs-on: ${{ matrix.os }}
-    
+
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
-        
+
     steps:
     - uses: actions/checkout@v2
     - name: Setup
