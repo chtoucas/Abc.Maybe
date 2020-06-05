@@ -2,22 +2,14 @@
 
 Abc.Maybe features an Option type for .NET.
 
+Supports .NET Standard 1.1 or later, and .NET Framework 4.5 or later.
+
 [![NuGet](https://img.shields.io/nuget/v/Abc.Maybe.svg)](https://www.nuget.org/packages/Abc.Maybe/) [![Build Status](https://chtoucas.visualstudio.com/Abc.Maybe/_apis/build/status/chtoucas.Abc.Maybe?branchName=master)](https://chtoucas.visualstudio.com/Abc.Maybe/_build/latest?definitionId=1&branchName=master) [![Coverlet](./__/coverlet.svg)](./__/coverlet.txt)
 
 - [Documentation](doc/README.md)
 - [Usage Guidelines](doc/usage-guidelines.md)
 - [Changelog](CHANGELOG)
 - [BSD 3-Clause "New" or "Revised" License](LICENSE)
-
-### NuGet Package
-
-The NuGet package offers full support for:
-- .NET Standard 1.1 or later.
-- .NET Framework 4.5 or later.
-
-The public API is not the same for all targets. We currently define two profiles,
-one is for the [platforms implementing .NET Standard 2.1](https://dotnet.microsoft.com/platform/dotnet-standard#versions),
-and the other is for those preceding it.
 
 ### Objectives/Features
 
@@ -38,4 +30,3 @@ and the other is for those preceding it.
   - [ ] XML comments with code samples.
   - [x] Quick start.
   - [ ] Provides guidance.
-  - [ ] Samples.
