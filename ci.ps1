@@ -8,13 +8,14 @@ param(
 )
 
 try {
-    $proj = "src\Abc.Tests\Abc.Tests.csproj"
-    $targets = "netcoreapp3.1;netcoreapp2.1;net48;net472;net462;net452"
+    # See "BuildPlatforms" in D.B.props.
+    $targets = "netstandard2.1;netstandard1.1;netcoreapp3.1;netcoreapp2.0;net48;net45"
     $args = @('/p:TargetFrameworks=\"' + $targets + '\"')
 
-    & dotnet restore $proj $args
-    & dotnet build $proj $args --no-restore -c $Configuration /p:RunAnalyzers=false
-    & dotnet test $proj $args --no-build -c $Configuration
+    & dotnet restore $args
+    & dotnet build $args --no-restore -c $Configuration `
+        /p:GenerateDocumentationFile=true `
+        /p:HideInternals=true
 }
 catch {
     Write-Host $_
