@@ -2,36 +2,40 @@
 
   <!--
     This file is also loaded by the projects in "test\Package".
-    xunit.runner.visualstudio.
-      Warning NU1701. This is something that should not happen, except that we
-      tweak "TargetFrameworks" in "eng\build.ps1". This is harmless since we
-      are only building the project, we don't actually run it.
-      Another option: only add "xunit.runner.visualstudio" when not targeting
-      .Net Standard.
-      https://docs.microsoft.com/en-us/dotnet/core/porting/third-party-deps#net-framework-compatibility-mode
+    Warning NU1701. This is something that should not happen, except that we
+    tweak "TargetFrameworks" in "eng\build.ps1". This is harmless since we are
+    only building the project, we don't actually run it.
+    Another option: only add "xunit.runner.visualstudio" when not targeting
+    .Net Standard.
+    https://docs.microsoft.com/en-us/dotnet/core/porting/third-party-deps#net-framework-compatibility-mode
   -->
 
   <PropertyGroup>
     <AddHashCodePackage>true</AddHashCodePackage>
     <AddHashCodePackage Condition=" $(TargetFramework.StartsWith('netstandard1.')) ">false</AddHashCodePackage>
     <AddHashCodePackage Condition=" $(TargetFramework.StartsWith('net45')) ">false</AddHashCodePackage>
-    <AddHashCodePackage Condition=" $(TargetFramework) == 'net46' ">false</AddHashCodePackage>
+    <AddHashCodePackage Condition=" '$(TargetFramework)' == 'net46' ">false</AddHashCodePackage>
   </PropertyGroup>
   <PropertyGroup>
-    <XunitVersion>2.4.2</XunitVersion>
-    <XunitVersion Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">2.4.1</XunitVersion>
-    <XunitVersion Condition=" '$(TargetFramework)' == 'net45' ">2.4.1</XunitVersion>
-    <XunitVersion Condition=" '$(TargetFramework)' == 'net451' ">2.4.1</XunitVersion>
+    <!-- TweakXunit is true for platforms no longer supported by
+         Microsoft.NET.Test.Sdk and xunit.runner.visualstudio. -->
+    <TweakXunit Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">true</TweakXunit>
+    <TweakXunit Condition=" '$(TargetFramework)' == 'net45' ">true</TweakXunit>
+    <TweakXunit Condition=" '$(TargetFramework)' == 'net451' ">true</TweakXunit>
+
+    <XunitRunnerVersion>2.4.2</XunitRunnerVersion>
+    <XunitRunnerVersion Condition=" '$(TweakXunit)' == 'true' ">2.4.1</XunitRunnerVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.0"
                       Condition=" '$(AddHashCodePackage)' == 'true' " />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1"
-                      Condition=" '$(TargetFramework)' != 'netcoreapp2.0' "/>
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="$(XunitVersion)">
+
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1"
+                      Condition=" '$(TweakXunit)' != 'true' "/>
+    <PackageReference Include="xunit.runner.visualstudio" Version="$(XunitRunnerVersion)">
       <NoWarn Condition=" $(TargetFramework.StartsWith('netstandard')) ">NU1701</NoWarn>
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

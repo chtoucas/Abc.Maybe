@@ -94,11 +94,11 @@
       - .NET Standard   1.1 - 2.1
       - .NET Core       2.0 - 3.1
       - .NET Framework  4.5 - 4.8
-      Running the test suite is NOT possible w/ .NET Framework 4.5 / 4.5.1
-      (Xunit restriction) and, of course, .NET Standard.
-
-      The solution has very few external dependencies and are only related to
-      testing (see projects Abc.Testing and Abc.Tests).
+      Testing is limited to
+      - .NET Core       2.1   - 3.1
+      - .NET Framework  4.5.2 - 4.8
+      Actually, testing for older platforms is also supported (see
+      "src\Abc.Tests\PackageReferences.targets").
 
       Remarks:
       - If/when we create an API depending on a new .NET Standard, "MaxPlatform"
@@ -151,7 +151,7 @@
       net48;net45
     </BuildPlatforms>
     <TestPlatforms>
-      netcoreapp3.1;netcoreapp2.0;
+      netcoreapp3.1;netcoreapp2.1;
       net48;net452
     </TestPlatforms>
     <PackPlatforms>
