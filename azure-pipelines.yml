@@ -79,3 +79,10 @@ steps:
     inputs:
       codeCoverageTool: Cobertura
       summaryFileLocation: '$(Agent.TempDirectory)/Cobertura.xml'
+
+  # Test ALL.
+  - task: PowerShell@2
+    displayName: 'Test ALL'
+    inputs:
+      filePath: 'ci.ps1'
+      arguments: '-c $(buildConfiguration)'

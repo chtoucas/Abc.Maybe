@@ -84,8 +84,6 @@ would allow to warn a user trying to create a Maybe<int?> or a Maybe<string?>.
 Azure pipelines (CI)
 --------------------
 
-Release pipeline, test all supported platforms?
-
 NuGet caching?
 <PropertyGroup Condition=" $(ContinuousIntegrationBuild) == 'true' ">
   <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
