@@ -4,7 +4,8 @@ vNEXT
 -----
 
 Internal changes:
-- Set up Azure Pipelines, see https://chtoucas.visualstudio.com/Abc.Maybe
+- Set up Azure Pipelines, see https://chtoucas.visualstudio.com/Abc.Maybe,
+  and GitHub Actions.
 - Always enable "coverlet.collector" and only load "coverlet.msbuild" when
   explicitly requested.
 - When enabled, Source Link now processes all projects in "src".

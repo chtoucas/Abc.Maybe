@@ -27,6 +27,12 @@ variables:
 
 steps:
   # Initialize environment.
+  - task: DotNetCoreCLI@2
+    displayName: 'Print .NET version'
+    inputs:
+      command: custom
+      custom: '--info'
+
   - task: UseDotNet@2
     displayName: 'Use global.json'
     inputs:
@@ -66,9 +72,9 @@ steps:
       arguments: '-c $(buildConfiguration) --collect:"XPlat Code Coverage" --settings coverlet.runsettings'
       nobuild: true
 
-  # Create then publish CC report.
+  # Process then publish CC report.
   - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
-    displayName: 'Create CC'
+    displayName: 'Process CC'
     inputs:
       reports: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
       targetdir: '$(Agent.TempDirectory)'

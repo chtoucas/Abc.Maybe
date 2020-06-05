@@ -316,6 +316,11 @@ var q = from x in maybe
 
 ### More
 
+The public API is not the same for all targets. We currently define two profiles,
+one is for the
+[platforms implementing .NET Standard 2.1](https://dotnet.microsoft.com/platform/dotnet-standard#versions),
+and the other is for those preceding it.
+
 See the XML comments for samples.
 - LINQ and collection extensions in `Abc.Linq` and `Abc.Extensions`.
 - Parsing helpers provided by the static class `May`.

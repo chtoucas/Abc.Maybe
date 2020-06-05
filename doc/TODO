@@ -1,6 +1,12 @@
 TODO
 ====
 
+CLOW: CI
+- GitHub: add multi-platforms.
+- Enhanced testing.
+- Linux job?
+  https://xunit.net/docs/getting-started/multi-target/non-windows
+
 Code
 ----
 
@@ -16,13 +22,13 @@ Code
 Tools
 -----
 
-- MSBuild
-  * Property "RestoreSources" in "test".
+- MSBuild "RestoreSources" in "test".
+  https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets#restore-target
 - Scripts
   * Add option -Verbosity?
   * Add option -MyVerbose to test-package.ps1.
   * Verbosity tweak for "dotnet test": -v minimal /p:PrintSettings=true
-    has no effect with a test project. When resolved, update AZP.
+    does nothing with a test project. When resolved, update AZP.
 - EnableSourceLink no longer prevents coverlet to run, but it fails when we set
   UseSourceLink=true (see cover.ps1 & coverlet.runsettings). All paths are still
   local too.
@@ -43,12 +49,6 @@ Fixed naming schema, split tests, more functional tests.
   https://stackoverflow.com/questions/4968580/why-arent-istructuralequatable-and-istructuralcomparable-generic
 - Maybe<Func<>>
 - delegates that return null.
-
-We still cannot target UAP. It seems that it could be doable with .NET 5.
-- https://github.com/dotnet/sdk/issues/1408
-- https://github.com/dotnet/sdk/issues/491
-- https://github.com/novotnyllc/MSBuildSdkExtras
-See Xunit website too.
 
 Documentation
 -------------
@@ -81,10 +81,8 @@ would allow to warn a user trying to create a Maybe<int?> or a Maybe<string?>.
 - https://devblogs.microsoft.com/dotnet/nullable-reference-types-in-csharp/
 - https://devblogs.microsoft.com/dotnet/embracing-nullable-reference-types/
 
-Azure pipelines (CI)
---------------------
-
-Test all platforms.
+Azure pipelines
+---------------
 
 NuGet caching?
 <PropertyGroup Condition=" $(ContinuousIntegrationBuild) == 'true' ">
@@ -93,9 +91,6 @@ NuGet caching?
   <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
   <!--<NoWarn>NU1603</NoWarn>-->
 </PropertyGroup>
-
-Linux job?
-https://xunit.net/docs/getting-started/multi-target/non-windows
 
 References
 - https://github.com/actions/virtual-environments
