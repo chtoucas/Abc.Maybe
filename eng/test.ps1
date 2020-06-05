@@ -119,16 +119,8 @@ try {
     if ($Runtime)       { $args += "--runtime:$runtime" }
     if ($NoRestore)     { $args += "--no-restore" }
     if ($NoAnalyzers)   { $args += "/p:RunAnalyzers=false" }
-    if ($MyVerbose)     { $args += "/p:PrintSettings=true" }
+    if ($MyVerbose)     { $args += "-v:minimal", "/p:PrintSettings=true" }
 
-    # NB: may fail if the project references "Microsoft.NET.Test.Sdk".
-    # Now, it should be OK as we only include it when running VS.
-    #
-    # We still cannot target UAP. It seems that it could be doable with .NET 5.
-    # - https://github.com/dotnet/sdk/issues/1408
-    # - https://github.com/dotnet/sdk/issues/491
-    # - https://github.com/novotnyllc/MSBuildSdkExtras
-    # See Xunit website too.
     if ($Platform)  {
         if (-not $NoCheck -and $Platform -notin $allPlatforms) {
             die "The specified platform is not supported: ""$Platform""."

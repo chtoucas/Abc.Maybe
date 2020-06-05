@@ -1,14 +1,6 @@
 TODO
 ====
 
-CLOW:
-- cover.ps1 add option -MyVerbose (-v minimal /p:PrintSettings=true)
-  AZP too. Why does it not display anything with Abc.Tests?
-  Add option -Verbosity.
-- Add quotes in MSBuild, not a priority...
-- EnableSourceLink no longer prevents coverlet to run, but it fails when we set
-  UseSourceLink=true (see cover.ps1 & coverlet.runsettings).
-
 Code
 ----
 
@@ -25,11 +17,21 @@ Code
 Tools
 -----
 
-- Use MSBuild prop "RestoreSources"?
+- MSBuild
+  * Add quotes, not a priority...
+  * Property "RestoreSources" in "test".
+- Scripts
+  * Add option -Verbosity?
+  * cover.ps1 add option -MyVerbose
+  * Verbosity tweaks: -v minimal /p:PrintSettings=true.
+    cover.ps1, AZP and test-package.ps1.
+- EnableSourceLink no longer prevents coverlet to run, but it fails when we set
+  UseSourceLink=true (see cover.ps1 & coverlet.runsettings).
 - Roslyn Analyzer:
   * Of(), Flatten(). Squash(Maybe<T?>) where T : class
   * SelectMany(), ZipWith(), Bind().
 - Perf tool (LINQ, nulls, iterable), .NET Core tool for benchmarkdotnet.
+
 
 Testing
 -------
@@ -43,6 +45,12 @@ Fixed naming schema, split tests, more functional tests.
   https://stackoverflow.com/questions/4968580/why-arent-istructuralequatable-and-istructuralcomparable-generic
 - Maybe<Func<>>
 - delegates that return null.
+
+We still cannot target UAP. It seems that it could be doable with .NET 5.
+- https://github.com/dotnet/sdk/issues/1408
+- https://github.com/dotnet/sdk/issues/491
+- https://github.com/novotnyllc/MSBuildSdkExtras
+See Xunit website too.
 
 Documentation
 -------------
@@ -75,20 +83,19 @@ would allow to warn a user trying to create a Maybe<int?> or a Maybe<string?>.
 - https://devblogs.microsoft.com/dotnet/nullable-reference-types-in-csharp/
 - https://devblogs.microsoft.com/dotnet/embracing-nullable-reference-types/
 
-Azure pipelines
----------------
+Azure pipelines (CI)
+--------------------
 
 Include instead of Exclude? Artifacts retention?
+Release pipeline, test all supported platforms?
 
-NuGet caching.
+NuGet caching?
 <PropertyGroup Condition=" $(ContinuousIntegrationBuild) == 'true' ">
   <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   <RestoreLockedMode>true</RestoreLockedMode>
   <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
   <!--<NoWarn>NU1603</NoWarn>-->
 </PropertyGroup>
-
-Release pipeline, test all supported platforms.
 
 Linux job?
 https://xunit.net/docs/getting-started/multi-target/non-windows

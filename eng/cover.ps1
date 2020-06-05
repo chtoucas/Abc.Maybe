@@ -49,9 +49,6 @@ Do not restore the solution?
 .PARAMETER RestoreTools
 Restore OpenCover and ReportGenerator before anything else?
 
-.PARAMETER MyVerbose
-Verbose mode? Print the settings in use before compiling each assembly.
-
 .PARAMETER Help
 Print help text then exit?
 #>
