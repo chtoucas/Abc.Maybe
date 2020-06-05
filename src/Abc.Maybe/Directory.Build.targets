@@ -2,7 +2,7 @@
 
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets" />
 
-  <PropertyGroup Condition=" $(Retail) == 'true' and $(VersionSuffix) == '' ">
+  <PropertyGroup Condition=" '$(Retail)' == 'true' and '$(VersionSuffix)' == '' ">
     <PackageReleaseNotes><![CDATA[
 See CHANGELOG in project root.
 

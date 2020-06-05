@@ -2,7 +2,7 @@
 
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets" />
 
-  <PropertyGroup Condition=" $(VisibleInternals) == 'true' ">
+  <PropertyGroup Condition=" '$(VisibleInternals)' == 'true' ">
     <!-- Use the missing and the nullable attributes from Abc.Maybe -->
     <DefineConstants>$(DefineConstants);USE_ATTRS_FROM_ABC_MAYBE</DefineConstants>
   </PropertyGroup>

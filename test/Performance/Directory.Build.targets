@@ -7,15 +7,15 @@
   -->
   <PropertyGroup>
     <Live>false</Live>
-    <Live Condition=" $(BuildingInsideVisualStudio) == 'true' ">true</Live>
+    <Live Condition=" '$(BuildingInsideVisualStudio)' == 'true' ">true</Live>
 
-    <ParentDBTargets Condition=" $(Live) == 'true' ">..\..\Directory.Build.targets</ParentDBTargets>
-    <ParentDBTargets Condition=" $(Live) != 'true' ">..\Directory.Build.targets</ParentDBTargets>
+    <ParentDBTargets Condition=" '$(Live)' == 'true' ">..\..\Directory.Build.targets</ParentDBTargets>
+    <ParentDBTargets Condition=" '$(Live)' != 'true' ">..\Directory.Build.targets</ParentDBTargets>
   </PropertyGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)$(ParentDBTargets)" />
 
-  <ItemGroup Condition=" $(Live) == 'true' ">
+  <ItemGroup Condition=" '$(Live)' == 'true' ">
     <ProjectReference Include="$(SourceRoot)Abc.Maybe\Abc.Maybe.csproj" />
   </ItemGroup>
 

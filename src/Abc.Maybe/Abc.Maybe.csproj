@@ -10,7 +10,7 @@
 
   <!-- Debug/Release -->
   <Choose>
-    <When Condition=" $(Configuration) == 'Debug' ">
+    <When Condition=" '$(Configuration)' == 'Debug' ">
       <PropertyGroup>
         <!--
           RS0016  Symbol XXX is not part of the declared API
@@ -52,7 +52,7 @@
     - https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/debug-compiler-option
     - https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/making-an-image-easier-to-debug
     Below, we cannot use "TargetFrameworkIdentifier", it has not yet been set.
-  <PropertyGroup Condition=" $(Retail) == 'true' ">
+  <PropertyGroup Condition=" '$(Retail)' == 'true' ">
     <DebugType Condition=" $(TargetFramework.StartsWith('net4')) ">pdbonly</DebugType>
   </PropertyGroup>
   -->

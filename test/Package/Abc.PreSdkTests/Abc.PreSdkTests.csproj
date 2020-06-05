@@ -9,11 +9,11 @@
   </PropertyGroup>
 
   <!-- Old style project file, we must set a few things manually -->
-  <PropertyGroup Condition=" $(TargetFrameworkVersion) == 'v4.5' ">
+  <PropertyGroup Condition=" '$(TargetFrameworkVersion)' == 'v4.5' ">
     <TargetFramework>net45</TargetFramework>
     <DefineConstants>$(DefineConstants);NETFRAMEWORK;NET45</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" $(TargetFrameworkVersion) == 'v4.5.1' ">
+  <PropertyGroup Condition=" '$(TargetFrameworkVersion)' == 'v4.5.1' ">
     <TargetFramework>net451</TargetFramework>
     <DefineConstants>$(DefineConstants);NETFRAMEWORK;NET451</DefineConstants>
   </PropertyGroup>

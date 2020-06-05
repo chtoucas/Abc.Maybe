@@ -18,20 +18,19 @@ Tools
 -----
 
 - MSBuild
-  * Add quotes, not a priority...
   * Property "RestoreSources" in "test".
 - Scripts
   * Add option -Verbosity?
   * cover.ps1 add option -MyVerbose
-  * Verbosity tweaks: -v minimal /p:PrintSettings=true.
+  * Verbosity tweak for "dotnet test": -v minimal /p:PrintSettings=true.
     cover.ps1, AZP and test-package.ps1.
 - EnableSourceLink no longer prevents coverlet to run, but it fails when we set
-  UseSourceLink=true (see cover.ps1 & coverlet.runsettings).
+  UseSourceLink=true (see cover.ps1 & coverlet.runsettings). All paths are still
+  local too.
 - Roslyn Analyzer:
   * Of(), Flatten(). Squash(Maybe<T?>) where T : class
   * SelectMany(), ZipWith(), Bind().
 - Perf tool (LINQ, nulls, iterable), .NET Core tool for benchmarkdotnet.
-
 
 Testing
 -------
@@ -86,7 +85,6 @@ would allow to warn a user trying to create a Maybe<int?> or a Maybe<string?>.
 Azure pipelines (CI)
 --------------------
 
-Include instead of Exclude? Artifacts retention?
 Release pipeline, test all supported platforms?
 
 NuGet caching?

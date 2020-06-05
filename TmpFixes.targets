@@ -15,16 +15,16 @@
 
   <!-- Workaround for https://github.com/dotnet/sdk/issues/11105 -->
   <ItemGroup>
-    <SourceRoot Include="$(NuGetPackageRoot)" Condition="'$(NuGetPackageRoot)' != ''" />
+    <SourceRoot Include="$(NuGetPackageRoot)" Condition=" '$(NuGetPackageRoot)' != '' " />
   </ItemGroup>
 
   <!-- Fix for when EnableSourceLink = true, otherwise the code coverage report will be empty -->
   <Target Name="CoverletGetPathMap"
           DependsOnTargets="InitializeSourceRootMappedPaths"
           Returns="@(_LocalTopLevelSourceRoot)"
-          Condition="'$(DeterministicSourcePaths)' == 'true'">
+          Condition=" '$(DeterministicSourcePaths)' == 'true' ">
     <ItemGroup>
-      <_LocalTopLevelSourceRoot Include="@(SourceRoot)" Condition="'%(SourceRoot.NestedRoot)' == ''"/>
+      <_LocalTopLevelSourceRoot Include="@(SourceRoot)" Condition=" '%(SourceRoot.NestedRoot)' == '' "/>
     </ItemGroup>
   </Target>
 

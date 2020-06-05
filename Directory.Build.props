@@ -9,21 +9,21 @@
   <!-- Continuous Integration -->
   <PropertyGroup>
     <ContinuousIntegrationBuild>false</ContinuousIntegrationBuild>
-    <ContinuousIntegrationBuild Condition=" $(TF_BUILD) == 'true' ">true</ContinuousIntegrationBuild>
-    <ContinuousIntegrationBuild Condition=" $(GITHUB_ACTIONS) == 'true' ">true</ContinuousIntegrationBuild>
+    <ContinuousIntegrationBuild Condition=" '$(TF_BUILD)' == 'true' ">true</ContinuousIntegrationBuild>
+    <ContinuousIntegrationBuild Condition=" '$(GITHUB_ACTIONS)' == 'true' ">true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
   <!-- Source Link -->
   <PropertyGroup>
     <EnableSourceLink>false</EnableSourceLink>
     <!-- For CI builds, we always enable Source Link -->
-    <EnableSourceLink Condition=" $(ContinuousIntegrationBuild) == 'true' ">true</EnableSourceLink>
+    <EnableSourceLink Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">true</EnableSourceLink>
 
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <!-- Setting EnableSourceLink to false does not truely disable Source Link :-( -->
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" $(EnableSourceLink) == 'true' ">
+  <PropertyGroup Condition=" '$(EnableSourceLink)' == 'true' ">
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <DeterministicSourcePaths>true</DeterministicSourcePaths>
@@ -51,7 +51,7 @@
 
   <!-- Warnings & errors -->
   <Choose>
-    <When Condition=" $(Configuration) == 'Debug' ">
+    <When Condition=" '$(Configuration)' == 'Debug' ">
       <PropertyGroup>
         <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
         <TreatSpecificWarningsAsErrors />

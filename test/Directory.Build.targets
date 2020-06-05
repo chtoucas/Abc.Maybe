@@ -11,7 +11,7 @@
 
   <PropertyGroup>
     <AbcVersion>$(MajorVersion).$(MinorVersion).$(PatchVersion)</AbcVersion>
-    <AbcVersion Condition=" $(PreReleaseCycle) != '' ">$(AbcVersion)-$(PreReleaseCycle)$(PreReleaseNumber)</AbcVersion>
+    <AbcVersion Condition=" '$(PreReleaseCycle)' != '' ">$(AbcVersion)-$(PreReleaseCycle)$(PreReleaseNumber)</AbcVersion>
   </PropertyGroup>
 
     <ItemGroup>
