@@ -5,6 +5,7 @@ trigger:
     - master
   paths:
     exclude:
+    - .github/*
     - __/*
     - doc/*
     - eng/*
