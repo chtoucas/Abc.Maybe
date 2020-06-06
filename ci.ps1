@@ -7,8 +7,19 @@ param(
     [Alias("c")] [string] $Configuration
 )
 
+# Objectives: extended build/testing (OS-dependent).
+# Default behaviour is to build/test for "MaxPlatform" or "LibraryPlatforms".
+# Build:
+# - Windows: "BuildPlatforms"
+#     "netstandard2.1;netstandard1.1;netcoreapp3.1;netcoreapp2.0;net48;net45"
+# - Others: idem but without "net4x"
+# Testing:
+# - Windows: "TestPlatforms"
+#     "netcoreapp3.1;netcoreapp2.1;net48;net452"
+# - Others: idem but without "net4x"
+# Maybe it can be done at the MSBuild-level.
+
 try {
-    # See "BuildPlatforms" in D.B.props.
     $targets = "netstandard2.1;netstandard1.1;netcoreapp3.1;netcoreapp2.0;net48;net45"
     $args = @('/p:TargetFrameworks=\"' + $targets + '\"')
 

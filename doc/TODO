@@ -9,7 +9,7 @@ CLOW: CI
       filePath: 'ci.ps1'
       arguments: '-c $(buildConfiguration)'
 - https://xunit.net/docs/getting-started/multi-target/non-windows
-- GitHub actions: env variables (DOTNET_CLI_TELEMETRY_OPTOUT), global.json.
+- GitHub actions: use global.json (next version of "actions/setup-dotnet").
 
 Code
 ----

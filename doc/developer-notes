@@ -202,10 +202,9 @@ CI
 --
 
 Azure Pipelines:
-- build, test and CC w/ "MaxPlatform" on Windows.
-- build w/ "BuildPlatforms" on Windows.
+- build, test and CC w/ "MaxPlatform" & "LibraryPlatforms" on Windows.
 GitHub Actions:
-- build and test w/ "MaxPlatform" on Windows, Linux and MacOS.
+- build and test w/ "MaxPlatform" & "LibraryPlatforms on Windows, Linux and MacOS.
 
 NB: update to "__", "doc", "eng" and "test" do not trigger a CI event.
 
