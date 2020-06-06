@@ -3,6 +3,19 @@ Developer Notes
 
 Minimal requirement: .NET Core 3.1.300
 
+- Versioning
+- Changelog
+- Release Process
+- Multi-targeting
+- Compiler Symbols
+- Development
+- Build
+- Test
+- CI
+- Tools
+- Maintenance
+- Misc
+
 Versioning
 ----------
 
@@ -84,7 +97,7 @@ Multi-targeting
 Inside VS, we only use .NET Standard 2.0 and .NET Core 3.1 (see D.B.props).
 
 IMPORTANT, after adding or removing a framework, if necessary, update the
-top-level D.B.props and D.B.targets. Be sure to update "azure-pipelines.yml" too.
+top-level D.B.props and D.B.targets.
 
 API differences. We try to minimize them by defining only two "profiles" that
 match exactly a .NET Standard version:
@@ -152,8 +165,8 @@ Useful tools.
 - NuGet Package Explorer
 - ILDasm, ILSpy, dotPeek
 
-Build & Pack
-------------
+Build
+-----
 
 MSBuild project files are __read__ in the following order:
 1. Directory.Build.props
@@ -186,10 +199,24 @@ References.
 - https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/deterministic-compiler-option
 - https://blog.paranoidcoding.com/2016/04/05/deterministic-builds-in-roslyn.html
 
+Test
+----
+
+Dump the test suite.
+> dotnet test --list-tests
+
 CI
 --
 
+Azure Pipelines:
+- build, test and CC w/ "MaxPlatform" on Windows
+- build w/ "BuildPlatforms" on Windows
+GitHub Actions:
+- build and test w/ "MaxPlatform" on Windows, Linux and MacOS
+
 To skip CI for individual commits: [skip azp] in the commit message.
+
+References.
 https://docs.microsoft.com/en-us/azure/devops/pipelines/repos/github?view=azure-devops&tabs=yaml#skipping-ci-for-individual-commits
 
 Tools
@@ -246,9 +273,10 @@ Show / clear content of NuGet cache
 > dotnet nuget locals all -l
 > dotnet nuget locals all --clear
 
-Strong named key
-----------------
+Misc
+----
 
+Strong named key.
 To extract the public key, then get the public key.
 > sn -p Abc.snk Abc.pk
 > sn -tp Abc.pk

@@ -4,6 +4,7 @@ TODO
 CLOW: CI
 - AZP: new pipeline for full testing.
 - https://xunit.net/docs/getting-started/multi-target/non-windows
+- GitHub actions: env variables (DOTNET_CLI_TELEMETRY_OPTOUT), global.json.
 
 Code
 ----
