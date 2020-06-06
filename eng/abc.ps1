@@ -325,7 +325,7 @@ function Select-RawProperty {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
-        [ValidateNotNullOrEmpty()]
+        [ValidateNotNull()]
         [Xml] $xml,
 
         [Parameter(Mandatory = $true, Position = 1)]
@@ -359,7 +359,7 @@ function Select-SingleProperty {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
-        [ValidateNotNullOrEmpty()]
+        [ValidateNotNull()]
         [Xml] $xml,
 
         [Parameter(Mandatory = $true, Position = 1)]
