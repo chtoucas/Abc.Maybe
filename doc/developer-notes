@@ -10,9 +10,8 @@ Minimal requirement: .NET Core 3.1.300
 - Compiler Symbols
 - Development
 - Build
-- Test
 - CI
-- Tools
+- PowerShell
 - Maintenance
 - Misc
 
@@ -199,28 +198,24 @@ References.
 - https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/deterministic-compiler-option
 - https://blog.paranoidcoding.com/2016/04/05/deterministic-builds-in-roslyn.html
 
-Test
-----
-
-Dump the test suite.
-> dotnet test --list-tests
-
 CI
 --
 
 Azure Pipelines:
-- build, test and CC w/ "MaxPlatform" on Windows
-- build w/ "BuildPlatforms" on Windows
+- build, test and CC w/ "MaxPlatform" on Windows.
+- build w/ "BuildPlatforms" on Windows.
 GitHub Actions:
-- build and test w/ "MaxPlatform" on Windows, Linux and MacOS
+- build and test w/ "MaxPlatform" on Windows, Linux and MacOS.
 
-To skip CI for individual commits: [skip azp] in the commit message.
+NB: update to "__", "doc", "eng" and "test" do not trigger a CI event.
+
+To skip CI for individual commits, add [skip azp] to the commit message.
 
 References.
 https://docs.microsoft.com/en-us/azure/devops/pipelines/repos/github?view=azure-devops&tabs=yaml#skipping-ci-for-individual-commits
 
-Tools
------
+PowerShell
+----------
 
 Common script/function parameters:
    -NoCI
