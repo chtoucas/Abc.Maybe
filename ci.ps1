@@ -84,12 +84,13 @@ try {
 
   $cmd = $Task.ToLowerInvariant()
 
+  # TODO: We surely don't need these params for all targets...
   # NB: '/p:ContinuousIntegrationBuild=true' is implicit for CI build.
   $args = @('/p:ContinuousIntegrationBuild=true')
   if ($Runtime)   { $args += "--runtime:$Runtime" }
   if ($Verbosity) { $args += "--verbosity:$Verbosity" }
 
-  $params = "-c:$Configuration", '/p:Retail=true', '--version-suffix=ci'
+  $params = "-c:$Configuration", '/p:Retail=true'
 
   switch ($cmd) {
     'restore' {
@@ -97,7 +98,7 @@ try {
       $targets = $platforms + $standards
     }
     'build' {
-      $args   += $params + '--no-restore'
+      $args   += $params + '--no-restore' + '--version-suffix=ci'
       $targets = $platforms + $standards
     }
     'test' {

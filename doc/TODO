@@ -3,11 +3,7 @@ TODO
 
 CLOW: CI
 - AZP: new pipeline for extended build & testing.
-  - task: PowerShell@2
-    displayName: 'Build ALL'
-    inputs:
-      filePath: 'ci.ps1'
-      arguments: '-c $(buildConfiguration)'
+- AZP: do not use a single .NET Core version.
 - https://xunit.net/docs/getting-started/multi-target/non-windows
 - GitHub actions: use global.json (next version of "actions/setup-dotnet").
 
