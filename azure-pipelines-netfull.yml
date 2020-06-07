@@ -1,0 +1,50 @@
+
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    exclude:
+    - .github/*
+    - __/*
+    - doc/*
+    - eng/*
+    - test/*
+    - CHANGELOG
+    - LICENSE*
+    - README.md
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  # ENV variables.
+  DOTNET_NOLOGO: 1
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  NUGET_XMLDOC_MODE: 'skip'
+
+steps:
+  - task: DotNetCoreCLI@2
+    displayName: 'Print .NET version'
+    inputs:
+      command: custom
+      custom: '--info'
+
+  - task: PowerShell@2
+    displayName: 'Restore'
+    inputs:
+      filePath: 'ci.ps1'
+      arguments: 'restore -Profile full'
+
+  - task: PowerShell@2
+    displayName: 'Build'
+    inputs:
+      filePath: 'ci.ps1'
+      arguments: 'build -Profile full'
+
+  - task: PowerShell@2
+    displayName: 'Build'
+    inputs:
+      filePath: 'ci.ps1'
+      arguments: 'test -Profile full'
