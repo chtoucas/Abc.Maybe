@@ -202,11 +202,11 @@ CI
 --
 
 Azure Pipelines:
-- build, test (w/ CC) the solution on Windows.
-- build and test the solution on Windows and for selected versions of the
-  .NET Framework.
+- build, test (w/ CC) the solution on Windows (Release).
+- build and test the solution on Windows and for selected versions of the full
+  .NET Framework (Release).
 GitHub Actions:
-- build and test the solution on Windows, Linux and MacOS.
+- build and test the solution on Windows, Linux and MacOS (Debug).
 
 NB: update to "__", "doc", "eng" and "test" do not trigger a CI event.
 

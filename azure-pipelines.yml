@@ -53,6 +53,7 @@ steps:
     inputs:
       command: 'restore'
       projects: '$(mainSolution)'
+      arguments: '-c $(buildConfiguration)'
       feedsToUse: config
       nugetConfigPath: '$(nugetConfig)'
       verbosityRestore: 'normal'
@@ -71,7 +72,7 @@ steps:
     inputs:
       command: 'test'
       projects: 'src/Abc.Tests/Abc.Tests.csproj'
-      arguments: '-c $(buildConfiguration) --collect:"XPlat Code Coverage" --settings coverlet.runsettings'
+      arguments: '-c $(buildConfiguration) --no-build --collect:"XPlat Code Coverage" --settings coverlet.runsettings'
       nobuild: true
 
   # Process CC results then publish the report.
