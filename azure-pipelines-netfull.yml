@@ -25,26 +25,42 @@ variables:
   NUGET_XMLDOC_MODE: 'skip'
 
 steps:
+  # Initialize environment.
   - task: DotNetCoreCLI@2
     displayName: 'Print .NET version'
     inputs:
       command: custom
       custom: '--info'
 
+  - task: UseDotNet@2
+    displayName: 'Use global.json'
+    inputs:
+      packageType: sdk
+      useGlobalJson: true
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Print .NET version'
+    inputs:
+      command: custom
+      custom: '--info'
+
+  # Restore.
   - task: PowerShell@2
     displayName: 'Restore'
     inputs:
       filePath: 'ci.ps1'
       arguments: 'restore -Profile full'
 
+  # Build.
   - task: PowerShell@2
     displayName: 'Build'
     inputs:
       filePath: 'ci.ps1'
       arguments: 'build -Profile full'
 
+  # Test.
   - task: PowerShell@2
-    displayName: 'Build'
+    displayName: 'Test'
     inputs:
       filePath: 'ci.ps1'
       arguments: 'test -Profile full'

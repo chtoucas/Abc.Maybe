@@ -89,11 +89,11 @@ try {
   if ($Runtime)   { $args += "--runtime:$Runtime" }
   if ($Verbosity) { $args += "--verbosity:$Verbosity" }
 
-  $params = "-c:$Configuration", '/p:Retail=true', "--version-suffix=ci"
+  $params = "-c:$Configuration", '/p:Retail=true', '--version-suffix=ci'
 
   switch ($cmd) {
     'restore' {
-      $args   += "--configfile:NuGet.Config"
+      $args   += '--configfile:NuGet.Config'
       $targets = $platforms + $standards
     }
     'build' {
