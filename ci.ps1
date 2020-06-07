@@ -7,8 +7,8 @@ param(
   [string] $Task,
 
   [Parameter(Mandatory = $false, Position = 1)]
-  [ValidateSet('core', 'full')]
-  [string] $Profile = 'core',
+  [ValidateSet('core', 'classic', 'any')]
+  [string] $Family = 'core',
 
   [Parameter(Mandatory = $false)]
   [ValidateSet('Debug', 'Release')]
@@ -21,13 +21,13 @@ param(
   [ValidateSet('q', 'quiet', 'm', 'minimal', 'n', 'normal', 'd', 'detailed', 'diag', 'diagnostic')]
   [Alias('v')] [string] $Verbosity,
 
-  [Alias('a')] [switch] $All
+  [Alias('a')] [switch] $All,
+  [switch] $DryRun
 )
 
 # ------------------------------------------------------------------------------
 
 function Load-Properties([string] $path) {
-  Write-Verbose "Loading ""$path""."
   $xml = Get-Content $path
   $props = New-Object -TypeName System.Xml.XmlDocument
   $props.PreserveWhitespace = $false
@@ -44,17 +44,20 @@ function Select-Property([Xml] $props, [string] $property) {
   $text.Split(';')
 }
 
-function Get-Platforms([Xml] $props, [string] $profile, [switch] $all) {
-  if ($profile -eq 'full') {
-    if ($all) { $name = 'MaxClassicPlatforms' }
-    else { $name = 'MinClassicPlatforms' }
-  } else {
-    if ($all) { $name = 'MaxCorePlatforms' }
-    else { $name = 'MinCorePlatforms' }
+function Get-Platforms([Xml] $props, [string] $family, [switch] $all) {
+  if ($all) {
+    $classic = Select-Property $props 'MaxClassicPlatforms'
+    $core    = Select-Property $props 'MaxCorePlatforms'
   }
-  # We filter out platforms no longer supported by Xunit runners.
-  Select-Property $props $name |
-    where { $_ -notin 'netcoreapp2.0', 'net451', 'net45' }
+  else {
+    $classic = Select-Property $props 'MinClassicPlatforms'
+    $core    = Select-Property $props 'MinCorePlatforms'
+  }
+  switch ($family) {
+    'classic' { return $classic }
+    'core'    { return $core }
+    'any'     { return $core + $classic }
+  }
 }
 
 # We extract the list of supported .NET Standards from the "build" and "pack" lists.
@@ -79,7 +82,7 @@ try {
   pushd $PSScriptRoot
 
   $props = Load-Properties (Join-Path $PSScriptRoot 'Directory.Build.props')
-  $platforms = Get-Platforms $props $Profile -All:$all
+  $platforms = Get-Platforms $props $Family -All:$all
   $standards = Get-Standards $props
 
   $cmd = $Task.ToLowerInvariant()
@@ -102,17 +105,19 @@ try {
     }
     'test' {
       $args   += $params + '--no-build'
-      $targets = $platforms
+      # We filter out platforms no longer supported by Xunit runners.
+      $targets = $platforms | where { $_ -notin 'netcoreapp2.0', 'net451', 'net45' }
     }
   }
 
-  Write-Verbose "Command -> $cmd"
-  Write-Verbose "Args    -> $args"
-  Write-Verbose "Targets -> $targets"
-
-  $args += Get-TargetFrameworks $targets
-
-  & dotnet $cmd $args
+  if ($DryRun) {
+    Write-Host "  Command -> $cmd"
+    Write-Host "  Args    -> $args"
+    Write-Host "  Targets -> $targets"
+  } else {
+    $args += Get-TargetFrameworks $targets
+    & dotnet $cmd $args
+  }
 }
 catch {
   Write-Host $_

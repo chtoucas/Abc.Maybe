@@ -12,6 +12,7 @@ on:
     - 'LICENSE*'
     - 'README.md'
     - 'azure-pipelines*'
+    - 'ci.ps1'
 
 jobs:
   test:
