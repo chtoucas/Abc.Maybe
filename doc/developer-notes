@@ -202,7 +202,9 @@ CI
 --
 
 Azure Pipelines:
-- build, test and CC the solution on Windows.
+- build, test (w/ CC) the solution on Windows.
+- build and test the solution on Windows and for selected versions of the
+  .NET Framework.
 GitHub Actions:
 - build and test the solution on Windows, Linux and MacOS.
 
