@@ -2,141 +2,125 @@
 
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory = $true, Position = 0)]
-    [ValidateSet("restore", "build", "test")]
-    [string] $Task,
+  [Parameter(Mandatory = $true, Position = 0)]
+  [ValidateSet('restore', 'build', 'test')]
+  [string] $Task,
 
-    [Parameter(Mandatory = $false, Position = 1)]
-    [ValidateSet("Debug", "Release")]
-    [Alias("c")] [string] $Configuration = "Release",
+  [Parameter(Mandatory = $false, Position = 1)]
+  [ValidateSet('core', 'full')]
+  [string] $Profile = 'core',
 
-    [switch] $Thorough,
-    [switch] $WindowsOnly
+  [Parameter(Mandatory = $false)]
+  [ValidateSet('Debug', 'Release')]
+  [Alias('c')] [string] $Configuration = 'Release',
+
+  [Parameter(Mandatory = $false)]
+  [Alias('r')] [string] $Runtime,
+
+  [Parameter(Mandatory = $false)]
+  [ValidateSet('q', 'quiet', 'm', 'minimal', 'n', 'normal', 'd', 'detailed', 'diag', 'diagnostic')]
+  [Alias('v')] [string] $Verbosity,
+
+  [switch] $Thorough
 )
 
-# Objectives: extended build/testing (OS-dependent).
-# Default behaviour is to build/test for "MaxPlatform" or "LibraryPlatforms".
-# Build:
-# - Windows: "BuildPlatforms"
-#     "netstandard2.1;netstandard1.1;netcoreapp3.1;netcoreapp2.0;net48;net45"
-# - Others: idem but without "net4x"
-# Testing:
-# - Windows: "TestPlatforms"
-#     "netcoreapp3.1;netcoreapp2.1;net48;net452"
-# - Others: idem but without "net4x"
-# Maybe it can be done at the MSBuild-level.
-
 # ------------------------------------------------------------------------------
 
-function Load-Xml {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string] $path
-    )
-
-    Write-Verbose "Loading ""$path""."
-
-    $content = Get-Content $path
-    $xml = New-Object -TypeName System.Xml.XmlDocument
-    $xml.PreserveWhitespace = $false
-    $xml.LoadXml($content)
-
-    $xml
+function Load-Properties([string] $path) {
+  Write-Verbose "Loading ""$path""."
+  $xml = Get-Content $path
+  $props = New-Object -TypeName System.Xml.XmlDocument
+  $props.PreserveWhitespace = $false
+  $props.LoadXml($xml)
+  $props
 }
 
-# ------------------------------------------------------------------------------
-
-function Select-Property {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
-        [ValidateNotNull()]
-        [Xml] $xml,
-
-        [Parameter(Mandatory = $true, Position = 1)]
-        [ValidateNotNullOrEmpty()]
-        [string] $property
-    )
-
-    $nodes = $xml | Select-Xml -XPath "//Project/PropertyGroup/$property"
-
-    if ($nodes -eq $null -or $nodes.Count -ne 1) {
-        Write-Error "Could not find the property named ""$property""."
-    }
-
-    $text = $nodes[0].Node.InnerText.Trim().Trim(";").Replace(" ", "")
-    $text.Split(";")
+function Select-Property([Xml] $props, [string] $property) {
+  $nodes = $props | Select-Xml -XPath "//Project/PropertyGroup/$property"
+  if ($nodes -eq $null -or $nodes.Count -ne 1) {
+    Write-Error "Could not find the property named ""$property""."
+  }
+  $text = $nodes[0].Node.InnerText.Trim().Trim(';').Replace(' ', '')
+  $text.Split(';')
 }
 
-# ------------------------------------------------------------------------------
+function Get-Platforms([Xml] $props, [string] $profile, [switch] $thorough) {
+  if ($profile -eq 'full') {
+    if ($thorough) { $name = 'MaxClassicPlatforms' }
+    else { $name = 'MinClassicPlatforms' }
+  } else {
+    if ($thorough) { $name = 'MaxCorePlatforms' }
+    else { $name = 'MinCorePlatforms' }
+  }
+  # We filter out platforms no longer supported by Xunit runners.
+  Select-Property $props $name |
+    where { $_ -notin 'netcoreapp2.0', 'net451', 'net45' }
+}
 
-function Get-TargetFrameworks {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNull()]
-        [string[]] $platforms
-    )
+# We extract the list of supported .NET Standards from the "build" and "pack" lists.
+function Get-Standards([Xml] $props) {
+  $standards = Select-Property $props 'PackPlatforms' |
+    where { $_.StartsWith('netstandard') }
+  $list = Select-Property $props 'BuildPlatforms' |
+    where { $_.StartsWith('netstandard') }
+  foreach ($item in $list) {
+    if (-not $standards.Contains($item)) { $standards += $item }
+  }
+  $standards
+}
 
-    '/p:TargetFrameworks=\"' + ($platforms -join ";") + '\"'
+function Get-TargetFrameworks([string[]] $platforms) {
+  '/p:TargetFrameworks=\"' + ($platforms -join ';') + '\"'
 }
 
 # ------------------------------------------------------------------------------
 
 try {
-    $props = Load-Xml (Join-Path $PSScriptRoot "Directory.Build.props" -Resolve)
-    if ($WindowsOnly) {
-        if ($Thorough) {
-            $platforms = Select-Property $props "MaxClassicPlatforms"
-        } else {
-            $platforms = Select-Property $props "MinClassicPlatforms"
-        }
-    } else {
-        if ($Thorough) {
-            $platforms = Select-Property $props "MaxCorePlatforms"
-        } else {
-            $platforms = Select-Property $props "MinCorePlatforms"
-        }
+  pushd $PSScriptRoot
+
+  $props = Load-Properties (Join-Path $PSScriptRoot 'Directory.Build.props')
+  $platforms = Get-Platforms $props $Profile -Thorough:$Thorough
+  $standards = Get-Standards $props
+
+  $cmd = $Task.ToLowerInvariant()
+
+  # NB: '/p:ContinuousIntegrationBuild=true' is implicit for CI build.
+  $args = @('/p:ContinuousIntegrationBuild=true')
+  if ($Runtime)   { $args += "--runtime:$Runtime" }
+  if ($Verbosity) { $args += "--verbosity:$Verbosity" }
+
+  $params = "-c:$Configuration", '/p:Retail=true', "--version-suffix=ci"
+
+  switch ($cmd) {
+    'restore' {
+      $targets = $platforms + $standards
     }
-    # TODO: dynamicic creation.
-    $standards = "netstandard2.1", "netstandard2.0", "netstandard1.1"
-    $buildPlatforms = $platforms + $standards
-    $testPlatforms  = $platforms
-
-    $args = "-c:$Configuration", "/p:Retail=true"
-
-    switch ($Task) {
-        'restore' {
-            Write-Verbose "Restoring..."
-            Write-Verbose "TargetFrameworks -> $buildPlatforms"
-            $targetFrameworks = Get-TargetFrameworks $buildPlatforms
-
-            #& dotnet restore $targetFrameworks
-        }
-
-        'build' {
-            Write-Verbose "Building..."
-            Write-Verbose "TargetFrameworks -> $buildPlatforms"
-            $targetFrameworks = Get-TargetFrameworks $buildPlatforms
-
-            #& dotnet build $targetFrameworks $args --no-restore
-        }
-
-        'test'  {
-            Write-Verbose "Testing..."
-            $testPlatforms = ($testPlatforms | where { $_ -notin "net45", "net451" })
-            Write-Verbose "TargetFrameworks -> $testPlatforms"
-            $targetFrameworks = Get-TargetFrameworks $testPlatforms
-
-            #& dotnet test $targetFrameworks $args --no-build
-        }
+    'build' {
+      $args   += $params + '--no-restore'
+      $targets = $platforms + $standards
     }
+    'test' {
+      $args   += $params + '--no-build'
+      $targets = $platforms
+    }
+  }
+
+  Write-Verbose "Command -> $cmd"
+  Write-Verbose "Args    -> $args"
+  Write-Verbose "Targets -> $targets"
+
+  $args += Get-TargetFrameworks $targets
+
+  & dotnet $cmd $args
 }
 catch {
-    Write-Host $_
-    Write-Host $_.Exception
-    Write-Host $_.ScriptStackTrace
-    exit 1
+  Write-Host $_
+  Write-Host $_.Exception
+  Write-Host $_.ScriptStackTrace
+  exit 1
 }
+finally {
+  popd
+}
+
+# ------------------------------------------------------------------------------
