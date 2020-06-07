@@ -11,10 +11,11 @@ on:
     - 'CHANGELOG'
     - 'LICENSE*'
     - 'README.md'
-    - 'azure-pipelines.yml'
+    - 'azure-pipelines*'
 
 jobs:
   test:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
     runs-on: ${{ matrix.os }}
 
     strategy:

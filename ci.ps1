@@ -21,7 +21,7 @@ param(
   [ValidateSet('q', 'quiet', 'm', 'minimal', 'n', 'normal', 'd', 'detailed', 'diag', 'diagnostic')]
   [Alias('v')] [string] $Verbosity,
 
-  [switch] $Thorough
+  [Alias('a')] [switch] $All
 )
 
 # ------------------------------------------------------------------------------
@@ -44,12 +44,12 @@ function Select-Property([Xml] $props, [string] $property) {
   $text.Split(';')
 }
 
-function Get-Platforms([Xml] $props, [string] $profile, [switch] $thorough) {
+function Get-Platforms([Xml] $props, [string] $profile, [switch] $all) {
   if ($profile -eq 'full') {
-    if ($thorough) { $name = 'MaxClassicPlatforms' }
+    if ($all) { $name = 'MaxClassicPlatforms' }
     else { $name = 'MinClassicPlatforms' }
   } else {
-    if ($thorough) { $name = 'MaxCorePlatforms' }
+    if ($all) { $name = 'MaxCorePlatforms' }
     else { $name = 'MinCorePlatforms' }
   }
   # We filter out platforms no longer supported by Xunit runners.
@@ -79,16 +79,15 @@ try {
   pushd $PSScriptRoot
 
   $props = Load-Properties (Join-Path $PSScriptRoot 'Directory.Build.props')
-  $platforms = Get-Platforms $props $Profile -Thorough:$Thorough
+  $platforms = Get-Platforms $props $Profile -All:$all
   $standards = Get-Standards $props
 
   $cmd = $Task.ToLowerInvariant()
 
-  # TODO: We surely don't need these params for all targets...
   # NB: '/p:ContinuousIntegrationBuild=true' is implicit for CI build.
   $args = @('/p:ContinuousIntegrationBuild=true')
-  if ($Runtime)   { $args += "--runtime:$Runtime" }
-  if ($Verbosity) { $args += "--verbosity:$Verbosity" }
+  if ($Runtime)   { $args += "-r:$Runtime" }
+  if ($Verbosity) { $args += "-v:$Verbosity" }
 
   $params = "-c:$Configuration", '/p:Retail=true'
 

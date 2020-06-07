@@ -210,7 +210,9 @@ GitHub Actions:
 
 NB: update to "__", "doc", "eng" and "test" do not trigger a CI event.
 
-To skip CI for individual commits, add [skip azp] to the commit message.
+To skip CI on push,
+- for AZP, add [skip azp] to the commit message.
+- for both AZP and GitHub Actions, add [skip ci] to the commit message.
 
 References.
 https://docs.microsoft.com/en-us/azure/devops/pipelines/repos/github?view=azure-devops&tabs=yaml#skipping-ci-for-individual-commits
