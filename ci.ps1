@@ -93,6 +93,7 @@ try {
 
   switch ($cmd) {
     'restore' {
+      $args   += "--configfile:NuGet.Config"
       $targets = $platforms + $standards
     }
     'build' {
