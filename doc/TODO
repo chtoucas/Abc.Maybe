@@ -1,12 +1,6 @@
 TODO
 ====
 
-CLOW: CI
-- For test/exe projects, we should use MaxPlatform + "netcoreapp2.1" but it
-  cannot work on AZP because we are stucked with a single .NET Core version.
-- GitHub actions: use global.json (next version of "actions/setup-dotnet").
-- https://xunit.net/docs/getting-started/multi-target/non-windows
-
 Code
 ----
 
@@ -83,6 +77,11 @@ would allow to warn a user trying to create a Maybe<int?> or a Maybe<string?>.
 
 Azure pipelines
 ---------------
+
+- For test/exe projects, we should use MaxPlatform + "netcoreapp2.1" but it
+  cannot work on AZP because we are stucked with a single .NET Core version.
+- GitHub actions: use global.json (next version of "actions/setup-dotnet").
+- https://xunit.net/docs/getting-started/multi-target/non-windows
 
 NuGet caching?
 <PropertyGroup Condition=" $(ContinuousIntegrationBuild) == 'true' ">
