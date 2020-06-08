@@ -27,10 +27,6 @@ jobs:
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
       NUGET_XMLDOC_MODE: 'skip'
 
-    # Command-line props:
-    # On Linux/MacOs, use /p:TargetFrameworks='"netcoreapp3.1;netcoreapp2.1"'
-    # On Windows, use /p:TargetFrameworks=\"netcoreapp3.1;netcoreapp2.1\"
-    # See https://github.com/dotnet/sdk/issues/8792#issuecomment-393756980
     steps:
     - uses: actions/checkout@v2
     - name: Setup
@@ -38,8 +34,8 @@ jobs:
       with:
         dotnet-version: 3.1.300
     - name: Restore
-      run: dotnet restore
+      run: dotnet restore -p:XTests=true
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore -p:XTests=true
     - name: Test
-      run: dotnet test --no-build
+      run: dotnet test --no-build -p:XTests=true
