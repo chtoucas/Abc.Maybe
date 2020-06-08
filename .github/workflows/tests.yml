@@ -29,10 +29,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    #- name: Setup
-    #  uses: actions/setup-dotnet@v1
-    #  with:
-    #    dotnet-version: 3.1.300
+    - name: Setup
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.300
     - name: Restore
       run: dotnet restore /p:TargetFrameworks=\"netcoreapp3.1;netcoreapp2.1\"
     - name: Build
