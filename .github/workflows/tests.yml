@@ -1,4 +1,4 @@
-name: Test
+name: tests
 
 on:
   push:
@@ -29,13 +29,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.300
+    #- name: Setup
+    #  uses: actions/setup-dotnet@v1
+    #  with:
+    #    dotnet-version: 3.1.300
     - name: Restore
-      run: dotnet restore
+      run: dotnet restore /p:TargetFrameworks=\"netcoreapp3.1;netcoreapp2.1\"
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore /p:TargetFrameworks=\"netcoreapp3.1;netcoreapp2.1\"
     - name: Test
-      run: dotnet test --no-build
+      run: dotnet test --no-build /p:TargetFrameworks=\"netcoreapp3.1;netcoreapp2.1\"
