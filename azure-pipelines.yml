@@ -34,18 +34,17 @@ steps:
       command: custom
       custom: '--info'
 
-  #- task: UseDotNet@2
-  #  displayName: 'Use global.json'
-  #  inputs:
-  #    packageType: sdk
-  #    useGlobalJson: true
-  #    performMultiLevelLookup: true
+  - task: UseDotNet@2
+    displayName: 'Use global.json'
+    inputs:
+      packageType: sdk
+      useGlobalJson: true
 
-  #- task: DotNetCoreCLI@2
-  #  displayName: 'Print .NET version'
-  #  inputs:
-  #    command: custom
-  #    custom: '--info'
+  - task: DotNetCoreCLI@2
+    displayName: 'Print .NET version'
+    inputs:
+      command: custom
+      custom: '--info'
 
   # Restore.
   - task: DotNetCoreCLI@2
