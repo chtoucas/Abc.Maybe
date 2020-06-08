@@ -19,8 +19,8 @@ jobs:
 
     strategy:
       matrix:
-        #os: [windows-latest, ubuntu-latest, macos-latest]
-        os: [ubuntu-latest, macos-latest]
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        #os: [ubuntu-latest, macos-latest]
 
     env:
       DOTNET_NOLOGO: 1
@@ -28,6 +28,7 @@ jobs:
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
       NUGET_XMLDOC_MODE: 'skip'
 
+    # Command-line props: https://github.com/dotnet/sdk/issues/8792#issuecomment-393756980
     steps:
     - uses: actions/checkout@v2
     - name: Setup
@@ -39,4 +40,4 @@ jobs:
     - name: Build
       run: dotnet build --no-restore /p:TargetFrameworks='"netcoreapp3.1;netcoreapp2.1"'
     - name: Test
-      run: dotnet test --no-build /p:TargetFrameworks='"netcoreapp3.1;netcoreapp2.1"'
+      run: dotnet test --no-build
