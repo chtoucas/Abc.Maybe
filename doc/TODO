@@ -85,6 +85,8 @@ For the pipeline "Test ALL", we could publish the test results:
 
 GitHub actions: use global.json (next version of "actions/setup-dotnet").
 
+Set DOTNET_MULTILEVEL_LOOKUP = 1 (Windows).
+
 NuGet caching (AZP)?
 <PropertyGroup Condition=" $(ContinuousIntegrationBuild) == 'true' ">
   <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
