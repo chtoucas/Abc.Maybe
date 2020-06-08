@@ -34,8 +34,8 @@ jobs:
       with:
         dotnet-version: 3.1.300
     - name: Restore
-      run: dotnet restore -p:XTests=true
+      run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore -p:XTests=true
+      run: dotnet build --no-restore
     - name: Test
-      run: dotnet test --no-build -p:XTests=true
+      run: dotnet test --no-build
