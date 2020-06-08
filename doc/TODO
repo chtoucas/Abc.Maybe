@@ -79,6 +79,10 @@ CI
 For test/exe projects, we should use MaxPlatform + "netcoreapp2.1" but it
 cannot work on AZP because we are stucked with a single .NET Core version.
 
+For the pipeline "Test ALL", we could publish the test results:
+  ci.ps1, "--logger trx --results-directory $(Agent.TempDirectory)"
+  Add task "PublishTestResults".
+
 GitHub actions: use global.json (next version of "actions/setup-dotnet").
 
 NuGet caching (AZP)?

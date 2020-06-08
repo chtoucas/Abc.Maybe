@@ -105,7 +105,7 @@ try {
     }
     'test' {
       $args   += $params + '--no-build'
-      # We filter out platforms no longer supported by Xunit runners.
+      # We filter out platforms no longer supported by xunit.runner.visualstudio.
       $targets = $platforms | where { $_ -notin 'netcoreapp2.0', 'net451', 'net45' }
     }
   }
