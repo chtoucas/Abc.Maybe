@@ -1,6 +1,20 @@
 <Project>
 
-  <Import Project="$(MSBuildThisFileDirectory)TmpFixes.targets" />
+  <!--
+    Partial fix for Coverlet when EnableSourceLink = true.
+    Issues: fails when UseSourceLink = true, all paths are still local.
+    References.
+    - https://github.com/clairernovotny/DeterministicBuilds
+    - https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/DeterministicBuild.md
+    -->
+  <Target Name="CoverletGetPathMap"
+          DependsOnTargets="InitializeSourceRootMappedPaths"
+          Returns="@(_LocalTopLevelSourceRoot)"
+          Condition=" '$(DeterministicSourcePaths)' == 'true' ">
+    <ItemGroup>
+      <_LocalTopLevelSourceRoot Include="@(SourceRoot)" Condition=" '%(SourceRoot.NestedRoot)' == '' "/>
+    </ItemGroup>
+  </Target>
 
   <!--
     Command-line options:
