@@ -6,13 +6,11 @@ on:
     paths-ignore:
     - '__/*'
     - 'doc/*'
-    - 'eng/*'
     - 'test/*'
     - 'CHANGELOG'
     - 'LICENSE*'
     - 'README.md'
     - 'azure-pipelines*'
-    - 'ci.ps1'
 
 jobs:
   test:

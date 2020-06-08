@@ -2,5 +2,6 @@ README
 ------
 
 - Abc.Maybe.props           NuGet package props for Abc.Maybe.
+- MissingAttributes.cs      Missing attributes.
 - NullableAttributes.cs     Nullable attributes.
 - Retail.props              MSBuild props when building packages.

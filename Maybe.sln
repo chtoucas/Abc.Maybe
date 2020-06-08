@@ -5,6 +5,7 @@ VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4B926891-DAB0-4792-AB7B-E1A0C001843A}"
 	ProjectSection(SolutionItems) = preProject
+		azure-pipelines-all.yml = azure-pipelines-all.yml
 		azure-pipelines.yml = azure-pipelines.yml
 		coverlet.runsettings = coverlet.runsettings
 		Directory.Build.props = Directory.Build.props
@@ -36,6 +37,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "eng", "eng", "{6D957FE8-23D
 	ProjectSection(SolutionItems) = preProject
 		eng\abc.ps1 = eng\abc.ps1
 		eng\build.ps1 = eng\build.ps1
+		eng\ci.ps1 = eng\ci.ps1
 		eng\cover.ps1 = eng\cover.ps1
 		eng\freeze-api.ps1 = eng\freeze-api.ps1
 		eng\pack.ps1 = eng\pack.ps1
@@ -74,6 +76,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Performance", "Performance"
 		test\Performance\Directory.Build.targets = test\Performance\Directory.Build.targets
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{E2725561-4999-421C-8584-9116A468085F}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\test.yml = .github\workflows\test.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".config", ".config", "{0379620E-15F9-46AA-9E71-1E589E6C99FC}"
+	ProjectSection(SolutionItems) = preProject
+		.config\dotnet-tools.json = .config\dotnet-tools.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,6 +119,8 @@ Global
 		{9DE2F491-0AAE-44F8-870F-28422DCFEA54} = {6D957FE8-23D0-4985-A91C-F1CC399AA453}
 		{1C6C6CB9-B8AE-4951-97B9-4E7075646CC3} = {73C72FF8-FF25-49A3-A241-4959FEFC8C81}
 		{77CD86BC-8513-4B6D-90AB-338C5913A14E} = {73C72FF8-FF25-49A3-A241-4959FEFC8C81}
+		{E2725561-4999-421C-8584-9116A468085F} = {4B926891-DAB0-4792-AB7B-E1A0C001843A}
+		{0379620E-15F9-46AA-9E71-1E589E6C99FC} = {4B926891-DAB0-4792-AB7B-E1A0C001843A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1739E5AC-504C-40F8-968B-64F1F620D3C3}

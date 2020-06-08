@@ -8,7 +8,6 @@ trigger:
     - .github/*
     - __/*
     - doc/*
-    - eng/*
     - test/*
     - CHANGELOG
     - LICENSE*
@@ -48,19 +47,19 @@ steps:
   - task: PowerShell@2
     displayName: 'Restore'
     inputs:
-      filePath: 'ci.ps1'
+      filePath: 'eng\ci.ps1'
       arguments: 'restore -Family any'
 
   # Build.
   - task: PowerShell@2
     displayName: 'Build'
     inputs:
-      filePath: 'ci.ps1'
+      filePath: 'eng\ci.ps1'
       arguments: 'build -Family any'
 
   # Test.
   - task: PowerShell@2
     displayName: 'Test for .NET Framework'
     inputs:
-      filePath: 'ci.ps1'
+      filePath: 'eng\ci.ps1'
       arguments: 'test -Family classic'

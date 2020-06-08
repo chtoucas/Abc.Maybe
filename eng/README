@@ -1,20 +1,19 @@
 README
 ------
 
-Core scripts.
+Scripts.
+- asm.ps1               retrieve various assembly infos.
 - build.ps1             build script.
-- harness.cmd           plain test harness.
-- test.ps1              test script.
+- ci.ps1                CI script.
 - cover.ps1             code coverage script.
+- freeze-api.ps1        update public API files.
+- harness.cmd           plain test harness.
 - pack.ps1              create a package.
+- reset.ps1             reset the repository.
+- test.ps1              test script.
 - test-package.ps1      test a package.
 
-Maintenance scripts.
-- freeze-api.ps1        update public API files.
-- reset.ps1             reset the repository.
-
 Other files.
-- asm.ps1               retrieve various assembly infos.
 - utils.ps1             generic helpers.
 - abc.ps1               project-specific helpers.
 - NETFxTools            blank project used to restore .NET Framework tools.

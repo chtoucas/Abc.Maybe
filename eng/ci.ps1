@@ -79,9 +79,11 @@ function Get-TargetFrameworks([string[]] $platforms) {
 # ------------------------------------------------------------------------------
 
 try {
-  pushd $PSScriptRoot
+  $rootDir = (Get-Item $PSScriptRoot).Parent.FullName
 
-  $props = Load-Properties (Join-Path $PSScriptRoot 'Directory.Build.props')
+  pushd $rootDir
+
+  $props = Load-Properties (Join-Path $rootDir 'Directory.Build.props')
   $platforms = Get-Platforms $props $Family -All:$all
   $standards = Get-Standards $props
 

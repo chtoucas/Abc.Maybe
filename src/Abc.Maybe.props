@@ -29,7 +29,7 @@ An Option type allows to represent objects that are either something (a value or
 A tutorial along with guidelines is available on the project website.
     ]]></PackageDescription>
 
-    <PackageTags>Option;Maybe;LINQ;ROP;Railway;Monad</PackageTags>
+    <PackageTags>Option;Maybe;Nullable;LINQ;ROP;Railway;Monad</PackageTags>
   </PropertyGroup>
 
 </Project>

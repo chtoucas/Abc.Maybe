@@ -1,6 +1,6 @@
 [![NuGet](https://img.shields.io/nuget/v/Abc.Maybe.svg)](https://www.nuget.org/packages/Abc.Maybe/)
-[![Coverlet](./__/coverlet.svg)](./__/coverlet.txt)
 [![Test](https://github.com/chtoucas/Abc.Maybe/workflows/Test/badge.svg)](https://github.com/chtoucas/Abc.Maybe/actions?query=workflow%3ATest)
+[![Coverlet](./__/coverlet.svg)](./__/coverlet.txt)
 
 Abc.Maybe features an Option type for .NET. Supports .NET Standard 1.1 or later.
 

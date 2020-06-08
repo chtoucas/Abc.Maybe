@@ -8,7 +8,6 @@ trigger:
     - .github/*
     - __/*
     - doc/*
-    - eng/*
     - test/*
     - CHANGELOG
     - LICENSE*
