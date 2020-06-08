@@ -36,6 +36,7 @@ steps:
     inputs:
       packageType: sdk
       useGlobalJson: true
+      performMultiLevelLookup: true
 
   - task: DotNetCoreCLI@2
     displayName: 'Print .NET version'
