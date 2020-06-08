@@ -5,13 +5,11 @@ Code
 ----
 
 - Add overloads w/ IEqualityComparer<T> (true structural comparison).
-- LINQ: optimize, more ops.
-  "Monadic" LINQ. Output Maybe<IEnumerable<T>> and LINQ ops.
+- LINQ: optimize, more. "Monadic" LINQ. Output Maybe<IEnumerable<T>> and LINQ ops.
 - Async Enumerable.
-- Serialization (XML)
--  Misc.
-  * FIXME, TODO and REVIEW within the code.
-  * Localise user messages (ExceptionFactory)?
+- Serialization (XML).
+- Localise user messages (ExceptionFactory)?
+- FIXME, TODO and REVIEW within the code.
 
 Tools
 -----
@@ -49,7 +47,7 @@ Documentation
 
 XML comments with complete examples.
 Help: https://github.com/dotnet/dotnet-api-docs/wiki
-When done, configure Abc.Maybe to wanr on missing XML comments.
+When done, configure Abc.Maybe to warn on missing XML comments.
 
 Sample code w/ C#, VB and F#.
 
@@ -75,23 +73,18 @@ would allow to warn a user trying to create a Maybe<int?> or a Maybe<string?>.
 - https://devblogs.microsoft.com/dotnet/nullable-reference-types-in-csharp/
 - https://devblogs.microsoft.com/dotnet/embracing-nullable-reference-types/
 
-Azure pipelines
----------------
+CI
+--
 
-- For test/exe projects, we should use MaxPlatform + "netcoreapp2.1" but it
-  cannot work on AZP because we are stucked with a single .NET Core version.
-- GitHub actions: use global.json (next version of "actions/setup-dotnet").
-- https://xunit.net/docs/getting-started/multi-target/non-windows
+For test/exe projects, we should use MaxPlatform + "netcoreapp2.1" but it
+cannot work on AZP because we are stucked with a single .NET Core version.
 
-NuGet caching?
+GitHub actions: use global.json (next version of "actions/setup-dotnet").
+
+NuGet caching (AZP)?
 <PropertyGroup Condition=" $(ContinuousIntegrationBuild) == 'true' ">
   <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   <RestoreLockedMode>true</RestoreLockedMode>
   <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
   <!--<NoWarn>NU1603</NoWarn>-->
 </PropertyGroup>
-
-References
-- https://github.com/actions/virtual-environments
-- https://github.com/microsoft/azure-pipelines-yaml/blob/master/templates/.net-desktop.yml
-- https://docs.microsoft.com/en-gb/azure/devops/pipelines/apps/windows/dot-net?view=azure-devops&tabs=github

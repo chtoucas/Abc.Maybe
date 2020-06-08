@@ -201,21 +201,31 @@ References.
 CI
 --
 
-Azure Pipelines:
-- build, test (w/ CC) the solution on Windows (Release).
-- build and test the solution on Windows and for selected versions of the full
-  .NET Framework (Release).
-GitHub Actions:
-- build and test the solution on Windows, Linux and MacOS (Debug).
+1. Tests (GitHub).
+  OS: Windows, Linux and MacOS.
+  Settings: default (Debug).
+  Tasks: build then test the solution for "MaxPlatform" (D.B.props).
 
-NB: update to "__", "doc", "eng" and "test" do not trigger a CI event.
+2. Tests (AZP).
+  OS: Windows.
+  Settings: default (Release).
+  Tasks: build then test the solution for "MaxPlatform" (D.B.props).
+  Artifacts: Code Coverage.
+
+3. Tests ALL (AZP).
+  OS: Windows.
+  Settings: Retail=true (Release).
+  Tasks:
+  - Build for .NET Standard / Core / Framework.
+  - Test for each major version of the full .NET Framework.
 
 To skip CI on push,
-- for AZP, add [skip azp] to the commit message.
+- for AZP only, add [skip azp] to the commit message.
 - for both AZP and GitHub Actions, add [skip ci] to the commit message.
 
 References.
-https://docs.microsoft.com/en-us/azure/devops/pipelines/repos/github?view=azure-devops&tabs=yaml#skipping-ci-for-individual-commits
+- https://chtoucas.visualstudio.com/Abc.Maybe/_build
+- https://github.com/actions/virtual-environments
 
 PowerShell
 ----------
