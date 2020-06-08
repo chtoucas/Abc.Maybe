@@ -78,7 +78,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Performance", "Performance"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{E2725561-4999-421C-8584-9116A468085F}"
 	ProjectSection(SolutionItems) = preProject
-		.github\workflows\test.yml = .github\workflows\test.yml
+		.github\workflows\tests.yml = .github\workflows\tests.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".config", ".config", "{0379620E-15F9-46AA-9E71-1E589E6C99FC}"

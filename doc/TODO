@@ -78,14 +78,14 @@ CI
 
 For test/exe projects, we should use MaxPlatform + "netcoreapp2.1" but it
 cannot work on AZP because we are stucked with a single .NET Core version.
+Should be OK now (performMultiLevelLookup).
+In the future, we could set DOTNET_MULTILEVEL_LOOKUP = 1 (Windows).
 
 For the pipeline "Test ALL", we could publish the test results:
   ci.ps1, "--logger trx --results-directory $(Agent.TempDirectory)"
   Add task "PublishTestResults".
 
 GitHub actions: use global.json (next version of "actions/setup-dotnet").
-
-Set DOTNET_MULTILEVEL_LOOKUP = 1 (Windows).
 
 NuGet caching (AZP)?
 <PropertyGroup Condition=" $(ContinuousIntegrationBuild) == 'true' ">

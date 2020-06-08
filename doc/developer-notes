@@ -218,6 +218,7 @@ CI
   Tasks:
   - Build for .NET Standard / Core / Framework.
   - Test for each major version of the full .NET Framework.
+  - Test for each LTS version of .NET Core.
 
 To skip CI on push,
 - for AZP only, add [skip azp] to the commit message.
