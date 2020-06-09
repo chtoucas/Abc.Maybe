@@ -90,17 +90,18 @@
       Do not use "TargetFramework" (no "s"), otherwise testing multi-targets
       at once won't work.
 
-      Building the solution should work fine for
-      - .NET Standard   1.1 - 2.1
-      - .NET Core       2.0 - 3.1
-      - .NET Framework  4.5 - 4.8
-      Testing is limited to
+      First-class support is provided for
+      - .NET Standard   2.0   - 2.1
       - .NET Core       2.1   - 3.1
       - .NET Framework  4.5.2 - 4.8
-      Actually, testing for older platforms is also supported (see
-      "src\Abc.Tests\PackageReferences.targets") but in a convoluted way.
-      These are targets that are no longer supported by Xunit runners. To be
-      honest, I am not even sure that we truely test v4.5/4.5.1.
+      Limited support is offered for
+      - .NET Standard   1.1
+      - .NET Core       2.0
+      - .NET Framework  4.5 - 4.5.1
+      These are targets no longer supported by Xunit runners. We kind of test
+      them but it's a bit convoluted (see "src\Abc.Tests\PackageReferences.targets")
+      and, to be honest, I am not even sure that we truely test v4.5/4.5.1
+      (see "test\Package").
 
       Remarks:
       - If/when we create an API depending on a new .NET Standard, "MaxPlatform"
