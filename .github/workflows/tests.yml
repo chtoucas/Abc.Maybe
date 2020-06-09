@@ -22,9 +22,10 @@ jobs:
         os: [windows-latest, ubuntu-latest, macos-latest]
 
     env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_MULTILEVEL_LOOKUP: 0
       DOTNET_NOLOGO: 1
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-      DOTNET_CLI_TELEMETRY_OPTOUT: 1
       NUGET_XMLDOC_MODE: 'skip'
 
     steps:
@@ -32,7 +33,7 @@ jobs:
     - name: Setup
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.300
+        dotnet-version: '3.1.x'
     - name: Restore
       run: dotnet restore
     - name: Build
