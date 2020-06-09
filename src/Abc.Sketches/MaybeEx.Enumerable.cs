@@ -7,6 +7,8 @@ namespace Abc
     using System.Diagnostics.Contracts;
     using System.Linq;
 
+    using Abc.Utilities;
+
     using Anexn = System.ArgumentNullException;
 
     // Extension methods for Maybe<T> where T is enumerable.
@@ -41,37 +43,10 @@ namespace Abc
         [Pure]
         public static Maybe<IEnumerable<T>> Collect<T>(IEnumerable<Maybe<T>> source)
         {
-#if NETSTANDARD1_x || NETFRAMEWORK // Enumerable.Append
             return source.Aggregate(
                 Maybe.EmptyEnumerable<T>(),
-                (x, y) => x.ZipWith(y, Append));
-#else
-            return source.Aggregate(
-                Maybe.EmptyEnumerable<T>(),
-                (x, y) => x.ZipWith(y, Enumerable.Append));
-#endif
+                (x, y) => x.ZipWith(y, EnumerableX.Append));
         }
-
-#if NETSTANDARD1_x || NETFRAMEWORK // Enumerable.Append
-        private static IEnumerable<TSource> Append<TSource>(
-            IEnumerable<TSource> source,
-            TSource element)
-        {
-            if (source is null) { throw new Anexn(nameof(source)); }
-
-            return __();
-
-            IEnumerable<TSource> __()
-            {
-                foreach (var item in source)
-                {
-                    yield return item;
-                }
-
-                yield return element;
-            }
-        }
-#endif
 
         // Aggregation: monadic sum.
         // For Maybe<T>, it amounts to returning the first non-empty item, or
