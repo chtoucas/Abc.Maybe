@@ -12,6 +12,7 @@ trigger:
     - CHANGELOG
     - LICENSE*
     - README.md
+    - azure-pipelines-all.yml
 
 pool:
   vmImage: 'windows-latest'
