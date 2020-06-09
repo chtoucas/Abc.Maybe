@@ -25,6 +25,8 @@ translated to ""net461" and "net462". The limit case "*" is a synonym for
 
 .PARAMETER AllKnown
 Test the package for ALL known platform versions (SLOW)?
+Beware you still need to use -NotSupported to include platforms no longer
+supported by xunit.runner.visualstudio.
 Ignored if -Platform is also set and equals $true.
 
 .PARAMETER ListPlatforms
@@ -382,7 +384,9 @@ function Invoke-Build {
 # Since it's no longer officialy supported by Microsoft, we can remove them
 # if it ever becomes too much of a burden.
 # __Only works on Windows__
-# TODO: I wonder if it does really make sense at all since we actually use .NET 4.5.2.
+# TODO: I wonder if it does really make sense at all since we actually use
+# .NET 4.5.2. Nevertheless, this is the only way we've got to test the package
+# for netstandard1.1.
 function Invoke-TestOldStyle {
     [CmdletBinding(PositionalBinding = $false)]
     param(

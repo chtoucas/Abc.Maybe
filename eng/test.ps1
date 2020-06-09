@@ -10,13 +10,13 @@
 Run the test suite for all supported platforms.
 
 .PARAMETER Configuration
-The configuration to test the project/solution for. Default (implicit) = "Debug".
+The configuration to test the solution for. Default (implicit) = "Debug".
 
 .PARAMETER Runtime
-The runtime to test the project/solution for.
+The runtime to test the solution for.
 
 .PARAMETER Platform
-The single platform to test the project/solution for.
+The single platform to test the solution for.
 
 .PARAMETER ListPlatforms
 Print the list of supported platforms, then exit?
@@ -26,6 +26,9 @@ Turn off source code analysis?
 
 .PARAMETER NoCheck
 Do not check whether the specified platform is supported or not?
+Useful to test the solution for platforms listed in "NotSupportedTestPlatforms"
+from D.B.props. Of course, as the name suggests, a succesful outcome is not
+guaranteed, to say the least, it might not even run.
 
 .PARAMETER NoRestore
 Do not restore the project/solution?

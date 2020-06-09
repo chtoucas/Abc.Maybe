@@ -45,6 +45,8 @@ Turn off source code analysis?
 
 .PARAMETER NoCheck
 Do not check whether the specified platform is supported or not?
+Useful to build the project/solution for platforms listed in
+"NotSupportedTestPlatforms" from D.B.props.
 
 .PARAMETER NoRestore
 Do not restore the project/solution?
@@ -136,7 +138,7 @@ try {
     ___BEGIN___
 
     $platforms = Get-BuildPlatforms
-    $minClassic, $maxClassic, $minCore, $maxCore = Get-SupportedPlatforms -NotSupported
+    $minClassic, $maxClassic, $minCore, $maxCore = Get-SupportedPlatforms
     $allPlatforms = $maxCore + $maxClassic
 
     if ($ListPlatforms) {

@@ -162,8 +162,8 @@
 
     <BuildPlatforms>
       netstandard2.1;netstandard1.1;
-      netcoreapp3.1;netcoreapp2.0;
-      net48;net45
+      netcoreapp3.1;netcoreapp2.1;
+      net48;net452
     </BuildPlatforms>
     <TestPlatforms>
       netcoreapp3.1;netcoreapp2.1;
