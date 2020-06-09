@@ -76,10 +76,6 @@ would allow to warn a user trying to create a Maybe<int?> or a Maybe<string?>.
 CI
 --
 
-For test/exe projects, we should use MaxPlatform + "netcoreapp2.1" but it
-cannot work on AZP because we are stucked with a single .NET Core version.
-Should be OK now (performMultiLevelLookup / DOTNET_MULTILEVEL_LOOKUP).
-
 For the pipeline "Test ALL", we could publish the test results:
   ci.ps1, "--logger trx --results-directory $(Agent.TempDirectory)"
   Add task "PublishTestResults".

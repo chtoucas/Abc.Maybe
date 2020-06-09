@@ -112,11 +112,12 @@ try {
     }
   }
 
-  if ($DryRun) {
-    Write-Host "  Command -> $cmd"
-    Write-Host "  Args    -> $args"
-    Write-Host "  Targets -> $targets"
-  } else {
+  Write-Host "`ndotnet.exe is about to run using"
+  Write-Host "  Command -> $cmd"
+  Write-Host "  Args    -> $args"
+  Write-Host "  Targets -> $targets`n"
+
+  if (-not $DryRun) {
     $args += Get-TargetFrameworks $targets
     & dotnet $cmd $args
   }

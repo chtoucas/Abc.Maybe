@@ -27,12 +27,6 @@ variables:
 
 steps:
   # Initialize environment.
-  - task: DotNetCoreCLI@2
-    displayName: 'Print .NET version'
-    inputs:
-      command: custom
-      custom: '--info'
-
   - task: UseDotNet@2
     displayName: 'Use global.json'
     inputs:
