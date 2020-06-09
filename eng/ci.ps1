@@ -107,6 +107,7 @@ try {
     }
     'test' {
       $args   += $params + '--no-build'
+      $targets = $platforms
     }
   }
 
