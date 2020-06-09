@@ -56,9 +56,6 @@ const PLATFORMS_PROPS (Join-Path $ROOT_DIR "Directory.Build.props" -Resolve)
 const NET_FRAMEWORK_TOOLS_PROJECT `
     (Join-Path $ENG_DIR "NETFxTools\NETFxTools.csproj" -Resolve)
 
-# .NET Framework versions not supported by Xunit.
-const OLDSTYLE_XUNIT_PLATFORMS @("net451", "net45")
-
 #endregion
 ################################################################################
 #region Begin / End.
@@ -281,7 +278,9 @@ function Get-PackPlatforms {
 
 function Get-SupportedPlatforms {
     [CmdletBinding()]
-    param()
+    param(
+        [switch] $notSupported
+    )
 
     ___confess "Getting the list of all supported platforms."
 
@@ -290,6 +289,13 @@ function Get-SupportedPlatforms {
     $maxClassic = Select-SingleProperty $xml "MaxClassicPlatforms"
     $minCore    = Select-SingleProperty $xml "MinCorePlatforms"
     $maxCore    = Select-SingleProperty $xml "MaxCorePlatforms"
+
+    if ($notSupported) {
+        $unsupported = Select-SingleProperty $xml -Property "NotSupportedTestPlatforms"
+
+        $maxClassic += $unsupported | where { $_.StartsWith("net4") }
+        $maxCore    += $unsupported | where { $_.StartsWith("netcoreapp") }
+    }
 
     @($minClassic, $maxClassic, $minCore, $maxCore)
 }

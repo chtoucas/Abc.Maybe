@@ -105,8 +105,8 @@ try {
     ___BEGIN___
 
     $platforms = Get-TestPlatforms
-    $minClassic, $maxClassic, $minCore, $maxCore  = Get-SupportedPlatforms
-    $allPlatforms = ($maxCore + $maxClassic) | where { $_ -notin $OLDSTYLE_XUNIT_PLATFORMS }
+    $minClassic, $maxClassic, $minCore, $maxCore = Get-SupportedPlatforms
+    $allPlatforms = $maxCore + $maxClassic
 
     if ($ListPlatforms) {
         say ("Default platform set:`n- {0}" -f ($platforms -join "`n- "))

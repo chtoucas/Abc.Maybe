@@ -18,10 +18,8 @@
   </PropertyGroup>
   <PropertyGroup>
     <!-- TweakXunit is true for platforms no longer supported by
-         Microsoft.NET.Test.Sdk and xunit.runner.visualstudio. -->
-    <TweakXunit Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">true</TweakXunit>
-    <TweakXunit Condition=" '$(TargetFramework)' == 'net45' ">true</TweakXunit>
-    <TweakXunit Condition=" '$(TargetFramework)' == 'net451' ">true</TweakXunit>
+         xunit.runner.visualstudio. -->
+    <TweakXunit Condition=" $(NotSupportedTestPlatforms.Contains('$(TargetFramework)')) ">true</TweakXunit>
 
     <XunitRunnerVersion>2.4.2</XunitRunnerVersion>
     <XunitRunnerVersion Condition=" '$(TweakXunit)' == 'true' ">2.4.1</XunitRunnerVersion>

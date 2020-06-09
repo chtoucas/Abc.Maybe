@@ -11,7 +11,6 @@ Test the package Abc.Maybe.
 
 .DESCRIPTION
 Test the package Abc.Maybe for net4(5,6,7,8)x and netcoreapp(2,3).x.
-To some extent, the script can even test older versions (see -Version).
 Matching .NET Framework Developer Packs or Targeting Packs must be installed
 locally, the later should suffice. The script will fail with error MSB3644 when
 it is not the case.
@@ -38,6 +37,9 @@ Ignored if -Platform is also set and equals $true.
 .PARAMETER NoCore
 Exclude .NET Core from the tests?
 Ignored if -Platform is also set and equals $true.
+
+.PARAMETER NotSupported
+Include platforms no longer supported by xunit.runner.visualstudio?
 
 .PARAMETER Configuration
 Specify the configuration to test for. Default (explicit) = "Release".
@@ -86,6 +88,7 @@ param(
     [Alias("l")] [switch] $ListPlatforms,
                  [switch] $NoClassic,
                  [switch] $NoCore,
+                 [switch] $NotSupported,
 
     # Configuration.
     #
@@ -119,6 +122,7 @@ param(
 const TEST_PROJECT_NAME "Abc.SdkTests"
 const TEST_PROJECT (Join-Path $TEST_PACK_DIR $TEST_PROJECT_NAME -Resolve)
 
+const OLDSTYLE_XUNIT_PLATFORMS @("net451", "net45")
 const OLDSTYLE_XUNIT_RUNNER_PLATFORM "net452"
 
 #endregion
@@ -136,6 +140,7 @@ Usage: test-package.ps1 [arguments]
   -l|-ListPlatforms  print the list of supported platforms, then exit?
      -NoClassic      exclude .NET Framework from the tests?
      -NoCore         exclude .NET Core from the tests?
+     -NotSupported   include platforms no longer supported by xunit.runner.visualstudio?
 
   -c|-Configuration  specify the configuration to test for.
 
@@ -377,7 +382,7 @@ function Invoke-Build {
 # Since it's no longer officialy supported by Microsoft, we can remove them
 # if it ever becomes too much of a burden.
 # __Only works on Windows__
-# TODO: I wonder if it does really make sense at all (we actually use .NET 4.5.2).
+# TODO: I wonder if it does really make sense at all since we actually use .NET 4.5.2.
 function Invoke-TestOldStyle {
     [CmdletBinding(PositionalBinding = $false)]
     param(
@@ -695,7 +700,8 @@ try {
 
     pushd $TEST_DIR
 
-    $minClassic, $maxClassic, $minCore, $maxCore  = Get-SupportedPlatforms
+    $minClassic, $maxClassic, $minCore, $maxCore =
+        Get-SupportedPlatforms -NotSupported:$NotSupported
 
     if ($ListPlatforms) {
         say (@"

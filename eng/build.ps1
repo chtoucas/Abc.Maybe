@@ -136,7 +136,7 @@ try {
     ___BEGIN___
 
     $platforms = Get-BuildPlatforms
-    $minClassic, $maxClassic, $minCore, $maxCore  = Get-SupportedPlatforms
+    $minClassic, $maxClassic, $minCore, $maxCore = Get-SupportedPlatforms -NotSupported
     $allPlatforms = $maxCore + $maxClassic
 
     if ($ListPlatforms) {
