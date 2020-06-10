@@ -38,9 +38,6 @@ New-Alias "SAY-LOUDLY" Write-Green
 (Join-Path $ROOT_DIR "src"  -Resolve)        | const SRC_DIR
 (Join-Path $ROOT_DIR "test" -Resolve)        | const TEST_DIR
 (Join-Path $ROOT_DIR "__"   -Resolve)        | const ARTIFACTS_DIR
-# Test directories.
-(Join-Path $TEST_DIR "Package" -Resolve)     | const TEST_PACK_DIR
-(Join-Path $TEST_DIR "Performance" -Resolve) | const TEST_PERF_DIR
 # Artifacts directories. No -Resolve, dir does not necessary exist.
 (Join-Path $ARTIFACTS_DIR "packages")        | const PKG_OUTDIR
 (Join-Path $ARTIFACTS_DIR "packages-ci")     | const PKG_CI_OUTDIR

@@ -1,13 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <!--
-    Command-line options:
-    - XTests   Enable testing all API profiles, it selects one platform for each
-               one; .NET Core only so that it works on Windows/Linux/MacOS.
-  -->
   <PropertyGroup>
     <TargetFrameworks>$(MaxPlatform)</TargetFrameworks>
-    <TargetFrameworks Condition=" '$(XTests)' == 'true' ">$(MinCorePlatforms)</TargetFrameworks>
 
     <!--
       IDE0002   Simplify Member Access

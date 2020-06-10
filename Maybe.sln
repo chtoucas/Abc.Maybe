@@ -66,8 +66,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NETFxTools", "NETFxTools", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Package", "Package", "{1C6C6CB9-B8AE-4951-97B9-4E7075646CC3}"
 	ProjectSection(SolutionItems) = preProject
-		test\Package\Abc.PreSdkTests\Abc.PreSdkTests.csproj = test\Package\Abc.PreSdkTests\Abc.PreSdkTests.csproj
-		test\Package\Abc.SdkTests\Abc.SdkTests.csproj = test\Package\Abc.SdkTests\Abc.SdkTests.csproj
+		test\Package\Abc.PackageTests.csproj = test\Package\Abc.PackageTests.csproj
 		test\Package\AssemblyInfo.cs = test\Package\AssemblyInfo.cs
 		test\Package\Directory.Build.targets = test\Package\Directory.Build.targets
 	EndProjectSection

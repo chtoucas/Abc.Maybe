@@ -121,8 +121,8 @@ param(
 
 # ------------------------------------------------------------------------------
 
-const TEST_PROJECT_NAME "Abc.SdkTests"
-const TEST_PROJECT (Join-Path $TEST_PACK_DIR $TEST_PROJECT_NAME -Resolve)
+const TEST_PROJECT_NAME "Abc.PackageTests"
+const TEST_PROJECT (Join-Path $TEST_DIR "Package" -Resolve)
 
 const OLDSTYLE_XUNIT_PLATFORMS @("net451", "net45")
 const OLDSTYLE_XUNIT_RUNNER_PLATFORM "net452"
