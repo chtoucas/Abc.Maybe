@@ -10,8 +10,11 @@
   -->
 
   <PropertyGroup>
-    <TargetFrameworks>$(MinClassicPlatforms);$(MinCorePlatforms)</TargetFrameworks>
-    <TargetFrameworks Condition=" '$(AllKnown)' == 'true' ">$(MaxClassicPlatforms);$(MaxCorePlatforms)</TargetFrameworks>
+    <TargetFrameworks>$(MinCorePlatforms);$(MinClassicPlatforms)</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(AllKnown)' == 'true' ">
+      $(MaxCorePlatforms);$(MaxClassicPlatforms);
+      $(NotSupportedTestPlatforms)
+    </TargetFrameworks>
   </PropertyGroup>
 
 </Project>

@@ -25,8 +25,6 @@ translated to ""net461" and "net462". The limit case "*" is a synonym for
 
 .PARAMETER AllKnown
 Test the package for ALL known platform versions (SLOW)?
-Beware you still need to use -NotSupported to include platforms no longer
-supported by xunit.runner.visualstudio.
 Ignored if -Platform is also set and equals $true.
 
 .PARAMETER ListPlatforms
@@ -39,9 +37,6 @@ Ignored if -Platform is also set and equals $true.
 .PARAMETER NoCore
 Exclude .NET Core from the tests?
 Ignored if -Platform is also set and equals $true.
-
-.PARAMETER NotSupported
-Include platforms no longer supported by xunit.runner.visualstudio?
 
 .PARAMETER Configuration
 Specify the configuration to test for. Default (explicit) = "Release".
@@ -90,7 +85,6 @@ param(
     [Alias("l")] [switch] $ListPlatforms,
                  [switch] $NoClassic,
                  [switch] $NoCore,
-                 [switch] $NotSupported,
 
     # Configuration.
     #
@@ -142,7 +136,6 @@ Usage: test-package.ps1 [arguments]
   -l|-ListPlatforms  print the list of supported platforms, then exit?
      -NoClassic      exclude .NET Framework from the tests?
      -NoCore         exclude .NET Core from the tests?
-     -NotSupported   include platforms no longer supported by xunit.runner.visualstudio?
 
   -c|-Configuration  specify the configuration to test for.
 
@@ -704,8 +697,7 @@ try {
 
     pushd $TEST_DIR
 
-    $minClassic, $maxClassic, $minCore, $maxCore =
-        Get-SupportedPlatforms -NotSupported:$NotSupported
+    $minClassic, $maxClassic, $minCore, $maxCore = Get-SupportedPlatforms -NotSupported
 
     if ($ListPlatforms) {
         say (@"
