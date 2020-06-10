@@ -83,9 +83,9 @@
   <!-- Supported platforms -->
   <PropertyGroup>
     <!--
-      For libraries or test projects, use
+      For libraries, use
         <TargetFrameworks>$(LibraryPlatforms)</TargetFrameworks>
-      For exe, use
+      For exe or test projects, use
         <TargetFramework>$(MaxPlatform)</TargetFramework>
       Do not use "TargetFramework" (no "s"), otherwise testing multi-targets
       at once won't work.
@@ -159,6 +159,16 @@
       IMPORTANT: below, do NOT use MSBuild property resolution $(), the content
       must be in a form understandable to PowerShell.
       IMPORTANT: be sure to read the comments above before changing these properties.
+
+      TODO:
+      - remove BuildPlatforms and PackPlatforms.
+      - default settings:
+        - LibraryPlatforms = "$(MaxPlatform);netstandard2.0"
+        - TestPlatforms    = "$(MaxPlatform)"
+      - custom settings:
+        - LibraryPlatforms = "netstandard2.1;netstandard2.0;netstandard1.1;net461"
+        - TestPlatforms    = "$(MaxPlatform);netcoreapp2.1;net461;net452"
+      - simplify scripts: build.ps1, test.ps1, ci.ps1 & pack.ps1.
     -->
 
     <BuildPlatforms>
