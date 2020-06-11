@@ -173,12 +173,6 @@ try {
     }
     else {
         $args += '/p:TargetFrameworks=\"' + ($platforms -join ";") + '\"'
-
-        # If one of the project use "TargetFramework" instead of
-        # "TargetFrameworks", we should add an option -AllKnown and
-        # if ($AllKnown) {
-        #     $args += "/p:TargetFramework="
-        # }
     }
 
     foreach ($arg in $Properties) {

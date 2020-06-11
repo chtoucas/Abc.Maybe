@@ -2,7 +2,6 @@
 :: Beware, will crash if the packages were not restored before.
 ::
 :: Examples:
-:: > harness /p:XTests=true
 :: > harness /p:DebugType=none
 :: > harness --no-build
 :: > harness --logger:"console;verbosity=normal"
