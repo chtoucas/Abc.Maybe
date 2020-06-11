@@ -211,7 +211,7 @@ function Invoke-CoverletCollector {
         --results-directory $outDir `
         /p:EnableSourceLink=true `
         --collect:"XPlat Code Coverage" `
-        --settings coverlet.runsettings
+        --settings eng\coverlet.runsettings
         || die "Coverlet failed."
 
     say-softly "Coverlet completed successfully."

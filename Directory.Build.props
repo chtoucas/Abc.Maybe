@@ -43,7 +43,7 @@
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <Nullable>enable</Nullable>
 
-    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Abc.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)eng\Abc.snk</AssemblyOriginatorKeyFile>
 
     <VersionPrefix>0.0.1</VersionPrefix>
     <VersionSuffix>DUMMY</VersionSuffix>

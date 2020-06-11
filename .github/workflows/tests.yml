@@ -4,13 +4,13 @@ on:
   push:
     branches: [ master ]
     paths-ignore:
+    - '.azure/*'
     - '__/*'
     - 'doc/*'
     - 'test/*'
     - 'CHANGELOG'
     - 'LICENSE*'
     - 'README.md'
-    - 'azure-pipelines*'
 
 jobs:
   test:
