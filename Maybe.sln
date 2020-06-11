@@ -5,14 +5,10 @@ VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4B926891-DAB0-4792-AB7B-E1A0C001843A}"
 	ProjectSection(SolutionItems) = preProject
-		azure-pipelines-all.yml = azure-pipelines-all.yml
-		azure-pipelines.yml = azure-pipelines.yml
-		coverlet.runsettings = coverlet.runsettings
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
 		global.json = global.json
 		NuGet.Config = NuGet.Config
-		TmpFixes.targets = TmpFixes.targets
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abc.Tests", "src\Abc.Tests\Abc.Tests.csproj", "{97EEB1BB-E86D-4BA2-B9EA-FABF10631507}"
@@ -84,7 +80,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{E272
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".config", ".config", "{0379620E-15F9-46AA-9E71-1E589E6C99FC}"
 	ProjectSection(SolutionItems) = preProject
+		.config\coverlet.runsettings = .config\coverlet.runsettings
 		.config\dotnet-tools.json = .config\dotnet-tools.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".azure", ".azure", "{7E737F14-CB3F-4508-9946-AED5504AD2D5}"
+	ProjectSection(SolutionItems) = preProject
+		.azure\pipelines\azure-pipelines-all.yml = .azure\pipelines\azure-pipelines-all.yml
+		.azure\pipelines\azure-pipelines.yml = .azure\pipelines\azure-pipelines.yml
 	EndProjectSection
 EndProject
 Global
@@ -122,6 +125,7 @@ Global
 		{77CD86BC-8513-4B6D-90AB-338C5913A14E} = {73C72FF8-FF25-49A3-A241-4959FEFC8C81}
 		{E2725561-4999-421C-8584-9116A468085F} = {4B926891-DAB0-4792-AB7B-E1A0C001843A}
 		{0379620E-15F9-46AA-9E71-1E589E6C99FC} = {4B926891-DAB0-4792-AB7B-E1A0C001843A}
+		{7E737F14-CB3F-4508-9946-AED5504AD2D5} = {4B926891-DAB0-4792-AB7B-E1A0C001843A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1739E5AC-504C-40F8-968B-64F1F620D3C3}
