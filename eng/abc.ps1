@@ -219,32 +219,6 @@ function Get-PackageVersion {
 
 # ------------------------------------------------------------------------------
 
-function Get-DefaultPlatform {
-    [CmdletBinding()]
-    param()
-
-    ___confess "Getting the default platform used by the solution."
-
-    Load-XmlTextual $PLATFORMS_PROPS `
-        | Select-RawProperty -Property "DefaultPlatform"
-}
-
-# ------------------------------------------------------------------------------
-
-function Get-PackPlatforms {
-    [CmdletBinding()]
-    param(
-        [switch] $asString
-    )
-
-    ___confess "Getting the list of platforms for ""dotnet pack""."
-
-    Load-XmlTextual $PLATFORMS_PROPS `
-        | Select-SingleProperty -Property "PackPlatforms" -AsString:$asString
-}
-
-# ------------------------------------------------------------------------------
-
 function Get-SupportedPlatforms {
     [CmdletBinding()]
     param(

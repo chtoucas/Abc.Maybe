@@ -26,6 +26,9 @@ that's just a detail.
 .PARAMETER Configuration
 The configuration to test the solution for. Default (explicit) = "Debug".
 
+.PARAMETER Platform
+The platform to test the solution for.
+
 .PARAMETER Collector
 Use "coverlet.collector" instead of "coverlet.msbuild?
 When this option is set and equals $true, we NEVER run ReportGenerator, we could
@@ -42,6 +45,9 @@ This option and -NoReport are mutually exclusive.
 .PARAMETER NoReport
 Do NOT build HTML/text reports and badges w/ ReportGenerator?
 This option and -NoCoverage are mutually exclusive.
+
+.PARAMETER Reset
+Delete previously created artifacts?
 
 .PARAMETER NoRestore
 Do not restore the solution?
@@ -61,11 +67,15 @@ param(
     [ValidateSet("Debug", "Release")]
     [Alias("c")] [string] $Configuration = "Debug",
 
+    [Parameter(Mandatory = $false, Position = 1)]
+    [Alias("f")] [string] $Platform,
+
                  [switch] $Collector,
                  [switch] $OpenCover,
                  [switch] $NoCoverage,
                  [switch] $NoReport,
 
+                 [switch] $Reset,
                  [switch] $NoRestore,
                  [switch] $RestoreTools,
     [Alias("v")] [switch] $MyVerbose,
@@ -76,6 +86,8 @@ param(
 
 # ------------------------------------------------------------------------------
 
+# Nota bene: using a project rather than a solution may speed up things a bit by
+# ignoring unused platforms referenced by the other projects.
 const TEST_PROJECT_NAME "Abc.Tests"
 const TEST_PROJECT (Join-Path $SRC_DIR $TEST_PROJECT_NAME -Resolve)
 
@@ -90,12 +102,14 @@ Run the Code Coverage script and build human-readable reports.
 
 Usage: cover.ps1 [arguments]
   -c|-Configuration  the configuration to test the solution for.
+  -f|-Platform       the platform to test the solution for.
 
      -Collector      use "coverlet.collector" instead of "coverlet.msbuild"?
      -OpenCover      use OpenCover instead of Coverlet?
      -NoCoverage     do NOT run any Code Coverage tool?
      -NoReport       do NOT run ReportGenerator?
 
+     -Reset          delete previously created artifacts?
      -NoRestore      do not restore the solution?
      -RestoreTools   restore OpenCover and ReportGenerator before anything else?
   -v|-MyVerbose      display settings used to compile each DLL?
@@ -139,7 +153,11 @@ function Invoke-CoverletMSBuild {
         [ValidateNotNullOrEmpty()]
         [string] $configuration,
 
-        [Parameter(Mandatory = $true, Position = 1)]
+        [Parameter(Mandatory = $false, Position = 1)]
+        [ValidateNotNull()]
+        [string] $platform,
+
+        [Parameter(Mandatory = $true, Position = 2)]
         [ValidateNotNullOrEmpty()]
         [string] $outXml,
 
@@ -150,6 +168,7 @@ function Invoke-CoverletMSBuild {
     SAY-LOUDLY "`nRunning Coverlet (MSBuild)."
 
     $args = "--nologo", "-c:$configuration", "/p:RunAnalyzers=false"
+    if ($platform)  { $args += "/p:TargetFrameworks=$platform" }
     if ($noRestore) { $args += "--no-restore" }
     if ($myVerbose) { $args += "-v:minimal", "/p:PrintSettings=true" }
 
@@ -192,6 +211,10 @@ function Invoke-CoverletCollector {
         [string] $configuration,
 
         [Parameter(Mandatory = $true, Position = 1)]
+        [ValidateNotNull()]
+        [string] $platform,
+
+        [Parameter(Mandatory = $true, Position = 2)]
         [ValidateNotNullOrEmpty()]
         [string] $outDir,
 
@@ -202,10 +225,11 @@ function Invoke-CoverletCollector {
     SAY-LOUDLY "`nRunning Coverlet (Collector)."
 
     $args = "--nologo", "-c:$configuration", "/p:RunAnalyzers=false"
+    if ($platform)  { $args += "/p:TargetFrameworks=$platform" }
     if ($noRestore) { $args += "--no-restore" }
     if ($myVerbose) { $args += "-v:minimal", "/p:PrintSettings=true" }
 
-    # "dotnet test" changes $outDir by appending a Guid whose value does not
+    # "dotnet test" changes $outDir by appending a GUID whose value does not
     # seem predictable...
     & dotnet test $TEST_PROJECT $args `
         --results-directory $outDir `
@@ -231,6 +255,10 @@ function Invoke-OpenCover {
         [string] $configuration,
 
         [Parameter(Mandatory = $true, Position = 2)]
+        [ValidateNotNull()]
+        [string] $platform,
+
+        [Parameter(Mandatory = $true, Position = 3)]
         [ValidateNotNullOrEmpty()]
         [string] $outXml,
 
@@ -254,7 +282,13 @@ function Invoke-OpenCover {
         "-[Abc*]Microsoft.*"
     $filter = "$filters"
 
-    $args = "-c:$configuration", "/p:RunAnalyzers=false", "/p:DebugType=full"
+    # With OpenCover, we only work with one platform at a time.
+    # Remark: when $platform is empty, we use the default platform (SmokeBuild).
+    $args = "-c:$configuration",
+        "/p:DebugType=full",
+        "/p:SmokeBuild=true",
+        "/p:RunAnalyzers=false"
+    if ($platform)  { $args += "/p:TargetFrameworks=$platform" }
     if ($myVerbose) { $args += "-v:minimal", "/p:PrintSettings=true" }
                else { $args += "-v:quiet" }
 
@@ -321,6 +355,11 @@ try {
     $outDir = Join-Path $ARTIFACTS_DIR $tool
     $outXml = Join-Path $outDir "$tool.xml"
 
+    if ($Reset -and (yesno "`nDelete artifacts for ""$tool""?")) {
+        Remove-Dir $outDir
+        say-softly "Directory ""$outDir"" was deleted."
+    }
+
     # Create the directory if it does not already exist.
     # Do not remove this, it must be done before calling OpenCover.
     if (-not (Test-Path $outDir)) {
@@ -333,6 +372,7 @@ try {
         Invoke-CoverletCollector `
             -Configuration $Configuration `
             -OutDir        $outDir `
+            -Platform      $platform `
             -NoRestore:    $NoRestore `
             -MyVerbose:    $myVerbose
 
@@ -349,6 +389,7 @@ try {
                 | Invoke-OpenCover `
                     -Configuration $Configuration `
                     -OutXml        $outXml `
+                    -Platform      $platform `
                     -NoRestore:    $NoRestore `
                     -MyVerbose:    $myVerbose
         }
@@ -359,31 +400,57 @@ try {
             Invoke-CoverletMSBuild `
                 -Configuration $Configuration `
                 -OutXml        $outXml `
+                -Platform      $platform `
                 -NoRestore:    $NoRestore `
                 -MyVerbose:    $myVerbose
         }
-    }
-
-    if (-not $OpenCover) {
-        $platform = (Get-DefaultPlatform).ToLowerInvariant()
-
-        $outXml = Join-Path $outDir "$tool.$platform.xml"
     }
 
     if ($NoReport) {
         say "`nOn your request, we do not run ReportGenerator."
     }
     else {
-        Invoke-ReportGenerator $outXml $outDir
+        $skipBadges = $true
 
-        try {
-            pushd $outDir
+        if ($OpenCover) {
+            $reports = $outXml
+        } else {
+            if ($Platform) {
+                $reports = Join-Path $outDir "$tool.$Platform.xml"
+            } else {
+                # Remark: here we grab any report within $outDir.
+                # There is one case when we shouldn't do that: SMOKE_BUILD = true
+                if ($Env:SMOKE_BUILD -eq "true") {
+                    $files = Get-ChildItem $outDir -Filter "$tool.*.xml" -File
+                    $count = ($files | Measure-Object).Count
+                    if ($count -ne 1) { warn "SMOKE_BUILD = true. Use -Reset?" }
+                }
+                else {
+                    $skipBadges = $false
+                }
 
-            cp -Force "badge_combined.svg" (Join-Path ".." "$tool.svg")
-            cp -Force "Summary.txt" (Join-Path ".." "$tool.txt")
+                $reports = Join-Path $outDir "$tool.*.xml"
+            }
         }
-        finally {
-            popd
+
+        $targetDir = Join-Path $outDir "html"
+
+        Invoke-ReportGenerator $reports $targetDir
+
+        if ($skipBadges) {
+            say-softly "Skipping badges."
+        }
+        else {
+            say "Creating badges."
+            try {
+                pushd $targetDir
+
+                cp -Force "badge_combined.svg" (Join-Path ".." "$tool.svg")
+                cp -Force "Summary.txt" (Join-Path ".." "$tool.txt")
+            }
+            finally {
+                popd
+            }
         }
     }
 }

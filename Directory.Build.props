@@ -159,11 +159,6 @@
       IMPORTANT: be sure to read the comments above before changing these properties.
     -->
 
-    <PackPlatforms>
-      netstandard2.1;netstandard2.0;netstandard1.1;
-      net461;net452
-    </PackPlatforms>
-
     <MinCorePlatforms>netcoreapp3.1;netcoreapp2.1</MinCorePlatforms>
     <MaxCorePlatforms>
       netcoreapp3.1;netcoreapp3.0;
@@ -189,27 +184,31 @@
       IMPORTANT: keep "DefaultPlatform" in sync with "global.json", otherwise
       some CI builds will fail.
 
+      REVIEW: When "SmokeBuild" = true, define only **one** platform.
+      This is a characteristic used by cover.ps1.
+
       TODO:
-      - remove PackPlatforms.
-      - default settings:
-        - LibraryPlatforms = "netstandard2.1;netstandard2.0;netstandard1.1;net461"
-        - TestPlatforms    = "$(DefaultPlatform);netcoreapp2.1;net461;net452"
-      - simplify scripts: build.ps1, test.ps1, ci.ps1 & pack.ps1.
+      - default settings -> net452?
+      - simplify scripts: build.ps1, test.ps1, cover.ps1, ci.ps1 & pack.ps1.
     -->
 
     <DefaultPlatform>netcoreapp3.1</DefaultPlatform>
 
-    <LibraryPlatforms>
+    <SupportedStandards>netstandard2.1;netstandard2.0;netstandard1.1</SupportedStandards>
+
+    <!--<LibraryPlatforms>
       netstandard2.1;netstandard1.1;
       netcoreapp3.1;netcoreapp2.1;
       net48;net452
-    </LibraryPlatforms>
+    </LibraryPlatforms>-->
+    <LibraryPlatforms>$(SupportedStandards);net461</LibraryPlatforms>
     <LibraryPlatforms Condition=" '$(SmokeBuild)' == 'true' ">$(DefaultPlatform);netstandard2.0</LibraryPlatforms>
 
-    <TestPlatforms>
+    <!--<TestPlatforms>
       netcoreapp3.1;netcoreapp2.1;
       net48;net452
-    </TestPlatforms>
+    </TestPlatforms>-->
+    <TestPlatforms>$(DefaultPlatform);netcoreapp2.1;net48;net461;net452</TestPlatforms>
     <TestPlatforms Condition=" '$(SmokeBuild)' == 'true' ">$(DefaultPlatform)</TestPlatforms>
   </PropertyGroup>
 

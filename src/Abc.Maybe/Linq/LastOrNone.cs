@@ -31,6 +31,7 @@ namespace Abc.Linq
             // Slow track.
             using var iter = source.GetEnumerator();
 
+            // TODO: not covered w/ platforms != .NET Core 3.1.
             if (!iter.MoveNext()) { return Maybe<TSource>.None; }
 
             TSource item;
