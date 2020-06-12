@@ -15,7 +15,7 @@ To build a single project, specify its path via -ProjectPath.
 NB: the list of supported platforms can NOT be overriden.
 
 The default behaviour is to build libraries for all supported platforms, and to
-build exe projects only for "MaxPlatform".
+build exe projects only for "DefaultPlatform".
 
 To target a single platform, use -Platform (no "s").
 
@@ -81,7 +81,7 @@ param(
     [Alias("h")] [switch] $Help,
 
     [Parameter(Mandatory=$false, ValueFromRemainingArguments = $true)]
-                 [string[]] $Properties
+               [string[]] $Properties
 )
 
 . (Join-Path $PSScriptRoot "abc.ps1")
@@ -137,12 +137,10 @@ Hello "this is the build script.`n"
 try {
     ___BEGIN___
 
-    $platforms = Get-BuildPlatforms
     $minClassic, $maxClassic, $minCore, $maxCore = Get-SupportedPlatforms
     $allPlatforms = $maxCore + $maxClassic
 
     if ($ListPlatforms) {
-        say ("Default platform set:`n- {0}" -f ($platforms -join "`n- "))
         say ("`nSupported platforms (option -Platform):`n- {0}" -f ($allPlatforms -join "`n- "))
         exit
     }
@@ -171,9 +169,6 @@ try {
 
         $args += "/p:TargetFrameworks=$Platform"
     }
-    else {
-        $args += '/p:TargetFrameworks=\"' + ($platforms -join ";") + '\"'
-    }
 
     foreach ($arg in $Properties) {
         if ($arg.StartsWith("/p:", "InvariantCultureIgnoreCase")) {
@@ -181,7 +176,6 @@ try {
         }
     }
 
-    # Do not invoke "dotnet restore" before, it will fail w/ -Platform.
     & dotnet build $ProjectPath $args
         || die "Build task failed."
 }

@@ -62,14 +62,7 @@ function Get-Platforms([Xml] $props, [string] $family, [switch] $all) {
 
 # We extract the list of supported .NET Standards from the "build" and "pack" lists.
 function Get-Standards([Xml] $props) {
-  $standards = Select-Property $props 'PackPlatforms' |
-    where { $_.StartsWith('netstandard') }
-  $list = Select-Property $props 'BuildPlatforms' |
-    where { $_.StartsWith('netstandard') }
-  foreach ($item in $list) {
-    if (-not $standards.Contains($item)) { $standards += $item }
-  }
-  $standards
+  Select-Property $props 'PackPlatforms' | where { $_.StartsWith('netstandard') }
 }
 
 function Get-TargetFrameworks([string[]] $platforms) {

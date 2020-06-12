@@ -17,7 +17,8 @@
     --nologo ^
     --no-restore ^
     -c Release ^
-    /p:RunAnalyzers=false
+    /p:RunAnalyzers=false ^
+    /p:SmokeBuild=true
 
 @endlocal
 @exit /b %ERRORLEVEL%

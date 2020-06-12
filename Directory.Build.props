@@ -6,11 +6,15 @@
     <ArtifactsRoot>$(RepositoryRoot)__\</ArtifactsRoot>
   </PropertyGroup>
 
-  <!-- Continuous Integration -->
+  <!-- Globals -->
   <PropertyGroup>
-    <ContinuousIntegrationBuild>false</ContinuousIntegrationBuild>
+    <ContinuousIntegrationBuild Condition=" '$(ContinuousIntegrationBuild)' == '' ">false</ContinuousIntegrationBuild>
     <ContinuousIntegrationBuild Condition=" '$(TF_BUILD)' == 'true' ">true</ContinuousIntegrationBuild>
     <ContinuousIntegrationBuild Condition=" '$(GITHUB_ACTIONS)' == 'true' ">true</ContinuousIntegrationBuild>
+
+    <SmokeBuild Condition=" '$(SmokeBuild)' == '' ">false</SmokeBuild>
+    <SmokeBuild Condition=" '$(SMOKE_BUILD)' == 'true' ">true</SmokeBuild>
+    <SmokeBuild Condition=" '$(BuildingInsideVisualStudio)' == 'true' ">true</SmokeBuild>
   </PropertyGroup>
 
   <!-- Source Link -->
@@ -43,7 +47,7 @@
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <Nullable>enable</Nullable>
 
-    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)eng\Abc.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Abc.snk</AssemblyOriginatorKeyFile>
 
     <VersionPrefix>0.0.1</VersionPrefix>
     <VersionSuffix>DUMMY</VersionSuffix>
@@ -85,10 +89,12 @@
     <!--
       For libraries, use
         <TargetFrameworks>$(LibraryPlatforms)</TargetFrameworks>
-      For exe or test projects, use
-        <TargetFramework>$(MaxPlatform)</TargetFramework>
+      For test projects, use
+        <TargetFrameworks>$(TestPlatforms)</TargetFrameworks>
       Do not use "TargetFramework" (no "s"), otherwise testing multi-targets
       at once won't work.
+      For exe projects, use
+        <TargetFramework>$(DefaultPlatform)</TargetFramework>
 
       First-class support is provided for
       - .NET Standard   2.0   - 2.1
@@ -104,9 +110,9 @@
       (see "test\Package").
 
       Remarks:
-      - If/when we create an API depending on a new .NET Standard, "MaxPlatform"
+      - If/when we create an API depending on a new .NET Standard, "DefaultPlatform"
         should be the last available platform supporting it. We can also update
-        "MaxPlatform" just to benefit from the last improvements it could bring.
+        "DefaultPlatform" just to benefit from the last improvements it could bring.
       - The first listed framework in "LibraryPlatforms" is the one used by the
         VS editor. Full NRT-analysis requires .NET Core 3.0 or above, .NET Standard
         does not include the nullable annotations (version 2.1 defines the nullable
@@ -114,7 +120,7 @@
         We use the version 3.1 instead of 3.0 because the former is LTS and the
         latter is already EOL.
       - "LibraryPlatforms" contains one platform per API profile (see D.B.targets).
-        Apart from "MaxPlatform", it contains only variants of .NET Standard.
+        Apart from "DefaultPlatform", it contains only variants of .NET Standard.
       - "BuildPlatforms" and "TestPlatforms" contains only the min/max variants
         for each family of platforms. If/when we add a third profile, we should
         revise this rule by intercaling the min variant for each profile.
@@ -148,38 +154,11 @@
     -->
 
     <!--
-      IMPORTANT: keep "MaxPlatform" in sync with "global.json", otherwise some
-      CI builds will fail.
-    -->
-
-    <MaxPlatform>netcoreapp3.1</MaxPlatform>
-    <LibraryPlatforms>$(MaxPlatform);netstandard2.0</LibraryPlatforms>
-
-    <!--
       IMPORTANT: below, do NOT use MSBuild property resolution $(), the content
       must be in a form understandable to PowerShell.
       IMPORTANT: be sure to read the comments above before changing these properties.
-
-      TODO:
-      - remove BuildPlatforms and PackPlatforms.
-      - default settings:
-        - LibraryPlatforms = "$(MaxPlatform);netstandard2.0"
-        - TestPlatforms    = "$(MaxPlatform)"
-      - custom settings:
-        - LibraryPlatforms = "netstandard2.1;netstandard2.0;netstandard1.1;net461"
-        - TestPlatforms    = "$(MaxPlatform);netcoreapp2.1;net461;net452"
-      - simplify scripts: build.ps1, test.ps1, ci.ps1 & pack.ps1.
     -->
 
-    <BuildPlatforms>
-      netstandard2.1;netstandard1.1;
-      netcoreapp3.1;netcoreapp2.1;
-      net48;net452
-    </BuildPlatforms>
-    <TestPlatforms>
-      netcoreapp3.1;netcoreapp2.1;
-      net48;net452
-    </TestPlatforms>
     <PackPlatforms>
       netstandard2.1;netstandard2.0;netstandard1.1;
       net461;net452
@@ -203,6 +182,35 @@
       netcoreapp2.0;
       net451;net45
     </NotSupportedTestPlatforms>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!--
+      IMPORTANT: keep "DefaultPlatform" in sync with "global.json", otherwise some
+      CI builds will fail.
+
+      TODO:
+      - remove PackPlatforms.
+      - default settings:
+        - LibraryPlatforms = "netstandard2.1;netstandard2.0;netstandard1.1;net461"
+        - TestPlatforms    = "$(DefaultPlatform);netcoreapp2.1;net461;net452"
+      - simplify scripts: build.ps1, test.ps1, ci.ps1 & pack.ps1.
+    -->
+
+    <DefaultPlatform>netcoreapp3.1</DefaultPlatform>
+
+    <LibraryPlatforms>
+      netstandard2.1;netstandard1.1;
+      netcoreapp3.1;netcoreapp2.1;
+      net48;net452
+    </LibraryPlatforms>
+    <LibraryPlatforms Condition=" '$(SmokeBuild)' == 'true' ">$(DefaultPlatform);netstandard2.0</LibraryPlatforms>
+
+    <TestPlatforms>
+      netcoreapp3.1;netcoreapp2.1;
+      net48;net452
+    </TestPlatforms>
+    <TestPlatforms Condition=" '$(SmokeBuild)' == 'true' ">$(DefaultPlatform)</TestPlatforms>
   </PropertyGroup>
 
 </Project>

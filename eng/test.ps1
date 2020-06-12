@@ -107,12 +107,10 @@ Hello "this is the test script.`n"
 try {
     ___BEGIN___
 
-    $platforms = Get-TestPlatforms
     $minClassic, $maxClassic, $minCore, $maxCore = Get-SupportedPlatforms
     $allPlatforms = $maxCore + $maxClassic
 
     if ($ListPlatforms) {
-        say ("Default platform set:`n- {0}" -f ($platforms -join "`n- "))
         say ("`nSupported platforms (option -Platform):`n- {0}" -f ($allPlatforms -join "`n- "))
         exit
     }
@@ -130,9 +128,6 @@ try {
         }
 
         $args += "/p:TargetFrameworks=$Platform"
-    }
-    else {
-        $args += '/p:TargetFrameworks=\"' + ($platforms -join ";") + '\"'
     }
 
     foreach ($arg in $Properties) {

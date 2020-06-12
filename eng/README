@@ -16,7 +16,6 @@ Scripts.
 Other files.
 - abc.ps1               project-specific helpers.
 - utils.ps1             generic helpers.
-- Abc.snk               strong named key.
 - NETFxTools            blank project used to restore .NET Framework tools.
 
 Obsolete files.

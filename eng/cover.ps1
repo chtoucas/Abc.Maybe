@@ -365,7 +365,7 @@ try {
     }
 
     if (-not $OpenCover) {
-        $platform = (Get-MaxPlatform).ToLowerInvariant()
+        $platform = (Get-DefaultPlatform).ToLowerInvariant()
 
         $outXml = Join-Path $outDir "$tool.$platform.xml"
     }

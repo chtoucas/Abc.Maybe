@@ -12,7 +12,7 @@ $Script:ErrorActionPreference = "Stop"
 
 . (Join-Path $PSScriptRoot "utils.ps1")
 
-$Script:___ForegroundColor = `
+$Script:___ForegroundColor =
     $Host.UI.RawUI.ForegroundColor -eq "White" ? "Blue" : "White"
 
 ################################################################################
@@ -219,42 +219,14 @@ function Get-PackageVersion {
 
 # ------------------------------------------------------------------------------
 
-function Get-MaxPlatform {
+function Get-DefaultPlatform {
     [CmdletBinding()]
     param()
 
     ___confess "Getting the default platform used by the solution."
 
     Load-XmlTextual $PLATFORMS_PROPS `
-        | Select-RawProperty -Property "MaxPlatform"
-}
-
-# ------------------------------------------------------------------------------
-
-function Get-BuildPlatforms {
-    [CmdletBinding()]
-    param(
-        [switch] $asString
-    )
-
-    ___confess "Getting the list of platforms for ""dotnet build""."
-
-    Load-XmlTextual $PLATFORMS_PROPS `
-        | Select-SingleProperty -Property "BuildPlatforms" -AsString:$asString
-}
-
-# ------------------------------------------------------------------------------
-
-function Get-TestPlatforms {
-    [CmdletBinding()]
-    param(
-        [switch] $asString
-    )
-
-    ___confess "Getting the list of platforms for ""dotnet test""."
-
-    Load-XmlTextual $PLATFORMS_PROPS `
-        | Select-SingleProperty -Property "TestPlatforms" -AsString:$asString
+        | Select-RawProperty -Property "DefaultPlatform"
 }
 
 # ------------------------------------------------------------------------------

@@ -8,7 +8,7 @@
   -->
 
   <PropertyGroup>
-    <TargetFramework>$(MaxPlatform)</TargetFramework>
+    <TargetFramework>$(DefaultPlatform)</TargetFramework>
     <RestorePackagesPath>$(ArtifactsRoot)nuget-cache\</RestorePackagesPath>
   </PropertyGroup>
 

@@ -201,16 +201,16 @@ References.
 CI
 --
 
-1. Tests (GitHub).
+1. Smoke tests (GitHub).
   OS: Windows, Linux and MacOS.
-  Settings: default (Debug).
-  Tasks: build then test the solution for "MaxPlatform" (D.B.props).
+  Settings: SmokeBuild=true (Debug).
+  Tasks: build then test the solution.
   Remarks: this workflow enforces the use of a single specific sdk/runtime.
 
-2. Tests (AZP).
+2. Tests + Code Coverage (AZP).
   OS: Windows.
   Settings: default (Release).
-  Tasks: build then test the solution for "MaxPlatform" (D.B.props).
+  Tasks: build then test the solution.
   Artifacts: Code Coverage.
   Remarks: this pipeline enforces the use of a single specific sdk/runtime.
 
