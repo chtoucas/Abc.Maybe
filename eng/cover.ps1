@@ -147,17 +147,17 @@ function Invoke-RestoreTools {
 # ------------------------------------------------------------------------------
 
 function Invoke-CoverletMSBuild {
-    [CmdletBinding()]
+    [CmdletBinding(PositionalBinding = $false)]
     param(
-        [Parameter(Mandatory = $true, Position = 0)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $configuration,
 
-        [Parameter(Mandatory = $false, Position = 1)]
+        [Parameter(Mandatory = $false)]
         [ValidateNotNull()]
         [string] $platform,
 
-        [Parameter(Mandatory = $true, Position = 2)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $outXml,
 
@@ -204,17 +204,17 @@ function Invoke-CoverletMSBuild {
 # ------------------------------------------------------------------------------
 
 function Invoke-CoverletCollector {
-    [CmdletBinding()]
+    [CmdletBinding(PositionalBinding = $false)]
     param(
-        [Parameter(Mandatory = $true, Position = 0)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $configuration,
 
-        [Parameter(Mandatory = $true, Position = 1)]
+        [Parameter(Mandatory = $false)]
         [ValidateNotNull()]
         [string] $platform,
 
-        [Parameter(Mandatory = $true, Position = 2)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $outDir,
 
@@ -244,21 +244,21 @@ function Invoke-CoverletCollector {
 # ------------------------------------------------------------------------------
 
 function Invoke-OpenCover {
-    [CmdletBinding()]
+    [CmdletBinding(PositionalBinding = $false)]
     param(
-        [Parameter(Mandatory = $true, Position = 0, ValueFromPipeline = $true)]
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $openCover,
 
-        [Parameter(Mandatory = $true, Position = 1)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $configuration,
 
-        [Parameter(Mandatory = $true, Position = 2)]
+        [Parameter(Mandatory = $false)]
         [ValidateNotNull()]
         [string] $platform,
 
-        [Parameter(Mandatory = $true, Position = 3)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $outXml,
 
@@ -313,13 +313,13 @@ function Invoke-OpenCover {
 # ------------------------------------------------------------------------------
 
 function Invoke-ReportGenerator {
-    [CmdletBinding()]
+    [CmdletBinding(PositionalBinding = $false)]
     param(
-        [Parameter(Mandatory = $true, Position = 0)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $reports,
 
-        [Parameter(Mandatory = $true, Position = 1)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $targetdir
     )
@@ -371,8 +371,8 @@ try {
     if ($Collector) {
         Invoke-CoverletCollector `
             -Configuration $Configuration `
-            -OutDir        $outDir `
             -Platform      $platform `
+            -OutDir        $outDir `
             -NoRestore:    $NoRestore `
             -MyVerbose:    $myVerbose
 
@@ -388,8 +388,8 @@ try {
             Find-OpenCover -ExitOnError `
                 | Invoke-OpenCover `
                     -Configuration $Configuration `
-                    -OutXml        $outXml `
                     -Platform      $platform `
+                    -OutXml        $outXml `
                     -NoRestore:    $NoRestore `
                     -MyVerbose:    $myVerbose
         }
@@ -399,8 +399,8 @@ try {
             # the test project.
             Invoke-CoverletMSBuild `
                 -Configuration $Configuration `
-                -OutXml        $outXml `
                 -Platform      $platform `
+                -OutXml        $outXml `
                 -NoRestore:    $NoRestore `
                 -MyVerbose:    $myVerbose
         }
@@ -423,7 +423,7 @@ try {
                 if ($Env:SMOKE_BUILD -eq "true") {
                     $files = Get-ChildItem $outDir -Filter "$tool.*.xml" -File
                     $count = ($files | Measure-Object).Count
-                    if ($count -ne 1) { warn "SMOKE_BUILD = true. Use -Reset?" }
+                    if ($count -ne 1) { warn "SMOKE_BUILD = true. Maybe use -Reset?" }
                 }
                 else {
                     $skipBadges = $false
