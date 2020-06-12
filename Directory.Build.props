@@ -186,8 +186,8 @@
 
   <PropertyGroup>
     <!--
-      IMPORTANT: keep "DefaultPlatform" in sync with "global.json", otherwise some
-      CI builds will fail.
+      IMPORTANT: keep "DefaultPlatform" in sync with "global.json", otherwise
+      some CI builds will fail.
 
       TODO:
       - remove PackPlatforms.

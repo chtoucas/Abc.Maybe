@@ -7,7 +7,7 @@
 
 <#
 .SYNOPSIS
-Build the solution for all supported platforms.
+Wrapper for dotnet.exe.
 
 .DESCRIPTION
 Build the solution for all supported platforms.
@@ -21,6 +21,9 @@ To target a single platform, use -Platform (no "s").
 
 Targetting a single platform or all supported platforms may "transform" an exe
 project into a library.
+
+.PARAMETER Task
+The .NET command. Default = "build".
 
 .PARAMETER ProjectPath
 The project to build. Default = solution.
@@ -45,8 +48,9 @@ Turn off source code analysis?
 
 .PARAMETER NoCheck
 Do not check whether the specified platform is supported or not?
-Useful to build the project/solution for platforms listed in
-"NotSupportedTestPlatforms" from D.B.props.
+Useful to test the solution for platforms listed in "NotSupportedTestPlatforms"
+from D.B.props. Of course, as the name suggests, a succesful outcome is not
+guaranteed, to say the least, it might not even run.
 
 .PARAMETER NoRestore
 Do not restore the project/solution?
@@ -59,6 +63,10 @@ Print help text then exit?
 #>
 [CmdletBinding(PositionalBinding = $false)]
 param(
+    [Parameter(Mandatory = $false)]
+    [ValidateSet("build", "test")]
+    [Alias("t")] [string] $Task = "build",
+
     [Parameter(Mandatory = $false)]
     [Alias("p")] [string] $ProjectPath,
 
@@ -86,6 +94,11 @@ param(
 
 . (Join-Path $PSScriptRoot "abc.ps1")
 
+# ------------------------------------------------------------------------------
+
+const TEST_PROJECT_NAME "Abc.Tests"
+const TEST_PROJECT (Join-Path $SRC_DIR $TEST_PROJECT_NAME -Resolve)
+
 #endregion
 ################################################################################
 #region Helpers
@@ -96,6 +109,7 @@ function Print-Help {
 Build the solution for all supported platforms.
 
 Usage: reset.ps1 [arguments]
+  -t|-Task
   -p|-ProjectPath    the project to build.
   -c|-Configuration  the configuration to build the project/solution for.
      -Runtime        the runtime to build the project/solution for.
@@ -111,17 +125,17 @@ Usage: reset.ps1 [arguments]
   -h|-Help           print this help and exit?
 
 Arguments starting with '/p:' are passed through to dotnet.exe.
-> build.ps1 /p:Retail=true
-> build.ps1 /p:HideInternals=true
-> build.ps1 /p:PatchEquality=true
+> make.ps1 /p:Retail=true
+> make.ps1 /p:HideInternals=true
+> make.ps1 /p:PatchEquality=true
 
 Examples.
-> build.ps1                                 #
-> build.ps1 -a /p:Retail=true               #
-> build.ps1 -p src\Abc.Maybe -c Release     # "Release" build of Abc.Maybe
+> make.ps1                                 #
+> make.ps1 /p:Retail=true                  #
+> make.ps1 -p src\Abc.Maybe -c Release     # "Release" build of Abc.Maybe
 
 Looking for more help?
-> Get-Help -Detailed build.ps1
+> Get-Help -Detailed make.ps1
 
 "@
 }
@@ -132,7 +146,7 @@ Looking for more help?
 
 if ($Help) { Print-Help ; exit }
 
-Hello "this is the build script.`n"
+Hello "this is the make script.`n"
 
 try {
     ___BEGIN___
@@ -141,7 +155,7 @@ try {
     $allPlatforms = $maxCore + $maxClassic
 
     if ($ListPlatforms) {
-        say ("`nSupported platforms (option -Platform):`n- {0}" -f ($allPlatforms -join "`n- "))
+        say ("Supported platforms (option -Platform):`n- {0}" -f ($allPlatforms -join "`n- "))
         exit
     }
 
@@ -154,13 +168,17 @@ try {
         $ProjectPath = Join-Path $ROOT_DIR "Maybe.sln" -Resolve
     }
 
+    # Common args available to all commands.
     $args = @()
     if ($Configuration) { $args += "-c:$Configuration" }
     if ($Runtime)       { $args += "--runtime:$runtime" }
-    if ($Force)         { $args += "--force" }
     if ($NoRestore)     { $args += "--no-restore" }
     if ($NoAnalyzers)   { $args += "/p:RunAnalyzers=false" }
     if ($MyVerbose)     { $args += "/p:PrintSettings=true" }
+
+    if ($Task -eq "build") {
+        if ($Force)     { $args += "--force" }
+    }
 
     if ($Platform)  {
         if (-not $NoCheck -and $Platform -notin $allPlatforms) {
@@ -176,8 +194,8 @@ try {
         }
     }
 
-    & dotnet build $ProjectPath $args
-        || die "Build task failed."
+    & dotnet $Task $ProjectPath $args
+        || die "Task ""$Task"" failed."
 }
 catch {
     ___CATCH___

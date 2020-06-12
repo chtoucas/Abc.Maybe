@@ -5,40 +5,6 @@
 ################################################################################
 #region Preamble.
 
-<#
-.SYNOPSIS
-Run the test suite for all supported platforms.
-
-.PARAMETER Configuration
-The configuration to test the solution for. Default (implicit) = "Debug".
-
-.PARAMETER Runtime
-The runtime to test the solution for.
-
-.PARAMETER Platform
-The single platform to test the solution for.
-
-.PARAMETER ListPlatforms
-Print the list of supported platforms, then exit?
-
-.PARAMETER NoAnalyzers
-Turn off source code analysis?
-
-.PARAMETER NoCheck
-Do not check whether the specified platform is supported or not?
-Useful to test the solution for platforms listed in "NotSupportedTestPlatforms"
-from D.B.props. Of course, as the name suggests, a succesful outcome is not
-guaranteed, to say the least, it might not even run.
-
-.PARAMETER NoRestore
-Do not restore the project/solution?
-
-.PARAMETER MyVerbose
-Verbose mode? Print the settings in use before compiling each assembly.
-
-.PARAMETER Help
-Print help text then exit?
-#>
 [CmdletBinding(PositionalBinding = $false)]
 param(
     [Parameter(Mandatory = $false)]
@@ -71,38 +37,7 @@ const TEST_PROJECT (Join-Path $SRC_DIR $TEST_PROJECT_NAME -Resolve)
 
 #endregion
 ################################################################################
-#region Helpers
-
-function Print-Help {
-    say @"
-
-Run the test suite for all supported platforms.
-
-Usage: reset.ps1 [arguments]
-  -c|-Configuration  the configuration to test the project/solution for.
-     -Runtime        the runtime to test the project/solution for.
-
-  -f|-Platform       the platform to test the project/solution for.
-  -l|-ListPlatforms  print the list of supported platforms, then exit?
-
-     -NoAnalyzers    turn off source code analysis?
-     -NoCheck        do not check whether the specified platform is supported or not?
-     -NoRestore      do not restore the project/solution?
-  -v|-MyVerbose      display settings used to compile each DLL?
-  -h|-Help           print this help and exit?
-
-Arguments starting with '/p:' are passed through to dotnet.exe.
-
-"@
-}
-
-#endregion
-################################################################################
 #region Main.
-
-if ($Help) { Print-Help ; exit }
-
-Hello "this is the test script.`n"
 
 try {
     ___BEGIN___
