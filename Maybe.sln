@@ -85,10 +85,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".config", ".config", "{0379
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".azure", ".azure", "{7E737F14-CB3F-4508-9946-AED5504AD2D5}"
 	ProjectSection(SolutionItems) = preProject
-		.azure\pipelines\azure-pipelines-all.yml = .azure\pipelines\azure-pipelines-all.yml
 		.azure\pipelines\azure-pipelines-build.yml = .azure\pipelines\azure-pipelines-build.yml
+		.azure\pipelines\azure-pipelines-info.yml = .azure\pipelines\azure-pipelines-info.yml
 		.azure\pipelines\azure-pipelines-test.yml = .azure\pipelines\azure-pipelines-test.yml
-		.azure\pipelines\azure-pipelines.yml = .azure\pipelines\azure-pipelines.yml
 	EndProjectSection
 EndProject
 Global
