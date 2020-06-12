@@ -205,23 +205,20 @@ CI
   OS: Windows, Linux and MacOS.
   Settings: SmokeBuild=true (Debug).
   Tasks: build then test the solution.
-  Remarks: this workflow enforces the use of a single specific sdk/runtime.
 
 2. Tests + Code Coverage (AZP).
   OS: Windows.
   Settings: default (Release).
   Tasks: build then test the solution.
   Artifacts: Code Coverage.
-  Remarks: this pipeline enforces the use of a single specific sdk/runtime.
 
-3. Tests ALL (AZP).
+3. Build (AZP).
   OS: Windows.
   Settings: Retail=true (Release).
   Tasks:
-  - Build for .NET Standard / Core / Framework.
-  - Test for each major version of the full .NET Framework.
-  - Test for each LTS version of .NET Core.
-  Remarks: this pipeline does NOT enforce the use of a single specific sdk/runtime.
+  - Build for .NET Standard.
+  - Build for each major version of the full .NET Framework.
+  - Build for each LTS version of .NET Core.
 
 To skip CI on push,
 - for AZP only, add [skip azp] to the commit message.
