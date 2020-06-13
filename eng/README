@@ -3,11 +3,10 @@ README
 
 Scripts.
 - asm.ps1               retrieve various assembly infos.
-- make.ps1              make script.
-- ci.ps1                CI script.
 - cover.ps1             code coverage script.
 - freeze-api.ps1        update public API files.
 - harness.cmd           plain test harness.
+- make.ps1              make script.
 - pack.ps1              create a package.
 - reset.ps1             reset the repository.
 - test-package.ps1      test a package.
