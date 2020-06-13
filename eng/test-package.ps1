@@ -378,8 +378,7 @@ function Invoke-Build {
 # if it ever becomes too much of a burden.
 # __Only works on Windows__
 # TODO: I wonder if it does really make sense at all since we actually use
-# .NET 4.5.2. Nevertheless, this is the only way we've got to test the package
-# for netstandard1.1.
+# .NET 4.5.2.
 function Invoke-TestOldStyle {
     [CmdletBinding(PositionalBinding = $false)]
     param(
