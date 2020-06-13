@@ -413,10 +413,12 @@ try {
         $skipBadges = $true
 
         if ($OpenCover) {
-            $reports = $outXml
+            $reports   = $outXml
+            $targetDir = Join-Path $outDir "html"
         } else {
             if ($Platform) {
-                $reports = Join-Path $outDir "$tool.$Platform.xml"
+                $reports   = Join-Path $outDir "$tool.$Platform.xml"
+                $targetDir = Join-Path $outDir "html-$Platform"
             } else {
                 # Remark: here we grab any report within $outDir.
                 # There is one case when we shouldn't do that: SMOKE_BUILD = true
@@ -429,13 +431,12 @@ try {
                     $skipBadges = $false
                 }
 
-                $reports = Join-Path $outDir "$tool.*.xml"
+                $reports   = Join-Path $outDir "$tool.*.xml"
+                $targetDir = Join-Path $outDir "html"
             }
         }
 
-        $targetDir = Join-Path $outDir "html"
-
-        Invoke-ReportGenerator $reports $targetDir
+        Invoke-ReportGenerator -Reports $reports -TargetDir $targetDir
 
         if ($skipBadges) {
             say-softly "Skipping badges."
