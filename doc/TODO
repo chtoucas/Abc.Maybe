@@ -1,6 +1,13 @@
 TODO
 ====
 
+Multi-targeting with non-Windows OSes, MSBuild & scripts.
+- filter w/ '$(OS)' != 'Windows_NT' ?
+- filter w/ '$(TargetFrameworkIdentifier)' == '.NETFramework' for Mono ?
+- see Xunit website which contains some useful infos.
+VS: ability to temporarily set SmokeBuild to false.
+Tests: no silent skip. Only enable when not a CI build?
+
 Code
 ----
 
