@@ -60,7 +60,6 @@ function Get-Platforms([Xml] $props, [string] $family, [switch] $all) {
   }
 }
 
-# We extract the list of supported .NET Standards from the "build" and "pack" lists.
 function Get-Standards([Xml] $props) {
   Select-Property $props 'SupportedStandards'
 }

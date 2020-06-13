@@ -23,7 +23,7 @@ Targetting a single platform or all supported platforms may "transform" an exe
 project into a library.
 
 .PARAMETER Task
-The .NET command. Default = "build".
+The .NET command to be called. Default = "build".
 
 .PARAMETER ProjectPath
 The project to build. Default = solution.
@@ -80,36 +80,42 @@ param(
     [Parameter(Mandatory = $false)]
     [Alias("f")] [string] $Platform,
     [Alias("l")] [switch] $ListPlatforms,
+    [Alias('a')] [switch] $AllKnown,
+                 [switch] $Smoke,
+
+    [Parameter(Mandatory = $false)]
+    [ValidateSet('q', 'quiet', 'm', 'minimal', 'n', 'normal', 'd', 'detailed', 'diag', 'diagnostic')]
+    [Alias('v')] [string] $Verbosity,
 
                  [switch] $Force,
                  [switch] $NoAnalyzers,
                  [switch] $NoCheck,
                  [switch] $NoRestore,
+                 [switch] $NoBuild,
     [Alias("v")] [switch] $MyVerbose,
+                 [switch] $DryRun,
     [Alias("h")] [switch] $Help,
 
     [Parameter(Mandatory=$false, ValueFromRemainingArguments = $true)]
                [string[]] $Properties
 )
 
-. (Join-Path $PSScriptRoot "abc.ps1")
-
 # ------------------------------------------------------------------------------
 
-const TEST_PROJECT_NAME "Abc.Tests"
-const TEST_PROJECT (Join-Path $SRC_DIR $TEST_PROJECT_NAME -Resolve)
+New-Variable ROOT_DIR (Get-Item $PSScriptRoot).Parent.FullName `
+    -Scope Script -Option Constant
 
 #endregion
 ################################################################################
 #region Helpers
 
 function Print-Help {
-    say @"
+    Write-Host @"
 
 Build the solution for all supported platforms.
 
 Usage: reset.ps1 [arguments]
-  -t|-Task
+  -t|-Task           the .NET command to be called.
   -p|-ProjectPath    the project to build.
   -c|-Configuration  the configuration to build the project/solution for.
      -Runtime        the runtime to build the project/solution for.
@@ -140,28 +146,71 @@ Looking for more help?
 "@
 }
 
+# ------------------------------------------------------------------------------
+
+function Get-Platforms([Xml] $props, [switch] $allKnown) {
+    if ($allKnown) {
+        $classic = Select-Property $props 'MaxClassicPlatforms'
+        $core    = Select-Property $props 'MaxCorePlatforms'
+    }
+    else {
+        $classic = Select-Property $props 'MinClassicPlatforms'
+        $core    = Select-Property $props 'MinCorePlatforms'
+    }
+
+    @($classic, $core)
+}
+
+function Get-Standards([Xml] $props) {
+    Select-Property $props 'SupportedStandards'
+}
+
+function Get-TargetFrameworks([string[]] $platforms) {
+    '/p:TargetFrameworks=\"' + ($platforms -join ';') + '\"'
+}
+
+function Load-Properties([string] $path) {
+    $xml = Get-Content $path
+    $props = New-Object -TypeName System.Xml.XmlDocument
+    $props.PreserveWhitespace = $false
+    $props.LoadXml($xml)
+    $props
+}
+
+function Select-Property([Xml] $props, [string] $property) {
+    $nodes = $props | Select-Xml -XPath "//Project/PropertyGroup/$property"
+    if ($nodes -eq $null -or $nodes.Count -ne 1) {
+        Write-Error "Could not find the property named ""$property""."
+    }
+    $text = $nodes[0].Node.InnerText.Trim().Trim(';').Replace(' ', '')
+    $text.Split(';')
+}
+
 #endregion
 ################################################################################
 #region Main.
 
 if ($Help) { Print-Help ; exit }
 
-Hello "this is the make script.`n"
+Write-Host "Hello, this is the make script.`n"
 
 try {
-    ___BEGIN___
+    pushd $ROOT_DIR
 
-    $minClassic, $maxClassic, $minCore, $maxCore = Get-SupportedPlatforms
-    $allPlatforms = $maxCore + $maxClassic
+    $props = Load-Properties (Join-Path $ROOT_DIR 'Directory.Build.props')
+    $classic, $core = Get-Platforms $props -AllKnown:($AllKnown -or $Platform -or $ListPlatforms)
+    $platformList = $classic + $core
+    #$standardList = Get-Standards $props
 
     if ($ListPlatforms) {
-        say ("Supported platforms (option -Platform):`n- {0}" -f ($allPlatforms -join "`n- "))
+        Write-Host ("Supported platforms (option -Platform):`n- {0}" -f ($platformList -join "`n- "))
         exit
     }
 
+    # Project.
     if ($ProjectPath) {
         if (-not (Test-Path $ProjectPath)) {
-            die "The specified project path doe not exist: ""$ProjectPath""."
+            Write-Error "The specified project path does not exist: ""$ProjectPath""."
         }
     }
     else {
@@ -172,39 +221,59 @@ try {
     $args = @()
     if ($Configuration) { $args += "-c:$Configuration" }
     if ($Runtime)       { $args += "--runtime:$runtime" }
+    if ($Verbosity)     { $args += "--verbosity:$Verbosity" }
     if ($NoRestore)     { $args += "--no-restore" }
     if ($NoAnalyzers)   { $args += "/p:RunAnalyzers=false" }
 
-    if ($Task -eq "build") {
-        if ($MyVerbose) { $args += "/p:PrintSettings=true" }
-        if ($Force)     { $args += "--force" }
-    }
-    elseif ($Task -eq "test") {
-        if ($MyVerbose) { $args += "-v:minimal", "/p:PrintSettings=true" }
+    $cmd = $Task.ToLowerInvariant()
+    switch ($cmd) {
+        'build' {
+            if ($Force)     { $args += "--force" }
+            if ($MyVerbose) { $args += "/p:PrintSettings=true" }
+        }
+        'test' {
+            if ($NoBuild)   { $args += "--no-build" }
+            if ($MyVerbose) { $args += "-v:minimal", "/p:PrintSettings=true" }
+        }
+
     }
 
-    if ($Platform)  {
-        if (-not $NoCheck -and $Platform -notin $allPlatforms) {
-            die "The specified platform is not supported: ""$Platform""."
+    # Platform.
+    if ($Smoke) {
+        $args += "/p:SmokeBuild=true"
+    }
+    elseif ($Platform)  {
+        if (-not $NoCheck -and $Platform -notin $platformList) {
+            Write-Error "The specified platform is not supported: ""$Platform""."
         }
 
         $args += "/p:TargetFrameworks=$Platform"
     }
 
+    # Additional properties.
     foreach ($arg in $Properties) {
         if ($arg.StartsWith("/p:", "InvariantCultureIgnoreCase")) {
             $args += $arg
         }
     }
 
-    & dotnet $Task $ProjectPath $args
-        || die "Task ""$Task"" failed."
+    Write-Host "dotnet.exe is about to run using"
+    Write-Host "  Command -> $cmd"
+    Write-Host "  Args    -> $args"
+
+    if (-not $DryRun) {
+        & dotnet $cmd $ProjectPath $args
+    }
 }
 catch {
-    ___CATCH___
+    Write-Host $_
+    Write-Host $_.Exception
+    Write-Host $_.ScriptStackTrace
+    exit 1
 }
 finally {
-    ___END___
+    popd
+    Write-Host "`nGoodbye."
 }
 
 #endregion
