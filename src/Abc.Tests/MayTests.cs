@@ -652,8 +652,7 @@ namespace Abc
             // FIXME: time designators w/ .NET Framework.
 #if NETFRAMEWORK // DateTime - Time Designators
             return;
-#endif
-
+#else
             // Act
             var am = May.ParseDateTime("4/21 5am", new CultureInfo("en-US"), DateTimeStyles.None);
             var pm = May.ParseDateTime("4/21 5pm", new CultureInfo("en-US"), DateTimeStyles.None);
@@ -676,6 +675,7 @@ namespace Abc
                     Assert.Equal(17, x.Hour);
                 }
             );
+#endif
         }
 
         public static TheoryData<string> StandardFormatSpecifiers
