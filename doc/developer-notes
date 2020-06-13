@@ -101,7 +101,7 @@ top-level D.B.props and D.B.targets.
 API differences. We try to minimize them by defining only two "profiles" that
 match exactly a .NET Standard version:
 - Profile 2.1 for .NET Standard 2.1.
-- Profile 2.0 for for the platforms preceding it.
+- Profile 2.0 for the platforms preceding it.
 Profile 2.1 is a superset of Profile 2.0.
 NB: attributes are NOT considered to be part of the API.
 
@@ -210,7 +210,6 @@ CI
   OS: Windows.
   Settings: default (Release).
   Tasks: build then test the solution.
-  Artifacts: Code Coverage.
 
 3. Build (AZP).
   OS: Windows.

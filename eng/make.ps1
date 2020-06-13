@@ -174,10 +174,13 @@ try {
     if ($Runtime)       { $args += "--runtime:$runtime" }
     if ($NoRestore)     { $args += "--no-restore" }
     if ($NoAnalyzers)   { $args += "/p:RunAnalyzers=false" }
-    if ($MyVerbose)     { $args += "/p:PrintSettings=true" }
 
     if ($Task -eq "build") {
+        if ($MyVerbose) { $args += "/p:PrintSettings=true" }
         if ($Force)     { $args += "--force" }
+    }
+    elseif ($Task -eq "test") {
+        if ($MyVerbose) { $args += "-v:minimal", "/p:PrintSettings=true" }
     }
 
     if ($Platform)  {
