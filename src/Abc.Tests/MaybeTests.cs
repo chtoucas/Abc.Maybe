@@ -496,13 +496,14 @@ namespace Abc
             Assert.Equal(Int32.MaxValue, (int)Maybe.Some((long)Int32.MaxValue));
         }
 
-#if UNCHECKED
-        [Fact(Skip = "CheckForOverflowUnderflow = false")]
-#else
         [Fact]
-#endif
         public static void OpExplicit_Some_ExplicitNumericConversion_Overflows()
         {
+#if UNCHECKED
+            // CheckForOverflowUnderflow = false.
+            return;
+#endif
+
             Assert.Throws<OverflowException>(() => (short)Maybe.Some(Int32.MaxValue));
             Assert.Throws<OverflowException>(() => (int)Maybe.Some(Int64.MaxValue));
         }
@@ -541,7 +542,7 @@ namespace Abc
             Assert.Equal(obj, (MyBaseClass)m);
         }
 
-        #endregion
+#endregion
     }
 
     // Binding.
@@ -610,7 +611,7 @@ namespace Abc
     // Safe escapes.
     public partial class MaybeTests
     {
-        #region Switch()
+#region Switch()
 
         [Fact]
         public static void Switch_None_Throws_WithNullCaseNone()
@@ -709,9 +710,9 @@ namespace Abc
             Assert.Equal(4, v);
         }
 
-        #endregion
+#endregion
 
-        #region TryGetValue()
+#region TryGetValue()
 
         [Fact]
         public static void TryGetValue_None()
@@ -739,9 +740,9 @@ namespace Abc
             Assert.Equal(anyT.Value, value);
         }
 
-        #endregion
+#endregion
 
-        #region ValueOrDefault()
+#region ValueOrDefault()
 
         [Fact]
         public static void ValueOrDefault_None()
@@ -763,9 +764,9 @@ namespace Abc
             Assert.Equal(anyT.Value, anyT.Some.ValueOrDefault());
         }
 
-        #endregion
+#endregion
 
-        #region ValueOrElse()
+#region ValueOrElse()
 
         [Fact]
         public static void ValueOrElse_None_Throws_WithNullFactory()
@@ -837,9 +838,9 @@ namespace Abc
             Assert.Equal(anyT.Value, anyT.Some.ValueOrElse(() => AnyT.Value));
         }
 
-        #endregion
+#endregion
 
-        #region ValueOrThrow()
+#region ValueOrThrow()
 
         [Fact]
         public static void ValueOrThrow_None_Throws()
@@ -901,13 +902,13 @@ namespace Abc
             Assert.Equal(anyT.Value, anyT.Some.ValueOrThrow(new NotSupportedException()));
         }
 
-        #endregion
+#endregion
     }
 
     // Side effects.
     public partial class MaybeTests
     {
-        #region Do()
+#region Do()
 
         [Fact]
         public static void Do_None_Throws_WithNullOnNone()
@@ -967,9 +968,9 @@ namespace Abc
             Assert.False(onNoneCalled);
         }
 
-        #endregion
+#endregion
 
-        #region OnSome()
+#region OnSome()
 
         [Fact]
         public static void OnSome_None_DoesNotThrow_WithNullAction()
@@ -1009,9 +1010,9 @@ namespace Abc
             Assert.True(wasCalled);
         }
 
-        #endregion
+#endregion
 
-        #region When()
+#region When()
 
         [Fact]
         public static void When_None_WithFalse()
@@ -1095,13 +1096,13 @@ namespace Abc
             Assert.Null(ex);
         }
 
-        #endregion
+#endregion
     }
 
     // Iterable.
     public partial class MaybeTests
     {
-        #region ToEnumerable()
+#region ToEnumerable()
 
         [Fact]
         public static void ToEnumerable()
@@ -1110,9 +1111,9 @@ namespace Abc
             Assert.Empty(NoText.ToEnumerable());
         }
 
-        #endregion
+#endregion
 
-        #region GetEnumerator()
+#region GetEnumerator()
 
         [Fact]
         public static void GetEnumerator_None_ForEach()
@@ -1165,9 +1166,9 @@ namespace Abc
             Assert.False(iter.MoveNext());
         }
 
-        #endregion
+#endregion
 
-        #region Yield()
+#region Yield()
 
         [Fact]
         public static void Yield_None() => Assert.Empty(NoText.Yield());
@@ -1201,9 +1202,9 @@ namespace Abc
             Assert.Equal(Enumerable.Repeat(MyText, 1000), SomeText.Yield(1000));
         }
 
-        #endregion
+#endregion
 
-        #region Contains()
+#region Contains()
 
         [Fact]
         public static void Contains_None_Throws_WithNullComparer()
@@ -1285,7 +1286,7 @@ namespace Abc
             Assert.True(Maybe.SomeOrNone(Margana).Contains(Anagram, cmp));
         }
 
-        #endregion
+#endregion
     }
 
 #if !NETSTANDARD1_x // System.Runtime.Serialization
