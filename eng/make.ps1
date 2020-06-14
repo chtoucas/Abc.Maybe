@@ -8,59 +8,6 @@
 <#
 .SYNOPSIS
 Wrapper for dotnet.exe.
-
-.PARAMETER Task
-The .NET command to be called. Default = "build".
-
-.PARAMETER Project
-The project to build. Default (implicit) = solution.
-
-.PARAMETER Configuration
-The configuration to build the project/solution for. Default (implicit) = "Debug".
-
-.PARAMETER Runtime
-The runtime to build the project/solution for.
-
-.PARAMETER Platform
-The single platform to build the project/solution for.
-
-.PARAMETER Flat
-With this option an exe may "become" a library.
-
-.PARAMETER ListPlatforms
-Print the list of supported platforms, then exit?
-
-.PARAMETER AllKnown
-
-.PARAMETER NoStandard
-
-.PARAMETER NoCore
-
-.PARAMETER NoClassic
-
-.PARAMETER NoCheck
-Do not check whether the specified platform is supported or not?
-Useful to test the solution for platforms listed in "NotSupportedTestPlatforms"
-from D.B.props. Of course, as the name suggests, a succesful outcome is not
-guaranteed, to say the least, it might not even run.
-
-.PARAMETER Verbosity
-
-.PARAMETER Force
-Forces all dependencies to be resolved even if the last restore was successful?
-
-.PARAMETER NoRestore
-Do not restore the project/solution?
-
-.PARAMETER NoBuild
-
-.PARAMETER DryRun
-
-.PARAMETER Help
-Print help text then exit?
-
-.PARAMETER Properties
-
 #>
 [CmdletBinding(PositionalBinding = $false)]
 param(
@@ -121,9 +68,9 @@ function Print-Help {
 Wrapper for dotnet.exe.
 
 Usage: reset.ps1 [arguments]
-  -t|-Task           the .NET command to be called. Default = "build".
+  -t|-Task           the .NET command to be called. Default (implicit) = "build".
   -p|-Project        the project to build. Default = solution.
-  -c|-Configuration  the configuration to build the project/solution for. Default = "Debug".
+  -c|-Configuration  the configuration to build the project/solution for. Default (implicit) = "Debug".
   -r|-Runtime        the runtime to build the project/solution for.
   -f|-Platform       the platform to build the project/solution for.
 
@@ -138,14 +85,22 @@ Usage: reset.ps1 [arguments]
   -v|-Verbosity
      -Force          forces all dependencies to be resolved even if the last restore was successful?
      -NoRestore      do not restore the project/solution?
-     -NoBuild
+     -NoBuild        do not build the project/solution?
 
      -Verbose
      -Debug
      -DryRun
-  -h|-Help           print this help and exit?
+  -h|-Help           print this help then exit?
 
 Arguments starting with '/p:' are passed through to dotnet.exe.
+
+Remarks:
+- Option -Flat.
+  An exe may "become" a library.
+- Option -NoCheck.
+  Useful to test the solution for platforms listed in "NotSupportedTestPlatforms"
+  from D.B.props. Of course, as the name suggests, a succesful outcome is not
+  guaranteed, to say the least, it might not even run.
 
 Commonly used properties.
 > make.ps1 [...] /p:SmokeBuild=true             # mimic build inside VS.
@@ -170,9 +125,6 @@ Azure tasks.
 > make.ps1 -t test    -Flat -NoStandard -NoBuild   /p:Retail=true
 Remark: to truely mimic an Azure task, one should add
 '/p:ContinuousIntegrationBuild=true' which is implicit set on an Azure server.
-
-Looking for more help?
-> Get-Help -Detailed make.ps1
 
 '@
 }
