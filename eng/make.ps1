@@ -9,21 +9,8 @@
 .SYNOPSIS
 Wrapper for dotnet.exe.
 
-.DESCRIPTION
-Build the solution for all supported platforms.
-To build a single project, specify its path via -Project.
-NB: the list of supported platforms can NOT be overriden.
-
-The default behaviour is to build libraries for all supported platforms, and to
-build exe projects only for "DefaultPlatform".
-
-To target a single platform, use -Platform (no "s").
-
-Targetting a single platform or all supported platforms may "transform" an exe
-project into a library.
-
 .PARAMETER Task
-The .NET command to be called.
+The .NET command to be called. Default = "build".
 
 .PARAMETER Project
 The project to build. Default (implicit) = solution.
@@ -37,11 +24,19 @@ The runtime to build the project/solution for.
 .PARAMETER Platform
 The single platform to build the project/solution for.
 
+.PARAMETER Flat
+With this option an exe may "become" a library.
+
 .PARAMETER ListPlatforms
 Print the list of supported platforms, then exit?
 
-.PARAMETER Force
-Forces all dependencies to be resolved even if the last restore was successful?
+.PARAMETER AllKnown
+
+.PARAMETER NoStandard
+
+.PARAMETER NoCore
+
+.PARAMETER NoClassic
 
 .PARAMETER NoCheck
 Do not check whether the specified platform is supported or not?
@@ -49,11 +44,23 @@ Useful to test the solution for platforms listed in "NotSupportedTestPlatforms"
 from D.B.props. Of course, as the name suggests, a succesful outcome is not
 guaranteed, to say the least, it might not even run.
 
+.PARAMETER Verbosity
+
+.PARAMETER Force
+Forces all dependencies to be resolved even if the last restore was successful?
+
 .PARAMETER NoRestore
 Do not restore the project/solution?
 
+.PARAMETER NoBuild
+
+.PARAMETER DryRun
+
 .PARAMETER Help
 Print help text then exit?
+
+.PARAMETER Properties
+
 #>
 [CmdletBinding(PositionalBinding = $false)]
 param(
@@ -74,18 +81,17 @@ param(
     [Parameter(Mandatory = $false)]
     [Alias('f')] [string] $Platform,
 
-    [Parameter(Mandatory = $false)]
-    [ValidateSet('q', 'quiet', 'm', 'minimal', 'n', 'normal', 'd', 'detailed', 'diag', 'diagnostic')]
-    [Alias('v')] [string] $Verbosity,
-
                  [switch] $Flat,
     [Alias('l')] [switch] $ListPlatforms,
-    [Alias('a')] [switch] $AllKnown,
+                 [switch] $AllKnown,
                  [switch] $NoStandard,
                  [switch] $NoCore,
                  [switch] $NoClassic,
                  [switch] $NoCheck,
 
+    [Parameter(Mandatory = $false)]
+    [ValidateSet('q', 'quiet', 'm', 'minimal', 'n', 'normal', 'd', 'detailed', 'diag', 'diagnostic')]
+    [Alias('v')] [string] $Verbosity,
                  [switch] $Force,
                  [switch] $NoRestore,
                  [switch] $NoBuild,
@@ -112,12 +118,11 @@ function Print-Help {
 Wrapper for dotnet.exe.
 
 Usage: reset.ps1 [arguments]
-  -t|-Task           the .NET command to be called.
+  -t|-Task           the .NET command to be called. Default = "build".
   -p|-Project        the project to build. Default = solution.
   -c|-Configuration  the configuration to build the project/solution for. Default = "Debug".
   -r|-Runtime        the runtime to build the project/solution for.
   -f|-Platform       the platform to build the project/solution for.
-  -v|-Verbosity
 
      -Flat
   -l|-ListPlatforms  print the list of supported platforms, then exit?
@@ -127,6 +132,7 @@ Usage: reset.ps1 [arguments]
      -NoClassic
      -NoCheck        do not check whether the specified platform is supported or not?
 
+  -v|-Verbosity
      -Force          forces all dependencies to be resolved even if the last restore was successful?
      -NoRestore      do not restore the project/solution?
      -NoBuild
@@ -151,16 +157,16 @@ Misc properties.
 > make.ps1 [...] /p:HideInternals=true
 > make.ps1 [...] /p:PatchEquality=true
 
-Examples.
+Example.
 > make.ps1                                      # build...
 > make.ps1 -t test -NoBuild                     # ... then test.
 
-CI tasks.
+Azure tasks.
 > make.ps1 -t restore -Flat -NoStandard            /p:Retail=true
 > make.ps1 -t build   -Flat -NoStandard -NoRestore /p:Retail=true /p:VersionSuffix=ci
 > make.ps1 -t test    -Flat -NoStandard -NoBuild   /p:Retail=true
-Remark: to mimic a CI build, add '/p:ContinuousIntegrationBuild=true' which is
-implicit on CI servers.
+Remark: to truely mimic an Azure task, one should add
+'/p:ContinuousIntegrationBuild=true' which is implicit set on an Azure server.
 
 Looking for more help?
 > Get-Help -Detailed make.ps1
@@ -176,39 +182,30 @@ function Get-Platforms(
     [switch] $noClassic,
     [switch] $allKnown) {
 
-    # Load property files.
+    # Load the top-level D.B.props.
     $xml = Get-Content (Join-Path $ROOT_DIR 'Directory.Build.props')
     $props = New-Object -TypeName System.Xml.XmlDocument
     $props.PreserveWhitespace = $false
     $props.LoadXml($xml)
 
     $platforms = @()
-
     if (-not $noStandard) {
         $platforms = Select-Property $props 'SupportedStandards'
     }
-
     if (-not $noCore) {
-        if ($allKnown) {
-            $platforms += Select-Property $props 'MaxCorePlatforms'
-        }
-        else {
-            $platforms += Select-Property $props 'MinCorePlatforms'
-        }
+        $propName = $allKnown ? 'MaxCorePlatforms' : 'MinCorePlatforms'
+        $platforms += Select-Property $props $propName
     }
-
     # We ignore Mono on Linux and MacOS...
     if (-not $noClassic -and $IsWindows) {
-        if ($allKnown) {
-            $platforms += Select-Property $props 'MaxClassicPlatforms'
-        }
-        else {
-            $platforms += Select-Property $props 'MinClassicPlatforms'
-        }
+        $propName = $allKnown ? 'MaxClassicPlatforms' : 'MinClassicPlatforms'
+        $platforms += Select-Property $props $propName
     }
 
     $platforms
 }
+
+# ------------------------------------------------------------------------------
 
 function Select-Property([Xml] $props, [string] $property) {
     $nodes = $props | Select-Xml -XPath "//Project/PropertyGroup/$property"
@@ -300,6 +297,8 @@ try {
         }
         elseif ($Platform)  {
             Write-Verbose "Execute command for platform ""$Platform""."
+            # If the platform is not listed in "TargetFrameworks", dotnet.exe
+            # will fail silently :-(
             $args += "-f:$Platform"
         }
         else {
@@ -315,22 +314,22 @@ try {
         }
     }
 
-    $msg  = "  Command -> $cmd`n"
-    $msg += "  Project -> $Project`n"
-    $msg += "  Args    -> $args"
-
     if ($DryRun) {
-        Write-Host 'dotnet.exe would run using'
-        Write-Host $msg
+        Write-Host 'dotnet.exe would run using:'
+        Write-Host "  Command -> $cmd"
+        Write-Host "  Project -> $Project"
+        Write-Host "  Args    -> $args"
     }
     else {
-        Write-Verbose 'dotnet.exe is about to run using'
-        Write-Verbose $msg
+        Write-Verbose 'dotnet.exe is about to run using:'
+        Write-Verbose "  Command -> $cmd"
+        Write-Verbose "  Project -> $Project"
+        Write-Verbose "  Args    -> $args"
         & dotnet $cmd $Project $args
     }
 }
 catch {
-    Write-Host $_
+    Write-Host $_ -Foreground Red
     Write-Host $_.Exception
     Write-Host $_.ScriptStackTrace
     exit 1
