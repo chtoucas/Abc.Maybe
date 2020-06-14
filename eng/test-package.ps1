@@ -111,7 +111,7 @@ param(
     [Alias("h")] [switch] $Help
 )
 
-. (Join-Path $PSScriptRoot "abc.ps1")
+. (Join-Path $PSScriptRoot "lib\abc.ps1")
 
 # ------------------------------------------------------------------------------
 

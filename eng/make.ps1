@@ -11,7 +11,7 @@ Wrapper for dotnet.exe.
 
 .DESCRIPTION
 Build the solution for all supported platforms.
-To build a single project, specify its path via -ProjectPath.
+To build a single project, specify its path via -Project.
 NB: the list of supported platforms can NOT be overriden.
 
 The default behaviour is to build libraries for all supported platforms, and to
@@ -23,10 +23,10 @@ Targetting a single platform or all supported platforms may "transform" an exe
 project into a library.
 
 .PARAMETER Task
-The .NET command to be called. Default = "build".
+The .NET command to be called.
 
-.PARAMETER ProjectPath
-The project to build. Default = solution.
+.PARAMETER Project
+The project to build. Default (implicit) = solution.
 
 .PARAMETER Configuration
 The configuration to build the project/solution for. Default (implicit) = "Debug".
@@ -43,9 +43,6 @@ Print the list of supported platforms, then exit?
 .PARAMETER Force
 Forces all dependencies to be resolved even if the last restore was successful?
 
-.PARAMETER NoAnalyzers
-Turn off source code analysis?
-
 .PARAMETER NoCheck
 Do not check whether the specified platform is supported or not?
 Useful to test the solution for platforms listed in "NotSupportedTestPlatforms"
@@ -54,9 +51,6 @@ guaranteed, to say the least, it might not even run.
 
 .PARAMETER NoRestore
 Do not restore the project/solution?
-
-.PARAMETER MyVerbose
-Verbose mode? Print the settings in use before compiling each assembly.
 
 .PARAMETER Help
 Print help text then exit?
@@ -68,39 +62,38 @@ param(
     [Alias('t')] [string] $Task = 'build',
 
     [Parameter(Mandatory = $false)]
-    [Alias('p')] [string] $ProjectPath,
+    [Alias('p')] [string] $Project,
 
     [Parameter(Mandatory = $false)]
     [ValidateSet('Debug', 'Release')]
     [Alias('c')] [string] $Configuration,
 
     [Parameter(Mandatory = $false)]
-                 [string] $Runtime,
+    [Alias('r')] [string] $Runtime,
 
     [Parameter(Mandatory = $false)]
     [Alias('f')] [string] $Platform,
-    [Alias('l')] [switch] $ListPlatforms,
-    [Alias('a')] [switch] $AllKnown,
-                 [switch] $Smoke,
-                 [switch] $Flat,
-                 [switch] $NoStandard,
-                 [switch] $NoCore,
-                 [switch] $NoClassic,
 
     [Parameter(Mandatory = $false)]
     [ValidateSet('q', 'quiet', 'm', 'minimal', 'n', 'normal', 'd', 'detailed', 'diag', 'diagnostic')]
-                 [string] $Verbosity,
+    [Alias('v')] [string] $Verbosity,
+
+                 [switch] $Flat,
+    [Alias('l')] [switch] $ListPlatforms,
+    [Alias('a')] [switch] $AllKnown,
+                 [switch] $NoStandard,
+                 [switch] $NoCore,
+                 [switch] $NoClassic,
+                 [switch] $NoCheck,
 
                  [switch] $Force,
-                 [switch] $NoAnalyzers,
-                 [switch] $NoCheck,
                  [switch] $NoRestore,
                  [switch] $NoBuild,
-    [Alias('v')] [switch] $MyVerbose,
+
                  [switch] $DryRun,
     [Alias('h')] [switch] $Help,
 
-    [Parameter(Mandatory=$false, ValueFromRemainingArguments = $true)]
+    [Parameter(ValueFromRemainingArguments = $true)]
                [string[]] $Properties
 )
 
@@ -116,38 +109,56 @@ New-Variable ROOT_DIR (Get-Item $PSScriptRoot).Parent.FullName `
 function Print-Help {
     Write-Host @'
 
-Build the solution for all supported platforms.
+Wrapper for dotnet.exe.
 
 Usage: reset.ps1 [arguments]
   -t|-Task           the .NET command to be called.
-  -p|-ProjectPath    the project to build.
-  -c|-Configuration  the configuration to build the project/solution for.
-     -Runtime        the runtime to build the project/solution for.
-
+  -p|-Project        the project to build. Default = solution.
+  -c|-Configuration  the configuration to build the project/solution for. Default = "Debug".
+  -r|-Runtime        the runtime to build the project/solution for.
   -f|-Platform       the platform to build the project/solution for.
+  -v|-Verbosity
+
+     -Flat
   -l|-ListPlatforms  print the list of supported platforms, then exit?
+     -AllKnown
+     -NoStandard
+     -NoCore
+     -NoClassic
+     -NoCheck        do not check whether the specified platform is supported or not?
 
      -Force          forces all dependencies to be resolved even if the last restore was successful?
-     -NoAnalyzers    turn off source code analysis?
-     -NoCheck        do not check whether the specified platform is supported or not?
      -NoRestore      do not restore the project/solution?
-  -v|-MyVerbose      display settings used to compile each DLL?
+     -NoBuild
+
+     -Verbose
+     -Debug
+     -DryRun
   -h|-Help           print this help and exit?
 
 Arguments starting with '/p:' are passed through to dotnet.exe.
-> make.ps1 /p:Retail=true
-> make.ps1 /p:HideInternals=true
-> make.ps1 /p:PatchEquality=true
+
+Commonly used properties.
+> make.ps1 [...] /p:SmokeBuild=true             # mimic build inside VS.
+                                                # shortcut: $env:SMOKE_BUILD = 'true'.
+> make.ps1 [...] /p:Retail=true
+> make.ps1 [...] /p:PrintSettings=true          # display settings used to compile each DLL.
+                                                # With the task 'test', one should use at
+                                                # least "-Verbosity=minimal".
+> make.ps1 [...] /p:RunAnalyzers=false          # turn off source code analysis.
+
+Misc properties.
+> make.ps1 [...] /p:HideInternals=true
+> make.ps1 [...] /p:PatchEquality=true
 
 Examples.
-> make.ps1                                 #
-> make.ps1 /p:Retail=true                  #
-> make.ps1 -p src\Abc.Maybe -c Release     # "Release" build of Abc.Maybe
+> make.ps1                                      # build...
+> make.ps1 -t test -NoBuild                     # ... then test.
 
 CI tasks.
-> make.ps1 -Task restore -Flat -NoStandard /p:Retail=true
-> make.ps1 -Task build   -Flat -NoStandard /p:Retail=true /p:VersionSuffix=ci -NoRestore
-> make.ps1 -Task test    -Flat -NoStandard /p:Retail=true -NoBuild
+> make.ps1 -t restore -Flat -NoStandard            /p:Retail=true
+> make.ps1 -t build   -Flat -NoStandard -NoRestore /p:Retail=true /p:VersionSuffix=ci
+> make.ps1 -t test    -Flat -NoStandard -NoBuild   /p:Retail=true
 Remark: to mimic a CI build, add '/p:ContinuousIntegrationBuild=true' which is
 implicit on CI servers.
 
@@ -160,11 +171,16 @@ Looking for more help?
 # ------------------------------------------------------------------------------
 
 function Get-Platforms(
-    [Xml] $props,
     [switch] $noStandard,
     [switch] $noCore,
     [switch] $noClassic,
     [switch] $allKnown) {
+
+    # Load property files.
+    $xml = Get-Content (Join-Path $ROOT_DIR 'Directory.Build.props')
+    $props = New-Object -TypeName System.Xml.XmlDocument
+    $props.PreserveWhitespace = $false
+    $props.LoadXml($xml)
 
     $platforms = @()
 
@@ -181,7 +197,8 @@ function Get-Platforms(
         }
     }
 
-    if (-not $noClassic) {
+    # We ignore Mono on Linux and MacOS...
+    if (-not $noClassic -and $IsWindows) {
         if ($allKnown) {
             $platforms += Select-Property $props 'MaxClassicPlatforms'
         }
@@ -191,14 +208,6 @@ function Get-Platforms(
     }
 
     $platforms
-}
-
-function Load-Properties([string] $path) {
-    $xml = Get-Content $path
-    $props = New-Object -TypeName System.Xml.XmlDocument
-    $props.PreserveWhitespace = $false
-    $props.LoadXml($xml)
-    $props
 }
 
 function Select-Property([Xml] $props, [string] $property) {
@@ -216,39 +225,24 @@ function Select-Property([Xml] $props, [string] $property) {
 
 if ($Help) { Print-Help ; exit }
 
-Write-Host "Hello, this is the make script.`n"
+$hello = 'Hello, this is the make script'
+if ($DryRun) { Write-Host "$hello (DRY RUN).`n" }
+        else { Write-Host "$hello.`n" }
 
 try {
     pushd $ROOT_DIR
 
     if ($ListPlatforms) {
-        $props = Load-Properties (Join-Path $ROOT_DIR 'Directory.Build.props')
-        # We ignore Mono on Linux and MacOS...
-        $platformList = Get-Platforms $props -AllKnown -NoClassic:(-not $IsWindows)
-
-        if ($ListPlatforms) {
-            Write-Host ("Supported platforms (option -Flat):`n- {0}" -f ($platformList -join "`n- "))
-            exit
-        }
+        $platforms = (Get-Platforms -AllKnown) -join "`n- "
+        Write-Host "Supported platforms (option -Flat):`n- $platforms"
+        exit
     }
 
-    # Project.
-    if ($ProjectPath) {
-        if (-not (Test-Path $ProjectPath)) {
-            Write-Error "The specified project path does not exist: ""$ProjectPath""."
-        }
-    }
-    else {
-        $ProjectPath = Join-Path $ROOT_DIR 'Maybe.sln' -Resolve
-    }
-
-    # Common args available to all commands.
+    # Command and its common arguments.
     $args = @()
     if ($Configuration) { $args += "-c:$Configuration" }
-    if ($Runtime)       { $args += "--runtime:$runtime" }
-    if ($Verbosity)     { $args += "--verbosity:$Verbosity" }
-    if ($NoRestore)     { $args += '--no-restore' }
-    if ($NoAnalyzers)   { $args += '/p:RunAnalyzers=false' }
+    if ($Runtime)       { $args += "-r:$runtime" }
+    if ($Verbosity)     { $args += "-v:$Verbosity" }
 
     $cmd = $Task.ToLowerInvariant()
     switch ($cmd) {
@@ -256,64 +250,83 @@ try {
             $args += '--configfile:NuGet.Config'
         }
         'build' {
+            if ($NoRestore) { $args += '--no-restore' }
             if ($Force)     { $args += '--force' }
-            if ($MyVerbose) { $args += '/p:PrintSettings=true' }
         }
         'test' {
+            if ($NoRestore) { $args += '--no-restore' }
             if ($NoBuild)   { $args += '--no-build' }
-            if ($MyVerbose) { $args += '-v:minimal', '/p:PrintSettings=true' }
         }
+    }
+
+    # Project.
+    if ($Project -and -not (Test-Path $Project)) {
+        Write-Error "The specified project path does not exist: ""$Project""."
     }
 
     # Targets.
-    if ($Smoke) {
-        $args += '/p:SmokeBuild=true'
+    Write-Debug ('SMOKE_BUILD -> {0}' -f $env:SMOKE_BUILD)
+
+    if ($env:SMOKE_BUILD -eq 'true' -or ($Properties -and $Properties.Contains('/p:SmokeBuild=true'))) {
+        Write-Verbose "Execute command using smoke context."
     }
-    elseif ($Flat) {
-        $props = Load-Properties (Join-Path $ROOT_DIR 'Directory.Build.props')
-        # We ignore Mono on Linux and MacOS...
-        $platformList = Get-Platforms $props `
-            -NoStandard:$NoStandard `
-            -NoCore:$NoCore `
-            -NoClassic:($NoClassic -or -not $IsWindows) `
-            -AllKnown:($AllKnown -or $Platform -or $ListPlatforms)
+    else {
+        if ($Flat) {
+            $platforms = Get-Platforms `
+                -NoStandard:$NoStandard `
+                -NoCore:$NoCore `
+                -NoClassic:$NoClassic `
+                -AllKnown:($AllKnown -or $Platform)
 
-        if ($cmd -eq 'test') {
-            $platformList = $platformList | where { -not $_.StartsWith('netstandard') }
-        }
-
-        if (-not $platformList) {
-            Write-Error 'There is nothing left to be done.'
-        }
-
-        if ($Platform)  {
-            if (-not $NoCheck -and $Platform -notin $platformList) {
-                Write-Error "The specified platform is not supported: ""$Platform""."
+            if ($cmd -eq 'test') {
+                $platforms = $platforms | where { -not $_.StartsWith('netstandard') }
             }
 
-            $args += "/p:TargetFrameworks=$Platform"
+            if ($Platform)  {
+                Write-Verbose "Execute command for platform ""$Platform"" (FLAT)."
+                if (-not $NoCheck -and $Platform -notin $platforms) {
+                    Write-Error "The specified platform is not supported: ""$Platform""."
+                }
+
+                $args += "/p:TargetFrameworks=$Platform"
+            }
+            else {
+                Write-Verbose "Execute command for a custom platform set (FLAT)."
+                if (-not $platforms) {
+                    Write-Error 'The lits of targets is empty.'
+                }
+                $args += '/p:TargetFrameworks=\"' + ($platforms -join ';') + '\"'
+            }
+        }
+        elseif ($Platform)  {
+            Write-Verbose "Execute command for platform ""$Platform""."
+            $args += "-f:$Platform"
         }
         else {
-            $args += '/p:TargetFrameworks=\"' + ($platformList -join ';') + '\"'
+            Write-Verbose "Execute command for the default platform set."
         }
-    }
-    elseif ($Platform)  {
-        $args += "-f:$Platform"
     }
 
     # Additional properties.
-    foreach ($arg in $Properties) {
-        if ($arg.StartsWith('/p:', 'InvariantCultureIgnoreCase')) {
-            $args += $arg
+    Write-Debug "Properties -> $Properties"
+    foreach ($prop in $Properties) {
+        if ($prop.StartsWith('/p:', 'InvariantCultureIgnoreCase')) {
+            $args += $prop
         }
     }
 
-    Write-Host 'dotnet.exe is about to run using'
-    Write-Host "  Command -> $cmd"
-    Write-Host "  Args    -> $args`n"
+    $msg  = "  Command -> $cmd`n"
+    $msg += "  Project -> $Project`n"
+    $msg += "  Args    -> $args"
 
-    if (-not $DryRun) {
-        & dotnet $cmd $ProjectPath $args
+    if ($DryRun) {
+        Write-Host 'dotnet.exe would run using'
+        Write-Host $msg
+    }
+    else {
+        Write-Verbose 'dotnet.exe is about to run using'
+        Write-Verbose $msg
+        & dotnet $cmd $Project $args
     }
 }
 catch {

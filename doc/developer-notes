@@ -213,7 +213,7 @@ CI
 
 3. Build (AZP). Not automatically run.
   OS: Windows.
-  Settings: Retail=true (Release).
+  Settings: Retail=true (Debug).
   Tasks: build the solution for all supported platforms.
 
 To skip CI on push,

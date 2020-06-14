@@ -15,7 +15,7 @@ Update PublicAPI.Shipped.txt and PublicAPI.Unshipped.txt:
 [CmdletBinding()]
 param()
 
-. (Join-Path $PSScriptRoot "abc.ps1")
+. (Join-Path $PSScriptRoot "lib\abc.ps1")
 
 # ------------------------------------------------------------------------------
 

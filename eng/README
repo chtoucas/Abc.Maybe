@@ -12,8 +12,8 @@ Scripts.
 - test-package.ps1      test a package.
 
 Other files.
-- abc.ps1               project-specific helpers.
-- utils.ps1             generic helpers.
+- lib\abc.ps1           project-specific helpers.
+- lib\utils.ps1         generic helpers.
 - NETFxTools            blank project used to restore .NET Framework tools.
 
 Obsolete files.

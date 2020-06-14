@@ -32,7 +32,7 @@ New-Alias "SAY-LOUDLY" Write-Green
 # All paths are ABSOLUTE.
 
 # Root directory = absolute path of the parent directory.
-(Get-Item $PSScriptRoot).Parent.FullName     | const ROOT_DIR
+(Get-Item $PSScriptRoot).Parent.Parent.FullName | const ROOT_DIR
 # Core directories.
 (Join-Path $ROOT_DIR "eng"  -Resolve)        | const ENG_DIR
 (Join-Path $ROOT_DIR "src"  -Resolve)        | const SRC_DIR

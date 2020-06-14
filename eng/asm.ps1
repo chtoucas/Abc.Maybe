@@ -11,7 +11,7 @@ param(
     [switch] $NoTimestamp
 )
 
-. (Join-Path $PSScriptRoot "abc.ps1")
+. (Join-Path $PSScriptRoot "lib\abc.ps1")
 
 # ------------------------------------------------------------------------------
 
