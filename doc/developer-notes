@@ -227,11 +227,6 @@ References.
 PowerShell
 ----------
 
-Command-line props:
-- on Linux/MacOs, use /p:TargetFrameworks='"netcoreapp3.1;netcoreapp2.1"'
-- on Windows, use /p:TargetFrameworks=\"netcoreapp3.1;netcoreapp2.1\"
-See https://github.com/dotnet/sdk/issues/8792#issuecomment-393756980
-
 Common script/function parameters:
    -NoCI
    -Reset

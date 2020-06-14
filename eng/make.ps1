@@ -108,6 +108,9 @@ param(
 New-Variable ROOT_DIR (Get-Item $PSScriptRoot).Parent.FullName `
     -Scope Script -Option Constant
 
+New-Variable SRC_DIR (Join-Path $ROOT_DIR "src" -Resolve) `
+    -Scope Script -Option Constant
+
 #endregion
 ################################################################################
 #region Helpers
@@ -157,7 +160,7 @@ Misc properties.
 > make.ps1 [...] /p:HideInternals=true
 > make.ps1 [...] /p:PatchEquality=true
 
-Example.
+Examples.
 > make.ps1                                      # build...
 > make.ps1 -t test -NoBuild                     # ... then test.
 
@@ -196,13 +199,27 @@ function Get-Platforms(
         $propName = $allKnown ? 'MaxCorePlatforms' : 'MinCorePlatforms'
         $platforms += Select-Property $props $propName
     }
-    # We ignore Mono on Linux and MacOS...
+    # WARNING: we ignore Mono on Linux and MacOS...
     if (-not $noClassic -and $IsWindows) {
         $propName = $allKnown ? 'MaxClassicPlatforms' : 'MinClassicPlatforms'
         $platforms += Select-Property $props $propName
     }
 
     $platforms
+}
+
+# ------------------------------------------------------------------------------
+
+function Get-TargetFrameworks([string[]] $platforms) {
+    if (-not $platforms) { Write-Error 'The lits of targets is empty.' }
+    # Quotes and multiple values:
+    # - On Windows,     /p:TargetFrameworks=\"XXX;YYY\"
+    # - On Linux/MacOs, /p:TargetFrameworks='"XXX;YYY"'
+    # See https://github.com/dotnet/sdk/issues/8792#issuecomment-393756980
+    if ($IsWindows) { $bquote = '\"' ; $equote = '\"' }
+               else { $bquote = "'"""; $equote = """'" }
+    $targetFrameworks = $platforms -join ';'
+    '/p:TargetFrameworks=' + $bquote + ($platforms -join ';') + $equote
 }
 
 # ------------------------------------------------------------------------------
@@ -214,6 +231,13 @@ function Select-Property([Xml] $props, [string] $property) {
     }
     $text = $nodes[0].Node.InnerText.Trim().Trim(';').Replace(' ', '')
     $text.Split(';')
+}
+
+# ------------------------------------------------------------------------------
+
+function fmt([string] $string, $arg) {
+    if (-not $arg) { $arg = '(empty)' }
+    $string -f $arg
 }
 
 #endregion
@@ -262,37 +286,28 @@ try {
     }
 
     # Targets.
-    Write-Debug ('SMOKE_BUILD -> {0}' -f $env:SMOKE_BUILD)
+    Write-Debug (fmt 'SMOKE_BUILD = {0}' $env:SMOKE_BUILD)
 
     if ($env:SMOKE_BUILD -eq 'true' -or ($Properties -and $Properties.Contains('/p:SmokeBuild=true'))) {
-        Write-Verbose "Execute command using smoke context."
+        Write-Verbose "Execute command in a smoke context."
     }
     else {
         if ($Flat) {
-            $platforms = Get-Platforms `
-                -NoStandard:$NoStandard `
-                -NoCore:$NoCore `
-                -NoClassic:$NoClassic `
-                -AllKnown:($AllKnown -or $Platform)
-
-            if ($cmd -eq 'test') {
-                $platforms = $platforms | where { -not $_.StartsWith('netstandard') }
-            }
-
             if ($Platform)  {
                 Write-Verbose "Execute command for platform ""$Platform"" (FLAT)."
-                if (-not $NoCheck -and $Platform -notin $platforms) {
+                if (-not $NoCheck -and $Platform -notin (Get-Platforms -AllKnown)) {
                     Write-Error "The specified platform is not supported: ""$Platform""."
                 }
-
                 $args += "/p:TargetFrameworks=$Platform"
             }
             else {
                 Write-Verbose "Execute command for a custom platform set (FLAT)."
-                if (-not $platforms) {
-                    Write-Error 'The lits of targets is empty.'
-                }
-                $args += '/p:TargetFrameworks=\"' + ($platforms -join ';') + '\"'
+                $platforms = Get-Platforms `
+                    -NoStandard:($NoStandard -or $cmd -eq 'test') `
+                    -NoCore:$NoCore `
+                    -NoClassic:$NoClassic `
+                    -AllKnown:$AllKnown
+                $args += Get-TargetFrameworks $platforms
             }
         }
         elseif ($Platform)  {
@@ -307,7 +322,7 @@ try {
     }
 
     # Additional properties.
-    Write-Debug "Properties -> $Properties"
+    Write-Debug (fmt "Properties = {0}" $Properties)
     foreach ($prop in $Properties) {
         if ($prop.StartsWith('/p:', 'InvariantCultureIgnoreCase')) {
             $args += $prop
@@ -317,14 +332,14 @@ try {
     if ($DryRun) {
         Write-Host 'dotnet.exe would run using:'
         Write-Host "  Command -> $cmd"
-        Write-Host "  Project -> $Project"
-        Write-Host "  Args    -> $args"
+        Write-Host (fmt "  Project -> {0}" $Project)
+        Write-Host (fmt "  Args    -> {0}" $args)
     }
     else {
         Write-Verbose 'dotnet.exe is about to run using:'
         Write-Verbose "  Command -> $cmd"
-        Write-Verbose "  Project -> $Project"
-        Write-Verbose "  Args    -> $args"
+        Write-Verbose (fmt "  Project -> {0}" $Project)
+        Write-Verbose (fmt "  Args    -> {0}" $args)
         & dotnet $cmd $Project $args
     }
 }
