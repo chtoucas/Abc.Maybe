@@ -68,28 +68,30 @@ function Print-Help {
 Wrapper for dotnet.exe.
 
 Usage: reset.ps1 [arguments]
-  -t|-Task           the .NET command to be called. Default (implicit) = "build".
-  -p|-Project        the project to build. Default = solution.
+  -t|-Task           the .NET command to be called. Default = "build".
+  -p|-Project        the project to build. Default (implicit) = solution.
   -c|-Configuration  the configuration to build the project/solution for. Default (implicit) = "Debug".
   -r|-Runtime        the runtime to build the project/solution for.
   -f|-Platform       the platform to build the project/solution for.
 
      -Flat
   -l|-ListPlatforms  print the list of supported platforms, then exit?
-     -AllKnown
-     -NoStandard
-     -NoCore
-     -NoClassic
+     -AllKnown       inlude ALL known platform versions (SLOW)?
+     -NoStandard     exclude .NET Standard?
+     -NoCore         exclude .NET Core?
+     -NoClassic      exclude .NET Framework?
      -NoCheck        do not check whether the specified platform is supported or not?
 
-  -v|-Verbosity
+  # Common options for dotnet.exe.
+  -v|-Verbosity      sets the verbosity level.
      -Force          forces all dependencies to be resolved even if the last restore was successful?
      -NoRestore      do not restore the project/solution?
      -NoBuild        do not build the project/solution?
 
-     -Verbose
-     -Debug
-     -DryRun
+  # Other options.
+     -Verbose        PS verbose mode.
+     -Debug          PS debug mode.
+     -DryRun         do not execute dotnet.exe.
   -h|-Help           print this help then exit?
 
 Arguments starting with '/p:' are passed through to dotnet.exe.
@@ -187,7 +189,8 @@ function Select-Property([Xml] $props, [string] $property) {
 
 # ------------------------------------------------------------------------------
 
-function fmt([string] $string, $arg) {
+# Only one arg...
+function sprintf([string] $string, [string] $arg) {
     if (-not $arg) { $arg = '(empty)' }
     $string -f $arg
 }
@@ -238,7 +241,7 @@ try {
     }
 
     # Targets.
-    Write-Debug (fmt 'SMOKE_BUILD = {0}' $env:SMOKE_BUILD)
+    Write-Debug (sprintf 'SMOKE_BUILD = {0}' $env:SMOKE_BUILD)
 
     if ($env:SMOKE_BUILD -eq 'true' -or ($Properties -and $Properties.Contains('/p:SmokeBuild=true'))) {
         Write-Verbose "Execute command in a smoke context."
@@ -274,7 +277,7 @@ try {
     }
 
     # Additional properties.
-    Write-Debug (fmt "Properties = {0}" $Properties)
+    Write-Debug (sprintf "Properties = {0}" $Properties)
     foreach ($prop in $Properties) {
         if ($prop.StartsWith('/p:', 'InvariantCultureIgnoreCase')) {
             $args += $prop
@@ -284,14 +287,14 @@ try {
     if ($DryRun) {
         Write-Host 'dotnet.exe would run using:'
         Write-Host "  Command -> $cmd"
-        Write-Host (fmt "  Project -> {0}" $Project)
-        Write-Host (fmt "  Args    -> {0}" $args)
+        Write-Host (sprintf "  Project -> {0}" $Project)
+        Write-Host (sprintf "  Args    -> {0}" $args)
     }
     else {
         Write-Verbose 'dotnet.exe is about to run using:'
         Write-Verbose "  Command -> $cmd"
-        Write-Verbose (fmt "  Project -> {0}" $Project)
-        Write-Verbose (fmt "  Args    -> {0}" $args)
+        Write-Verbose (sprintf "  Project -> {0}" $Project)
+        Write-Verbose (sprintf "  Args    -> {0}" $args)
         & dotnet $cmd $Project $args
     }
 }
