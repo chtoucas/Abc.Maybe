@@ -4,11 +4,13 @@ on:
   push:
     branches: [ master ]
     paths-ignore:
-    - '.azure/*'
-    - '__/*'
-    - 'doc/*'
-    - 'eng/*'
-    - 'test/*'
+    - '.azure/**'
+    - '.config/**'
+    - '__/**'
+    - 'doc/**'
+    - 'eng/**'
+    - 'test/**'
+    - '.editorconfig'
     - 'CHANGELOG'
     - 'LICENSE*'
     - 'README.md'
@@ -24,23 +26,24 @@ jobs:
 
     env:
       SMOKE_BUILD: 'true'
-      # DotNet ENV variables.
-      DOTNET_CLI_TELEMETRY_OPTOUT: 1
       DOTNET_MULTILEVEL_LOOKUP: 0
+
+      # Misc ENV variables.
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
       DOTNET_NOLOGO: 1
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
       NUGET_XMLDOC_MODE: 'skip'
 
     steps:
     - uses: actions/checkout@v2
-    - name: Info
-      run: dotnet --info
+    #- name: Info
+    #  run: dotnet --info
     - name: Setup
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '3.1.x'
-    - name: Info
-      run: dotnet --info
+    #- name: Info
+    #  run: dotnet --info
     - name: Restore
       run: dotnet restore
     - name: Build
