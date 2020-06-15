@@ -5,15 +5,11 @@
 ################################################################################
 #region Preamble.
 
-<#
-.SYNOPSIS
-Wrapper for dotnet.exe.
-#>
-[CmdletBinding(PositionalBinding = $false)]
+[CmdletBinding()]
 param(
-    [Parameter(Mandatory = $false)]
+    [Parameter(Mandatory = $true, Position = 0)]
     [ValidateSet('restore', 'build', 'test')]
-    [Alias('t')] [string] $Task = 'build',
+                 [string] $Task,
 
     [Parameter(Mandatory = $false)]
     [Alias('p')] [string] $Project,
@@ -28,7 +24,7 @@ param(
     [Parameter(Mandatory = $false)]
     [Alias('f')] [string] $Platform,
 
-                 [switch] $Flat,
+    [Alias('X')] [switch] $Flat,
     [Alias('l')] [switch] $ListPlatforms,
                  [switch] $AllKnown,
                  [switch] $NoStandard,
@@ -46,16 +42,13 @@ param(
                  [switch] $DryRun,
     [Alias('h')] [switch] $Help,
 
-    [Parameter(ValueFromRemainingArguments = $true)]
+    [Parameter(ValueFromRemainingArguments = $true, Position = 1)]
                [string[]] $Properties
 )
 
 # ------------------------------------------------------------------------------
 
 New-Variable ROOT_DIR (Get-Item $PSScriptRoot).Parent.FullName `
-    -Scope Script -Option Constant
-
-New-Variable SRC_DIR (Join-Path $ROOT_DIR "src" -Resolve) `
     -Scope Script -Option Constant
 
 #endregion
@@ -68,14 +61,14 @@ function Print-Help {
 Wrapper for dotnet.exe.
 
 Usage: reset.ps1 [arguments]
-  -t|-Task           the .NET command to be called. Default = "build".
+     -Task           the .NET command to be called. Default = "build".
   -p|-Project        the project to build. Default (implicit) = solution.
-  -c|-Configuration  the configuration to build the project/solution for. Default (implicit) = "Debug".
-  -r|-Runtime        the runtime to build the project/solution for.
-  -f|-Platform       the platform to build the project/solution for.
+  -c|-Configuration  the configuration to build the project for. Default (implicit) = "Debug".
+  -r|-Runtime        the runtime to build the project for.
+  -f|-Platform       the platform to build the project for.
 
-     -Flat
-  -l|-ListPlatforms  print the list of supported platforms, then exit?
+  -X|-Flat
+  -l|-ListPlatforms  print the list of supported platforms then exit?
      -AllKnown       inlude ALL known platform versions (SLOW)?
      -NoStandard     exclude .NET Standard?
      -NoCore         exclude .NET Core?
@@ -85,24 +78,31 @@ Usage: reset.ps1 [arguments]
   # Common options for dotnet.exe.
   -v|-Verbosity      sets the verbosity level.
      -Force          forces all dependencies to be resolved even if the last restore was successful?
-     -NoRestore      do not restore the project/solution?
-     -NoBuild        do not build the project/solution?
+     -NoRestore      do not restore the project?
+     -NoBuild        do not build the project?
 
   # Other options.
-     -Verbose        PS verbose mode.
-     -Debug          PS debug mode.
-     -DryRun         do not execute dotnet.exe.
+     -Verbose        PS verbose mode?
+     -Debug          PS debug mode?
+     -DryRun         do not execute dotnet.exe?
   -h|-Help           print this help then exit?
 
 Arguments starting with '/p:' are passed through to dotnet.exe.
 
 Remarks:
 - Option -Flat.
-  An exe may "become" a library.
+  We override "TargetFrameworks" which means that all projects are compiled With
+  the same targets. Beware, it changes the dependency resolution graph.
+  Caveats:
+  - testing w/ option -Flat on is supported but might not do what we want.
+    To properly test the package for a target not explicitely listed, which is
+    always the case except for "net461", one should use test-package.ps1 instead.
+  - if "TargetFrameworks" contains a .NET Standard, an exe project will be
+    compiled for it, and therefore won't be executable.
 - Option -NoCheck.
-  Useful to test the solution for platforms listed in "NotSupportedTestPlatforms"
-  from D.B.props. Of course, as the name suggests, a succesful outcome is not
-  guaranteed, to say the least, it might not even run.
+  Useful to build/test the project for platforms listed in
+  "NotSupportedTestPlatforms" from D.B.props. Of course, as the name suggests,
+  a succesful outcome is not guaranteed, to say the least, it might not even run.
 
 Commonly used properties.
 > make.ps1 [...] /p:SmokeBuild=true             # mimic build inside VS.
@@ -119,14 +119,14 @@ Misc properties.
 
 Examples.
 > make.ps1                                      # build...
-> make.ps1 -t test -NoBuild                     # ... then test.
+> make.ps1 test -NoBuild                     # ... then test.
 
 Azure tasks.
-> make.ps1 -t restore -Flat -NoStandard            /p:Retail=true
-> make.ps1 -t build   -Flat -NoStandard -NoRestore /p:Retail=true /p:VersionSuffix=ci
-> make.ps1 -t test    -Flat -NoStandard -NoBuild   /p:Retail=true
-Remark: to truely mimic an Azure task, one should add
-'/p:ContinuousIntegrationBuild=true' which is implicit set on an Azure server.
+> make.ps1 restore -X -NoStandard            /p:Retail=true
+> make.ps1 build   -X -NoStandard -NoRestore /p:Retail=true /p:VersionSuffix=ci
+> make.ps1 test    -X -NoStandard -NoBuild   /p:Retail=true
+Remark: to truely mimic an Azure task, one should also add
+'/p:ContinuousIntegrationBuild=true' (implicitly set on an Azure server).
 
 '@
 }
@@ -248,6 +248,11 @@ try {
     }
     else {
         if ($Flat) {
+            if ($cmd -eq 'test') {
+                Write-Warning 'Testing w/ option -Flat on...'
+                Write-Warning 'To properly test the package, one should use test-package.ps1 instead.'
+            }
+
             if ($Platform)  {
                 Write-Verbose "Execute command for platform ""$Platform"" (FLAT)."
                 if (-not $NoCheck -and $Platform -notin (Get-Platforms -AllKnown)) {
