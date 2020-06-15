@@ -33,6 +33,9 @@ param(
                  [switch] $NoCheck,
 
     [Parameter(Mandatory = $false)]
+                 [string] $Trx,
+
+    [Parameter(Mandatory = $false)]
     [ValidateSet('q', 'quiet', 'm', 'minimal', 'n', 'normal', 'd', 'detailed', 'diag', 'diagnostic')]
     [Alias('v')] [string] $Verbosity,
                  [switch] $Force,
@@ -74,6 +77,8 @@ Usage: reset.ps1 [arguments]
      -NoCore         exclude .NET Core?
      -NoClassic      exclude .NET Framework?
      -NoCheck        do not check whether the specified platform is supported or not?
+
+     -Trx            specifies a VSTest results file (format trx).
 
   # Common options for dotnet.exe.
   -v|-Verbosity      sets the verbosity level.
@@ -117,9 +122,9 @@ Misc properties.
 > make.ps1 [...] /p:HideInternals=true
 > make.ps1 [...] /p:PatchEquality=true
 
-Examples.
-> make.ps1                                      # build...
-> make.ps1 test -NoBuild                     # ... then test.
+Example: build then test.
+> make.ps1 build
+> make.ps1 test -NoBuild -Trx ..\..\..\xunit.trx
 
 Azure tasks.
 > make.ps1 restore -X -NoStandard            /p:Retail=true
@@ -232,6 +237,7 @@ try {
         'test' {
             if ($NoRestore) { $args += '--no-restore' }
             if ($NoBuild)   { $args += '--no-build' }
+            if ($Trx)       { $args += "--logger:""trx;LogFileName=$Trx""" }
         }
     }
 

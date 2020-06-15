@@ -202,19 +202,19 @@ CI
 --
 
 1. Smoke tests (GitHub).
-  OS: Windows, Linux and MacOS.
-  Settings: SmokeBuild=true (Debug).
-  Tasks: build then test the solution.
+   OS: Windows, Linux and MacOS.
+   Settings: SmokeBuild=true (Debug).
+   Tasks: build then test the solution.
 
 2. Tests + Code Coverage (AZP).
-  OS: Windows.
-  Settings: default (Release).
-  Tasks: build then test the solution.
+   OS: Windows.
+   Settings: default (Debug).
+   Tasks: build then test the solution.
 
 3. Build (AZP). Not automatically run.
-  OS: Windows.
-  Settings: Retail=true (Debug).
-  Tasks: build the solution for all supported platforms.
+   OS: Windows.
+   Settings: Retail=true (Debug).
+   Tasks: build the solution for all supported platforms.
 
 To skip CI on push,
 - for AZP only, add [skip azp] to the commit message.

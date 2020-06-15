@@ -1,5 +1,6 @@
 :: Test harness (plain and simple).
 :: Beware, will crash if the packages were not restored before.
+:: > dotnet restore /p:SmokeBuild=true
 ::
 :: Examples:
 :: > harness /p:DebugType=none
@@ -13,7 +14,6 @@
 @setlocal
 
 @call dotnet test %~dp0\..\src\Abc.Tests\Abc.Tests.csproj %* ^
-    -v q ^
     --nologo ^
     --no-restore ^
     -c Release ^
