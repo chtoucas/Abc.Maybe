@@ -124,7 +124,7 @@ Misc properties.
 
 Example: build then test.
 > make.ps1 build
-> make.ps1 test -NoBuild -Trx ..\..\..\xunit.trx
+> make.ps1 test -NoBuild -Trx ..\..\..\__\xunit.trx
 
 Azure tasks.
 > make.ps1 restore -X -NoStandard            /p:Retail=true
