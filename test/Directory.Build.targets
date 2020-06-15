@@ -14,8 +14,8 @@
     <AbcVersion Condition=" '$(PreReleaseCycle)' != '' ">$(AbcVersion)-$(PreReleaseCycle)$(PreReleaseNumber)</AbcVersion>
   </PropertyGroup>
 
-    <ItemGroup>
-      <PackageReference Include="Abc.Maybe" Version="$(AbcVersion)" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Abc.Maybe" Version="$(AbcVersion)" />
+  </ItemGroup>
 
 </Project>
