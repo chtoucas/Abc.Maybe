@@ -17,7 +17,7 @@ NuGet:
   https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets#pack-target
 test-package.ps1:
   if a version is not cached, ask if we want to create it.
-  NotSupportedTestPlatforms for AZP
+  AZP: NotSupportedTestPlatforms / AllKnown?
 AZP:
   PackageDescription is empty???
   PDB type = full??? should be pdbonly.

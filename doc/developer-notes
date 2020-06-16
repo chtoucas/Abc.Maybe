@@ -212,7 +212,7 @@ CI
    Tasks: build then test the solution.
 
 3. Test package (AZP). Not automatically run.
-   OS: Windows, Linux and MacOS.
+   OS: Windows.
    Settings: Retail=true (Release for packing / Debug for testing).
    Tasks: create a package then test it.
 
