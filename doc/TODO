@@ -5,22 +5,21 @@ Code Coverage:
   When multi-targeting rg reports 100% CC even if it's not the case for one of
   the targets.
 Multi-targeting with non-Windows OSes, MSBuild & scripts.
-  - filter w/ '$(OS)' != 'Windows_NT' ?
-  - filter w/ '$(TargetFrameworkIdentifier)' == '.NETFramework' for Mono ?
+  - filter w/ '$(OS)' != 'Windows_NT'?
+  - filter w/ '$(TargetFrameworkIdentifier)' == '.NETFramework' for Mono?
   - see Xunit website which contains some useful infos.
 VS:
   Ability to temporarily set SmokeBuild to false.
 Tests:
   No silent skip. Only enable when not a CI build?
-NuGet:
+NuGet Package:
   Compiler Flags.
-  https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets#pack-target
+  PDB type = full??? should be "pdbonly".
 test-package.ps1:
-  if a version is not cached, ask if we want to create it.
-  AZP: NotSupportedTestPlatforms / AllKnown?
+  If a version is not cached, ask if we want to create it.
 AZP:
-  PackageDescription is empty???
-  PDB type = full??? should be pdbonly.
+  "test package": version, local push, NotSupportedTestPlatforms / AllKnown?
+  PackageDescription, Title, etc are empty???
 
 Code
 ----
