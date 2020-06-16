@@ -19,7 +19,7 @@ test-package.ps1:
   If a version is not cached, ask if we want to create it.
 AZP:
   "test package": version, local push, NotSupportedTestPlatforms / AllKnown?
-  PackageDescription, Title, etc are empty???
+  PackageDescription, Title, etc are empty <--- IsPackage is empty! why???
 
 Code
 ----
