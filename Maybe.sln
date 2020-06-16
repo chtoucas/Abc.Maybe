@@ -84,6 +84,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".azure", ".azure", "{7E737F
 	ProjectSection(SolutionItems) = preProject
 		.azure\pipelines\azure-pipelines-build.yml = .azure\pipelines\azure-pipelines-build.yml
 		.azure\pipelines\azure-pipelines-info.yml = .azure\pipelines\azure-pipelines-info.yml
+		.azure\pipelines\azure-pipelines-test-pack.yml = .azure\pipelines\azure-pipelines-test-pack.yml
 		.azure\pipelines\azure-pipelines-test.yml = .azure\pipelines\azure-pipelines-test.yml
 	EndProjectSection
 EndProject
