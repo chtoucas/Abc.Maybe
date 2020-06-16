@@ -20,12 +20,13 @@
   <!-- Source Link -->
   <PropertyGroup>
     <EnableSourceLink>false</EnableSourceLink>
-    <!-- For CI builds, we always enable Source Link -->
+    <!-- For CI builds, the default behaviour is to enable Source Link -->
     <EnableSourceLink Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">true</EnableSourceLink>
 
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <!-- Setting EnableSourceLink to false does not truely disable Source Link :-( -->
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <!-- For CI builds, when Source Link is disabled, we must set this prop to false -->
     <DeterministicSourcePaths>false</DeterministicSourcePaths>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(EnableSourceLink)' == 'true' ">

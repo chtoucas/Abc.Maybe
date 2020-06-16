@@ -216,6 +216,11 @@ CI
    Settings: Retail=true (Debug).
    Tasks: build the solution for all supported platforms.
 
+4. Test Package (AZP)
+   OS: Windows.
+   Settings: Retail=true (Release for packing / Debug for testing).
+   Tasks: create a package then test it.
+
 To skip CI on push,
 - for AZP only, add [skip azp] to the commit message.
 - for both AZP and GitHub Actions, add [skip ci] to the commit message.
