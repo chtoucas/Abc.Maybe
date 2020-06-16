@@ -26,6 +26,7 @@
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <!-- Setting EnableSourceLink to false does not truely disable Source Link :-( -->
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <DeterministicSourcePaths>false</DeterministicSourcePaths>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(EnableSourceLink)' == 'true' ">
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
