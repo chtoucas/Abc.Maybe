@@ -211,15 +211,15 @@ CI
    Settings: default (Debug).
    Tasks: build then test the solution.
 
-3. Build (AZP). Not automatically run.
+3. Test package (AZP). Not automatically run.
+   OS: Windows, Linux and MacOS.
+   Settings: Retail=true (Release for packing / Debug for testing).
+   Tasks: create a package then test it.
+
+4. Build (AZP). Not automatically run.
    OS: Windows.
    Settings: Retail=true (Debug).
    Tasks: build the solution for all supported platforms.
-
-4. Test Package (AZP)
-   OS: Windows.
-   Settings: Retail=true (Release for packing / Debug for testing).
-   Tasks: create a package then test it.
 
 To skip CI on push,
 - for AZP only, add [skip azp] to the commit message.

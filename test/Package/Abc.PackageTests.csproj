@@ -9,12 +9,18 @@
     https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/how-to-determine-which-versions-are-installed
   -->
 
-  <PropertyGroup>
+  <PropertyGroup Condition=" '$(ContinuousIntegrationBuild)' != 'true' ">
     <TargetFrameworks>$(MinCorePlatforms);$(MinClassicPlatforms)</TargetFrameworks>
     <TargetFrameworks Condition=" '$(AllKnown)' == 'true' ">
       $(MaxCorePlatforms);$(MaxClassicPlatforms);
       $(NotSupportedTestPlatforms)
     </TargetFrameworks>
+  </PropertyGroup>
+
+  <!-- Azure DevOps: we ignore Mono -->
+  <PropertyGroup Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">
+    <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(MinCorePlatforms);$(MinClassicPlatforms)</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(OS)' != 'Windows_NT' ">$(MinCorePlatforms)</TargetFrameworks>
   </PropertyGroup>
 
 </Project>
