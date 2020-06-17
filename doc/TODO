@@ -97,14 +97,11 @@ NuGet caching (AZP)?
 D.B.
   ContinuousIntegrationBuild, EnableSourceLink
   D.B.props, SourceLink
-  test\Package\D.B.targets: NotSupportedTestPlatforms / AllKnown?
 Code Coverage:
   When multi-targeting rg reports 100% CC even if it's not the case for one of
   the targets.
 Multi-targeting with non-Windows OSes, MSBuild, scripts, CI.
-  - src\Abc.Tests and net461 on non-Windows OSes. Should we bother? CI -> Mono.
   - paths
-  - filter w/ '$(OS)' != 'Windows_NT'?
   - see Xunit website which contains some useful infos.
     <ItemGroup Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">
       <Reference Include="System.Runtime" />

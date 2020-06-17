@@ -210,13 +210,13 @@ CI
    Configuration: Debug.
    Tasks: build then test the solution.
 
-2. Tests + Code Coverage (AZP).
+2. Testing + Code Coverage (AZP).
    OS: Windows.
    Settings: default.
    Configuration: Debug.
    Tasks: build then test the solution.
 
-3. Test package (AZP).
+3. Packing then testing (AZP).
    OS: Windows, Linux and MacOS.
    Settings: Retail=true.
    Configuration: Release for packing, Debug for testing.
@@ -262,7 +262,10 @@ Maintenance
 
 > dotnet restore
 > dotnet list package --outdated
+> dotnet restore eng\NETFxTools
 > dotnet list eng\NETFxTools package --outdated
+> dotnet restore test\Performance.sln
+> dotnet list test\Performance.sln package --outdated
 
 .NET Framework tools (see "eng\NETFxTools"):
 - OpenCover, used by cover.ps1
