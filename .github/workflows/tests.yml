@@ -25,7 +25,7 @@ jobs:
         os: [windows-latest, ubuntu-latest, macos-latest]
 
     env:
-      SMOKE_BUILD: 'true'
+      #SMOKE_BUILD: 'true'
       DOTNET_MULTILEVEL_LOOKUP: 0
 
       # Misc ENV variables.
