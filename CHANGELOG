@@ -13,7 +13,7 @@ Internal changes:
 - Always enable "coverlet.collector" and only load "coverlet.msbuild" when
   explicitly requested.
 - When enabled, Source Link now processes all projects in "src".
-- Tweak package and platform selections for projects Abc.Tests & Abc.SdkTests.
+- Tweak package and platform selections for projects Abc.Tests & Abc.PackageTests.
 - Scripts, new options to turn off code analysis or to enable verbose mode.
 - New plain script "eng\harness.cmd" to quickly run the test suite.
 - Upgraded packages:

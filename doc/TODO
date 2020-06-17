@@ -20,9 +20,12 @@ NuGet Package:
 test-package.ps1:
   If a version is not cached, ask if we want to create it.
 AZP:
-  "test package": version, local push, NotSupportedTestPlatforms / AllKnown?
-  PackageDescription, Title, etc are empty <--- IsPackage is empty! why???
-  test tasks: remove version?
+  I'm really tempted to abandon DotNetCoreCLI@2 and use "script" instead,
+  much simpler, much clearer and without all the inconsistencies that come with
+  the Azure task. One exception is for testing since the task automatically
+  publishes the test results.
+  Pipeline "Test Package": NotSupportedTestPlatforms / AllKnown?
+  Use X-platforms paths
 
 Code
 ----

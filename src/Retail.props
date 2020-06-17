@@ -16,7 +16,8 @@
       * VersionSuffix
       * MajorVersion
       * MinorVersion
-    - PackageVersion is not set automatically by MSBuild when we tweak prefix a suffix.
+    - PackageVersion is not set automatically by MSBuild when we tweak the prefix
+      or the suffix.
     - AssemblyVersion uses MajorVersion and MinorVersion which we NEVER override,
       otherwise, for any other prop, we rely on VersionPrefix and VersionSuffix.
   -->

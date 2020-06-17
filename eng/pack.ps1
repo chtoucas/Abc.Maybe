@@ -319,15 +319,14 @@ function Invoke-Pack {
         | SAY-LOUDLY
 
     # VersionSuffix is for Retail.props, but it is not enough, we MUST also
-    # specify --version-suffix (not sure it is necessary any more, but I prefer
-    # to play safe).
+    # specify "--version-suffix:$versionSuffix" (should not be necessary any more).
+    # Beware, PackageVersion != Version
     # NB: this is not something that we have to do for non-CI packages, since
     # in that case we don't patch the suffix, but let's not bother.
     $args = `
         "/p:PackageVersion=$packageVersion",
         "/p:VersionPrefix=$versionPrefix",
-        "/p:VersionSuffix=$versionSuffix",
-        "--version-suffix:$versionSuffix"
+        "/p:VersionSuffix=$versionSuffix"
 
     if ($myVerbose)        { $args += "/p:PrintSettings=true" }
     if ($enableSourceLink) { $args += "/p:EnableSourceLink=true" }
