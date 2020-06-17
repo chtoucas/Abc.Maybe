@@ -114,7 +114,7 @@
       - We target only **one** (concrete) platform, this is also required by
         - cover.ps1 (warning before generating the CC report).
         - Azure pipeline & GitHub action when DOTNET_MULTILEVEL_LOOKUP = 0.
-      - It should simply work on Windows, Linux and MacO, no .NET Framework...
+      - It should simply work on Windows, Linux and MacOS, no .NET Framework...
       - It should only test the latest API profile.
 
       | Library          | Test          | API     |
@@ -161,6 +161,8 @@
         attributes but VS doesn't use them if I understand things correctly).
         We use the version 3.1 instead of 3.0 because the former is LTS and the
         latter is already EOL.
+      - "TestPlatforms", when testing on non-Windows OSes, we __ignore__ .NET
+        Framework entirely, that is Mono.
       - We add "net461" to avoid some issues with versions of the .NET Framework
         implementing .NET Standard 2.0 and preceding v4.7.2.
       - Do NOT add .NET Standard 1.0, v1.1 has everything we need but with
@@ -200,7 +202,8 @@
     <SupportedStandards>netstandard2.1;netstandard2.0;netstandard1.1</SupportedStandards>
 
     <LibraryPlatforms>$(SupportedStandards);net461</LibraryPlatforms>
-    <TestPlatforms>netcoreapp3.1;netcoreapp2.1;net461;net452</TestPlatforms>
+    <TestPlatforms>netcoreapp3.1;netcoreapp2.1</TestPlatforms>
+    <TestPlatforms Condition=" '$(OS)' == 'Windows_NT' ">$(TestPlatforms);net461;net452</TestPlatforms>
 
     <LibraryPlatforms Condition=" '$(SmokeBuild)' == 'true' ">$(DefaultPlatform);netstandard2.0</LibraryPlatforms>
     <TestPlatforms Condition=" '$(SmokeBuild)' == 'true' ">$(DefaultPlatform)</TestPlatforms>

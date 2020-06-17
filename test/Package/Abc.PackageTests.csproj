@@ -10,18 +10,29 @@
     https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/how-to-determine-which-versions-are-installed
   -->
 
-  <PropertyGroup Condition=" '$(ContinuousIntegrationBuild)' != 'true' ">
-    <TargetFrameworks>$(MinCorePlatforms);$(MinClassicPlatforms)</TargetFrameworks>
-    <TargetFrameworks Condition=" '$(AllKnown)' == 'true' ">
-      $(MaxCorePlatforms);$(MaxClassicPlatforms);
-      $(NotSupportedTestPlatforms)
-    </TargetFrameworks>
-  </PropertyGroup>
+  <!-- On non-Windows OSes, we ignore Mono entirely -->
+  <Choose>
+    <When Condition=" '$(AllKnown)' == 'true' ">
+      <PropertyGroup>
+        <TargetFrameworks>$(MaxCorePlatforms)</TargetFrameworks>
+        <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">
+          $(TargetFrameworks);$(MaxClassicPlatforms);
+        </TargetFrameworks>
+      </PropertyGroup>
+    </When>
 
-  <!-- Azure DevOps: we ignore Mono -->
-  <PropertyGroup Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">
-    <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(MinCorePlatforms);$(MinClassicPlatforms)</TargetFrameworks>
-    <TargetFrameworks Condition=" '$(OS)' != 'Windows_NT' ">$(MinCorePlatforms)</TargetFrameworks>
+    <Otherwise>
+      <PropertyGroup>
+        <TargetFrameworks>$(MinCorePlatforms)</TargetFrameworks>
+        <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">
+          $(TargetFrameworks);$(MinClassicPlatforms)
+        </TargetFrameworks>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <PropertyGroup Condition=" '$(NotSupported)' == 'true' ">
+    <TargetFrameworks>$(TargetFrameworks);$(NotSupportedTestPlatforms)</TargetFrameworks>
   </PropertyGroup>
 
 </Project>

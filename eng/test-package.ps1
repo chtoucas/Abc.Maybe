@@ -325,7 +325,7 @@ function Invoke-Restore {
 
     $targetFrameworks = Get-TargetFrameworks $platformList
 
-    $args = "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
+    $args =  "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
     if ($runtime)  { $args += "--runtime:$runtime" }
 
     & dotnet restore $TEST_PROJECT $args
@@ -418,7 +418,8 @@ function Invoke-TestOldStyle {
             "-c:$configuration",
             "-f:$platform",
             "/p:AbcVersion=$version",
-            "/p:AllKnown=true"
+            "/p:AllKnown=true",
+            "/p:NotSupported=true"
         if ($runtime)   { $args += "--runtime:$runtime" }
         if ($noRestore) { $args += "--no-restore" }
 
@@ -476,7 +477,8 @@ function Invoke-TestSingle {
         "-c:$configuration",
         "-f:$platform",
         "/p:AbcVersion=$version",
-        "/p:AllKnown=true"
+        "/p:AllKnown=true",
+        "/p:NotSupported=true"
     if ($runtime)       { $args += "--runtime:$runtime" }
     if ($noBuild)       { $args += "--no-build" }   # NB: no-build => no-restore
     elseif ($noRestore) { $args += "--no-restore" }
