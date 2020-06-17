@@ -2,7 +2,8 @@
 
   <!--
     Prerequesite: .NET Framework Developer Pack or Targeting Pack, the later
-    should suffice.
+    should suffice. Might no longer be necessary as we now add a reference to
+    Microsoft.NETFramework.ReferenceAssemblies.
     A very simple way to see what works and what does not is to compile this
     project with /p:AllKnown=true.
     https://docs.microsoft.com/en-us/dotnet/framework/install/guide-for-developers
