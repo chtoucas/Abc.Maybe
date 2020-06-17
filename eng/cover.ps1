@@ -91,6 +91,8 @@ param(
 const TEST_PROJECT_NAME "Abc.Tests"
 const TEST_PROJECT (Join-Path $SRC_DIR $TEST_PROJECT_NAME -Resolve)
 
+const COVERLET_THRESHOLD 100
+
 #endregion
 ################################################################################
 #region Helpers.
@@ -193,6 +195,7 @@ function Invoke-CoverletMSBuild {
         /p:EnableSourceLink=true `
         /p:CollectCoverage=true `
         /p:CoverletOutputFormat=opencover `
+        /p:Threshold=$COVERLET_THRESHOLD `
         /p:CoverletOutput=$outXml `
         /p:Include="[Abc.Maybe]*" `
         /p:Exclude="[Abc.Maybe]System.*"
