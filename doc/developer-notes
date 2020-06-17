@@ -64,6 +64,9 @@ Release Process
 
 Requirement: command-line git.
 
+WARNING: should be done on a Windows box, otherwise DebugType will always be
+equal to "portable".
+
 Before a production packages, check that there are no remaining FIXMEs and review
 the TODOs and REVIEWs.
 
@@ -213,7 +216,7 @@ CI
    Configuration: Debug.
    Tasks: build then test the solution.
 
-3. Test package (AZP). Not automatically run.
+3. Test package (AZP).
    OS: Windows, Linux and MacOS.
    Settings: Retail=true.
    Configuration: Release for packing, Debug for testing.

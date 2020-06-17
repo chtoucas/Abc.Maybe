@@ -1,33 +1,6 @@
 TODO
 ====
 
-D.B.
-  ContinuousIntegrationBuild, EnableSourceLink
-  D.B.props, SourceLink
-  test\Package\D.B.targets: NotSupportedTestPlatforms / AllKnown?
-Code Coverage:
-  When multi-targeting rg reports 100% CC even if it's not the case for one of
-  the targets.
-Multi-targeting with non-Windows OSes, MSBuild, scripts, CI.
-  - paths
-  - filter w/ '$(OS)' != 'Windows_NT'?
-  - filter w/ '$(TargetFrameworkIdentifier)' == '.NETFramework' for Mono?
-  - see Xunit website which contains some useful infos.
-    <ItemGroup Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">
-      <Reference Include="System.Runtime" />
-    </ItemGroup>
-.NET Core: what is DisableImplicitFrameworkReferences?
-  - https://github.com/dotnet/sdk/issues/7896
-VS:
-  Ability to temporarily set SmokeBuild to false.
-Tests:
-  No silent skip. Only enable when not a CI build?
-NuGet Package:
-  Compiler Flags???
-  PDB type = full, it should be "pdbonly" <--- hard-coded in NPE.
-test-package.ps1:
-  If a version is not cached, ask if we want to create it.
-
 Code
 ----
 
@@ -108,10 +81,6 @@ much simpler, much clearer and without all the inconsistencies that come with
 the Azure task. One exception is for testing since the task automatically
 publishes the test results.
 
-For the pipeline "Test ALL", we could publish the test results:
-  ci.ps1, "--logger trx --results-directory $(Agent.TempDirectory)"
-  Add task "PublishTestResults".
-
 GitHub actions: use global.json (next version of "actions/setup-dotnet").
 
 NuGet caching (AZP)?
@@ -121,3 +90,33 @@ NuGet caching (AZP)?
   <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
   <!--<NoWarn>NU1603</NoWarn>-->
 </PropertyGroup>
+
+À classer
+---------
+
+D.B.
+  ContinuousIntegrationBuild, EnableSourceLink
+  D.B.props, SourceLink
+  test\Package\D.B.targets: NotSupportedTestPlatforms / AllKnown?
+Code Coverage:
+  When multi-targeting rg reports 100% CC even if it's not the case for one of
+  the targets.
+Multi-targeting with non-Windows OSes, MSBuild, scripts, CI.
+  - src\Abc.Tests and net461 on non-Windows OSes. Should we bother? CI -> Mono.
+  - paths
+  - filter w/ '$(OS)' != 'Windows_NT'?
+  - see Xunit website which contains some useful infos.
+    <ItemGroup Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">
+      <Reference Include="System.Runtime" />
+    </ItemGroup>
+.NET Core: what is DisableImplicitFrameworkReferences?
+  - https://github.com/dotnet/sdk/issues/7896
+VS:
+  Ability to temporarily set SmokeBuild to false.
+Tests:
+  No silent skip. Only enable when not a CI build?
+NuGet Package:
+  Compiler Flags???
+  PDB type = full, it should be "pdbonly" <--- hard-coded in NPE.
+test-package.ps1:
+  If a version is not cached, ask if we want to create it.
