@@ -95,7 +95,7 @@
       <_MyMessage>$(_MyMessage)%0A| %24(Retail) = "$(Retail)"</_MyMessage>
       <_MyMessage>$(_MyMessage)%0A| %24(ContinuousIntegrationBuild) = "$(ContinuousIntegrationBuild)"</_MyMessage>
       <_MyMessage>$(_MyMessage)%0A| %24(EnableSourceLink) = "$(EnableSourceLink)"</_MyMessage>
-      <_MyMessage>$(_MyMessage)%0A| %24(IsPackage) = "$(IsPackage)"</_MyMessage>
+      <_MyMessage>$(_MyMessage)%0A| %24(IsPackable) = "$(IsPackable)"</_MyMessage>
       <_MyMessage>$(_MyMessage)%0A| %24(DebugType) = "$(DebugType)"</_MyMessage>
       <_MyMessage>$(_MyMessage)%0A| %24(NoWarn) = "$(NoWarn)"</_MyMessage>
       <_MyMessage>$(_MyMessage)%0A| %24(DefineConstants) = "$(DefineConstants)"</_MyMessage>
