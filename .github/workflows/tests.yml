@@ -26,7 +26,7 @@ jobs:
 
     env:
       #SMOKE_BUILD: 'true'
-      DOTNET_MULTILEVEL_LOOKUP: 0
+      DOTNET_MULTILEVEL_LOOKUP: 1
 
       # Misc ENV variables.
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
