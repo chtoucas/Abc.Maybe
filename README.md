@@ -1,6 +1,6 @@
 [![NuGet](https://img.shields.io/nuget/v/Abc.Maybe.svg)](https://www.nuget.org/packages/Abc.Maybe/)
 [![tests](https://github.com/chtoucas/Abc.Maybe/workflows/smoke/badge.svg)](https://github.com/chtoucas/Abc.Maybe/actions?query=workflow%3Asmoke)
-[![Build Status](https://chtoucas.visualstudio.com/Abc.Maybe/_apis/build/status/Test?branchName=master&label=test)](https://chtoucas.visualstudio.com/Abc.Maybe/_build/latest?definitionId=1&branchName=master)
+[![Build Status](https://chtoucas.visualstudio.com/Abc.Maybe/_apis/build/status/Test?branchName=master&label=testing)](https://chtoucas.visualstudio.com/Abc.Maybe/_build?definitionId=1&branchName=master)
 [![Coverlet](./__/coverlet.svg)](./__/coverlet.txt)
 
 Abc.Maybe features an Option type for .NET. Supports .NET Standard 1.1 or later.
