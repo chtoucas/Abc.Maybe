@@ -1,6 +1,8 @@
 TODO
 ====
 
+Build.
+  D.B.props, SourceLink
 Code Coverage:
   When multi-targeting rg reports 100% CC even if it's not the case for one of
   the targets.
@@ -20,6 +22,7 @@ test-package.ps1:
 AZP:
   "test package": version, local push, NotSupportedTestPlatforms / AllKnown?
   PackageDescription, Title, etc are empty <--- IsPackage is empty! why???
+  test tasks: remove version?
 
 Code
 ----
