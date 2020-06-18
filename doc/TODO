@@ -1,6 +1,13 @@
 TODO
 ====
 
+Ext.
+- NuGet Package:
+  * Compiler Flags <--- requires MSBuild 16.7p3+
+  * PDB type = full, it should be "pdbonly" <--- hard-coded in NPE.
+- Code Coverage. When multi-targeting rg reports 100% CC even if it's not the
+  case for one of the targets.
+
 Code
 ----
 
@@ -26,9 +33,6 @@ Tools / Build System
 - EnableSourceLink no longer prevents coverlet to run, but it fails when we set
   UseSourceLink=true (see cover.ps1 & coverlet.runsettings). All paths are still
   local too.
-- NuGet Package:
-  * Compiler Flags <--- requires MSBuild 16.7p3+
-  * PDB type = full, it should be "pdbonly" <--- hard-coded in NPE.
 - Scripts
   * Add option -Verbosity?
   * Add option -MyVerbose to test-package.ps1.
@@ -46,8 +50,6 @@ Testing
 Testing is well underway but there is still a lot to be done.
 Fix naming schema, split tests, more functional tests.
 
-- Code Coverage. When multi-targeting rg reports 100% CC even if it's not the
-  case for one of the targets.
 - MaybeComparer<T>, proper testing of equality and ordering comparisons.
   Expand comparison tests (order and equality). See NONGENERIC_MAYBE
   Structural comparisons w/ structural types.
