@@ -1,6 +1,9 @@
 TODO
 ====
 
+Issues.
+azure-pipelines-test-pack.yml picks up the package from NuGet.org.
+
 Ext.
 - NuGet Package:
   * Compiler Flags <--- requires MSBuild 16.7p3+
