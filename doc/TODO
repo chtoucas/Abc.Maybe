@@ -94,9 +94,6 @@ NuGet caching (AZP)?
 À classer
 ---------
 
-D.B.
-  ContinuousIntegrationBuild, EnableSourceLink
-  D.B.props, SourceLink
 Code Coverage:
   When multi-targeting rg reports 100% CC even if it's not the case for one of
   the targets.
@@ -113,7 +110,7 @@ VS:
 Tests:
   No silent skip. Only enable when not a CI build?
 NuGet Package:
-  Compiler Flags???
+  Compiler Flags <--- requires MSBuild 16.7p3+
   PDB type = full, it should be "pdbonly" <--- hard-coded in NPE.
 test-package.ps1:
   If a version is not cached, ask if we want to create it.

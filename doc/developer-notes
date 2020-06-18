@@ -96,10 +96,90 @@ b. Update the page Releases on github.
 Multi-targeting
 ---------------
 
-Inside VS, we only use .NET Standard 2.0 and .NET Core 3.1 (see D.B.props).
+For libraries, use
+  <TargetFrameworks>$(LibraryPlatforms)</TargetFrameworks>
+For test projects, use
+  <TargetFrameworks>$(TestPlatforms)</TargetFrameworks>
+Do not use "TargetFramework" (no "s"), otherwise testing multi-targets
+at once won't work.
+For exe projects, use
+  <TargetFramework>$(DefaultPlatform)</TargetFramework>
 
-IMPORTANT, after adding or removing a framework, if necessary, update the
-top-level D.B.props and D.B.targets.
+First-class support is provided for
+- .NET Standard   1.1   - 2.1
+- .NET Core       2.1   - 3.1
+- .NET Framework  4.5.2 - 4.8
+Limited support is offered for
+- .NET Core       2.0
+- .NET Framework  4.5 - 4.5.1
+These are targets no longer supported by Xunit runners. We kind of test
+them but it's a bit convoluted (see "src\Abc.Tests\PackageReferences.targets")
+and, to be honest, I am not even sure that we truely test v4.5/4.5.1
+(see "test\Package").
+
+In a smoke context (VS), we keep things as simple as possible.
+- We target only **one** (concrete) platform, this is also required by
+  - cover.ps1 (warning before generating the CC report).
+  - Azure pipeline & GitHub action when DOTNET_MULTILEVEL_LOOKUP = 0.
+- It should simply work on Windows, Linux and MacOS, no .NET Framework...
+- It should only test the latest API profile.
+
+| Library          | Test          | API     |
+| ============= smoke context ============== |
+| netstandard2.0   |               | v2.0    |
+| netcoreapp3.1    | netcoreapp3.1 | v2.1    | <- DefaultPlatform
+| ============ default context ============= |
+| netstandard2.1   | netcoreapp3.1 | v2.1    |
+| netstandard2.0   | netcoreapp2.1 | v2.0    |
+| netstandard1.1   | net452        | v2.0    |
+| net461           | net461        | v2.0    |
+
+- The version in the column "Test" is the minimal LTS variant we can test
+  (if there is an LTS version) and which implements the .NET Standard in
+  the column "Library".
+- "DefaultPlatform" should be the latest available platform supporting it,
+  otherwise some CI builds will fail. See also "global.json".
+
+If/when we add a third profile, we should revise this table.
+Let's say that there is a new .NET Standard (vA.B) for which we wish to
+define a new API profile and that we have three platforms (vX.0-X.2)
+supporting it w/ vX.1 being LTS.
+
+| Library          | Test          | API     |
+| ============= smoke context ============== |
+| netstandard2.0   |               | v2.0    |
+| platformX.2      | platformX.2   | vA.B    | <- DefaultPlatform
+| ============ default context ============= |
+| netstandardA.B   | platformX.1   | vA.B    |
+| netstandard2.1   | netcoreapp3.1 | v2.1    |
+| netstandard2.0   | netcoreapp2.1 | v2.0    |
+| netstandard1.1   | net452        | v2.0    |
+| net461           | net461        | v2.0    |
+
+API profile numbering schema:
+- v2.0, for platforms preceding .NET Standard 2.1.
+- v2.1, for platforms implementing .NET Standard 2.1.
+- vA.B, for platforms implementing .NET Standard A.B.
+
+Remarks:
+- The first listed framework in "LibraryPlatforms" is the one used by the
+  VS editor. Full NRT-analysis requires .NET Core 3.0 or above, .NET Standard
+  does not include the nullable annotations (version 2.1 defines the nullable
+  attributes but VS doesn't use them if I understand things correctly).
+  We use the version 3.1 instead of 3.0 because the former is LTS and the
+  latter is already EOL.
+- "TestPlatforms", when testing on non-Windows OSes, we __ignore__ .NET
+  Framework entirely, that is Mono.
+- We add "net461" to avoid some issues with versions of the .NET Framework
+  implementing .NET Standard 2.0 and preceding v4.7.2.
+- Do NOT add .NET Standard 1.0, v1.1 has everything we need but with
+  a much simpler dependency graph.
+- .NET Framework (Classic).
+  "MinClassicPlatforms" lists the last minor version of each major version.
+  "MaxClassicPlatforms" must contain "MinClassicPlatforms".
+- .NET Core.
+  "MinCorePlatforms" lists the LTS versions and the latest one if not LTS.
+  "MaxCorePlatforms" must contain "MinCorePlatforms".
 
 API differences. We try to minimize them by defining only two "profiles" that
 match exactly a .NET Standard version:
@@ -118,6 +198,22 @@ If there are, for say, things we could do w/ .NET Standard 2.1 but not w/
   IEquatable<ValueTuple> but we don't because of ValueTuple.
   I could have added a dependency on System.ValueTuple (NuGet), but I prefer
   not to. I really do not want to add any dependency to our NuGet package.
+
+References
+- .NET Standard versions.
+  https://dotnet.microsoft.com/platform/dotnet-standard#versions
+  https://github.com/dotnet/standard/blob/master/docs/versions.md
+- Target frameworks
+  https://docs.microsoft.com/en-us/dotnet/standard/frameworks
+- .NET Framework lifecycle.
+  https://support.microsoft.com/en-us/help/17455/lifecycle-faq-net-framework
+- .NET Core lifecycle.
+  https://dotnet.microsoft.com/platform/support/policy/dotnet-core
+  https://github.com/dotnet/core/blob/master/microsoft-support.md
+- Useful docs.
+  https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/cross-platform-targeting
+  https://docs.microsoft.com/en-us/dotnet/core/tutorials/libraries
+  https://docs.microsoft.com/en-us/dotnet/core/packages
 
 Compiler Symbols
 ----------------

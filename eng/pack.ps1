@@ -204,6 +204,8 @@ function Get-ActualVersion {
         # is seen as a prerelease of what could be the next version. Examples:
         # - "1.2.3"       -> "1.2.4-ci-20201231T121212".
         # - "1.2.3-beta4" -> "1.2.3-beta5-ci-20201231T121212".
+        # It also ensures that each package has a unique version, so that each
+        # one will get its own separate entry in the cache.
         if ($precy) {
             # With a prerelease label, we increase the prerelease number.
             $preno  = 1 + [int]$preno
