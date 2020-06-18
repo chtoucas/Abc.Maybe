@@ -496,17 +496,17 @@ namespace Abc
             Assert.Equal(Int32.MaxValue, (int)Maybe.Some((long)Int32.MaxValue));
         }
 
+#if UNCHECKED
+        [SkippedFact("CheckForOverflowUnderflow = false")]
+        public static void OpExplicit_Some_ExplicitNumericConversion_Overflows() { }
+#else
         [Fact]
         public static void OpExplicit_Some_ExplicitNumericConversion_Overflows()
         {
-#if UNCHECKED
-            // CheckForOverflowUnderflow = false.
-            return;
-#else
             Assert.Throws<OverflowException>(() => (short)Maybe.Some(Int32.MaxValue));
             Assert.Throws<OverflowException>(() => (int)Maybe.Some(Int64.MaxValue));
-#endif
         }
+#endif
 
         //
         // Upcasting & downcasting.

@@ -46,7 +46,6 @@ Testing
 Testing is well underway but there is still a lot to be done.
 Fix naming schema, split tests, more functional tests.
 
-- No silent skip. Only enable when not a CI build?
 - Code Coverage. When multi-targeting rg reports 100% CC even if it's not the
   case for one of the targets.
 - MaybeComparer<T>, proper testing of equality and ordering comparisons.
