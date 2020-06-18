@@ -1,12 +1,13 @@
 <Project>
 
+  <!-- Repository layout -->
   <PropertyGroup>
     <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>
     <SourceRoot>$(RepositoryRoot)src\</SourceRoot>
     <ArtifactsRoot>$(RepositoryRoot)__\</ArtifactsRoot>
   </PropertyGroup>
 
-  <!-- Globals -->
+  <!-- Global contexts -->
   <PropertyGroup>
     <ContinuousIntegrationBuild Condition=" '$(ContinuousIntegrationBuild)' == '' ">false</ContinuousIntegrationBuild>
     <ContinuousIntegrationBuild Condition=" '$(TF_BUILD)' == 'true' ">true</ContinuousIntegrationBuild>
@@ -17,30 +18,7 @@
     <SmokeBuild Condition=" '$(BuildingInsideVisualStudio)' == 'true' ">true</SmokeBuild>
   </PropertyGroup>
 
-  <!-- Source Link -->
-  <PropertyGroup>
-    <EnableSourceLink>false</EnableSourceLink>
-    <!-- For CI builds, the default behaviour is to enable Source Link -->
-    <EnableSourceLink Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">true</EnableSourceLink>
-
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <!-- Setting EnableSourceLink to false does not truely disable Source Link :-( -->
-    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-    <!-- For CI builds, when Source Link is disabled, we must set this prop to false -->
-    <DeterministicSourcePaths>false</DeterministicSourcePaths>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(EnableSourceLink)' == 'true' ">
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <DeterministicSourcePaths>true</DeterministicSourcePaths>
-  </PropertyGroup>
-  <!-- No longer necessary?
-  <ItemGroup>
-    <SourceRoot Include="$(RepositoryRoot)/"/>
-  </ItemGroup>
-  -->
-
-  <!-- Common settings -->
+  <!-- Common settings, assembly info & package metadata -->
   <PropertyGroup>
     <RootNamespace>Abc</RootNamespace>
     <IsPackable>false</IsPackable>
@@ -51,9 +29,30 @@
 
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Abc.snk</AssemblyOriginatorKeyFile>
 
+    <Authors>Chtoucas</Authors>
+    <Company>Narvalo.Org</Company>
+    <Product>Abécédaire Library</Product>
+    <Copyright>Copyright (c) 2019 Narvalo.Org</Copyright>
+
+    <PackageProjectUrl>https://github.com/chtoucas/Abc.Maybe/</PackageProjectUrl>
+    <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
+    <PackageReleaseNotes>See CHANGELOG in project root.</PackageReleaseNotes>
+
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/chtoucas/Abc.Maybe/</RepositoryUrl>
+
     <VersionPrefix>0.0.1</VersionPrefix>
     <VersionSuffix>DUMMY</VersionSuffix>
   </PropertyGroup>
+  <ItemGroup Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">
+    <!--
+      Deterministic = true (default) and ContinuousIntegrationBuild = true
+      imply DeterministicSourcePaths = true, in which case we MUST specify
+      the SourceRoot.
+      https://github.com/dotnet/roslyn/blob/master/src/Compilers/Core/MSBuildTask/Microsoft.Managed.Core.targets
+    -->
+    <SourceRoot Include="$(RepositoryRoot)/"/>
+  </ItemGroup>
 
   <!-- Warnings & errors -->
   <Choose>
@@ -71,148 +70,33 @@
     </Otherwise>
   </Choose>
 
-  <!-- Assembly info & Package metadata -->
+  <!-- Target frameworks -->
   <PropertyGroup>
-    <Authors>Chtoucas</Authors>
-    <Company>Narvalo.Org</Company>
-    <Product>Abécédaire Library</Product>
-    <Copyright>Copyright (c) 2019 Narvalo.Org</Copyright>
-
-    <PackageProjectUrl>https://github.com/chtoucas/Abc.Maybe/</PackageProjectUrl>
-    <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
-    <PackageReleaseNotes>See CHANGELOG in project root.</PackageReleaseNotes>
-
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/chtoucas/Abc.Maybe/</RepositoryUrl>
+    <!-- IMPORTANT: keep "DefaultPlatform" in sync with "global.json" -->
+    <DefaultPlatform>netcoreapp3.1</DefaultPlatform>
+    <SupportedStandards>netstandard2.1;netstandard2.0;netstandard1.1</SupportedStandards>
   </PropertyGroup>
+  <Choose>
+    <When Condition=" '$(SmokeBuild)' == 'true' ">
+      <PropertyGroup>
+        <LibraryPlatforms>$(DefaultPlatform);netstandard2.0</LibraryPlatforms>
+        <TestPlatforms>$(DefaultPlatform)</TestPlatforms>
+      </PropertyGroup>
+    </When>
+
+    <Otherwise>
+      <PropertyGroup>
+        <LibraryPlatforms>$(SupportedStandards);net461</LibraryPlatforms>
+        <TestPlatforms>netcoreapp3.1;netcoreapp2.1</TestPlatforms>
+        <TestPlatforms Condition=" '$(OS)' == 'Windows_NT' ">$(TestPlatforms);net461;net452</TestPlatforms>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
 
   <!-- Supported platforms -->
   <PropertyGroup>
-    <!--
-      For libraries, use
-        <TargetFrameworks>$(LibraryPlatforms)</TargetFrameworks>
-      For test projects, use
-        <TargetFrameworks>$(TestPlatforms)</TargetFrameworks>
-      Do not use "TargetFramework" (no "s"), otherwise testing multi-targets
-      at once won't work.
-      For exe projects, use
-        <TargetFramework>$(DefaultPlatform)</TargetFramework>
-
-      First-class support is provided for
-      - .NET Standard   1.1   - 2.1
-      - .NET Core       2.1   - 3.1
-      - .NET Framework  4.5.2 - 4.8
-      Limited support is offered for
-      - .NET Core       2.0
-      - .NET Framework  4.5 - 4.5.1
-      These are targets no longer supported by Xunit runners. We kind of test
-      them but it's a bit convoluted (see "src\Abc.Tests\PackageReferences.targets")
-      and, to be honest, I am not even sure that we truely test v4.5/4.5.1
-      (see "test\Package").
-
-      In a smoke context, we keep things as simple as possible.
-      - We target only **one** (concrete) platform, this is also required by
-        - cover.ps1 (warning before generating the CC report).
-        - Azure pipeline & GitHub action when DOTNET_MULTILEVEL_LOOKUP = 0.
-      - It should simply work on Windows, Linux and MacOS, no .NET Framework...
-      - It should only test the latest API profile.
-
-      | Library          | Test          | API     |
-      | ============= smoke context ============== |
-      | netstandard2.0   |               | v2.0    |
-      | netcoreapp3.1    | netcoreapp3.1 | v2.1    | <- DefaultPlatform
-      | ============ default context ============= |
-      | netstandard2.1   | netcoreapp3.1 | v2.1    |
-      | netstandard2.0   | netcoreapp2.1 | v2.0    |
-      | netstandard1.1   | net452        | v2.0    |
-      | net461           | net461        | v2.0    |
-
-      - The version in the column "Test" is the minimal LTS variant we can test
-        (if there is an LTS version) and which implements the .NET Standard in
-        the column "Library".
-      - "DefaultPlatform" should be the latest available platform supporting it.
-        See also "global.json".
-
-      If/when we add a third profile, we should revise this table.
-      Let's say that there is a new .NET Standard (vA.B) for which we wish to
-      define a new API profile and that we have three platforms (vX.0-X.2)
-      supporting it w/ vX.1 being LTS.
-
-      | Library          | Test          | API     |
-      | ============= smoke context ============== |
-      | netstandard2.0   |               | v2.0    |
-      | platformX.2      | platformX.2   | vA.B    | <- DefaultPlatform
-      | ============ default context ============= |
-      | netstandardA.B   | platformX.1   | vA.B    |
-      | netstandard2.1   | netcoreapp3.1 | v2.1    |
-      | netstandard2.0   | netcoreapp2.1 | v2.0    |
-      | netstandard1.1   | net452        | v2.0    |
-      | net461           | net461        | v2.0    |
-
-      API profile numbering schema:
-      - v2.0, for platforms preceding .NET Standard 2.1.
-      - v2.1, for platforms implementing .NET Standard 2.1.
-      - vA.B, for platforms implementing .NET Standard A.B.
-
-      Remarks:
-      - The first listed framework in "LibraryPlatforms" is the one used by the
-        VS editor. Full NRT-analysis requires .NET Core 3.0 or above, .NET Standard
-        does not include the nullable annotations (version 2.1 defines the nullable
-        attributes but VS doesn't use them if I understand things correctly).
-        We use the version 3.1 instead of 3.0 because the former is LTS and the
-        latter is already EOL.
-      - "TestPlatforms", when testing on non-Windows OSes, we __ignore__ .NET
-        Framework entirely, that is Mono.
-      - We add "net461" to avoid some issues with versions of the .NET Framework
-        implementing .NET Standard 2.0 and preceding v4.7.2.
-      - Do NOT add .NET Standard 1.0, v1.1 has everything we need but with
-        a much simpler dependency graph.
-
-      - .NET Framework (Classic).
-        "MinClassicPlatforms" lists the last minor version of each major version.
-        "MaxClassicPlatforms" must contain "MinClassicPlatforms".
-      - .NET Core.
-        "MinCorePlatforms" lists the LTS versions and the latest one if not LTS.
-        "MaxCorePlatforms" must contain "MinCorePlatforms".
-
-      References
-      - .NET Standard versions.
-        https://dotnet.microsoft.com/platform/dotnet-standard#versions
-        https://github.com/dotnet/standard/blob/master/docs/versions.md
-      - Target frameworks
-        https://docs.microsoft.com/en-us/dotnet/standard/frameworks
-      - .NET Framework lifecycle.
-        https://support.microsoft.com/en-us/help/17455/lifecycle-faq-net-framework
-      - .NET Core lifecycle.
-        https://dotnet.microsoft.com/platform/support/policy/dotnet-core
-        https://github.com/dotnet/core/blob/master/microsoft-support.md
-      - Useful docs.
-        https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/cross-platform-targeting
-        https://docs.microsoft.com/en-us/dotnet/core/tutorials/libraries
-        https://docs.microsoft.com/en-us/dotnet/core/packages
-    -->
-
-    <!--
-      IMPORTANT: keep "DefaultPlatform" in sync with "global.json", otherwise
-      some CI builds will fail.
-    -->
-
-    <DefaultPlatform>netcoreapp3.1</DefaultPlatform>
-
-    <SupportedStandards>netstandard2.1;netstandard2.0;netstandard1.1</SupportedStandards>
-
-    <LibraryPlatforms>$(SupportedStandards);net461</LibraryPlatforms>
-    <TestPlatforms>netcoreapp3.1;netcoreapp2.1</TestPlatforms>
-    <TestPlatforms Condition=" '$(OS)' == 'Windows_NT' ">$(TestPlatforms);net461;net452</TestPlatforms>
-
-    <LibraryPlatforms Condition=" '$(SmokeBuild)' == 'true' ">$(DefaultPlatform);netstandard2.0</LibraryPlatforms>
-    <TestPlatforms Condition=" '$(SmokeBuild)' == 'true' ">$(DefaultPlatform)</TestPlatforms>
-
-    <!--
-      IMPORTANT: below, do NOT use MSBuild property resolution $(), the content
-      must be in a form understandable to PowerShell.
-    -->
-
+    <!-- IMPORTANT: do NOT use MSBuild property resolution $() below, the content
+         must be in a form understandable to PowerShell -->
     <MinCorePlatforms>netcoreapp3.1;netcoreapp2.1</MinCorePlatforms>
     <MaxCorePlatforms>
       netcoreapp3.1;netcoreapp3.0;

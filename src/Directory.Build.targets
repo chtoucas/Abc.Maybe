@@ -68,6 +68,23 @@
     <NoWarn Condition=" '$(NoWarnX)' != '' ">$(NoWarn);$(NoWarnX)</NoWarn>
   </PropertyGroup>
 
+  <!-- Source Link -->
+  <PropertyGroup>
+    <EnableSourceLink>false</EnableSourceLink>
+    <!-- For CI builds, the default behaviour is to have Source Link on -->
+    <EnableSourceLink Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">true</EnableSourceLink>
+
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <!-- Setting EnableSourceLink to false does not truely disable Source Link :-( -->
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(EnableSourceLink)' == 'true' ">
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <!-- DO NOT REMOVE, it ensures deterministic outputs when building locally -->
+    <DeterministicSourcePaths>true</DeterministicSourcePaths>
+  </PropertyGroup>
+
   <!-- Package references -->
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
@@ -83,21 +100,16 @@
   <Target Name="PrintSettingsBeforeCompile" BeforeTargets="Compile"
           Condition=" '$(PrintSettings)' == 'true' and '$(TargetFramework)' != '' ">
     <PropertyGroup>
-      <_MyMessage Condition=" '$(VisibleInternals)' == 'true' ">| will NOT hide its internals.</_MyMessage>
-      <_MyMessage Condition=" '$(VisibleInternals)' != 'true' ">| will hide its internals.</_MyMessage>
-
-      <_MyMessage Condition=" '$(CheckForOverflowUnderflow)' == 'true' ">$(_MyMessage)%0A| will use checked arithmetic.</_MyMessage>
-      <_MyMessage Condition=" '$(CheckForOverflowUnderflow)' != 'true' ">$(_MyMessage)%0A| will NOT use checked arithmetic.</_MyMessage>
-
-      <_MyMessage Condition=" '$(PatchEquality)' == 'true' ">$(_MyMessage)%0A| will patch the equality rules.</_MyMessage>
-
-      <_MyMessage>$(_MyMessage)%0A| %24(ApiProfileMoniker) = "$(ApiProfileMoniker)"</_MyMessage>
-      <_MyMessage>$(_MyMessage)%0A| %24(Retail) = "$(Retail)"</_MyMessage>
+      <_MyMessage>| %24(ApiProfileMoniker)          = "$(ApiProfileMoniker)"</_MyMessage>
+      <_MyMessage>$(_MyMessage)%0A| %24(Retail)                     = "$(Retail)"</_MyMessage>
+      <_MyMessage>$(_MyMessage)%0A| %24(VisibleInternals)           = "$(VisibleInternals)"</_MyMessage>
+      <_MyMessage>$(_MyMessage)%0A| %24(SignAssembly)               = "$(SignAssembly)"</_MyMessage>
       <_MyMessage>$(_MyMessage)%0A| %24(ContinuousIntegrationBuild) = "$(ContinuousIntegrationBuild)"</_MyMessage>
-      <_MyMessage>$(_MyMessage)%0A| %24(EnableSourceLink) = "$(EnableSourceLink)"</_MyMessage>
-      <_MyMessage>$(_MyMessage)%0A| %24(IsPackable) = "$(IsPackable)"</_MyMessage>
-      <_MyMessage>$(_MyMessage)%0A| %24(DebugType) = "$(DebugType)"</_MyMessage>
-      <_MyMessage>$(_MyMessage)%0A| %24(NoWarn) = "$(NoWarn)"</_MyMessage>
+      <_MyMessage>$(_MyMessage)%0A| %24(EnableSourceLink)           = "$(EnableSourceLink)"</_MyMessage>
+      <_MyMessage>$(_MyMessage)%0A| %24(DeterministicSourcePaths)   = "$(DeterministicSourcePaths)"</_MyMessage>
+      <_MyMessage>$(_MyMessage)%0A| %24(CheckForOverflowUnderflow)  = "$(CheckForOverflowUnderflow)"</_MyMessage>
+      <_MyMessage>$(_MyMessage)%0A| %24(DebugType)                  = "$(DebugType)"</_MyMessage>
+      <_MyMessage>$(_MyMessage)%0A| %24(NoWarn)                     = "$(NoWarn)"</_MyMessage>
       <_MyMessage>$(_MyMessage)%0A| %24(DefineConstants) = "$(DefineConstants)"</_MyMessage>
     </PropertyGroup>
 
