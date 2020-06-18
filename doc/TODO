@@ -8,22 +8,33 @@ Code
 - LINQ: optimize, more. "Monadic" LINQ. Output Maybe<IEnumerable<T>> and LINQ ops.
 - Async Enumerable.
 - Serialization (XML).
-- Localise user messages (ExceptionFactory)?
+- Localise error messages (ExceptionFactory)?
 - FIXME, TODO and REVIEW within the code.
 
-Tools
------
+Tools / Build System
+--------------------
 
+- VS: ability to temporarily set SmokeBuild to false.
 - MSBuild "RestoreSources" in "test".
   https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets#restore-target
+- Multi-targeting with non-Windows OSes, MSBuild, scripts, CI.
+  * paths, casing
+  * see Xunit website which contains some useful infos.
+    <ItemGroup Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">
+      <Reference Include="System.Runtime" />
+    </ItemGroup>
+- EnableSourceLink no longer prevents coverlet to run, but it fails when we set
+  UseSourceLink=true (see cover.ps1 & coverlet.runsettings). All paths are still
+  local too.
+- NuGet Package:
+  * Compiler Flags <--- requires MSBuild 16.7p3+
+  * PDB type = full, it should be "pdbonly" <--- hard-coded in NPE.
 - Scripts
   * Add option -Verbosity?
   * Add option -MyVerbose to test-package.ps1.
   * Verbosity tweak for "dotnet test": -v minimal /p:PrintSettings=true
     does nothing with a test project. When resolved, update AZP.
-- EnableSourceLink no longer prevents coverlet to run, but it fails when we set
-  UseSourceLink=true (see cover.ps1 & coverlet.runsettings). All paths are still
-  local too.
+  * test-package.ps1, if a version is not cached, ask if we want to create it.
 - Roslyn Analyzer:
   * Of(), Flatten(). Squash(Maybe<T?>) where T : class
   * SelectMany(), ZipWith(), Bind().
@@ -35,6 +46,9 @@ Testing
 Testing is well underway but there is still a lot to be done.
 Fix naming schema, split tests, more functional tests.
 
+- No silent skip. Only enable when not a CI build?
+- Code Coverage. When multi-targeting rg reports 100% CC even if it's not the
+  case for one of the targets.
 - MaybeComparer<T>, proper testing of equality and ordering comparisons.
   Expand comparison tests (order and equality). See NONGENERIC_MAYBE
   Structural comparisons w/ structural types.
@@ -76,12 +90,13 @@ would allow to warn a user trying to create a Maybe<int?> or a Maybe<string?>.
 CI
 --
 
-I'm really tempted to abandon DotNetCoreCLI@2 and use "script" instead,
+AZP: I'm really tempted to abandon DotNetCoreCLI@2 and use "script" instead,
 much simpler, much clearer and without all the inconsistencies that come with
 the Azure task. One exception is for testing since the task automatically
 publishes the test results.
 
-GitHub actions: use global.json (next version of "actions/setup-dotnet").
+GitHub actions: use global.json. Currently, I don't like the beahviour of
+"setup-dotnet" as it is now since it does not follow the "rollForward" policy.
 
 NuGet caching (AZP)?
 <PropertyGroup Condition=" $(ContinuousIntegrationBuild) == 'true' ">
@@ -90,27 +105,3 @@ NuGet caching (AZP)?
   <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
   <!--<NoWarn>NU1603</NoWarn>-->
 </PropertyGroup>
-
-À classer
----------
-
-Code Coverage:
-  When multi-targeting rg reports 100% CC even if it's not the case for one of
-  the targets.
-Multi-targeting with non-Windows OSes, MSBuild, scripts, CI.
-  - paths
-  - see Xunit website which contains some useful infos.
-    <ItemGroup Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">
-      <Reference Include="System.Runtime" />
-    </ItemGroup>
-.NET Core: what is DisableImplicitFrameworkReferences?
-  - https://github.com/dotnet/sdk/issues/7896
-VS:
-  Ability to temporarily set SmokeBuild to false.
-Tests:
-  No silent skip. Only enable when not a CI build?
-NuGet Package:
-  Compiler Flags <--- requires MSBuild 16.7p3+
-  PDB type = full, it should be "pdbonly" <--- hard-coded in NPE.
-test-package.ps1:
-  If a version is not cached, ask if we want to create it.

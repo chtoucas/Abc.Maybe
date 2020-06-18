@@ -6,7 +6,7 @@ vNEXT
 Changes:
 - Package:
   - Removed "net452"; use "netstandard1.1" instead (should happen automatically).
-- Throughly test the package on Windows, Linux and MacOS.
+- Thoroughly test the package on Windows, Linux and MacOS.
 
 Internal changes:
 - Set up Azure Pipelines, see https://chtoucas.visualstudio.com/Abc.Maybe,
