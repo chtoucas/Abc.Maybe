@@ -3,6 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Local modifications.
+# Beware, don't forget "!Directory.Build.rsp" below.
+
 nuget.exe
 *.trx
 
@@ -11,6 +14,8 @@ __/**
 !__/coverlet.txt
 !__/nuget-cache/_._
 !__/nuget-feed/_._
+
+# END Local modifications
 
 # User-specific files
 *.rsuser
@@ -91,6 +96,7 @@ StyleCopReport.xml
 *.pgc
 *.pgd
 *.rsp
+!Directory.Build.rsp
 *.sbr
 *.tlb
 *.tli

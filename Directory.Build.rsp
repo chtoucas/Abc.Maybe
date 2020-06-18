@@ -1,0 +1,8 @@
+# MSBuild response file.
+# https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2019#add-arguments-to-command-line-msbuild-invocations-for-your-project
+# https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-response-files?view=vs-2019
+# https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2019
+-nodeReuse:false
+-maxCpuCount
+-verbosity:normal
+-consoleLoggerParameters:Summary
