@@ -7,9 +7,9 @@
 
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory = $true, Position = 0)]
+    [Parameter(Mandatory = $false, Position = 0)]
     [ValidateSet('restore', 'build', 'test')]
-                 [string] $Task,
+                 [string] $Task = 'build',
 
     [Parameter(Mandatory = $false)]
     [Alias('p')] [string] $Project,
