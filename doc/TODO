@@ -96,8 +96,7 @@ much simpler, much clearer and without all the inconsistencies that come with
 the Azure task. One exception is for testing since the task automatically
 publishes the test results.
 
-GitHub actions: use global.json. Currently, I don't like the beahviour of
-"setup-dotnet" as it is now since it does not follow the "rollForward" policy.
+GitHub actions: use global.json.
 
 NuGet caching (AZP)?
 <PropertyGroup Condition=" $(ContinuousIntegrationBuild) == 'true' ">

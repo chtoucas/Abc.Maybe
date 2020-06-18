@@ -3,6 +3,9 @@ Changelog for Abc.
 vNEXT
 -----
 
+2020-06-16, version 1.0.2
+-------------------------
+
 Changes:
 - Package:
   - Removed "net452"; use "netstandard1.1" instead (should happen automatically).
