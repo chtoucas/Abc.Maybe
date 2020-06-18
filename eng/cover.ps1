@@ -458,8 +458,8 @@ try {
             try {
                 pushd $targetDir
 
-                cp -Force "badge_combined.svg" (Join-Path ".." "$tool.svg")
-                cp -Force "Summary.txt" (Join-Path ".." "$tool.txt")
+                cp -Force "badge_combined.svg" (Join-Path "..\.." "$tool.svg")
+                cp -Force "Summary.txt" (Join-Path "..\.." "$tool.txt")
             }
             finally {
                 popd

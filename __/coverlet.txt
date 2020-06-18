@@ -1,14 +1,14 @@
 ﻿Summary
-  Generated on: 31/05/2020 - 07:52:46
-  Parser: OpenCoverParser
+  Generated on: 18/06/2020 - 10:05:55
+  Parser: MultiReportParser (4x OpenCoverParser)
   Assemblies: 1
   Classes: 9
   Files: 19
   Line coverage: 100.0%
-  Covered lines: 670
+  Covered lines: 671
   Uncovered lines: 0
-  Coverable lines: 670
-  Total lines: 2937
+  Coverable lines: 671
+  Total lines: 2938
 
 Abc.Maybe                              100.0%
   Abc.Linq.Qperators                   100.0%

@@ -6,6 +6,7 @@ namespace Abc.Linq
 {
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Linq;
     using System.Linq.Tests;
 
@@ -69,6 +70,14 @@ namespace Abc.Linq
             LastOrNone3Impl<string>();
             LastOrNone3Impl<DateTime>();
             LastOrNone3Impl<QperatorsTests>();
+        }
+
+        [Fact]
+        public static void LastOrNone3a()
+        {
+            // Covers the branch (!iter.MoveNext()) prior to .NET Core 3.0.
+            var source = new Dictionary<int, int>();
+            Assert.None(source.RunOnce().LastOrNone());
         }
 
         [Fact(DisplayName = "IListTOneElement")]
