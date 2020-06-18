@@ -29,6 +29,9 @@ The configuration to test the solution for. Default (explicit) = "Debug".
 .PARAMETER Platform
 The platform to test the solution for.
 
+.PARAMETER Threshold
+Threshold below which a build will fail.
+
 .PARAMETER Collector
 Use "coverlet.collector" instead of "coverlet.msbuild?
 When this option is set and equals $true, we NEVER run ReportGenerator, we could
@@ -70,6 +73,9 @@ param(
     [Parameter(Mandatory = $false, Position = 1)]
     [Alias("f")] [string] $Platform,
 
+    [Parameter(Mandatory = $false, Position = 2)]
+    [Alias("t")] [string] $Threshold,
+
                  [switch] $Collector,
                  [switch] $OpenCover,
                  [switch] $NoCoverage,
@@ -91,8 +97,6 @@ param(
 const TEST_PROJECT_NAME "Abc.Tests"
 const TEST_PROJECT (Join-Path $SRC_DIR $TEST_PROJECT_NAME -Resolve)
 
-const COVERLET_THRESHOLD 100
-
 #endregion
 ################################################################################
 #region Helpers.
@@ -103,8 +107,9 @@ function Print-Help {
 Run the Code Coverage script and build human-readable reports.
 
 Usage: cover.ps1 [arguments]
-  -c|-Configuration  the configuration to test the solution for.
+  -c|-Configuration  the configuration to test the solution for
   -f|-Platform       the platform to test the solution for.
+  -t|-Threshold      threshold below which a build will fail.
 
      -Collector      use "coverlet.collector" instead of "coverlet.msbuild"?
      -OpenCover      use OpenCover instead of Coverlet?
@@ -163,6 +168,9 @@ function Invoke-CoverletMSBuild {
         [ValidateNotNullOrEmpty()]
         [string] $outXml,
 
+        [Parameter(Mandatory = $false)]
+        [string] $threshold,
+
         [switch] $noRestore,
         [switch] $myVerbose
     )
@@ -171,6 +179,7 @@ function Invoke-CoverletMSBuild {
 
     $args = "--nologo", "-c:$configuration", "/p:RunAnalyzers=false"
     if ($platform)  { $args += "/p:TargetFrameworks=$platform" }
+    if ($threshold) { $args += "/p:Threshold=$threshold" }
     if ($noRestore) { $args += "--no-restore" }
     if ($myVerbose) { $args += "-v:minimal", "/p:PrintSettings=true" }
 
@@ -195,7 +204,6 @@ function Invoke-CoverletMSBuild {
         /p:EnableSourceLink=true `
         /p:CollectCoverage=true `
         /p:CoverletOutputFormat=opencover `
-        /p:Threshold=$COVERLET_THRESHOLD `
         /p:CoverletOutput=$outXml `
         /p:Include="[Abc.Maybe]*" `
         /p:Exclude="[Abc.Maybe]System.*"
@@ -403,6 +411,7 @@ try {
             Invoke-CoverletMSBuild `
                 -Configuration $Configuration `
                 -Platform      $platform `
+                -Threshold     $Threshold `
                 -OutXml        $outXml `
                 -NoRestore:    $NoRestore `
                 -MyVerbose:    $myVerbose
