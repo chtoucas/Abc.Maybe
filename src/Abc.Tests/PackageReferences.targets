@@ -18,7 +18,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <!-- TweakXunit is true for platforms no longer supported by
-         xunit.runner.visualstudio. -->
+         xunit.runner.visualstudio -->
     <TweakXunit Condition=" $(NotSupportedTestPlatforms.Contains('$(TargetFramework)')) ">true</TweakXunit>
 
     <XunitRunnerVersion>2.4.2</XunitRunnerVersion>
