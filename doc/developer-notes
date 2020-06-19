@@ -3,6 +3,8 @@ Developer Notes
 
 Minimal requirement: .NET Core 3.1.300
 
+See also "src\Abc.Tests\README" and "test\README".
+
 - Versioning
 - Changelog
 - Release Process
@@ -264,6 +266,12 @@ From time to time, we should review our usage of
 Useful tools.
 - NuGet Package Explorer
 - ILDasm, ILSpy, dotPeek
+
+Dump the test suite.
+> dotnet test --list-tests
+
+Source Link checks.
+> dotnet sourcelink -h
 
 Build
 -----
