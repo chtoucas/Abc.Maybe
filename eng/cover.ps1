@@ -32,7 +32,7 @@ The platform to test the solution for.
 .PARAMETER Threshold
 Threshold below which a build will fail.
 
-.PARAMETER Collector
+.PARAMETER XPath
 Use "coverlet.collector" instead of "coverlet.msbuild?
 When this option is set and equals $true, we NEVER run ReportGenerator, we could
 make it work but I don't think it's worth the trouble.
@@ -76,7 +76,7 @@ param(
     [Parameter(Mandatory = $false, Position = 2)]
     [Alias("t")] [string] $Threshold,
 
-                 [switch] $Collector,
+    [Alias("x")] [switch] $XPath,
                  [switch] $OpenCover,
                  [switch] $NoCoverage,
                  [switch] $NoReport,
@@ -111,7 +111,7 @@ Usage: cover.ps1 [arguments]
   -f|-Platform       the platform to test the solution for.
   -t|-Threshold      threshold below which a build will fail.
 
-     -Collector      use "coverlet.collector" instead of "coverlet.msbuild"?
+  -x|-XPath          use "coverlet.collector" instead of "coverlet.msbuild"?
      -OpenCover      use OpenCover instead of Coverlet?
      -NoCoverage     do NOT run any Code Coverage tool?
      -NoReport       do NOT run ReportGenerator?
@@ -214,7 +214,7 @@ function Invoke-CoverletMSBuild {
 
 # ------------------------------------------------------------------------------
 
-function Invoke-CoverletCollector {
+function Invoke-CoverletXPath {
     [CmdletBinding(PositionalBinding = $false)]
     param(
         [Parameter(Mandatory = $true)]
@@ -233,7 +233,7 @@ function Invoke-CoverletCollector {
         [switch] $myVerbose
     )
 
-    SAY-LOUDLY "`nRunning Coverlet (Collector)."
+    SAY-LOUDLY "`nRunning Coverlet (XPath)."
 
     $args = "--nologo", "-c:$configuration", "/p:RunAnalyzers=false"
     if ($platform)  { $args += "/p:TargetFrameworks=$platform" }
@@ -379,15 +379,15 @@ try {
 
     if ($RestoreTools) { Invoke-RestoreTools }
 
-    if ($Collector) {
-        Invoke-CoverletCollector `
+    if ($XPath) {
+        Invoke-CoverletXPath `
             -Configuration $Configuration `
             -Platform      $platform `
             -OutDir        $outDir `
             -NoRestore:    $NoRestore `
             -MyVerbose:    $myVerbose
 
-        # We stop here, see the comments within Invoke-CoverletCollector.
+        # We stop here, see the comments within Invoke-CoverletXPath.
         exit
     }
 
