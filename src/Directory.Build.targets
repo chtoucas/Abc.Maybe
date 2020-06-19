@@ -98,6 +98,29 @@
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 
+  <!--
+    Partial fix for Coverlet when EnableSourceLink = true.
+    Issues: fails when UseSourceLink = true, all paths are still local.
+    References.
+    - https://github.com/clairernovotny/DeterministicBuilds
+    - https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/DeterministicBuild.md
+  <PropertyGroup>
+    <TargetFrameworkMonikerAssemblyAttributesPath>$([System.IO.Path]::Combine('$(IntermediateOutputPath)','$(TargetFrameworkMoniker).AssemblyAttributes$(DefaultLanguageSourceExtension)'))</TargetFrameworkMonikerAssemblyAttributesPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedFiles Include="$(GeneratedAssemblyInfoFile)"/>
+    <SourceRoot Include="$(NuGetPackageRoot)" Condition="'$(NuGetPackageRoot)' != ''" />
+  </ItemGroup>
+  -->
+  <Target Name="CoverletGetPathMap"
+          DependsOnTargets="InitializeSourceRootMappedPaths"
+          Returns="@(_LocalTopLevelSourceRoot)"
+          Condition=" '$(DeterministicSourcePaths)' == 'true' ">
+    <ItemGroup>
+      <_LocalTopLevelSourceRoot Include="@(SourceRoot)" Condition=" '%(SourceRoot.NestedRoot)' == '' "/>
+    </ItemGroup>
+  </Target>
+
   <!-- Target for verbose settings -->
   <Target Name="PrintSettingsBeforeCompile" BeforeTargets="Compile"
           Condition=" '$(PrintSettings)' == 'true' and '$(TargetFramework)' != '' ">

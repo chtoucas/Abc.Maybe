@@ -39,6 +39,7 @@ Tools / Build System
   * DeterministicSourcePaths must be set to true
   * ContinuousIntegrationBuild?
   * There might be a problem with .NET Framework and xUnit's AppDomain.
+  https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/DeterministicBuild.md
 - Scripts
   * Add option -Verbosity?
   * Add option -MyVerbose to test-package.ps1.
