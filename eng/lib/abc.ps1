@@ -514,6 +514,9 @@ function Reset-PackageOutDir {
                 say-softly "Output directory for packages was cleared."
             }
         }
+        else {
+            say-softly "There was nothing to do."
+        }
     }
 }
 
@@ -529,7 +532,6 @@ function Reset-PackageCIOutDir {
     if ($yes) { say "`nResetting output directory for CI packages." }
 
     if ($yes -or (yesno "`nReset output directory for CI packages?")) {
-
         if (Test-Path $PKG_CI_OUTDIR) {
             if ($delete) {
                 ___debug "Deleting output directory for CI packages."
@@ -544,6 +546,9 @@ function Reset-PackageCIOutDir {
                     | foreach { ___debug "Deleting ""$_""." ; rm $_.FullName }
                 say-softly "Output directory for CI packages was cleared."
             }
+        }
+        else {
+            say-softly "There was nothing to do."
         }
     }
 }
