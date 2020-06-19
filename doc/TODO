@@ -72,7 +72,7 @@ XML comments with complete examples.
 Help: https://github.com/dotnet/dotnet-api-docs/wiki
 When done, configure Abc.Maybe to warn on missing XML comments.
 
-Sample code w/ C#, VB and F#.
+Sample code w/ C#, VB and F# (compare to F# option types).
 
 A bit of marketing, compare to other option types.
 

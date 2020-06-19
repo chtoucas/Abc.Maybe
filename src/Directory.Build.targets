@@ -8,10 +8,12 @@
     - HideInternals         Abc.Maybe internals are hidden from Abc.Testing
                             NB: if Retail = true, HideInternals has no effect
     - NoWarnX               Custom list of NoWarn's (for PS scripts)
-    - PatchEquality         Do NOT use this one...
-                            To prevent any accident, it is disabled when
-                            "Retail" equals "true".
     - PrintSettings         Enable target PrintSettings?
+
+    Development-only options, to prevent any accident, they are disabled when
+    "Retail" equals "true".
+    - PatchEquality
+    - PlainLinq
 
     Project configuration:
     - NoWarnCS1591          default = true
@@ -49,7 +51,7 @@
   <!-- Compiler symbols (development-only) -->
   <PropertyGroup Condition=" '$(Retail)' != 'true' ">
     <DefineConstants Condition=" '$(PatchEquality)' == 'true' ">$(DefineConstants);PATCH_EQUALITY</DefineConstants>
-    <!--<DefineConstants>$(DefineConstants);PLAIN_LINQ</DefineConstants>-->
+    <DefineConstants Condition=" '$(PlainLinq)' == 'true' ">$(DefineConstants);PLAIN_LINQ</DefineConstants>
     <!--<DefineConstants>$(DefineConstants);PURE_MAYBE</DefineConstants>-->
   </PropertyGroup>
 

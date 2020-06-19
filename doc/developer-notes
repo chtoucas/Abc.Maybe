@@ -70,7 +70,7 @@ equal to "portable".
 Before a production packages, check that there are no remaining FIXMEs and
 review the TODOs and REVIEWs.
 
-Steps 3 and 4 are optional, instead the CI status.
+Steps 3 and 4 are optional, instead one can simply check the CI results.
 
 Pre action, for beta -or- production packages.
 0. Run script eng\freeze-api.ps1, then review the result.
