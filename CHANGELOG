@@ -3,6 +3,10 @@ Changelog for Abc.
 vNEXT
 -----
 
+Internal changes:
+- Unless specified otherwise, projects in "test" now use an exact version match
+  for the package "Abc.Maybe".
+
 2020-06-16, version 1.0.2
 -------------------------
 

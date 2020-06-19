@@ -2,11 +2,6 @@
 
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets" />
 
-  <!--
-    Command-line options:
-    - AbcVersion    Version of the package Abc.Maybe
-  -->
-
   <Import Project="$(SourceRoot)Abc.Maybe.props" />
 
   <PropertyGroup>
@@ -15,10 +10,14 @@
 
     <AbcVersion>$(AbcVersionPrefix)</AbcVersion>
     <AbcVersion Condition=" '$(AbcVersionSuffix)' != '' ">$(AbcVersion)-$(AbcVersionSuffix)</AbcVersion>
+
+    <!-- The default behaviour is to use an exact version match -->
+    <AbcVersionRange>[$(AbcVersion)]</AbcVersionRange>
+    <AbcVersionRange Condition=" '$(LenientAbcVersion)' == 'true' ">$(AbcVersion)</AbcVersionRange>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Abc.Maybe" Version="$(AbcVersion)" />
+    <PackageReference Include="Abc.Maybe" Version="$(AbcVersionRange)" />
   </ItemGroup>
 
 </Project>
