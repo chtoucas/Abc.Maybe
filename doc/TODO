@@ -4,14 +4,11 @@ TODO
 Issues
 ------
 
-azure-pipelines-test-pack.yml picks up the package from NuGet.org.
-  Is it OK now?
-
 External issues?
 - NuGet Package:
   * Compiler Flags <--- requires MSBuild 16.7p3+
   * PDB type = full, it should be "pdbonly" <--- hard-coded in NPE.
-- Code Coverage. When multi-targeting rg reports 100% CC even if it's not the
+- Code Coverage. When multi-targeting, RG reports 100% CC even if it's not the
   case for one of the targets.
 
 Code
@@ -33,14 +30,15 @@ Tools / Build System
   https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets
   https://github.com/NuGet/Home/issues/6045
 - Multi-targeting with non-Windows OSes, MSBuild, scripts, CI.
-  * paths, casing
+  * path separator, filename casing
   * see Xunit website which contains some useful infos.
-    <ItemGroup Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">
-      <Reference Include="System.Runtime" />
-    </ItemGroup>
 - EnableSourceLink no longer prevents coverlet to run, but it fails when we set
   UseSourceLink=true (see cover.ps1 & coverlet.runsettings). All paths are still
-  local too.
+  local since we don't use UseSourceLink.
+  * Only works w/ MSBuild and the XPath Collector
+  * DeterministicSourcePaths must be set to true
+  * ContinuousIntegrationBuild?
+  * There might be a problem with .NET Framework and xUnit's AppDomain.
 - Scripts
   * Add option -Verbosity?
   * Add option -MyVerbose to test-package.ps1.
