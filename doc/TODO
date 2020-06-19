@@ -1,10 +1,13 @@
 TODO
 ====
 
-Issues.
-azure-pipelines-test-pack.yml picks up the package from NuGet.org.
+Issues
+------
 
-Ext.
+azure-pipelines-test-pack.yml picks up the package from NuGet.org.
+  Is it OK now?
+
+External issues?
 - NuGet Package:
   * Compiler Flags <--- requires MSBuild 16.7p3+
   * PDB type = full, it should be "pdbonly" <--- hard-coded in NPE.
@@ -25,8 +28,10 @@ Tools / Build System
 --------------------
 
 - VS: ability to temporarily set SmokeBuild to false.
-- MSBuild "RestoreSources" in "test".
-  https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets#restore-target
+- MSBuild/NuGet in "test": RestoreSources, RestoreAdditionalProjectSources,
+  RestorePackagesPath and RestoreFallbackFolders.
+  https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets
+  https://github.com/NuGet/Home/issues/6045
 - Multi-targeting with non-Windows OSes, MSBuild, scripts, CI.
   * paths, casing
   * see Xunit website which contains some useful infos.
@@ -98,6 +103,8 @@ AZP: I'm really tempted to abandon DotNetCoreCLI@2 and use "script" instead,
 much simpler, much clearer and without all the inconsistencies that come with
 the Azure task. One exception is for testing since the task automatically
 publishes the test results.
+
+Explicit set the nuget.config when calling "dotnet restore"?
 
 GitHub actions: use global.json.
 

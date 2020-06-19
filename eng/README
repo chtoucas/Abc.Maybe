@@ -16,11 +16,6 @@ Other files.
 - lib\utils.ps1         generic helpers.
 - NETFxTools            blank project used to restore .NET Framework tools.
 
-Obsolete files.
-- genuids.fsx           generate unique ids used to timestamp a package.
-- genuids.ps1           execute genuids.fsx.
-- Pack.tasks            MSBuild tasks when building packages.
-
 Miscs
 -----
 
