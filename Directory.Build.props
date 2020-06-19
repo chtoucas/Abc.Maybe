@@ -51,7 +51,7 @@
       the SourceRoot.
       https://github.com/dotnet/roslyn/blob/master/src/Compilers/Core/MSBuildTask/Microsoft.Managed.Core.targets
     -->
-    <SourceRoot Include="$(RepositoryRoot)/"/>
+    <SourceRoot Include="$(RepositoryRoot)"/>
   </ItemGroup>
 
   <!-- Warnings & errors -->
