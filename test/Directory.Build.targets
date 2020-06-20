@@ -4,6 +4,11 @@
 
   <Import Project="$(SourceRoot)Abc.Maybe.props" />
 
+  <ItemGroup Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">
+    <!-- See comments in "src\D.B.targets" -->
+    <SourceRoot Include="$(RepositoryRoot)"/>
+  </ItemGroup>
+
   <PropertyGroup>
     <AbcVersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</AbcVersionPrefix>
     <AbcVersionSuffix Condition=" '$(PreReleaseCycle)' != '' ">$(PreReleaseCycle)$(PreReleaseNumber)</AbcVersionSuffix>

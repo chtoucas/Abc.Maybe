@@ -44,15 +44,6 @@
     <VersionPrefix>0.0.1</VersionPrefix>
     <VersionSuffix>DUMMY</VersionSuffix>
   </PropertyGroup>
-  <ItemGroup Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">
-    <!--
-      Deterministic = true (default) and ContinuousIntegrationBuild = true
-      imply DeterministicSourcePaths = true, in which case we MUST specify
-      the SourceRoot.
-      https://github.com/dotnet/roslyn/blob/master/src/Compilers/Core/MSBuildTask/Microsoft.Managed.Core.targets
-    -->
-    <SourceRoot Include="$(RepositoryRoot)"/>
-  </ItemGroup>
 
   <!-- Warnings & errors -->
   <Choose>

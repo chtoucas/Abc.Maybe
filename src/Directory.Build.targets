@@ -86,36 +86,33 @@
     <!-- DO NOT REMOVE, it ensures deterministic outputs when building locally -->
     <DeterministicSourcePaths>true</DeterministicSourcePaths>
   </PropertyGroup>
+  <ItemGroup Condition=" '$(EnableSourceLink)' == 'true' ">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(EnableSourceLink)' == 'false' ">
+    <!-- DO NOT REMOVE, even if the default behaviour is to have Source Link on
+      for CI builds, this can still be overriden from the command-line.
+      When we don't import "Microsoft.SourceLink.GitHub", dotnet.exe fails
+      complaining about "SourceRoot". -->
+    <SourceRoot Include="$(RepositoryRoot)" Condition=" '$(ContinuousIntegrationBuild)' == 'true' "/>
+  </ItemGroup>
 
-  <!-- Package references -->
+  <!-- FxCop analyzers -->
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup Condition=" '$(EnableSourceLink)' == 'true' ">
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-  </ItemGroup>
 
-  <!--
-    Partial fix for Coverlet when EnableSourceLink = true.
-    Fails when UseSourceLink = true.
-    References.
-    - https://github.com/clairernovotny/DeterministicBuilds
-    - https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/DeterministicBuild.md
-  <PropertyGroup>
-    <TargetFrameworkMonikerAssemblyAttributesPath>$([System.IO.Path]::Combine('$(IntermediateOutputPath)','$(TargetFrameworkMoniker).AssemblyAttributes$(DefaultLanguageSourceExtension)'))</TargetFrameworkMonikerAssemblyAttributesPath>
-  </PropertyGroup>
-  <ItemGroup>
-    <EmbeddedFiles Include="$(GeneratedAssemblyInfoFile)"/>
-    <SourceRoot Include="$(NuGetPackageRoot)" Condition="'$(NuGetPackageRoot)' != ''" />
-  </ItemGroup>
-  -->
+  <!-- Partial fix for Coverlet + SourceLink + Determinism; fails if UseSourceLink = true -->
   <Target Name="CoverletGetPathMap"
           DependsOnTargets="InitializeSourceRootMappedPaths"
           Returns="@(_LocalTopLevelSourceRoot)"
           Condition=" '$(DeterministicSourcePaths)' == 'true' ">
+    <!-- Deterministic = true (default) and ContinuousIntegrationBuild = true
+      imply DeterministicSourcePaths = true.
+      https://github.com/dotnet/roslyn/blob/master/src/Compilers/Core/MSBuildTask/Microsoft.Managed.Core.targets#L131 -->
     <ItemGroup>
       <_LocalTopLevelSourceRoot Include="@(SourceRoot)" Condition=" '%(SourceRoot.NestedRoot)' == '' "/>
     </ItemGroup>
