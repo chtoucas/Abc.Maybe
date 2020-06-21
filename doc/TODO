@@ -20,6 +20,7 @@ Code
 - Serialization (XML).
 - Localise error messages (ExceptionFactory)?
 - FIXME, TODO and REVIEW within the code.
+- PURE_MAYBE?
 
 Tools / Build System
 --------------------

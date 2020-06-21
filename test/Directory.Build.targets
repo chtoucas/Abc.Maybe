@@ -6,7 +6,7 @@
 
   <ItemGroup Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">
     <!-- See comments in "src\D.B.targets" -->
-    <SourceRoot Include="$(RepositoryRoot)"/>
+    <SourceRoot Include="$(RepositoryRoot)" />
   </ItemGroup>
 
   <PropertyGroup>

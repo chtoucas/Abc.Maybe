@@ -10,7 +10,7 @@
     - NoWarnX               Custom list of NoWarn's (for PS scripts)
     - PrintSettings         Enable target PrintSettings?
 
-    Development-only options, to prevent any accident, they are disabled when
+    Development-only options. To prevent any accident, they are disabled when
     "Retail" equals "true".
     - PatchEquality
     - PlainLinq
@@ -52,7 +52,6 @@
   <PropertyGroup Condition=" '$(Retail)' != 'true' ">
     <DefineConstants Condition=" '$(PatchEquality)' == 'true' ">$(DefineConstants);PATCH_EQUALITY</DefineConstants>
     <DefineConstants Condition=" '$(PlainLinq)' == 'true' ">$(DefineConstants);PLAIN_LINQ</DefineConstants>
-    <!--<DefineConstants>$(DefineConstants);PURE_MAYBE</DefineConstants>-->
   </PropertyGroup>
 
   <!-- Warnings -->
@@ -76,26 +75,53 @@
     <!-- For CI builds, the default behaviour is to have Source Link on -->
     <EnableSourceLink Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">true</EnableSourceLink>
 
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <!-- Setting EnableSourceLink to false does not truely disable Source Link :-( -->
-    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(EnableSourceLink)' == 'true' ">
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <!-- DO NOT REMOVE, it ensures deterministic outputs when building locally -->
-    <DeterministicSourcePaths>true</DeterministicSourcePaths>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+
+    <!--
+      DO NOT REMOVE, it ensures deterministic outputs when building locally.
+      This fixes the case where ContinuousIntegrationBuild = false and
+      EnableSourceLink = true. Very unusual, but this could happen. For instance,
+      > dotnet.exe build /p:EnableSourceLink=true
+      then the PDB files use local paths for the generated files.
+      This is not necessary when ContinuousIntegrationBuild = true.
+      Indeed, Deterministic = true (default) and ContinuousIntegrationBuild = true
+      imply DeterministicSourcePaths = true; see
+      https://github.com/dotnet/roslyn/blob/master/src/Compilers/Core/MSBuildTask/Microsoft.Managed.Core.targets#L131
+    -->
+    <DeterministicSourcePaths Condition=" '$(EnableSourceLink)' == 'true' ">true</DeterministicSourcePaths>
   </PropertyGroup>
   <ItemGroup Condition=" '$(EnableSourceLink)' == 'true' ">
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup Condition=" '$(EnableSourceLink)' == 'false' ">
-    <!-- DO NOT REMOVE, even if the default behaviour is to have Source Link on
+    <!--
+      DO NOT REMOVE. Even if the default behaviour is to have Source Link on
       for CI builds, this can still be overriden from the command-line.
-      When we don't import "Microsoft.SourceLink.GitHub", dotnet.exe fails
-      complaining about "SourceRoot". -->
+      dotnet.exe fails complaining about "SourceRoot" if "ContinuousIntegrationBuild"
+      is set to true. When we import "Microsoft.SourceLink.GitHub", this is
+      unnecessary since Source Link automatically adds GitHub to "SourceRoot".
+      Should be OK with the next NuGet's version as it will add "NuGetPackageRoot"
+      to "SourceRoot".
+      - https://github.com/dotnet/sdk/issues/11105
+      - https://github.com/NuGet/NuGet.Client/pull/3430
+    -->
     <SourceRoot Include="$(RepositoryRoot)" Condition=" '$(ContinuousIntegrationBuild)' == 'true' "/>
   </ItemGroup>
+  <Target Name="CoverletGetPathMap"
+          DependsOnTargets="InitializeSourceRootMappedPaths"
+          Returns="@(_LocalTopLevelSourceRoot)"
+          Condition=" '$(DeterministicSourcePaths)' == 'true' ">
+    <!--
+      Partial fix for Coverlet + SourceLink + Determinism.
+      Fails if UseSourceLink = true and ContinuousIntegrationBuild = true.
+    -->
+    <ItemGroup>
+      <_LocalTopLevelSourceRoot Include="@(SourceRoot)" Condition=" '%(SourceRoot.NestedRoot)' == '' "/>
+    </ItemGroup>
+  </Target>
 
   <!-- FxCop analyzers -->
   <ItemGroup>
@@ -104,19 +130,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
-  <!-- Partial fix for Coverlet + SourceLink + Determinism; fails if UseSourceLink = true -->
-  <Target Name="CoverletGetPathMap"
-          DependsOnTargets="InitializeSourceRootMappedPaths"
-          Returns="@(_LocalTopLevelSourceRoot)"
-          Condition=" '$(DeterministicSourcePaths)' == 'true' ">
-    <!-- Deterministic = true (default) and ContinuousIntegrationBuild = true
-      imply DeterministicSourcePaths = true.
-      https://github.com/dotnet/roslyn/blob/master/src/Compilers/Core/MSBuildTask/Microsoft.Managed.Core.targets#L131 -->
-    <ItemGroup>
-      <_LocalTopLevelSourceRoot Include="@(SourceRoot)" Condition=" '%(SourceRoot.NestedRoot)' == '' "/>
-    </ItemGroup>
-  </Target>
 
   <!-- Target for verbose settings -->
   <Target Name="PrintSettingsBeforeCompile" BeforeTargets="Compile"
