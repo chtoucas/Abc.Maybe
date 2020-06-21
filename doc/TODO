@@ -40,7 +40,6 @@ Tools / Build System
   * Add option -MyVerbose to test-package.ps1.
   * Verbosity tweak for "dotnet test": -v minimal /p:PrintSettings=true
     does nothing with a test project. When resolved, update AZP.
-  * test-package.ps1, if a version is not cached, ask if we want to create it.
 - Roslyn Analyzer:
   * Of(), Flatten(). Squash(Maybe<T?>) where T : class
   * SelectMany(), ZipWith(), Bind().

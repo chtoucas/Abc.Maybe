@@ -61,10 +61,6 @@ param(
 
 . (Join-Path $PSScriptRoot "lib\abc.ps1")
 
-# ------------------------------------------------------------------------------
-
-const NUGET_CACHING_PROJECT (Join-Path $TEST_DIR "NuGetCaching" -Resolve)
-
 #endregion
 ################################################################################
 #region Helpers
@@ -397,7 +393,7 @@ function Invoke-PushLocal {
     # otherwise, later on, the package will be restored to the global cache.
     # This is not such a big problem, but I prefer not to pollute it with
     # CI packages (or versions we are going to publish).
-    say "Updating the local NuGet cache"
+    say "Updating the local NuGet cache."
 
     & dotnet restore $NUGET_CACHING_PROJECT /p:AbcVersion=$packageVersion
         || die "Failed to update the local NuGet cache."

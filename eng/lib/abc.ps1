@@ -53,6 +53,8 @@ const PLATFORMS_PROPS (Join-Path $ROOT_DIR "Directory.Build.props" -Resolve)
 const NET_FRAMEWORK_TOOLS_PROJECT `
     (Join-Path $ENG_DIR "NETFxTools\NETFxTools.csproj" -Resolve)
 
+const NUGET_CACHING_PROJECT (Join-Path $TEST_DIR "NuGetCaching" -Resolve)
+
 #endregion
 ################################################################################
 #region Begin / End.

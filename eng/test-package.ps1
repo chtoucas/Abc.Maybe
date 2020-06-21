@@ -258,16 +258,24 @@ function Find-LastLocalVersion {
     # Substring is for the dot just before the version.
     $version = $name.Replace($packageName, "").Substring(1)
 
-    $cachedVersion = Join-Path $NUGET_LOCAL_CACHE $packageName.ToLower() `
+    $cachedPackage = Join-Path $NUGET_LOCAL_CACHE $packageName.ToLower() `
         | Join-Path -ChildPath $version
 
-    if (-not (Test-Path $cachedVersion)) {
-        # If the cache entry does not exist, we stop the script, otherwise it
-        # will restore the CI package into the global, not what we want.
-        # Solutions: delete the "broken" package, create a new CI package, etc.
-        warn "Local NuGet feed and cache are out of sync, reverting to -NoCI."
-        warn "The simplest solution to fix this is to recreate a package."
-        return Get-PackageVersion $packageName -AsString
+    if (-not (Test-Path $cachedPackage)) {
+        warn "Local NuGet feed and cache are out of sync."
+
+        if (yesno "Add ${name} to the local NuGet cache?") {
+            & dotnet restore $NUGET_CACHING_PROJECT /p:AbcVersion=$version | Out-Host
+                || die "Failed to update the local NuGet cache."
+        }
+        else {
+            # If the cache entry does not exist, we stop the script, otherwise it
+            # will restore the CI package into the global, not what we want.
+            # Solutions: delete the "broken" package, create a new CI package, etc.
+            warn "Reverting to -NoCI."
+            warn "Next time, the simplest solution to fix this is to recreate a package."
+            return Get-PackageVersion $packageName -AsString
+        }
     }
 
     $version
