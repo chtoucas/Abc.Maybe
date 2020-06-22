@@ -40,7 +40,7 @@ New-Alias "SAY-LOUDLY" Write-Green
 (Join-Path $ROOT_DIR "__"   -Resolve)        | const ARTIFACTS_DIR
 # Artifacts directories. No -Resolve, dir does not necessary exist.
 (Join-Path $ARTIFACTS_DIR "packages")        | const PKG_OUTDIR
-(Join-Path $ARTIFACTS_DIR "packages-ci")     | const PKG_CI_OUTDIR
+(Join-Path $ARTIFACTS_DIR "packages-dev")    | const PKG_DEV_OUTDIR
 (Join-Path $ARTIFACTS_DIR "nuget-feed")      | const NUGET_LOCAL_FEED
 (Join-Path $ARTIFACTS_DIR "nuget-cache")     | const NUGET_LOCAL_CACHE
 (Join-Path $ARTIFACTS_DIR "tools")           | const NET_FRAMEWORK_TOOLS_DIR
@@ -524,29 +524,29 @@ function Reset-PackageOutDir {
 
 # ------------------------------------------------------------------------------
 
-function Reset-PackageCIOutDir {
+function Reset-DevPackageOutDir {
     [CmdletBinding()]
     param(
                      [switch] $delete,
         [Alias("y")] [switch] $yes
     )
 
-    if ($yes) { say "`nResetting output directory for CI packages." }
+    if ($yes) { say "`nResetting output directory for dev packages." }
 
-    if ($yes -or (yesno "`nReset output directory for CI packages?")) {
-        if (Test-Path $PKG_CI_OUTDIR) {
+    if ($yes -or (yesno "`nReset output directory for dev packages?")) {
+        if (Test-Path $PKG_DEV_OUTDIR) {
             if ($delete) {
-                ___debug "Deleting output directory for CI packages."
+                ___debug "Deleting output directory for dev packages."
 
-                Remove-Dir $PKG_CI_OUTDIR
-                say-softly "Output directory for CI packages was deleted."
+                Remove-Dir $PKG_DEV_OUTDIR
+                say-softly "Output directory for dev packages was deleted."
             }
             else {
-                ___debug "Cleaning output directory for CI packages."
+                ___debug "Cleaning output directory for dev packages."
 
-                ls $PKG_CI_OUTDIR -Include "*.nupkg" -Recurse `
+                ls $PKG_DEV_OUTDIR -Include "*.nupkg" -Recurse `
                     | foreach { ___debug "Deleting ""$_""." ; rm $_.FullName }
-                say-softly "Output directory for CI packages was cleared."
+                say-softly "Output directory for dev packages was cleared."
             }
         }
         else {

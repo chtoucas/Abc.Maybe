@@ -49,9 +49,9 @@ Beware, if the matching package does NOT exist in the local NuGet cache/feed,
 the script will fail in the following cases:
 - the package has not yet been published to NuGet.Org.
 - the package has been published but there has been breaking changes in between.
-Ignored if -NoCI is also set and equals $true.
+Ignored if -NoDev is also set and equals $true.
 
-.PARAMETER NoCI
+.PARAMETER NoDev
 Force using the package version found in Abc.Maybe.props?
 See warnings in -Version.
 
@@ -96,7 +96,7 @@ param(
     #
     [Parameter(Mandatory = $false, Position = 2)]
                  [string] $Version,
-                 [switch] $NoCI,
+                 [switch] $NoDev,
 
     # Runtime selection.
     #
@@ -140,7 +140,7 @@ Usage: test-package.ps1 [arguments]
   -c|-Configuration  specify the configuration to test for.
 
      -Version        pick a specific version of the package Abc.Maybe.
-     -NoCI           force using the package version found in Abc.Maybe.props?
+     -NoDev          force using the package version found in Abc.Maybe.props?
 
      -Runtime        specify a target runtime to test for.
 
@@ -232,7 +232,7 @@ function Find-XunitRunnerOnce {
 
 # ------------------------------------------------------------------------------
 
-# When there is a problem, we revert to -NoCI, which could be problematic (see
+# When there is a problem, we revert to -NoDev, which could be problematic (see
 # warnings in -Version).
 function Find-LastLocalVersion {
     [CmdletBinding()]
@@ -249,7 +249,7 @@ function Find-LastLocalVersion {
         | sort LastWriteTime | select -Last 1
 
     if (-not $last) {
-        warn "The local NuGet feed is empty, reverting to -NoCI."
+        warn "The local NuGet feed is empty, reverting to -NoDev."
         return Get-PackageVersion $packageName -AsString
     }
 
@@ -270,9 +270,10 @@ function Find-LastLocalVersion {
         }
         else {
             # If the cache entry does not exist, we stop the script, otherwise it
-            # will restore the CI package into the global, not what we want.
-            # Solutions: delete the "broken" package, create a new CI package, etc.
-            warn "Reverting to -NoCI."
+            # will restore the dev package into the global, not what we want.
+            # Solutions: delete the "broken" package, create a new dev package,
+            # etc.
+            warn "Reverting to -NoDev."
             warn "Next time, the simplest solution to fix this is to recreate a package."
             return Get-PackageVersion $packageName -AsString
         }
@@ -737,7 +738,7 @@ Supported .NET Core (maximal and minimal sets):
         Reset-TestTree   -Yes:$Yes
     }
 
-    if ($NoCI) {
+    if ($NoDev) {
         # There were two options, use an explicit version or let the target
         # project decides for us. Both give the __same__ value, but I opted for
         # an explicit version, since I need its value for logging but also

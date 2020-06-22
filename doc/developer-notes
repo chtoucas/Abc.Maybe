@@ -80,8 +80,8 @@ Pre action, for beta -or- production packages.
 
 1. New version in src\Abc.Maybe.props
 2. Update CHANGELOG
-3. (optional) Run eng\pack.ps1 -NoCI -Force -y       Create the package
-4. (optional) Run eng\test-package.ps1 -NoCI -a -y   Test the result
+3. (optional) Run eng\pack.ps1 -NoDEV -Force -y      Create the package
+4. (optional) Run eng\test-package.ps1 -NoDEV -a -y  Test the result
 6. Git commit ("Change version number")
 7. Run script eng\pack.ps1 -Freeze        Recreate, and maybe publish the package
 8. Publish package                        Only if not yet done
@@ -346,7 +346,7 @@ PowerShell
 ----------
 
 Common script/function parameters:
-   -NoCI
+   -NoDev
    -Reset
    -Restore
    -DryRun

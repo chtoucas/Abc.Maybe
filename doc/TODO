@@ -36,6 +36,7 @@ Tools / Build System
 - Multi-targeting with non-Windows OSes, MSBuild, scripts, CI.
   * path separator, filename casing.
   * many script helpers only make sense or work on Windows.
+  * $([MSBuild]::EnsureTrailingSlash('$(PathProperty)'))
   * see Xunit website which contains some useful infos.
 - Roslyn Analyzer:
   * Of(), Flatten(). Squash(Maybe<T?>) where T : class

@@ -8,6 +8,7 @@
     - HideInternals         Abc.Maybe internals are hidden from Abc.Testing
                             NB: if Retail = true, HideInternals has no effect
     - NoWarnX               Custom list of NoWarn's (for PS scripts)
+                            For instance, NU5105 (warning about SemVer 2.0.0)
     - PrintSettings         Enable target PrintSettings?
 
     Development-only options. To prevent any accident, they are disabled when
@@ -105,8 +106,8 @@
       unnecessary since Source Link automatically adds GitHub to "SourceRoot".
       Should be OK with the next NuGet's version as it will add "NuGetPackageRoot"
       to "SourceRoot".
-      - https://github.com/dotnet/sdk/issues/11105
-      - https://github.com/NuGet/NuGet.Client/pull/3430
+      See https://github.com/dotnet/sdk/issues/11105,
+      fixed by https://github.com/NuGet/NuGet.Client/pull/3430
     -->
     <SourceRoot Include="$(RepositoryRoot)" Condition=" '$(ContinuousIntegrationBuild)' == 'true' "/>
   </ItemGroup>

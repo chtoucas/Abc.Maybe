@@ -11,21 +11,21 @@ Create a NuGet package.
 
 .DESCRIPTION
 Create a NuGet package.
-The default behaviour is to build a CI package.
+The default behaviour is to build a dev package, only meant to be consumed locally.
 
-.PARAMETER NoCI
-Create a non-CI package?
+.PARAMETER NoDev
+Create a non-dev package?
 
 .PARAMETER Freeze
 Create a package ready to be published to NuGet.Org?
 
-This is a meta-option, it automatically sets -NoCI. The resulting package is no
-different from the one you would get using only -NoCI, but, in addition, the
+This is a meta-option, it automatically sets -NoDev. The resulting package is no
+different from the one you would get using only -NoDev, but, in addition, the
 script resets the repository, and stops when there are uncommited changes or if
 it cannot retrieve git metadata.
 
 If this behaviour happens to be too strict and you are in a hurry, you can use:
-PS> pack.ps1 -NoCI -Force -Yes
+PS> pack.ps1 -NoDev -Force -Yes
 In that event, do not forget to reset the repository thereafter.
 
 .PARAMETER Reset
@@ -49,7 +49,7 @@ Print help text then exit?
 #>
 [CmdletBinding()]
 param(
-                 [switch] $NoCI,
+                 [switch] $NoDev,
                  [switch] $Freeze,
 
                  [switch] $Reset,
@@ -71,7 +71,7 @@ function Print-Help {
 Create a NuGet package for Abc.Maybe.
 
 Usage: pack.ps1 [arguments]
-     -NoCI       create a non-CI package?
+     -NoDev      create a non-dev package?
      -Freeze     create a package ready to be published to NuGet.Org?
 
      -Reset      reset the solution before anything else?
@@ -81,9 +81,9 @@ Usage: pack.ps1 [arguments]
   -h|-Help       print this help then exit?
 
 Examples.
-> pack.ps1                    # Create a CI package
-> pack.ps1 -NoCI -Yes -Force  # Create a non-CI package, ignore uncommited changes
-> pack.ps1 -Freeze            # Create a package ready to be published to NuGet.Org
+> pack.ps1                     # Create a dev package
+> pack.ps1 -NoDev -Yes -Force  # Create a non-dev package, ignore uncommited changes
+> pack.ps1 -Freeze             # Create a package ready to be published to NuGet.Org
 
 Looking for more help?
 > Get-Help -Detailed pack.ps1
@@ -183,23 +183,24 @@ function Get-ActualVersion {
         [Parameter(Mandatory = $false, Position = 1)]
         [string] $timestamp,
 
-        [switch] $ci
+        [switch] $dev
     )
 
     say "Getting package version."
 
     $major, $minor, $patch, $precy, $preno = Get-PackageVersion $projectName
 
-    if ($ci) {
+    if ($dev) {
         if (-not $timestamp) {
             ___debug "The timestamp is empty, let's regenerate it."
             $timestamp = "{0:yyyyMMdd}T{0:HHmmss}" -f (Get-Date).ToUniversalTime()
         }
 
-        # For CI packages, we use SemVer 2.0.0, and we ensure that the package
-        # is seen as a prerelease of what could be the next version. Examples:
-        # - "1.2.3"       -> "1.2.4-ci-20201231T121212".
-        # - "1.2.3-beta4" -> "1.2.3-beta5-ci-20201231T121212".
+        # For dev packages, we use SemVer 2.0.0, and we ensure that the package
+        # is seen as a prerelease of what could be the next version.
+        # Examples:
+        # - "1.2.3"       -> "1.2.4-dev-20201231T121212".
+        # - "1.2.3-beta4" -> "1.2.3-beta5-dev-20201231T121212".
         # It also ensures that each package has a unique version, so that each
         # one will get its own separate entry in the cache.
         if ($precy) {
@@ -213,15 +214,15 @@ function Get-ActualVersion {
     }
 
     $prefix = "$major.$minor.$patch"
-    if ($ci) {
-        $suffix = $precy ? "$precy$preno-ci" : "ci"
+    if ($dev) {
+        $suffix = $precy ? "$precy$preno-dev" : "dev"
     }
     else {
         $suffix = $precy ? "$precy$preno" : ""
     }
 
     $pkgversion = $suffix ? "$prefix-$suffix" : $prefix
-    if ($ci) { $pkgversion = "$pkgversion-$timestamp" }
+    if ($dev) { $pkgversion = "$pkgversion-$timestamp" }
 
     ___debug "Version prefix: ""$prefix""."
     ___debug "Version suffix: ""$suffix""."
@@ -243,19 +244,19 @@ function Get-PackageFile {
         [ValidateNotNullOrEmpty()]
         [string] $packageVersion,
 
-        [switch] $ci,
+        [switch] $dev,
         [switch] $yes
     )
 
     say "Getting package filepath."
 
-    $path = Join-Path ($ci ? $PKG_CI_OUTDIR : $PKG_OUTDIR) "$projectName.$packageVersion.nupkg"
+    $path = Join-Path ($dev ? $PKG_DEV_OUTDIR : $PKG_OUTDIR) "$projectName.$packageVersion.nupkg"
 
     ___debug "Package file: ""$path""."
 
     # Is there a dangling package file?
-    # NB: not necessary for CI packages, the filename is unique.
-    if (-not $ci -and (Test-Path $path)) {
+    # NB: not necessary for dev packages, the filename is unique.
+    if (-not $dev -and (Test-Path $path)) {
         if (-not $yes) {
             warn "A package with the same version ($packageVersion) already exists."
             guard "Do you wish to proceed anyway?"
@@ -305,7 +306,7 @@ function Invoke-Pack {
         [string] $revisionNumber,
 
         [switch] $enableSourceLink,
-        [switch] $ci,
+        [switch] $dev,
         [switch] $myVerbose
     )
 
@@ -318,29 +319,22 @@ function Invoke-Pack {
 
     # Beware, PackageVersion != Version.
     # VersionSuffix is for Retail.props. This is not something that we have to
-    # do for non-CI packages, since in that case we don't patch the suffix, but
-    # let's not bother.
+    # do for non-dev packages, since in that case we don't patch the suffix,
+    # but let's not bother.
     $args = `
         "/p:PackageVersion=$packageVersion",
         "/p:VersionPrefix=$versionPrefix",
         "/p:VersionSuffix=$versionSuffix"
-
-    if ($myVerbose)        { $args += "/p:PrintSettings=true" }
+    # Deterministic build, almost (see EnableSourceLink below).
+    $args += "/p:ContinuousIntegrationBuild=true"
     # We explicitly set EnableSourceLink to "true" or "false".
-    # Let's remember that ContinuousIntegrationBuild=true would imply
-    # EnableSourceLink=true, and sometimes we don't want it!
-    if ($enableSourceLink) { $args += "/p:EnableSourceLink=true" }
-                      else { $args += "/p:EnableSourceLink=false" }
+    # Let's remember ("src\D.B.targets") that ContinuousIntegrationBuild = true
+    # implies EnableSourceLink = true, but sometimes we don't want it!
+    $args += ("/p:EnableSourceLink=" + ($enableSourceLink ? "true" : "false"))
+    # Verbose mode?
+    if ($myVerbose) { $args += "/p:PrintSettings=true" }
 
-    if ($ci) {
-        $output = $PKG_CI_OUTDIR
-        $args += "/p:ContinuousIntegrationBuild=true"
-        # NU5105 = warning about SemVer 2.0.0 (no longer necessary...).
-        #$args += "/p:NoWarnX=NU5105"
-    }
-    else {
-        $output = $PKG_OUTDIR
-    }
+    $output = $dev ? $PKG_DEV_OUTDIR : $PKG_OUTDIR
 
     $project = Join-Path $SRC_DIR $projectName -Resolve
 
@@ -357,8 +351,8 @@ function Invoke-Pack {
         /p:Retail=true
         || die "Pack task failed."
 
-    if ($ci) {
-        say-softly "CI package successfully created."
+    if ($dev) {
+        say-softly "Developer package successfully created."
     }
     else {
         say-softly "Package successfully created."
@@ -394,7 +388,7 @@ function Invoke-PushLocal {
     # If the following task fails, we should remove the package from the feed,
     # otherwise, later on, the package will be restored to the global cache.
     # This is not such a big problem, but I prefer not to pollute it with
-    # CI packages (or versions we are going to publish).
+    # dev packages (or versions we are going to publish).
     say "Updating the local NuGet cache."
 
     & dotnet restore $NUGET_CACHING_PROJECT /p:AbcVersion=$packageVersion
@@ -441,11 +435,11 @@ function Invoke-Publish {
 
 if ($Help) { Print-Help ; exit }
 
-if ($Freeze -or $NoCI) {
+if ($Freeze -or $NoDev) {
     Hello "this is the NuGet package creation script for Abc.Maybe."
 }
 else {
-    Hello "this is the NuGet package creation script for Abc.Maybe (CI mode)."
+    Hello "this is the NuGet package creation script for Abc.Maybe (dev mode)."
 }
 
 readonly ProjectName "Abc.Maybe"
@@ -453,7 +447,7 @@ readonly ProjectName "Abc.Maybe"
 try {
     ___BEGIN___
 
-    $CI = -not ($Freeze -or $NoCI)
+    $Dev = -not ($Freeze -or $NoDev)
 
     SAY-LOUDLY "`nInitialisation."
 
@@ -465,9 +459,9 @@ try {
     say "Generating build numbers."
     $buildNumber, $revisionNumber, $timestamp = Get-BuildNumbers
     # 4. Get package/asm version.
-    $pkgversion, $prefix, $suffix = Get-ActualVersion $ProjectName $timestamp -CI:$CI
+    $pkgversion, $prefix, $suffix = Get-ActualVersion $ProjectName $timestamp -Dev:$Dev
     # 5. Get package file.
-    $pkgfile = Get-PackageFile $ProjectName $pkgversion -Yes:($Freeze -or $Yes) -CI:$CI
+    $pkgfile = Get-PackageFile $ProjectName $pkgversion -Yes:($Freeze -or $Yes) -Dev:$Dev
 
     Invoke-Pack `
         -ProjectName      $ProjectName `
@@ -479,25 +473,25 @@ try {
         -BuildNumber      $buildNumber `
         -RevisionNumber   $revisionNumber `
         -EnableSourceLink:($Force -or $gitok) `
-        -CI:              $CI `
+        -Dev              $Dev `
         -MyVerbose:       $MyVerbose
 
     # Post-actions.
-    if ($CI) {
+    if ($Dev) {
         Invoke-PushLocal $pkgfile $pkgversion
     }
     else {
         if ($Freeze) {
-            # Now, all CI packages should be obsoleted. Traces of them can be
-            # found within the directories "test" and "__\packages-ci", but also
-            # in the local NuGet cache/feed.
+            # Now, all dev packages should be obsoleted. Traces of them can be
+            # found within the directories "test" and "__\packages-dev", but
+            # also in the local NuGet cache/feed.
             # We should also remove any reference to a released package with the
             # same version. Failing to do so would mean that, after publishing
             # the package to NuGet.Org, "test-package.ps1" could still test a
             # package from the local NuGet cache/feed not the one from NuGet.Org.
-            Reset-TestTree        -Yes:$true
-            Reset-PackageCIOutDir -Yes:$true
-            Reset-LocalNuGet      -Yes:$true
+            Reset-TestTree         -Yes:$true
+            Reset-DevPackageOutDir -Yes:$true
+            Reset-LocalNuGet       -Yes:$true
 
             Invoke-Publish $pkgfile
         }
@@ -515,7 +509,7 @@ try {
             Invoke-PushLocal $pkgfile $pkgversion
 
             SAY-LOUDLY "`n---`nNow, you can test the package. For instance,"
-            SAY-LOUDLY "> eng\test-package.ps1 -NoCI -a -y"
+            SAY-LOUDLY "> eng\test-package.ps1 -NoDev -a -y"
         }
     }
 }
