@@ -5,11 +5,14 @@ Issues
 ------
 
 External issues?
+- EnableSourceLink no longer prevents coverlet to run, but it fails when we set
+  UseSourceLink = true __and__ ContinuousIntegrationBuild = true.
+  Reported: https://github.com/coverlet-coverage/coverlet/issues/882
+- Code Coverage. When multi-targeting, RG reports 100% CC even if it's not the
+  case for one of the targets.
 - NuGet Package:
   * Compiler Flags <--- requires MSBuild 16.7p3+
   * PDB type = full, it should be "pdbonly" <--- hard-coded in NPE.
-- Code Coverage. When multi-targeting, RG reports 100% CC even if it's not the
-  case for one of the targets.
 
 Code
 ----
@@ -28,18 +31,13 @@ Tools / Build System
 - VS: ability to temporarily set SmokeBuild to false.
 - MSBuild/NuGet in "test": RestoreSources, RestoreAdditionalProjectSources,
   RestorePackagesPath and RestoreFallbackFolders.
+  See also RestorePackagesWithLockFile, RestoreLockedMode, etc.
   https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets
   https://github.com/NuGet/Home/issues/6045
 - Multi-targeting with non-Windows OSes, MSBuild, scripts, CI.
-  * path separator, filename casing
+  * path separator, filename casing.
+  * many script helpers only make sense or work on Windows.
   * see Xunit website which contains some useful infos.
-- EnableSourceLink no longer prevents coverlet to run, but it fails when we set
-  UseSourceLink = true __and__ ContinuousIntegrationBuild = true.
-- Scripts
-  * Add option -Verbosity?
-  * Add option -MyVerbose to test-package.ps1.
-  * Verbosity tweak for "dotnet test": -v minimal /p:PrintSettings=true
-    does nothing with a test project. When resolved, update AZP.
 - Roslyn Analyzer:
   * Of(), Flatten(). Squash(Maybe<T?>) where T : class
   * SelectMany(), ZipWith(), Bind().
@@ -97,9 +95,9 @@ much simpler, much clearer and without all the inconsistencies that come with
 the Azure task. One exception is for testing since the task automatically
 publishes the test results.
 
-Explicit set the nuget.config when calling "dotnet restore"?
-
 GitHub actions: use global.json.
+
+Tracing: DOTNET_CLI_CAPTURE_TIMING, COREHOST_TRACE.
 
 NuGet caching (AZP)?
 <PropertyGroup Condition=" $(ContinuousIntegrationBuild) == 'true' ">

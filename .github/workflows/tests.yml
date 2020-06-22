@@ -11,9 +11,7 @@ on:
     - 'doc/**'
     - 'eng/**'
     - 'test/**'
-    - '.editorconfig'
     - 'CHANGELOG'
-    - 'LICENSE*'
     - 'README.md'
 
 jobs:
