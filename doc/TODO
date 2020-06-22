@@ -28,7 +28,8 @@ Code
 Tools / Build System
 --------------------
 
-- VS: ability to temporarily set SmokeBuild to false.
+- pack.ps1: add ContinuousIntegrationBuild=true.
+  Beware, it implies EnableSourceLink=true. Remove MyAssemblyTitle?
 - MSBuild/NuGet in "test": RestoreSources, RestoreAdditionalProjectSources,
   RestorePackagesPath and RestoreFallbackFolders.
   See also RestorePackagesWithLockFile, RestoreLockedMode, etc.

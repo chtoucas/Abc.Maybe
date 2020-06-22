@@ -13,6 +13,7 @@
     <ContinuousIntegrationBuild Condition=" '$(TF_BUILD)' == 'true' ">true</ContinuousIntegrationBuild>
     <ContinuousIntegrationBuild Condition=" '$(GITHUB_ACTIONS)' == 'true' ">true</ContinuousIntegrationBuild>
 
+    <!-- WARNING: inside Visual Studio, "SmokeBuild" is set to "true" -->
     <SmokeBuild Condition=" '$(SmokeBuild)' == '' ">false</SmokeBuild>
     <SmokeBuild Condition=" '$(SMOKE_BUILD)' == 'true' ">true</SmokeBuild>
     <SmokeBuild Condition=" '$(BuildingInsideVisualStudio)' == 'true' ">true</SmokeBuild>
@@ -86,8 +87,13 @@
 
   <!-- Supported platforms -->
   <PropertyGroup>
-    <!-- IMPORTANT: do NOT use MSBuild property resolution $() below, the content
-         must be in a form understandable to PowerShell -->
+    <!--
+      IMPORTANT: do NOT use MSBuild property resolution $() below, the content
+      must be in a form understandable to PowerShell.
+      One might have to filter these lists if the underlying OS does not support
+      some targets (see "test\Package\Abc.PackageTests.csproj").
+    -->
+
     <MinCorePlatforms>netcoreapp3.1;netcoreapp2.1</MinCorePlatforms>
     <MaxCorePlatforms>
       netcoreapp3.1;netcoreapp3.0;
