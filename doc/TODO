@@ -29,7 +29,7 @@ Tools / Build System
 --------------------
 
 - pack.ps1: add ContinuousIntegrationBuild=true.
-  Beware, it implies EnableSourceLink=true. Remove MyAssemblyTitle?
+  Beware, it implies EnableSourceLink=true.
 - MSBuild/NuGet in "test": RestoreSources, RestoreAdditionalProjectSources,
   RestorePackagesPath and RestoreFallbackFolders.
   See also RestorePackagesWithLockFile, RestoreLockedMode, etc.

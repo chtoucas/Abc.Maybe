@@ -1,13 +1,7 @@
 <Project>
 
-  <!--
-    Command-line options:
-    - MyAssemblyTitle   default = AssemblyName
-  -->
   <PropertyGroup>
-    <MyAssemblyTitle Condition=" '$(MyAssemblyTitle)' == '' ">$(AssemblyName)</MyAssemblyTitle>
-
-    <AssemblyTitle>$(MyAssemblyTitle) [$(TargetFramework)]</AssemblyTitle>
+    <AssemblyTitle>$(AssemblyName) [$(TargetFramework)]</AssemblyTitle>
   </PropertyGroup>
 
   <!-- API profiles -->
