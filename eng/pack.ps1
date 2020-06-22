@@ -316,21 +316,25 @@ function Invoke-Pack {
         ($repositoryCommit ? $repositoryCommit.Substring(0, 7) : "???") `
         | SAY-LOUDLY
 
-    # VersionSuffix is for Retail.props, but it is not enough, we MUST also
-    # specify "--version-suffix:$versionSuffix" (should not be necessary any more).
-    # Beware, PackageVersion != Version
-    # NB: this is not something that we have to do for non-CI packages, since
-    # in that case we don't patch the suffix, but let's not bother.
+    # Beware, PackageVersion != Version.
+    # VersionSuffix is for Retail.props. This is not something that we have to
+    # do for non-CI packages, since in that case we don't patch the suffix, but
+    # let's not bother.
     $args = `
         "/p:PackageVersion=$packageVersion",
         "/p:VersionPrefix=$versionPrefix",
         "/p:VersionSuffix=$versionSuffix"
 
     if ($myVerbose)        { $args += "/p:PrintSettings=true" }
+    # We explicitly set EnableSourceLink to "true" or "false".
+    # Let's remember that ContinuousIntegrationBuild=true would imply
+    # EnableSourceLink=true, and sometimes we don't want it!
     if ($enableSourceLink) { $args += "/p:EnableSourceLink=true" }
+                      else { $args += "/p:EnableSourceLink=false" }
 
     if ($ci) {
         $output = $PKG_CI_OUTDIR
+        $args += "/p:ContinuousIntegrationBuild=true"
         # NU5105 = warning about SemVer 2.0.0 (no longer necessary...).
         #$args += "/p:NoWarnX=NU5105"
     }
