@@ -473,7 +473,7 @@ try {
         -BuildNumber      $buildNumber `
         -RevisionNumber   $revisionNumber `
         -EnableSourceLink:($Force -or $gitok) `
-        -Dev              $Dev `
+        -Dev:             $Dev `
         -MyVerbose:       $MyVerbose
 
     # Post-actions.
