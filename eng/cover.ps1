@@ -32,7 +32,7 @@ The platform to test the solution for.
 .PARAMETER Threshold
 Threshold below which a build will fail.
 
-.PARAMETER XPath
+.PARAMETER XPlat
 Use "coverlet.collector" instead of "coverlet.msbuild?
 When this option is set and equals $true, we NEVER run ReportGenerator, we could
 make it work but I don't think it's worth the trouble.
@@ -76,7 +76,7 @@ param(
     [Parameter(Mandatory = $false, Position = 2)]
     [Alias("t")] [string] $Threshold,
 
-    [Alias("x")] [switch] $XPath,
+    [Alias("x")] [switch] $XPlat,
                  [switch] $OpenCover,
                  [switch] $NoCoverage,
                  [switch] $NoReport,
@@ -111,7 +111,7 @@ Usage: cover.ps1 [arguments]
   -f|-Platform       the platform to test the solution for.
   -t|-Threshold      threshold below which a build will fail.
 
-  -x|-XPath          use "coverlet.collector" instead of "coverlet.msbuild"?
+  -x|-XPlat          use "coverlet.collector" instead of "coverlet.msbuild"?
      -OpenCover      use OpenCover instead of Coverlet?
      -NoCoverage     do NOT run any Code Coverage tool?
      -NoReport       do NOT run ReportGenerator?
@@ -200,8 +200,8 @@ function Invoke-CoverletMSBuild {
     #   $exclude = '\"' + ($excludes -join ",") + '\"'
     #   $exclude = '"' + ($excludes -join "%2c") + '"'
 
+    # NB: we do not enable Source Link.
     & dotnet test $TEST_PROJECT $args `
-        /p:EnableSourceLink=true `
         /p:CollectCoverage=true `
         /p:CoverletOutputFormat=opencover `
         /p:CoverletOutput=$outXml `
@@ -214,7 +214,7 @@ function Invoke-CoverletMSBuild {
 
 # ------------------------------------------------------------------------------
 
-function Invoke-CoverletXPath {
+function Invoke-CoverletXPlat {
     [CmdletBinding(PositionalBinding = $false)]
     param(
         [Parameter(Mandatory = $true)]
@@ -233,7 +233,7 @@ function Invoke-CoverletXPath {
         [switch] $myVerbose
     )
 
-    SAY-LOUDLY "`nRunning Coverlet (XPath)."
+    SAY-LOUDLY "`nRunning Coverlet (XPlat)."
 
     $args = "--nologo", "-c:$configuration", "/p:RunAnalyzers=false"
     if ($platform)  { $args += "/p:TargetFrameworks=$platform" }
@@ -242,9 +242,11 @@ function Invoke-CoverletXPath {
 
     # "dotnet test" changes $outDir by appending a GUID whose value does not
     # seem predictable...
+    # ContinuousIntegrationBuild = true => EnableSourceLink = true
     & dotnet test $TEST_PROJECT $args `
         --results-directory $outDir `
-        /p:EnableSourceLink=true `
+        /p:ContinuousIntegrationBuild=true `
+        /p:DeterministicSourcePaths=false `
         --collect:"XPlat Code Coverage" `
         --settings .config\coverlet.runsettings
         || die "Coverlet failed."
@@ -379,15 +381,15 @@ try {
 
     if ($RestoreTools) { Invoke-RestoreTools }
 
-    if ($XPath) {
-        Invoke-CoverletXPath `
+    if ($XPlat) {
+        Invoke-CoverletXPlat `
             -Configuration $Configuration `
             -Platform      $platform `
             -OutDir        $outDir `
             -NoRestore:    $NoRestore `
             -MyVerbose:    $myVerbose
 
-        # We stop here, see the comments within Invoke-CoverletXPath.
+        # We stop here, see the comments within Invoke-CoverletXPlat.
         exit
     }
 
