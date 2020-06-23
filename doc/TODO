@@ -10,6 +10,7 @@ External issues?
   Reported: https://github.com/coverlet-coverage/coverlet/issues/882
 - Code Coverage. When multi-targeting, RG reports 100% CC even if it's not the
   case for one of the targets.
+- RG + SourceLink + AZP, links are broken ("File ... does not exist (any more)').
 - NuGet Package:
   * Compiler Flags <--- requires MSBuild 16.7p3+
   * PDB type = full, it should be "pdbonly" <--- hard-coded in NPE.
