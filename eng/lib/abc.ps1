@@ -491,29 +491,29 @@ function Reset-TestTree {
 
 # ------------------------------------------------------------------------------
 
-function Reset-PackageOutDir {
+function Reset-OfficialPackagesOutDir {
     [CmdletBinding()]
     param(
                      [switch] $delete,
         [Alias("y")] [switch] $yes
     )
 
-    if ($yes) { say "`nResetting output directory for packages." }
+    if ($yes) { say "`nResetting output directory for official packages." }
 
-    if ($yes -or (yesno "`nReset output directory for packages?")) {
+    if ($yes -or (yesno "`nReset output directory for official packages?")) {
         if (Test-Path $PKG_OUTDIR) {
             if ($delete) {
-                ___debug "Deleting output directory for packages."
+                ___debug "Deleting output directory for official packages."
 
                 Remove-Dir $PKG_OUTDIR
-                say-softly "Output directory for packages was deleted."
+                say-softly "Output directory for official packages was deleted."
             }
             else {
-                ___debug "Cleaning output directory for packages."
+                ___debug "Cleaning output directory for official packages."
 
                 ls $PKG_OUTDIR -Include "*.nupkg" -Recurse `
                     | foreach { ___debug "Deleting ""$_""." ; rm $_.FullName }
-                say-softly "Output directory for packages was cleared."
+                say-softly "Output directory for official packages was cleared."
             }
         }
         else {
@@ -524,29 +524,29 @@ function Reset-PackageOutDir {
 
 # ------------------------------------------------------------------------------
 
-function Reset-DevPackageOutDir {
+function Reset-LocalPackagesOutDir {
     [CmdletBinding()]
     param(
                      [switch] $delete,
         [Alias("y")] [switch] $yes
     )
 
-    if ($yes) { say "`nResetting output directory for dev packages." }
+    if ($yes) { say "`nResetting output directory for local packages." }
 
-    if ($yes -or (yesno "`nReset output directory for dev packages?")) {
+    if ($yes -or (yesno "`nReset output directory for local packages?")) {
         if (Test-Path $PKG_DEV_OUTDIR) {
             if ($delete) {
-                ___debug "Deleting output directory for dev packages."
+                ___debug "Deleting output directory for local packages."
 
                 Remove-Dir $PKG_DEV_OUTDIR
-                say-softly "Output directory for dev packages was deleted."
+                say-softly "Output directory for local packages was deleted."
             }
             else {
-                ___debug "Cleaning output directory for dev packages."
+                ___debug "Cleaning output directory for local packages."
 
                 ls $PKG_DEV_OUTDIR -Include "*.nupkg" -Recurse `
                     | foreach { ___debug "Deleting ""$_""." ; rm $_.FullName }
-                say-softly "Output directory for dev packages was cleared."
+                say-softly "Output directory for local packages was cleared."
             }
         }
         else {

@@ -49,10 +49,10 @@ Beware, if the matching package does NOT exist in the local NuGet cache/feed,
 the script will fail in the following cases:
 - the package has not yet been published to NuGet.Org.
 - the package has been published but there has been breaking changes in between.
-Ignored if -NoDev is also set and equals $true.
+Ignored if -Official is also set and equals $true.
 
-.PARAMETER NoDev
-Force using the package version found in Abc.Maybe.props?
+.PARAMETER Official
+Force using the (official) package version found in Abc.Maybe.props?
 See warnings in -Version.
 
 .PARAMETER Runtime
@@ -96,7 +96,7 @@ param(
     #
     [Parameter(Mandatory = $false, Position = 2)]
                  [string] $Version,
-                 [switch] $NoDev,
+                 [switch] $Official,
 
     # Runtime selection.
     #
@@ -140,7 +140,7 @@ Usage: test-package.ps1 [arguments]
   -c|-Configuration  specify the configuration to test for.
 
      -Version        pick a specific version of the package Abc.Maybe.
-     -NoDev          force using the package version found in Abc.Maybe.props?
+     -Official       force using the package version found in Abc.Maybe.props?
 
      -Runtime        specify a target runtime to test for.
 
@@ -232,8 +232,8 @@ function Find-XunitRunnerOnce {
 
 # ------------------------------------------------------------------------------
 
-# When there is a problem, we revert to -NoDev, which could be problematic (see
-# warnings in -Version).
+# When there is a problem, we revert to -Official, which could be problematic
+# (see warnings in -Version).
 function Find-LastLocalVersion {
     [CmdletBinding()]
     param(
@@ -249,7 +249,7 @@ function Find-LastLocalVersion {
         | sort LastWriteTime | select -Last 1
 
     if (-not $last) {
-        warn "The local NuGet feed is empty, reverting to -NoDev."
+        warn "The local NuGet feed is empty, reverting to -Official."
         return Get-PackageVersion $packageName -AsString
     }
 
@@ -270,10 +270,10 @@ function Find-LastLocalVersion {
         }
         else {
             # If the cache entry does not exist, we stop the script, otherwise it
-            # will restore the dev package into the global, not what we want.
-            # Solutions: delete the "broken" package, create a new dev package,
-            # etc.
-            warn "Reverting to -NoDev."
+            # will restore the local package into the global cache, not what we
+            # want. Solutions: delete the "broken" package, create a new local
+            # package, etc.
+            warn "Reverting to -Official."
             warn "Next time, the simplest solution to fix this is to recreate a package."
             return Get-PackageVersion $packageName -AsString
         }
@@ -738,7 +738,7 @@ Supported .NET Core (maximal and minimal sets):
         Reset-TestTree   -Yes:$Yes
     }
 
-    if ($NoDev) {
+    if ($Official) {
         # There were two options, use an explicit version or let the target
         # project decides for us. Both give the __same__ value, but I opted for
         # an explicit version, since I need its value for logging but also

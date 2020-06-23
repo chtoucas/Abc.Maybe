@@ -132,12 +132,12 @@ Hello "this is the cleanup script."
 try {
     ___BEGIN___
 
-    Reset-EngTree          -Yes:$Yes
-    Reset-SourceTree       -Yes:$Yes
-    Reset-TestTree         -Yes:$Yes
-    Reset-PackageOutDir    -Yes:$Yes -Delete:$WipeOut
-    Reset-DevPackageOutDir -Yes:$Yes -Delete:$WipeOut
-    Reset-LocalNuGet       -Yes:$Yes -All:$WipeOut
+    Reset-EngTree                -Yes:$Yes
+    Reset-SourceTree             -Yes:$Yes
+    Reset-TestTree               -Yes:$Yes
+    Reset-OfficialPackagesOutDir -Yes:$Yes -Delete:$WipeOut
+    Reset-LocalPackagesOutDir    -Yes:$Yes -Delete:$WipeOut
+    Reset-LocalNuGet             -Yes:$Yes -All:$WipeOut
 
     if ($Extended) {
         Delete-Artifacts "benchmarks" -Yes:$Yes

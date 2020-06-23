@@ -11,21 +11,21 @@ Create a NuGet package.
 
 .DESCRIPTION
 Create a NuGet package.
-The default behaviour is to build a dev package, only meant to be consumed locally.
+The default behaviour is to build a local package on a developer machine.
 
-.PARAMETER NoDev
-Create a non-dev package?
+.PARAMETER Official
+Create an official package as opposed to a local package?
 
 .PARAMETER Freeze
 Create a package ready to be published to NuGet.Org?
 
-This is a meta-option, it automatically sets -NoDev. The resulting package is no
-different from the one you would get using only -NoDev, but, in addition, the
-script resets the repository, and stops when there are uncommited changes or if
-it cannot retrieve git metadata.
+This is a meta-option. The resulting package is no different from the one you
+would get using only -Official, but, in addition, the script resets the
+repository, and stops when there are uncommited changes or if it cannot retrieve
+the git metadata.
 
 If this behaviour happens to be too strict and you are in a hurry, you can use:
-PS> pack.ps1 -NoDev -Force -Yes
+PS> pack.ps1 -Official -Force -Yes
 In that event, do not forget to reset the repository thereafter.
 
 .PARAMETER Reset
@@ -49,7 +49,7 @@ Print help text then exit?
 #>
 [CmdletBinding()]
 param(
-                 [switch] $NoDev,
+                 [switch] $Official,
                  [switch] $Freeze,
 
                  [switch] $Reset,
@@ -71,7 +71,7 @@ function Print-Help {
 Create a NuGet package for Abc.Maybe.
 
 Usage: pack.ps1 [arguments]
-     -NoDev      create a non-dev package?
+     -Official   create an official package?
      -Freeze     create a package ready to be published to NuGet.Org?
 
      -Reset      reset the solution before anything else?
@@ -81,9 +81,9 @@ Usage: pack.ps1 [arguments]
   -h|-Help       print this help then exit?
 
 Examples.
-> pack.ps1                     # Create a dev package
-> pack.ps1 -NoDev -Yes -Force  # Create a non-dev package, ignore uncommited changes
-> pack.ps1 -Freeze             # Create a package ready to be published to NuGet.Org
+> pack.ps1                        # Create a local package
+> pack.ps1 -Official -Yes -Force  # Create a non-local package, ignore uncommited changes
+> pack.ps1 -Freeze                # Create a package ready to be published to NuGet.Org
 
 Looking for more help?
 > Get-Help -Detailed pack.ps1
@@ -183,21 +183,21 @@ function Get-ActualVersion {
         [Parameter(Mandatory = $false, Position = 1)]
         [string] $timestamp,
 
-        [switch] $dev
+        [switch] $local
     )
 
     say "Getting package version."
 
     $major, $minor, $patch, $precy, $preno = Get-PackageVersion $projectName
 
-    if ($dev) {
+    if ($local) {
         if (-not $timestamp) {
             ___debug "The timestamp is empty, let's regenerate it."
             $timestamp = "{0:yyyyMMdd}T{0:HHmmss}" -f (Get-Date).ToUniversalTime()
         }
 
-        # For dev packages, we use SemVer 2.0.0, and we ensure that the package
-        # is seen as a prerelease of what could be the next version.
+        # For local packages, we ensure that the package is seen as a prerelease
+        # of what could be the next version.
         # Examples:
         # - "1.2.3"       -> "1.2.4-dev-20201231T121212".
         # - "1.2.3-beta4" -> "1.2.3-beta5-dev-20201231T121212".
@@ -214,7 +214,7 @@ function Get-ActualVersion {
     }
 
     $prefix = "$major.$minor.$patch"
-    if ($dev) {
+    if ($local) {
         $suffix = $precy ? "$precy$preno-dev" : "dev"
     }
     else {
@@ -222,7 +222,7 @@ function Get-ActualVersion {
     }
 
     $pkgversion = $suffix ? "$prefix-$suffix" : $prefix
-    if ($dev) { $pkgversion = "$pkgversion-$timestamp" }
+    if ($local) { $pkgversion = "$pkgversion-$timestamp" }
 
     ___debug "Version prefix: ""$prefix""."
     ___debug "Version suffix: ""$suffix""."
@@ -244,19 +244,19 @@ function Get-PackageFile {
         [ValidateNotNullOrEmpty()]
         [string] $packageVersion,
 
-        [switch] $dev,
+        [switch] $local,
         [switch] $yes
     )
 
     say "Getting package filepath."
 
-    $path = Join-Path ($dev ? $PKG_DEV_OUTDIR : $PKG_OUTDIR) "$projectName.$packageVersion.nupkg"
+    $path = Join-Path ($local ? $PKG_DEV_OUTDIR : $PKG_OUTDIR) "$projectName.$packageVersion.nupkg"
 
     ___debug "Package file: ""$path""."
 
     # Is there a dangling package file?
-    # NB: not necessary for dev packages, the filename is unique.
-    if (-not $dev -and (Test-Path $path)) {
+    # NB: not necessary for local packages, the filename is unique.
+    if (-not $local -and (Test-Path $path)) {
         if (-not $yes) {
             warn "A package with the same version ($packageVersion) already exists."
             guard "Do you wish to proceed anyway?"
@@ -306,7 +306,7 @@ function Invoke-Pack {
         [string] $revisionNumber,
 
         [switch] $enableSourceLink,
-        [switch] $dev,
+        [switch] $local,
         [switch] $myVerbose
     )
 
@@ -319,13 +319,13 @@ function Invoke-Pack {
 
     # Beware, PackageVersion != Version.
     # VersionSuffix is for Retail.props. This is not something that we have to
-    # do for non-dev packages, since in that case we don't patch the suffix,
+    # do for official packages, since in that case we don't patch the suffix,
     # but let's not bother.
     $args = `
         "/p:PackageVersion=$packageVersion",
         "/p:VersionPrefix=$versionPrefix",
         "/p:VersionSuffix=$versionSuffix"
-    # Deterministic build, almost (see EnableSourceLink below).
+    # Deterministic build, almost (see what follows).
     $args += "/p:ContinuousIntegrationBuild=true"
     # We explicitly set EnableSourceLink to "true" or "false".
     # Let's remember ("src\D.B.targets") that ContinuousIntegrationBuild = true
@@ -334,8 +334,7 @@ function Invoke-Pack {
     # Verbose mode?
     if ($myVerbose) { $args += "/p:PrintSettings=true" }
 
-    $output = $dev ? $PKG_DEV_OUTDIR : $PKG_OUTDIR
-
+    $output  = $local ? $PKG_DEV_OUTDIR : $PKG_OUTDIR
     $project = Join-Path $SRC_DIR $projectName -Resolve
 
     # Do NOT use --no-restore or --no-build (options -Reset/-Freeze erase bin/obj).
@@ -351,11 +350,11 @@ function Invoke-Pack {
         /p:Retail=true
         || die "Pack task failed."
 
-    if ($dev) {
-        say-softly "Developer package successfully created."
+    if ($local) {
+        say-softly "Local package successfully created."
     }
     else {
-        say-softly "Package successfully created."
+        say-softly "Official package successfully created."
     }
 }
 
@@ -379,7 +378,7 @@ function Invoke-PushLocal {
     # see https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-nuget-push
     # It means that we could have created the package directly in
     # $NUGET_LOCAL_FEED but it seems cleaner to keep creation and publication
-    # separated. Also, if Microsoft ever decided to change the behaviour of
+    # separate. Also, if Microsoft ever decided to change the behaviour of
     # a local "push", we won't have to update this script (but maybe reset.ps1).
 
     & dotnet nuget push $packageFile -s $NUGET_LOCAL_FEED --force-english-output
@@ -388,7 +387,7 @@ function Invoke-PushLocal {
     # If the following task fails, we should remove the package from the feed,
     # otherwise, later on, the package will be restored to the global cache.
     # This is not such a big problem, but I prefer not to pollute it with
-    # dev packages (or versions we are going to publish).
+    # local packages (or versions we are going to publish).
     say "Updating the local NuGet cache."
 
     & dotnet restore $NUGET_CACHING_PROJECT /p:AbcVersion=$packageVersion
@@ -435,11 +434,11 @@ function Invoke-Publish {
 
 if ($Help) { Print-Help ; exit }
 
-if ($Freeze -or $NoDev) {
+if ($Freeze -or $Official) {
     Hello "this is the NuGet package creation script for Abc.Maybe."
 }
 else {
-    Hello "this is the NuGet package creation script for Abc.Maybe (dev mode)."
+    Hello "this is the NuGet package creation script for Abc.Maybe (local mode)."
 }
 
 readonly ProjectName "Abc.Maybe"
@@ -447,21 +446,21 @@ readonly ProjectName "Abc.Maybe"
 try {
     ___BEGIN___
 
-    $Dev = -not ($Freeze -or $NoDev)
+    $local = -not ($Freeze -or $Official)
 
     SAY-LOUDLY "`nInitialisation."
 
     # 1. Reset the source tree.
     if ($Freeze -or $Reset) { Reset-SourceTree -Yes:($Freeze -or $Yes) }
-    # 2. Get git metadata.
-    $branch, $commit, $gitok = Get-GitMetadata -Yes:$Yes -ExitOnError:$Freeze
+    # 2. Get the git metadata.
+    $branch, $commit, $steady = Get-GitMetadata -Yes:$Yes -ExitOnError:$Freeze
     # 3. Generate build numbers.
     say "Generating build numbers."
     $buildNumber, $revisionNumber, $timestamp = Get-BuildNumbers
-    # 4. Get package/asm version.
-    $pkgversion, $prefix, $suffix = Get-ActualVersion $ProjectName $timestamp -Dev:$Dev
-    # 5. Get package file.
-    $pkgfile = Get-PackageFile $ProjectName $pkgversion -Yes:($Freeze -or $Yes) -Dev:$Dev
+    # 4. Get package/asm versions.
+    $pkgversion, $prefix, $suffix = Get-ActualVersion $ProjectName $timestamp -Local:$local
+    # 5. Get the package filepath.
+    $pkgfile = Get-PackageFile $ProjectName $pkgversion -Yes:($Freeze -or $Yes) -Local:$local
 
     Invoke-Pack `
         -ProjectName      $ProjectName `
@@ -472,26 +471,26 @@ try {
         -RepositoryCommit $commit `
         -BuildNumber      $buildNumber `
         -RevisionNumber   $revisionNumber `
-        -EnableSourceLink:($Force -or $gitok) `
-        -Dev:             $Dev `
+        -EnableSourceLink:($Force -or $steady) `
+        -Local:           $local `
         -MyVerbose:       $MyVerbose
 
     # Post-actions.
-    if ($Dev) {
+    if ($local) {
         Invoke-PushLocal $pkgfile $pkgversion
     }
     else {
         if ($Freeze) {
-            # Now, all dev packages should be obsoleted. Traces of them can be
-            # found within the directories "test" and "__\packages-dev", but
+            # Now, all local packages should be obsoleted. Traces of them can be
+            # found within the directories "test" and $PKG_DEV_OUTDIR, but
             # also in the local NuGet cache/feed.
             # We should also remove any reference to a released package with the
             # same version. Failing to do so would mean that, after publishing
             # the package to NuGet.Org, "test-package.ps1" could still test a
             # package from the local NuGet cache/feed not the one from NuGet.Org.
-            Reset-TestTree         -Yes:$true
-            Reset-DevPackageOutDir -Yes:$true
-            Reset-LocalNuGet       -Yes:$true
+            Reset-TestTree            -Yes:$true
+            Reset-LocalPackagesOutDir -Yes:$true
+            Reset-LocalNuGet          -Yes:$true
 
             Invoke-Publish $pkgfile
         }
@@ -509,7 +508,7 @@ try {
             Invoke-PushLocal $pkgfile $pkgversion
 
             SAY-LOUDLY "`n---`nNow, you can test the package. For instance,"
-            SAY-LOUDLY "> eng\test-package.ps1 -NoDev -a -y"
+            SAY-LOUDLY "> eng\test-package.ps1 -Official -a -y"
         }
     }
 }
