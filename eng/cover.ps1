@@ -248,7 +248,7 @@ function Invoke-CoverletXPlat {
         /p:ContinuousIntegrationBuild=true `
         /p:DeterministicSourcePaths=false `
         --collect:"XPlat Code Coverage" `
-        --settings .config\coverlet.SourceLink.runsettings
+        --settings .config\coverlet.runsettings
         || die "Coverlet failed."
 
     say-softly "Coverlet completed successfully."
