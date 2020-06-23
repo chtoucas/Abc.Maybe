@@ -72,6 +72,16 @@
 
   <!-- Source Link -->
   <PropertyGroup>
+    <!--
+      We enable Source Link when ContinuousIntegrationBuild = true which, for us,
+      means that we request the build to be deterministic.
+      When one sets EnableSourceLink to true manually while, at the same time,
+      ContinuousIntegrationBuild = false, we ensure that the local build is
+      deterministic too; see DeterministicSourcePaths below.
+      This differs from the usual workflow where one always references Source
+      Link, then sets ContinuousIntegrationBuild to true in order to ensure a
+      deterministic build.
+    -->
     <EnableSourceLink>false</EnableSourceLink>
     <!-- For CI builds, the default behaviour is to have Source Link on -->
     <EnableSourceLink Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">true</EnableSourceLink>
@@ -84,11 +94,14 @@
     <!--
       DO NOT REMOVE, it ensures deterministic outputs when building locally.
       This fixes the case where ContinuousIntegrationBuild = false and
-      EnableSourceLink = true. Very unusual, but this could happen. For instance,
+      EnableSourceLink = true. For instance,
       > dotnet.exe build /p:EnableSourceLink=true
-      then the PDB files use local paths for the generated files.
-      This is not necessary when ContinuousIntegrationBuild = true.
-      Indeed, Deterministic = true (default) and ContinuousIntegrationBuild = true
+      then the PDB files still use local paths for the generated files.
+      IMPORTANT: this is a rather unusual situation. It should only happen when
+      using a build script and certainly not when using VS, otherwise the debugger
+      won't be able to locate the source files.
+      This is not necessary when ContinuousIntegrationBuild = true. Indeed,
+      Deterministic = true (default) and ContinuousIntegrationBuild = true
       imply DeterministicSourcePaths = true; see
       https://github.com/dotnet/roslyn/blob/master/src/Compilers/Core/MSBuildTask/Microsoft.Managed.Core.targets#L131
     -->
@@ -101,11 +114,11 @@
     <!--
       DO NOT REMOVE. Even if the default behaviour is to have Source Link on
       for CI builds, this can still be overriden from the command-line.
-      dotnet.exe fails complaining about "SourceRoot" if "ContinuousIntegrationBuild"
-      is set to true. When we import "Microsoft.SourceLink.GitHub", this is
-      unnecessary since Source Link automatically adds GitHub to "SourceRoot".
-      Should be OK with the next NuGet's version as it will add "NuGetPackageRoot"
-      to "SourceRoot".
+      dotnet.exe fails complaining about SourceRoot if ContinuousIntegrationBuild
+      is set to true. When we import Microsoft.SourceLink.GitHub, this is
+      unnecessary since Source Link automatically adds GitHub to SourceRoot.
+      Should be OK with the next NuGet's version as it will add NuGetPackageRoot
+      to SourceRoot.
       See https://github.com/dotnet/sdk/issues/11105,
       fixed by https://github.com/NuGet/NuGet.Client/pull/3430
     -->
