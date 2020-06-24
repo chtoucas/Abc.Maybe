@@ -1,10 +1,11 @@
 README
 ------
 
-The actual test project is not here but in "src" and is called Abc.Tests.
+The actual test project is NOT HERE but in "src" and is called Abc.Tests.
 
-This directory contains test projects for the package.
-They are really meant to work with "eng\test-package.ps1".
+This directory contains a project to test a package.
+It is really meant to work together with "eng\test-package.ps1" but things
+should work without it.
 
 Performance tests.
 > dotnet run -p Performance -c Release
