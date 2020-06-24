@@ -29,5 +29,5 @@ Abc.Maybe features an Option type for .NET. Supports .NET Standard 1.1 or later.
   - [ ] Wide range of functional tests.
 - [ ] Being well documented.
   - [ ] XML comments with code samples.
-  - [x] Quick start.
+  - [ ] Quick start.
   - [ ] Provides guidance.

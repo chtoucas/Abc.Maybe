@@ -5,12 +5,14 @@ Issues
 ------
 
 External issues?
-- EnableSourceLink no longer prevents coverlet to run, but it fails when we set
+- EnableSourceLink no longer prevents Coverlet to run, but it fails when we set
   UseSourceLink = true __and__ ContinuousIntegrationBuild = true.
-  Reported: https://github.com/coverlet-coverage/coverlet/issues/882
+  Temporary fix: set /p:DeterministicSourcePaths=false on a CI server.
+  See https://github.com/coverlet-coverage/coverlet/issues/882
 - Code Coverage. When multi-targeting, RG reports 100% CC even if it's not the
   case for one of the targets.
-- NuGet Package:
+  See https://github.com/danielpalme/ReportGenerator/issues/355
+- NuGet Package (pending):
   * Compiler Flags <--- requires MSBuild 16.7p3+
   * PDB type = full, it should be "pdbonly" <--- hard-coded in NPE.
 
@@ -28,6 +30,10 @@ Code
 Tools / Build System
 --------------------
 
+- Roslyn Analyzer:
+  * Of(), Flatten(). Squash(Maybe<T?>) where T : class
+  * SelectMany(), ZipWith(), Bind().
+- Perf tool (LINQ, nulls, iterable), .NET Core tool for benchmarkdotnet.
 - pack.ps1, ContinuousIntegrationBuild=true?
 - MSBuild/NuGet in "test": RestoreSources, RestoreAdditionalProjectSources,
   RestorePackagesPath and RestoreFallbackFolders.
@@ -39,10 +45,6 @@ Tools / Build System
   * many script helpers only make sense or work on Windows.
   * $([MSBuild]::EnsureTrailingSlash('$(PathProperty)'))
   * see Xunit website which contains some useful infos.
-- Roslyn Analyzer:
-  * Of(), Flatten(). Squash(Maybe<T?>) where T : class
-  * SelectMany(), ZipWith(), Bind().
-- Perf tool (LINQ, nulls, iterable), .NET Core tool for benchmarkdotnet.
 
 Testing
 -------
