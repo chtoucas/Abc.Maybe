@@ -1,21 +1,6 @@
 TODO
 ====
 
-Issues
-------
-
-External issues?
-- EnableSourceLink no longer prevents Coverlet to run, but it fails when we set
-  UseSourceLink = true __and__ ContinuousIntegrationBuild = true.
-  Temporary fix: set /p:DeterministicSourcePaths=false on a CI server.
-  See https://github.com/coverlet-coverage/coverlet/issues/882
-- Code Coverage. When multi-targeting, RG reports 100% CC even if it's not the
-  case for one of the targets.
-  See https://github.com/danielpalme/ReportGenerator/issues/355
-- NuGet Package (pending):
-  * Compiler Flags <--- requires MSBuild 16.7p3+
-  * PDB type = full, it should be "pdbonly" <--- hard-coded in NPE.
-
 Code
 ----
 
