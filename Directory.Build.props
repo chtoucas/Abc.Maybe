@@ -13,7 +13,7 @@
     <ContinuousIntegrationBuild Condition=" '$(TF_BUILD)' == 'true' ">true</ContinuousIntegrationBuild>
     <ContinuousIntegrationBuild Condition=" '$(GITHUB_ACTIONS)' == 'true' ">true</ContinuousIntegrationBuild>
 
-    <!-- WARNING: inside Visual Studio, "SmokeBuild" is set to "true" -->
+    <!-- WARNING: inside Visual Studio, "SmokeBuild" = "true" -->
     <SmokeBuild Condition=" '$(SmokeBuild)' == '' ">false</SmokeBuild>
     <SmokeBuild Condition=" '$(SMOKE_BUILD)' == 'true' ">true</SmokeBuild>
     <SmokeBuild Condition=" '$(BuildingInsideVisualStudio)' == 'true' ">true</SmokeBuild>
@@ -92,6 +92,7 @@
       must be in a form understandable to PowerShell.
       One might have to filter these lists if the underlying OS does not support
       some targets (see "test\Package\Abc.PackageTests.csproj").
+      These properties are NOT used by the projects located in the directory "src".
     -->
 
     <MinCorePlatforms>netcoreapp3.1;netcoreapp2.1</MinCorePlatforms>
