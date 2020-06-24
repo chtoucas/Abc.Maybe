@@ -31,6 +31,7 @@ The platform to test the solution for.
 
 .PARAMETER Threshold
 Threshold below which a build will fail.
+Ignored if -XPlat is also set and equals $true (current limitation of Coverlet).
 
 .PARAMETER XPlat
 Use "coverlet.collector" instead of "coverlet.msbuild?
@@ -48,6 +49,17 @@ This option and -NoReport are mutually exclusive.
 .PARAMETER NoReport
 Do NOT build HTML/text reports and badges w/ ReportGenerator?
 This option and -NoCoverage are mutually exclusive.
+
+.PARAMETER Deterministic
+Deterministic build?
+Ignored if -OpenCover is also set and equals $true.
+
+Being deterministic simply means setting ContinuousIntegrationBuild to true.
+Obviously, on a CI server, a build is "always" deterministic.
+
+.PARAMETER NoSourceLink
+Disable Source Link?
+Ignored if -Deterministic is NOT equals to $true.
 
 .PARAMETER Reset
 Delete previously created artifacts?
@@ -80,6 +92,9 @@ param(
                  [switch] $OpenCover,
                  [switch] $NoCoverage,
                  [switch] $NoReport,
+
+                 [switch] $Deterministic,
+                 [switch] $NoSourceLink,
 
                  [switch] $Reset,
                  [switch] $NoRestore,
@@ -116,6 +131,9 @@ Usage: cover.ps1 [arguments]
      -NoCoverage     do NOT run any Code Coverage tool?
      -NoReport       do NOT run ReportGenerator?
 
+     -Deterministic  deterministic build?
+     -NoSourceLink   disable Source Link?
+
      -Reset          delete previously created artifacts?
      -NoRestore      do not restore the solution?
      -RestoreTools   restore OpenCover and ReportGenerator before anything else?
@@ -126,6 +144,9 @@ Examples.
 > cover.ps1                       # Run Coverlet then build reports and badges
 > cover.ps1 -OpenCover            # Run OpenCover then build reports and badges
 > cover.ps1 -OpenCover -NoReport  # Run OpenCover, do NOT build reports and badges
+
+The Code Coverage command we use on Azure Pipelines is equivalent to:
+> cover.ps1 -XPlat -Deterministic -NoSourceLink
 
 Looking for more help?
 > Get-Help -Detailed cover.ps1
@@ -171,6 +192,9 @@ function Invoke-CoverletMSBuild {
         [Parameter(Mandatory = $false)]
         [string] $threshold,
 
+        [switch] $deterministic,
+        [switch] $noSourceLink,
+
         [switch] $noRestore,
         [switch] $myVerbose
     )
@@ -182,6 +206,21 @@ function Invoke-CoverletMSBuild {
     if ($threshold) { $args += "/p:Threshold=$threshold" }
     if ($noRestore) { $args += "--no-restore" }
     if ($myVerbose) { $args += "-v:minimal", "/p:PrintSettings=true" }
+
+    if ($deterministic) {
+        $args += "/p:ContinuousIntegrationBuild=true"
+
+        if ($noSourceLink) {
+            $args += "/p:EnableSourceLink=false"
+        }
+        else {
+            # From "src\D.B.targets", ContinuousIntegrationBuild = true imply
+            # EnableSourceLink = true.
+            # For now, we must set "DeterministicSourcePaths" to false; see
+            # https://github.com/coverlet-coverage/coverlet/issues/882
+            $args += "/p:UseSourceLink=true", "/p:DeterministicSourcePaths=false"
+        }
+    }
 
     # Namespaces to exclude, files "src\(Missing|Nullable)Atributes.cs":
     # - System
@@ -200,7 +239,6 @@ function Invoke-CoverletMSBuild {
     #   $exclude = '\"' + ($excludes -join ",") + '\"'
     #   $exclude = '"' + ($excludes -join "%2c") + '"'
 
-    # NB: we do not enable Source Link.
     & dotnet test $TEST_PROJECT $args `
         /p:CollectCoverage=true `
         /p:CoverletOutputFormat=opencover `
@@ -229,6 +267,9 @@ function Invoke-CoverletXPlat {
         [ValidateNotNullOrEmpty()]
         [string] $outDir,
 
+        [switch] $deterministic,
+        [switch] $noSourceLink,
+
         [switch] $noRestore,
         [switch] $myVerbose
     )
@@ -240,15 +281,26 @@ function Invoke-CoverletXPlat {
     if ($noRestore) { $args += "--no-restore" }
     if ($myVerbose) { $args += "-v:minimal", "/p:PrintSettings=true" }
 
-    # "dotnet test" changes $outDir by appending a GUID whose value does not
-    # seem predictable...
-    # ContinuousIntegrationBuild = true => EnableSourceLink = true
+    $runsettings = @()
+    if ($deterministic) {
+        # See comments in Invoke-CoverletMSBuild.
+        $args += "/p:ContinuousIntegrationBuild=true"
+
+        if ($noSourceLink) {
+            $args += "/p:EnableSourceLink=false"
+        }
+        else {
+            $args += "/p:DeterministicSourcePaths=false"
+            $runsettings += "DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.UseSourceLink=true"
+        }
+    }
+
+    # "dotnet test" changes $outDir by appending a GUID whose value is not predictable.
     & dotnet test $TEST_PROJECT $args `
         --results-directory $outDir `
-        /p:ContinuousIntegrationBuild=true `
-        /p:DeterministicSourcePaths=false `
         --collect:"XPlat Code Coverage" `
-        --settings .config\coverlet.SourceLink.runsettings
+        --settings ".config\coverlet.runsettings" `
+        -- $runsettings
         || die "Coverlet failed."
 
     say-softly "Coverlet completed successfully."
@@ -286,7 +338,7 @@ function Invoke-OpenCover {
     # I prefer to restore the solution outside the OpenCover process.
     if (-not $noRestore) { Restore-Solution }
 
-    # See comments in Invoke-Coverlet.
+    # See comments in Invoke-CoverletMSBuild.
     $filters = `
         "+[Abc.Maybe]*",
         "-[Abc.Sketches]*",
@@ -386,6 +438,8 @@ try {
             -Configuration $Configuration `
             -Platform      $platform `
             -OutDir        $outDir `
+            -Deterministic:$Deterministic `
+            -NoSourceLink: $NoSourceLink `
             -NoRestore:    $NoRestore `
             -MyVerbose:    $myVerbose
 
@@ -415,6 +469,8 @@ try {
                 -Platform      $platform `
                 -Threshold     $Threshold `
                 -OutXml        $outXml `
+                -Deterministic:$Deterministic `
+                -NoSourceLink: $NoSourceLink `
                 -NoRestore:    $NoRestore `
                 -MyVerbose:    $myVerbose
         }
