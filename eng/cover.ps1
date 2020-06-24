@@ -146,7 +146,7 @@ Examples.
 > cover.ps1 -OpenCover -NoReport  # Run OpenCover, do NOT build reports and badges
 
 The Code Coverage command we use on Azure Pipelines is equivalent to:
-> cover.ps1 -XPlat -Deterministic -NoSourceLink
+> cover.ps1 -XPlat -Deterministic
 
 Looking for more help?
 > Get-Help -Detailed cover.ps1
@@ -288,11 +288,17 @@ function Invoke-CoverletXPlat {
 
         if ($noSourceLink) {
             $args += "/p:EnableSourceLink=false"
+            $runsettings += "DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.UseSourceLink=false"
         }
         else {
             $args += "/p:DeterministicSourcePaths=false"
-            $runsettings += "DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.UseSourceLink=true"
         }
+    }
+    else {
+        # Here, ContinuousIntegrationBuild = false, which disables Source Link.
+        # We instruct Coverlet not to use Source Link, even if it is not strictly
+        # necessary, Coverlet will ignore it anyway.
+        $runsettings += "DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.UseSourceLink=false"
     }
 
     # "dotnet test" changes $outDir by appending a GUID whose value is not predictable.
