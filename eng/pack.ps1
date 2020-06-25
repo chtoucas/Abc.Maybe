@@ -196,10 +196,10 @@ function Get-ActualVersion {
             $timestamp = "{0:yyyyMMdd}T{0:HHmmss}" -f (Get-Date).ToUniversalTime()
         }
 
-        # For local packages, we ensure that each one is seen as a prerelease of
+        # For local packages, we ensure that they are seen as a prerelease of
         # what could be the next version (it is always ahead the latest public
-        # version), and has a unique version number so that it gets its own
-        # separate entry in the cache. Examples:
+        # version), and that they have a unique version number so that they get
+        # their own separate entry in the cache. Examples:
         # - "1.2.3-beta4" < "1.2.3-beta5-20201231T121212"
         # - "1.2.3"       < "1.2.4-20201231T121212"
         # Notice that the transformation does respect the original ordering

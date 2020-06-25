@@ -255,7 +255,7 @@ function Find-LastLocalVersion {
 
     $name = [IO.Path]::GetFileNameWithoutExtension($last)
 
-    # Substring is for the dot just before the version.
+    # Substring is used to remove the dot just before the version.
     $version = $name.Replace($packageName, "").Substring(1)
 
     $cachedPackage = Join-Path $NUGET_LOCAL_CACHE $packageName.ToLower() `
