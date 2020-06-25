@@ -134,7 +134,7 @@ function Get-GitMetadata {
 # In the past, we used to generate the id's within MSBuild but then it is nearly
 # impossible to override the global properties PackageVersion and VersionSuffix.
 # Besides that, generating the id's outside ensures that all assemblies inherit
-# the same id's.
+# the same id's. This could have been done in pure PS...
 Add-Type @'
 using System;
 using System.Management.Automation;
@@ -192,7 +192,7 @@ function Get-ActualVersion {
 
     if ($local) {
         if (-not $timestamp) {
-            ___debug "The timestamp is empty, let's regenerate it."
+            warn "The timestamp is empty, let's regenerate it."
             $timestamp = "{0:yyyyMMdd}T{0:HHmmss}" -f (Get-Date).ToUniversalTime()
         }
 
@@ -208,7 +208,6 @@ function Get-ActualVersion {
         # the next one:
         #   current "1.2.3-beta4" < local "1.2.3-beta5-20201231T121212" < next "1.2.3-beta5"  or "1.2.4"
         #   current "1.2.3"       < local "1.2.4-20201231T121212"       < next "1.2.4-alpha1" or "1.2.4"
-        #
         # Remark: on a CI server (AZP), we use a different schema,
         # - "1.2.3-beta4" < "1.2.3-ci-20201231.{rev}"
         # - "1.2.3"       > "1.2.3-ci-20201231.{rev}"
