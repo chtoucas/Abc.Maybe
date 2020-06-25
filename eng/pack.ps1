@@ -196,13 +196,24 @@ function Get-ActualVersion {
             $timestamp = "{0:yyyyMMdd}T{0:HHmmss}" -f (Get-Date).ToUniversalTime()
         }
 
-        # For local packages, we ensure that the package is seen as a prerelease
-        # of what could be the next version.
-        # Examples:
-        # - "1.2.3"       -> "1.2.4-dev-20201231T121212".
-        # - "1.2.3-beta4" -> "1.2.3-beta5-dev-20201231T121212".
-        # It also ensures that each package has a unique version, so that each
-        # one will get its own separate entry in the cache.
+        # For local packages, we ensure that each one is seen as a prerelease of
+        # what could be the next version (it is always ahead the latest public
+        # version), and has a unique version number so that it gets its own
+        # separate entry in the cache. Examples:
+        # - "1.2.3-beta4" < "1.2.3-beta5-20201231T121212"
+        # - "1.2.3"       < "1.2.4-20201231T121212"
+        # Notice that the transformation does respect the original ordering
+        #   "1.2.3-beta5-20201231T121212" < "1.2.4-20201231T121212"
+        # Local packages are ahead the current public release and stay behind
+        # the next one:
+        #   current "1.2.3-beta4" < local "1.2.3-beta5-20201231T121212" < next "1.2.3-beta5"  or "1.2.4"
+        #   current "1.2.3"       < local "1.2.4-20201231T121212"       < next "1.2.4-alpha1" or "1.2.4"
+        #
+        # Remark: on a CI server (AZP), we use a different schema,
+        # - "1.2.3-beta4" < "1.2.3-ci-20201231.{rev}"
+        # - "1.2.3"       > "1.2.3-ci-20201231.{rev}"
+        # where "rev" is a counter reset daily (formally we also append a few
+        # metadata).
         if ($precy) {
             # With a prerelease label, we increase the prerelease number.
             $preno  = 1 + [int]$preno
@@ -214,12 +225,7 @@ function Get-ActualVersion {
     }
 
     $prefix = "$major.$minor.$patch"
-    if ($local) {
-        $suffix = $precy ? "$precy$preno-dev" : "dev"
-    }
-    else {
-        $suffix = $precy ? "$precy$preno" : ""
-    }
+    $suffix = $precy ? "$precy$preno" : ""
 
     $pkgversion = $suffix ? "$prefix-$suffix" : $prefix
     if ($local) { $pkgversion = "$pkgversion-$timestamp" }
