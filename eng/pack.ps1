@@ -69,9 +69,10 @@ function Print-Help {
     say @"
 
 Create a NuGet package for Abc.Maybe.
+The default behaviour is to build a local package on a developer machine.
 
 Usage: pack.ps1 [arguments]
-     -Official   create an official package?
+     -Official   create an official package as opposed to a local package?
      -Freeze     create a package ready to be published to NuGet.Org?
 
      -Reset      reset the solution before anything else?
@@ -82,7 +83,7 @@ Usage: pack.ps1 [arguments]
 
 Examples.
 > pack.ps1                        # Create a local package
-> pack.ps1 -Official -Yes -Force  # Create a non-local package, ignore uncommited changes
+> pack.ps1 -Official -Yes -Force  # Create an official package, ignore uncommited changes
 > pack.ps1 -Freeze                # Create a package ready to be published to NuGet.Org
 
 Looking for more help?
@@ -322,37 +323,31 @@ function Invoke-Pack {
         ($repositoryCommit ? $repositoryCommit.Substring(0, 7) : "???") `
         | SAY-LOUDLY
 
+    if (-not $enableSourceLink) {
+        warn "Source Link won't be enabled. Maybe use -Force?"
+    }
+
     # Beware, PackageVersion != Version.
-    # VersionSuffix is for Retail.props. This is not something that we have to
-    # do for official packages, since in that case we don't patch the suffix,
-    # but let's not bother.
-    $args = `
+    $args = "-c:Release",
+        "/p:ContinuousIntegrationBuild=true",
+        ("/p:EnableSourceLink=" + ($enableSourceLink ? "true" : "false")),
+        "/p:SmokeBuild=false",
+        "/p:Retail=true",
         "/p:PackageVersion=$packageVersion",
         "/p:VersionPrefix=$versionPrefix",
-        "/p:VersionSuffix=$versionSuffix"
-    # Deterministic build, almost (see what follows).
-    $args += "/p:ContinuousIntegrationBuild=true"
-    # We explicitly set EnableSourceLink to "true" or "false".
-    # Let's remember ("src\D.B.targets") that ContinuousIntegrationBuild = true
-    # implies EnableSourceLink = true, but sometimes we don't want it!
-    $args += ("/p:EnableSourceLink=" + ($enableSourceLink ? "true" : "false"))
+        "/p:VersionSuffix=$versionSuffix",
+        "/p:BuildNumber=$buildNumber",
+        "/p:RevisionNumber=$revisionNumber",
+        "/p:RepositoryCommit=$repositoryCommit",
+        "/p:RepositoryBranch=$repositoryBranch"
+
     # Verbose mode?
     if ($myVerbose) { $args += "/p:PrintSettings=true" }
 
     $output  = $local ? $PKG_DEV_OUTDIR : $PKG_OUTDIR
     $project = Join-Path $SRC_DIR $projectName -Resolve
 
-    # Do NOT use --no-restore or --no-build (options -Reset/-Freeze erase bin/obj).
-    # RepositoryCommit and RepositoryBranch are standard props, do not remove them.
-    # I guess that we could remove them when "EnableSourceLink" is "true", but I
-    # haven't check that.
-    & dotnet pack $project -c Release --nologo $args --output $output `
-        /p:BuildNumber=$buildNumber `
-        /p:RevisionNumber=$revisionNumber `
-        /p:RepositoryCommit=$repositoryCommit `
-        /p:RepositoryBranch=$repositoryBranch `
-        /p:SmokeBuild=false `
-        /p:Retail=true
+    & dotnet pack $project --nologo $args --output $output
         || die "Pack task failed."
 
     if ($local) {
