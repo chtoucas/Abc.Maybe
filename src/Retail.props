@@ -18,7 +18,10 @@
     - AssemblyVersion uses MajorVersion and MinorVersion which we NEVER override.
   -->
   <PropertyGroup>
+    <!-- WARNING: unconditionnaly override VersionPrefix and VersionSuffix,
+         otherwise MSBuild picks up the default values (0.0.1 and DUMMY). -->
     <VersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</VersionPrefix>
+    <VersionSuffix></VersionSuffix>
     <VersionSuffix Condition=" '$(PreReleaseCycle)' != '' ">$(PreReleaseCycle)$(PreReleaseNumber)</VersionSuffix>
 
     <PackageVersion>$(VersionPrefix)</PackageVersion>

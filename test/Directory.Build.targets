@@ -11,6 +11,7 @@
 
   <PropertyGroup>
     <AbcVersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</AbcVersionPrefix>
+    <AbcVersionSuffix></AbcVersionSuffix>
     <AbcVersionSuffix Condition=" '$(PreReleaseCycle)' != '' ">$(PreReleaseCycle)$(PreReleaseNumber)</AbcVersionSuffix>
 
     <AbcVersion>$(AbcVersionPrefix)</AbcVersion>
