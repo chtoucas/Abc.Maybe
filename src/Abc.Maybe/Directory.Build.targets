@@ -2,9 +2,9 @@
 
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets" />
 
-  <PropertyGroup Condition=" '$(Retail)' == 'true' and '$(VersionSuffix)' == '' ">
+  <PropertyGroup Condition=" '$(Retail)' == 'true' and '$(PackageSuffix)' == '' ">
     <PackageReleaseNotes><![CDATA[
-$(RepositoryUrl)releases/tag/v$(VersionPrefix)
+$(RepositoryUrl)releases/tag/v$(PackageVersion)
 ]]></PackageReleaseNotes>
   </PropertyGroup>
 
