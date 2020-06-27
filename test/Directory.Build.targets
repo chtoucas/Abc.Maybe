@@ -15,6 +15,7 @@
 
     <AbcVersion>$(AbcVersionPrefix)</AbcVersion>
     <AbcVersion Condition=" '$(AbcVersionSuffix)' != '' ">$(AbcVersion)-$(AbcVersionSuffix)</AbcVersion>
+    <AbcVersion Condition=" '$(AbcPackageSuffix)' != '' ">$(AbcVersion)-$(AbcPackageSuffix)</AbcVersion>
 
     <!-- The default behaviour is to use an exact version match -->
     <AbcVersionRange>[$(AbcVersion)]</AbcVersionRange>

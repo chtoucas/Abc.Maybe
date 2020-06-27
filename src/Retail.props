@@ -9,17 +9,13 @@
 
     Remarks:
     - No script should ever tweak MajorVersion or MinorVersion.
-    - VersionPrefix & VersionSuffix maybe set externally (eng\pack.ps1)
-    - Do NOT rely on PatchVersion, PreReleaseCycle or PreReleaseNumber, except
-      for settings VersionPrefix & VersionSuffix. Only use:
+    - A script should only override
       * VersionPrefix
       * VersionSuffix
-      * MajorVersion
-      * MinorVersion
-    - PackageVersion is not set automatically by MSBuild when we tweak the prefix
-      or the suffix.
-    - AssemblyVersion uses MajorVersion and MinorVersion which we NEVER override,
-      otherwise, for any other prop, we rely on VersionPrefix and VersionSuffix.
+      * PackageSuffix
+    - Do NOT rely on PatchVersion, PreReleaseCycle or PreReleaseNumber, except
+      for settings VersionPrefix & VersionSuffix.
+    - AssemblyVersion uses MajorVersion and MinorVersion which we NEVER override.
   -->
   <PropertyGroup>
     <VersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</VersionPrefix>
@@ -27,6 +23,7 @@
 
     <PackageVersion>$(VersionPrefix)</PackageVersion>
     <PackageVersion Condition=" '$(VersionSuffix)' != '' ">$(PackageVersion)-$(VersionSuffix)</PackageVersion>
+    <PackageVersion Condition=" '$(PackageSuffix)' != '' ">$(PackageVersion)-$(PackageSuffix)</PackageVersion>
 
     <AssemblyVersion>$(MajorVersion).$(MinorVersion).0.0</AssemblyVersion>
 

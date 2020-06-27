@@ -15,11 +15,14 @@ Code
 Tools / Build System
 --------------------
 
+- Add prop PackageSuffix. 
+  Command-line option to tweak PatchVersion/PreReleaseNumber?
+- pack.ps1, ContinuousIntegrationBuild=true? Extra Git tests (synched?).
+  Option -Official -Yes (not -Freeze): add a warning when we update the cache.
 - Roslyn Analyzer:
   * Of(), Flatten(). Squash(Maybe<T?>) where T : class
   * SelectMany(), ZipWith(), Bind().
 - Perf tool (LINQ, nulls, iterable), .NET Core tool for benchmarkdotnet.
-- pack.ps1, ContinuousIntegrationBuild=true? Extra Git tests.
 - MSBuild/NuGet in "test": RestoreSources, RestoreAdditionalProjectSources,
   RestorePackagesPath and RestoreFallbackFolders.
   See also RestorePackagesWithLockFile, RestoreLockedMode, etc.

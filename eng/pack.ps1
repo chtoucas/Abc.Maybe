@@ -20,8 +20,8 @@ Create an official package as opposed to a local package?
 Create a package ready to be published to NuGet.Org?
 
 This is a meta-option. The resulting package is no different from the one you
-would get using only -Official, but, in addition, the script resets the
-repository, and stops when there are uncommited changes or if it cannot retrieve
+would get using only -Official but, in addition, the script resets the
+repository and stops when there are uncommited changes or if it cannot retrieve
 the git metadata.
 
 If this behaviour happens to be too strict and you are in a hurry, you can use:
@@ -124,7 +124,14 @@ function Get-GitMetadata {
         $commit = Get-GitCommitHash $git -ExitOnError:$exitOnError
     }
 
-    if ($branch -eq "") { warn "The branch name will be empty." }
+    if ($branch -eq "") {
+        warn "The branch name will be empty."
+    }
+    elseif ($branch -ne "master") {
+        $onerr = $exitOnError ? "die" : "warn"
+        . $onerr "You are not on the branch ""master""."
+    }
+
     if ($commit -eq "") { warn "The commit hash will be empty." }
 
     return @($branch, $commit, $ok)
@@ -174,7 +181,7 @@ public class GetBuildNumbersCmdlet : Cmdlet
 
 # ------------------------------------------------------------------------------
 
-function Get-ActualVersion {
+function Get-VersionNumbers {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, Position = 0)]
@@ -197,23 +204,32 @@ function Get-ActualVersion {
             $timestamp = "{0:yyyyMMdd}T{0:HHmmss}" -f (Get-Date).ToUniversalTime()
         }
 
-        # For local packages, we ensure that they are seen as a prerelease of
-        # what could be the next version (it is always ahead the latest public
-        # version), and that they have a unique version number so that they get
-        # their own separate entry in the cache. Examples:
-        # - "1.2.3-beta4" < "1.2.3-beta5-20201231T121212"
-        # - "1.2.3"       < "1.2.4-20201231T121212"
+        # For a local package, we ensure that it is seen as a prerelease of what
+        # could be the next version (it is always ahead the latest public version),
+        # and that it has a unique version number so that it gets its own separate
+        # entry in the cache. Examples:
+        # - "1.2.3-beta4" < "1.2.3-beta5-20201231T235959"
+        # - "1.2.3"       < "1.2.4-20201231T235959"
         # Notice that the transformation does respect the original ordering
-        #   "1.2.3-beta5-20201231T121212" < "1.2.4-20201231T121212"
+        #   "1.2.3-beta5-20201231T235959" < "1.2.4-20201231T235959"
         # Local packages are ahead the current public release and stay behind
         # the next one:
-        #   current "1.2.3-beta4" < local "1.2.3-beta5-20201231T121212" < next "1.2.3-beta5"  or "1.2.4"
-        #   current "1.2.3"       < local "1.2.4-20201231T121212"       < next "1.2.4-alpha1" or "1.2.4"
+        #   current "1.2.3-beta4" < local "1.2.3-beta5-20201231T235959" < next "1.2.3-beta5"  or "1.2.4"
+        #   current "1.2.3"       < local "1.2.4-20201231T235959"       < next "1.2.4-alpha1" or "1.2.4"
+        # Remark: these version numbers are timestamped, therefore the manip
+        # should not be controlled via MSBuild, otherwise each target might get
+        # a different timestamp during the same build.
+        # By the way, assemblies have a steady version number,
+        # AssemblyVersion = 1.2.0.0 (see "src\Retail.props").
         # Remark: on a CI server (AZP), we use a different schema,
-        # - "1.2.3-beta4" < "1.2.3-ci-20201231.{rev}"
-        # - "1.2.3"       > "1.2.3-ci-20201231.{rev}"
+        # - "1.2.3-beta4" < "1.2.3-beta4-20201231.{rev}"
+        # - "1.2.3"       > "1.2.3-20201231.{rev}"
         # where "rev" is a counter reset daily (formally we also append a few
-        # metadata).
+        # metadata). A better choice (?) would be something that ensures
+        # current < ci <= local < next, for instance
+        # - "1.2.3-beta4" < "1.2.3-beta5-20201231.{rev}"
+        # - "1.2.3"       < "1.2.4-20201231.{rev}"
+        # Currently, we rather have ci < current < local < next.
         if ($precy) {
             # With a prerelease label, we increase the prerelease number.
             $preno  = 1 + [int]$preno
@@ -227,14 +243,19 @@ function Get-ActualVersion {
     $prefix = "$major.$minor.$patch"
     $suffix = $precy ? "$precy$preno" : ""
 
+    $pkgsuffix = ""
     $pkgversion = $suffix ? "$prefix-$suffix" : $prefix
-    if ($local) { $pkgversion = "$pkgversion-$timestamp" }
+    if ($local) {
+        $pkgsuffix  = $timestamp
+        $pkgversion = "$pkgversion-$pkgsuffix"
+    }
 
     ___debug "Version prefix: ""$prefix""."
     ___debug "Version suffix: ""$suffix""."
+    ___debug "Package suffix: ""$pkgsuffix""."
     ___debug "Package version: ""$pkgversion""."
 
-     @($pkgversion, $prefix, $suffix)
+     @($prefix, $suffix, $pkgsuffix, $pkgversion)
 }
 
 # ------------------------------------------------------------------------------
@@ -290,14 +311,17 @@ function Invoke-Pack {
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $packageVersion,
-
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
         [string] $versionPrefix,
 
         [Parameter(Mandatory = $false)]
         [string] $versionSuffix,
+
+        [Parameter(Mandatory = $false)]
+        [string] $packageSuffix,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string] $packageVersion,
 
         [Parameter(Mandatory = $false)]
         [string] $repositoryBranch,
@@ -327,15 +351,14 @@ function Invoke-Pack {
         warn "Source Link won't be enabled. Maybe use -Force?"
     }
 
-    # Beware, PackageVersion != Version.
     $args = "-c:Release",
         "/p:ContinuousIntegrationBuild=true",
         ("/p:EnableSourceLink=" + ($enableSourceLink ? "true" : "false")),
         "/p:SmokeBuild=false",
         "/p:Retail=true",
-        "/p:PackageVersion=$packageVersion",
         "/p:VersionPrefix=$versionPrefix",
         "/p:VersionSuffix=$versionSuffix",
+        "/p:PackageSuffix=$packageSuffix",
         "/p:BuildNumber=$buildNumber",
         "/p:RevisionNumber=$revisionNumber",
         "/p:RepositoryCommit=$repositoryCommit",
@@ -458,15 +481,16 @@ try {
     say "Generating build numbers."
     $buildNumber, $revisionNumber, $timestamp = Get-BuildNumbers
     # 4. Get package/asm versions.
-    $pkgversion, $prefix, $suffix = Get-ActualVersion $ProjectName $timestamp -Local:$local
+    $prefix, $suffix, $pkgsuffix, $pkgversion = Get-VersionNumbers $ProjectName $timestamp -Local:$local
     # 5. Get the package filepath.
     $pkgfile = Get-PackageFile $ProjectName $pkgversion -Yes:($Freeze -or $Yes) -Local:$local
 
     Invoke-Pack `
         -ProjectName      $ProjectName `
-        -PackageVersion   $pkgversion `
         -VersionPrefix    $prefix `
         -VersionSuffix    $suffix `
+        -PackageSuffix    $pkgsuffix `
+        -PackageVersion   $pkgversion `
         -RepositoryBranch $branch `
         -RepositoryCommit $commit `
         -BuildNumber      $buildNumber `
