@@ -222,14 +222,11 @@ function Get-VersionNumbers {
         # By the way, assemblies have a steady version number,
         # AssemblyVersion = 1.2.0.0 (see "src\Retail.props").
         # Remark: on a CI server (AZP), we use a different schema,
-        # - "1.2.3-beta4" < "1.2.3-beta4-20201231.{rev}"
+        # - "1.2.3-beta4" > "1.2.3-beta4-20201231.{rev}"
         # - "1.2.3"       > "1.2.3-20201231.{rev}"
         # where "rev" is a counter reset daily (formally we also append a few
-        # metadata). A better choice (?) would be something that ensures
-        # current < ci <= local < next, for instance
-        # - "1.2.3-beta4" < "1.2.3-beta5-20201231.{rev}"
-        # - "1.2.3"       < "1.2.4-20201231.{rev}"
-        # Currently, we rather have ci < current < local < next.
+        # metadata). Currently, we rather have ci < current < local < next.
+        # A better choice (?) would be: current < ci, local (latest win) < next.
         if ($precy) {
             # With a prerelease label, we increase the prerelease number.
             $preno  = 1 + [int]$preno
