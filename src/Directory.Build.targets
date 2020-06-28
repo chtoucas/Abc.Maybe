@@ -115,12 +115,16 @@
       DO NOT REMOVE. Even if the default behaviour is to have Source Link on
       for CI builds, this can still be overriden from the command-line.
       dotnet.exe fails complaining about SourceRoot if ContinuousIntegrationBuild
-      is set to true. When we import Microsoft.SourceLink.GitHub, this is
-      unnecessary since Source Link automatically adds GitHub to SourceRoot.
+      is set to true:
+        "SourceRoot items must include at least one top-level (not nested) item
+        when DeterministicSourcePaths is true"
+      When we import Microsoft.SourceLink.GitHub, this is unnecessary since
+      Source Link automatically adds GitHub to SourceRoot.
       Should be OK with the next NuGet's version as it will add NuGetPackageRoot
-      to SourceRoot.
+      to SourceRoot (only if IsPackable = true?).
       See https://github.com/dotnet/sdk/issues/11105,
       fixed by https://github.com/NuGet/NuGet.Client/pull/3430
+      See also https://github.com/dotnet/sourcelink/issues/91
     -->
     <SourceRoot Include="$(RepositoryRoot)" Condition=" '$(ContinuousIntegrationBuild)' == 'true' "/>
   </ItemGroup>

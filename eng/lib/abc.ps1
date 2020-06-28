@@ -196,6 +196,7 @@ function Get-PackageVersion {
         [ValidateNotNullOrEmpty()]
         [string] $packageName,
 
+        [switch] $vNext,
         [switch] $asString
     )
 
@@ -209,6 +210,24 @@ function Get-PackageVersion {
     $patch = Select-SingleProperty $xml "PatchVersion"
     $precy = Select-SingleProperty $xml "PreReleaseCycle"
     $preno = Select-SingleProperty $xml "PreReleaseNumber"
+
+    # Keep in sync with what we do in "src\vNext.props".
+    if ($vNext) {
+        if ($precy) {
+            # With a prerelease label, we increase the prerelease number.
+            $preno  = 1 + [int]$preno
+        }
+        else {
+            # Without a prerelease label, we increase the patch number.
+            $patch  = 1 + [int]$patch
+        }
+    }
+    
+    ___debug "Version major: ""$major""."
+    ___debug "Version minor: ""$minor""."
+    ___debug "Version patch: ""$patch""."
+    ___debug "Version precy: ""$precy""."
+    ___debug "Version preno: ""$preno""."
 
     if ($asString) {
         return $precy ? "$major.$minor.$patch-$precy$preno"

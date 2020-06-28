@@ -1,0 +1,9 @@
+<Project>
+
+  <PropertyGroup>
+    <!-- Sync w/ "eng\lib\abc.ps1::Get-PackageVersion()" -->
+    <PatchVersion Condition=" '$(PreReleaseCycle)' == '' ">$([MSBuild]::Add($(PatchVersion), 1))</PatchVersion>
+    <PreReleaseNumber Condition=" '$(PreReleaseCycle)' != '' ">$([MSBuild]::Add($(PreReleaseNumber), 1))</PreReleaseNumber>
+  </PropertyGroup>
+
+</Project>

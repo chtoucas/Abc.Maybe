@@ -15,10 +15,9 @@ Code
 Tools / Build System
 --------------------
 
-- Command-line option to tweak PatchVersion/PreReleaseNumber?
 - pack.ps1, ContinuousIntegrationBuild=true? Extra Git tests (synched?).
   Option -Official -Yes (not -Freeze): add a warning when we update the cache.
-  Rework test-package.ps1 (official, remote).
+  Rework test-package.ps1 (vNext, official, remote).
 - Roslyn Analyzer:
   * Of(), Flatten(). Squash(Maybe<T?>) where T : class
   * SelectMany(), ZipWith(), Bind().

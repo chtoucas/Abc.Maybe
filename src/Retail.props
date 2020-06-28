@@ -1,28 +1,21 @@
 <Project>
 
   <Import Project="$(MSBuildThisFileDirectory)$(AssemblyName).props" />
+  <Import Project="$(MSBuildThisFileDirectory)vNext.props" Condition=" '$(vNext)' == 'true' " />
 
   <!--
     Command-line options:
     - BuildNumber
     - RevisionNumber
+    - PackageSuffix
+    - vNext
 
     Remarks:
     - No script should ever tweak MajorVersion or MinorVersion.
-    - A script should only override
-      * VersionPrefix
-      * VersionSuffix
-      * PackageSuffix
     - Do NOT rely on PatchVersion, PreReleaseCycle or PreReleaseNumber, except
       for settings VersionPrefix & VersionSuffix.
     - AssemblyVersion uses MajorVersion and MinorVersion which we NEVER override.
   -->
-
-  <PropertyGroup Condition=" '$(vNext)' == 'true' ">
-    <PatchVersion Condition=" '$(PreReleaseCycle)' == '' ">$([MSBuild]::Add($(PatchVersion), 1))</PatchVersion>
-    <PreReleaseNumber Condition=" '$(PreReleaseCycle)' != '' ">$([MSBuild]::Add($(PreReleaseNumber), 1))</PreReleaseNumber>
-  </PropertyGroup>
-
   <PropertyGroup>
     <!-- WARNING: unconditionnaly override VersionPrefix and VersionSuffix,
          otherwise MSBuild picks up the default values (0.0.1 and DUMMY). -->
@@ -55,6 +48,5 @@
       </PropertyGroup>
     </Otherwise>
   </Choose>
-
 
 </Project>
