@@ -9,6 +9,11 @@
     <SourceRoot Include="$(RepositoryRoot)" />
   </ItemGroup>
 
+  <PropertyGroup Condition=" '$(vNext)' == 'true' ">
+    <PatchVersion Condition=" '$(PreReleaseCycle)' == '' ">$([MSBuild]::Add($(PatchVersion), 1))</PatchVersion>
+    <PreReleaseNumber Condition=" '$(PreReleaseCycle)' != '' ">$([MSBuild]::Add($(PreReleaseNumber), 1))</PreReleaseNumber>
+  </PropertyGroup>
+
   <PropertyGroup>
     <AbcVersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</AbcVersionPrefix>
     <AbcVersionSuffix></AbcVersionSuffix>
