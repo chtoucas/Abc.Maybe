@@ -154,6 +154,7 @@
           Condition=" '$(PrintSettings)' == 'true' and '$(TargetFramework)' != '' ">
     <PropertyGroup>
       <_MyMessage>| %24(ApiProfileMoniker)          = "$(ApiProfileMoniker)"</_MyMessage>
+      <_MyMessage>$(_MyMessage)%0A| %24(vNext)                      = "$(vNext)"</_MyMessage>
       <_MyMessage>$(_MyMessage)%0A| %24(Retail)                     = "$(Retail)"</_MyMessage>
       <_MyMessage>$(_MyMessage)%0A| %24(VisibleInternals)           = "$(VisibleInternals)"</_MyMessage>
       <_MyMessage>$(_MyMessage)%0A| %24(SignAssembly)               = "$(SignAssembly)"</_MyMessage>

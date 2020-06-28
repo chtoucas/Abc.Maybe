@@ -5,3 +5,5 @@ README
 - MissingAttributes.cs      Missing attributes.
 - NullableAttributes.cs     Nullable attributes.
 - Retail.props              MSBuild props when building packages.
+- vNext.props               MSBuild props to patch the version numbers to match
+                            what could be the next version.
