@@ -2,30 +2,34 @@
 
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets" />
 
-  <Import Project="$(SourceRoot)Abc.Maybe.props" />
-  <Import Project="$(SourceRoot)vNext.props" Condition=" '$(vNext)' == 'true' " />
-
   <ItemGroup Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">
     <!-- See comments in "src\D.B.targets" -->
     <SourceRoot Include="$(RepositoryRoot)" />
   </ItemGroup>
 
+  <!-- See "src\Retail.props" -->
+  <Import Project="$(SourceRoot)Abc.Maybe.props" />
+  <Import Project="$(SourceRoot)vNext.props" Condition=" '$(vNext)' == 'true' " />
+
   <PropertyGroup>
+    <!-- Version parts of the assembly Abc.Maybe -->
     <AbcVersionPrefix>$(MajorVersion).$(MinorVersion).$(PatchVersion)</AbcVersionPrefix>
-    <AbcVersionSuffix></AbcVersionSuffix>
     <AbcVersionSuffix Condition=" '$(PreReleaseCycle)' != '' ">$(PreReleaseCycle)$(PreReleaseNumber)</AbcVersionSuffix>
 
+    <!-- Version of the assembly Abc.Maybe -->
     <AbcVersion>$(AbcVersionPrefix)</AbcVersion>
     <AbcVersion Condition=" '$(AbcVersionSuffix)' != '' ">$(AbcVersion)-$(AbcVersionSuffix)</AbcVersion>
-    <AbcVersion Condition=" '$(AbcPackageSuffix)' != '' ">$(AbcVersion)-$(AbcPackageSuffix)</AbcVersion>
+
+    <!-- Version of the package Abc.Maybe -->
+    <AbcPackageVersion>$(AbcVersion)</AbcPackageVersion>
+    <AbcPackageVersion Condition=" '$(AbcPackageSuffix)' != '' ">$(AbcPackageVersion)-$(AbcPackageSuffix)</AbcPackageVersion>
 
     <!-- The default behaviour is to use an exact version match -->
-    <AbcVersionRange>[$(AbcVersion)]</AbcVersionRange>
-    <AbcVersionRange Condition=" '$(LenientAbcVersion)' == 'true' ">$(AbcVersion)</AbcVersionRange>
+    <AbcPackageRange>[$(AbcPackageVersion)]</AbcPackageRange>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Abc.Maybe" Version="$(AbcVersionRange)" />
+    <PackageReference Include="Abc.Maybe" Version="$(AbcPackageRange)" />
   </ItemGroup>
 
 </Project>

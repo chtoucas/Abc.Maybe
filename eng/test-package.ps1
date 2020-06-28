@@ -265,7 +265,7 @@ function Find-LastLocalVersion {
         warn "Local NuGet feed and cache are out of sync."
 
         if (yesno "Add ${name} to the local NuGet cache?") {
-            & dotnet restore $NUGET_CACHING_PROJECT /p:AbcVersion=$version | Out-Host
+            & dotnet restore $NUGET_CACHING_PROJECT /p:AbcPackageVersion=$version | Out-Host
                 || die "Failed to update the local NuGet cache."
         }
         else {
@@ -334,7 +334,7 @@ function Invoke-Restore {
 
     $targetFrameworks = Get-TargetFrameworks $platformList
 
-    $args =  "/p:AbcVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
+    $args =  "/p:AbcPackageVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
     if ($runtime)  { $args += "--runtime:$runtime" }
 
     & dotnet restore $TEST_PROJECT $args
@@ -370,7 +370,7 @@ function Invoke-Build {
 
     $args = `
         "-c:$configuration",
-        "/p:AbcVersion=$version",
+        "/p:AbcPackageVersion=$version",
         "/p:TargetFrameworks=$targetFrameworks"
     if ($runtime) { $args += "--runtime:$runtime" }
 
@@ -426,7 +426,7 @@ function Invoke-TestOldStyle {
         $args = `
             "-c:$configuration",
             "-f:$platform",
-            "/p:AbcVersion=$version",
+            "/p:AbcPackageVersion=$version",
             "/p:AllKnown=true",
             "/p:NotSupported=true"
         if ($runtime)   { $args += "--runtime:$runtime" }
@@ -485,7 +485,7 @@ function Invoke-TestSingle {
     $args = `
         "-c:$configuration",
         "-f:$platform",
-        "/p:AbcVersion=$version",
+        "/p:AbcPackageVersion=$version",
         "/p:AllKnown=true",
         "/p:NotSupported=true"
     if ($runtime)       { $args += "--runtime:$runtime" }
@@ -561,7 +561,7 @@ function Invoke-TestAny {
 
     $args = `
         "-c:$configuration",
-        "/p:AbcVersion=$version",
+        "/p:AbcPackageVersion=$version",
         "/p:TargetFrameworks=$targetFrameworks"
     if ($runtime) { $args += "--runtime:$runtime" }
 

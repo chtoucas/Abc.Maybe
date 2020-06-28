@@ -38,12 +38,12 @@ by xunit.runner.visualstudio.
 
 Restore accepts params /p: and -v,
   > dotnet restore -v n /p:AllKnown=true
-  > dotnet restore -v n /p:AbcVersion=1.0.0-ci-20200502T081916
-  > dotnet restore -v n /p:AllKnown=true /p:AbcVersion=1.0.0-ci-20200502T081916
+  > dotnet restore -v n /p:AbcPackageVersion=1.0.0-20200502T081916
+  > dotnet restore -v n /p:AllKnown=true /p:AbcPackageVersion=1.0.0-20200502T081916
 Build accepts params /p: (net46 requires AllKnown, -v is available but too verbose),
   > dotnet build /p:AllKnown=true
   > dotnet build /p:AllKnown=true -f net46
-  > dotnet build /p:AllKnown=true -f net46 /p:AbcVersion=1.0.0-ci-20200502T081916
+  > dotnet build /p:AllKnown=true -f net46 /p:AbcPackageVersion=1.0.0-20200502T081916
 List package does NOT accept params /p: and -v.
 
 ## Restore/build traps.
@@ -51,23 +51,23 @@ List package does NOT accept params /p: and -v.
 We can restore w/ a specific version in mind, but if the next build does not
 specify a version, it will revert to the default version. If we wish to use the
 last restored version we must use the option --no-restore.
-- If we restore without /p:AbcVersion
+- If we restore without /p:AbcPackageVersion
   > dotnet restore -v n
   > dotnet list package --framework net48
   Uses the default version (no surprise).
-- If we restore with /p:AbcVersion
-  > dotnet restore -v n /p:AbcVersion=1.0.0-ci-20200502T081916
+- If we restore with /p:AbcPackageVersion
+  > dotnet restore -v n /p:AbcPackageVersion=1.0.0-20200502T081916
   > dotnet list package --framework net48
-  Uses version 1.0.0-ci-20200502T081916 (no surprise).
-- If we build without /p:AbcVersion
+  Uses version 1.0.0-20200502T081916 (no surprise).
+- If we build without /p:AbcPackageVersion
   > dotnet build -f net48
   > dotnet list package --framework net48
   **We are back to the _default_ version**
-- If we restore with /p:AbcVersion
-  > dotnet build -f net48 /p:AbcVersion=1.0.0-ci-20200502T081916
+- If we restore with /p:AbcPackageVersion
+  > dotnet build -f net48 /p:AbcPackageVersion=1.0.0-20200502T081916
   > dotnet list package --framework net48
-  Uses version 1.0.0-ci-20200502T081916.
-- If we build without /p:AbcVersion BUT with --no-restore
+  Uses version 1.0.0-20200502T081916.
+- If we build without /p:AbcPackageVersion BUT with --no-restore
   > dotnet build -f net48 --no-restore
   > dotnet list package --framework net48
-  Uses the last restored version: 1.0.0-ci-20200502T081916.
+  Uses the last restored version: 1.0.0-20200502T081916.
