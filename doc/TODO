@@ -7,7 +7,7 @@ Code
 - Add overloads w/ IEqualityComparer<T> (true structural comparison).
 - LINQ: optimize, more. "Monadic" LINQ. Output Maybe<IEnumerable<T>> and LINQ ops.
 - Async Enumerable.
-- Serialization (XML).
+- Serialization (XML, JSON).
 - Localise error messages (ExceptionFactory)?
 - FIXME, TODO and REVIEW within the code.
 - PURE_MAYBE?
@@ -16,7 +16,6 @@ Tools / Build System
 --------------------
 
 - pack.ps1, ContinuousIntegrationBuild=true? Extra Git tests (synched?).
-  Option -Official -Yes (not -Freeze): add a warning when we update the cache.
   Rework test-package.ps1 (vNext, official, remote).
 - Roslyn Analyzer:
   * Of(), Flatten(). Squash(Maybe<T?>) where T : class
@@ -31,7 +30,7 @@ Tools / Build System
   * path separator, filename casing.
   * many script helpers only make sense or work on Windows.
   * $([MSBuild]::EnsureTrailingSlash('$(PathProperty)'))
-  * see Xunit website which contains some useful infos.
+  * see xUnit website which contains some useful infos.
 
 Testing
 -------

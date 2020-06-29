@@ -26,7 +26,8 @@ the git metadata.
 
 If this behaviour happens to be too strict and you are in a hurry, you can use:
 PS> pack.ps1 -Official -Force -Yes
-In that event, do not forget to reset the repository thereafter.
+In that event, do not forget to reset the local NuGet feed/cache after you
+publish the package to NuGet.Org.
 
 .PARAMETER Reset
 Hard clean (reset) the source directory before anything else?
@@ -505,6 +506,7 @@ try {
 
             SAY-LOUDLY "`n---`nNow, you can test the package. For instance,"
             SAY-LOUDLY "> eng\test-package.ps1 -Official -a -y"
+            SAY-LOUDLY "If you intend to publish the package, you should clean the local NuGet feed/cache afterwards."
         }
     }
 }
