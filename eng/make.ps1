@@ -24,7 +24,7 @@ param(
     [Parameter(Mandatory = $false)]
     [Alias('f')] [string] $Platform,
 
-    [Alias('X')] [switch] $Flat,
+    [Alias('X')] [switch] $Flatten,
     [Alias('l')] [switch] $ListPlatforms,
                  [switch] $AllKnown,
                  [switch] $NoStandard,
@@ -70,7 +70,7 @@ Usage: reset.ps1 [arguments]
   -r|-Runtime        the runtime to build the project for.
   -f|-Platform       the platform to build the project for.
 
-  -X|-Flat
+  -X|-Flatten	     flatten the project dependencies graph?
   -l|-ListPlatforms  print the list of supported platforms then exit?
      -AllKnown       inlude ALL known platform versions (SLOW)?
      -NoStandard     exclude .NET Standard?
@@ -95,11 +95,11 @@ Usage: reset.ps1 [arguments]
 Arguments starting with '/p:' are passed through to dotnet.exe.
 
 Remarks:
-- Option -Flat.
+- Option -Flatten.
   We override "TargetFrameworks" which means that all projects are compiled With
   the same targets. Beware, it changes the dependency resolution graph.
   Caveats:
-  - testing w/ option -Flat on is supported but might not do what we want.
+  - testing w/ option -Flatten on is supported but might not do what we expect.
     To properly test the package for a target not explicitely listed, which is
     always the case except for "net461", one should use test-package.ps1 instead.
   - if "TargetFrameworks" contains a .NET Standard, an exe project will be
@@ -119,19 +119,19 @@ Commonly used properties.
 > make.ps1 [...] /p:RunAnalyzers=false          # turn off source code analysis.
 
 Misc properties.
+> make.ps1 [...] /p:vNext=true
 > make.ps1 [...] /p:HideInternals=true
 > make.ps1 [...] /p:PatchEquality=true
 
 Example: build then test.
-> make.ps1 build
+> make.ps1
 > make.ps1 test -NoBuild -Trx ..\..\..\__\xunit.trx
 
 Azure tasks.
-> make.ps1 restore -X -NoStandard            /p:Retail=true
-> make.ps1 build   -X -NoStandard -NoRestore /p:Retail=true /p:VersionSuffix=ci
-> make.ps1 test    -X -NoStandard -NoBuild   /p:Retail=true
-Remark: to truely mimic an Azure task, one should also add
-'/p:ContinuousIntegrationBuild=true' (implicitly set on an Azure server).
+> make.ps1 restore -X -NoStandard /p:Retail=true
+> make.ps1 build   -X -NoStandard /p:Retail=true -NoRestore
+Remark: to truely mimic an Azure task, one should also add '/p:TF_BUILD=true'
+(implicitly set on an Azure server).
 
 '@
 }
@@ -215,7 +215,7 @@ try {
 
     if ($ListPlatforms) {
         $platforms = (Get-Platforms -AllKnown) -join "`n- "
-        Write-Host "Supported platforms (option -Flat):`n- $platforms"
+        Write-Host "Supported platforms (option -Flatten):`n- $platforms"
         exit
     }
 
@@ -253,9 +253,9 @@ try {
         Write-Verbose "Execute command in a smoke context."
     }
     else {
-        if ($Flat) {
+        if ($Flatten) {
             if ($cmd -eq 'test') {
-                Write-Warning 'Testing w/ option -Flat on...'
+                Write-Warning 'Testing w/ option -Flatten on...'
                 Write-Warning 'To properly test the package, one should use test-package.ps1 instead.'
             }
 
