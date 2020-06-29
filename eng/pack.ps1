@@ -506,7 +506,7 @@ try {
 
             SAY-LOUDLY "`n---`nNow, you can test the package. For instance,"
             SAY-LOUDLY "> eng\test-package.ps1 -Official -a -y"
-            SAY-LOUDLY "If you intend to publish the package, you should clean the local NuGet feed/cache afterwards."
+            SAY-LOUDLY "If you intend to publish the package, you should reset the local NuGet feed/cache afterwards."
         }
     }
 }
