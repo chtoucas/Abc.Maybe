@@ -1,57 +1,62 @@
-Developer Notes
-===============
+Notes de développement
+======================
 
-Minimal requirement: .NET Core 3.1.300
+Voir aussi "src\Abc.Tests\README" et "test\README".
 
-See also "src\Abc.Tests\README" and "test\README".
+Prérequis:
+- .NET Core 3.1.300+ (voir "global.json") car cette version inclut des
+  correctifs concernant la compilation déterministique ;
+- exécutable git mais uniquement si on a l'intention d'utiliser "eng\pack.ps1".
 
-- Versioning
-- Changelog
-- Release Process
-- Multi-targeting
-- Compiler Symbols
-- Development
-- Build
-- CI
-- PowerShell
-- Maintenance
-- Misc
+Préparation d'un nouveau paquet NuGet
+-------------------------------------
 
-Versioning
-----------
+### Choisir un nouveau numéro de version
 
-Format Major.Minor.Patch[-PreRelease]
-- Major: Breaking changes -or- Major new features.
-- Minor: Minor new features, but backwards compatible.
-- Patch: Backwards compatible bug fixes only.
-- PreRelease:
-  alpha) Used for work-in-progress and experimentation.
-  beta)  One that is feature complete for the next planned release, but may
-         contain known bugs.
-  rc)    A release that's potentially final (stable) unless significant bugs
-         emerge.
-Regarding new features, we do not follow exactly semantic versioning;
-see https://docs.microsoft.com/en-us/nuget/concepts/package-versioning
+Pour les versions stables, on utilise le format Major.Minor.Patch:
+  Major : nouvelles fonctionnalités d'importance majeure, la compatibilité
+          descendante n'est pas garantie.
+  Minor : nouvelles fonctionnalités d'importance mineure, rétrocompatible avec
+          les versions antérieures depuis Major.0.0.
+  Patch : correctifs, rétrocompatible avec les versions antérieures depuis
+          Major.0.0.
 
-Under normal circumstances, we do NOT introduce breaking changes, in particular
-we do NOT remove features (we mark them as obsolete).
-If we have to, this can ONLY happen with a new MAJOR release (not minor), eg
-1.3.4 to 2.0.0 is OK, but 1.3.4 to 1.4.0 is NOT.
-Pre-releases are free to introduce new features and remove them after; it should
-not happen with beta releases but we never know.
+Pendant la période de développement, on adopte plutôt le schéma
+Major.Minor.Patch-PreRelease où PreRelease peut prendre les valeurs suivantes:
+  "alpha" : phase d'expérimentation.
+  "beta" :  l'API est stabilisée et ne devrait pas bouger à moins que des
+            problèmes inattendus émergent pendant les tests. Le code n'étant pas
+            encore finalisé, des bugs connus peuvent subsister.
 
-Changelog
----------
+Même si une nouvelle version majeure ne signifie pas nécessairement l'absence de
+compatibilité descendante, il s'agit du seul cas où elle n'est pas garantie. Au
+contraire, une mise à jour vers une nouvelle version mineure doit toujours
+pouvoir se faire de manière transparente. En particulier, on ne supprime aucune
+fonctionnalité, on marquera plutôt les méthodes/classes concernées d'un attribut
+`Obsolete`, et seulement lors d'une nouvelle version majeure pourra-t-on enfin
+les supprimer pour de bon.
+
+En plus du numéro de version pour un paquet,
+  PackageVersion       = Major.Minor.Patch(-PreRelease)
+  AssemblyVersion      = Major.Minor.0.0
+  FileVersion          = Major.Minor.Build.Rev
+  InformationalVersion = Major.Minor.Patch(-PreRelease)+ShortGitCommitHash
+Les valeurs pour Build et Rev sont calculées automatiquement en fonction de la
+date et de l'heure de création du paquet.
+
+Références:
+- https://docs.microsoft.com/en-us/nuget/concepts/package-versioning
+
+### Documenter les changements
 
 Sections.
-- Changes.
-  Binary breaking changes MUST be prefixed w/ [BREAKING] and appear first.
-  Removed features MUST be prefixed w/ [REMOVED] and appear just after.
-  NB: any item appearing here obviously introduces a breaking change.
-  Obsolete methods MUST be prefixed w/ [OBSOLETE].
-- Fixes, for any bug fixes.
-- Security, in case of vulnerabilities.
-- Internal changes, for changes that are of no interest outside the project.
+Changes)  Binary breaking changes MUST be prefixed w/ [BREAKING] and appear first.
+          Removed features MUST be prefixed w/ [REMOVED] and appear just after.
+          NB: any item appearing here obviously introduces a breaking change.
+          Obsolete methods MUST be prefixed w/ [OBSOLETE].
+Fixes)    For any bug fixes.
+Security) In case of vulnerabilities.
+Internal changes) For changes that are of no interest outside the project.
 
 Production releases should have a title and highlight the relevant changes made
 during the pre-release phase.
@@ -61,44 +66,44 @@ References.
 - https://github.com/dotnet/runtime/blob/master/docs/coding-guidelines/breaking-change-rules.md
 - https://stackoverflow.com/questions/1456785/a-definitive-guide-to-api-breaking-changes-in-net
 
-Release Process
----------------
+### Créer puis publier un paquet
 
-Requirement: command-line git.
+Les manipulations ci-dessous doivent être effectuées sous Windows, sinon
+`DebugType` prendra la valeur `portable`, et cela quelque soit la cible.
 
-WARNING: should be done on a Windows box, otherwise DebugType will always be
-equal to "portable".
+Maintenant que l'intégration continue est en place, les étapes 3 et 4 sont
+optionnelles.
 
-Before a production packages, check that there are no remaining FIXMEs and
-review the TODOs and REVIEWs.
+Préambule à la création d'un paquet beta ou final :
+  a. Avant toute chose, on prendra soin de vérifier qu'il ne reste pas de FIXMEs
+     et on parcourera les TODOs et les REVIEWs.
+  b. Exécuter le script "eng\freeze-api.ps1", puis vérifier le résultat.
 
-Steps 3 and 4 are optional, instead one can simply check the CI results.
+Étapes :
+  1. Mettre à jour le numéro de version dans "src\Abc.Maybe.props" (cf. supra).
+  2. Mettre à jour le CHANGELOG (cf. supra).
+  3. Création d'un paquet (optionnel) :
+     > eng\pack.ps1 -Official -Force -y
+  4. Tester un paquet (optionnel) :
+     > eng\test-package.ps1 -Official -a -y
+  6. Git commit ("Change version number").
+  7. Recréer le paquet et éventuellement le publier :
+     > eng\pack.ps1 -Freeze
+  8. Publier le paquet si ce n'est pas déjà fait.
 
-Pre action, for beta -or- production packages.
-0. Run script eng\freeze-api.ps1, then review the result.
-   NB: between releases, feel free to add and remove **new** stuff.
+Postambule les paquets finaux :
+  a. Créer un label git,
+     > git tag vX.Y.Z
+     ou
+     > git tag -a vX.Y.Z -m "Bla bla"
+     puis le publier
+     > git push origin vX.Y.Z
+  b. Mettre à jour la page "Releases" de GitHub.
 
-1. New version in src\Abc.Maybe.props
-2. Update CHANGELOG
-3. (optional) Run eng\pack.ps1 -Official -Force -y      Create the package
-4. (optional) Run eng\test-package.ps1 -Official -a -y  Test the result
-6. Git commit ("Change version number")
-7. Run script eng\pack.ps1 -Freeze        Recreate, and maybe publish the package
-8. Publish package                        Only if not yet done
+Développement
+-------------
 
-Post actions.
-a. For production packages, git tag, then publish.
-   > git tag vX.Y.Z
-   or
-   > git tag -a vX.Y.Z -m "Bla bla"
-   then
-   > git push origin vX.Y.Z
-   Or do it within GitHub website.
-   https://git-scm.com/book/en/v2/Git-Basics-Tagging
-b. Update the page Releases on github.
-
-Multi-targeting
----------------
+### Multi-targeting
 
 For libraries, use
   <TargetFrameworks>$(LibraryPlatforms)</TargetFrameworks>
@@ -219,8 +224,7 @@ References
   https://docs.microsoft.com/en-us/dotnet/core/tutorials/libraries
   https://docs.microsoft.com/en-us/dotnet/core/packages
 
-Compiler Symbols
-----------------
+### Symboles de compilation
 
 In "D.B.targets".
 - NETSTANDARD1_x
@@ -239,13 +243,13 @@ Project-specific symbols.
 - USE_ATTRS_FROM_ABC_MAYBE  in Abc.Testing
 - BENCHMARK_HARNESS         in Abc.Performance.Tests
 
-Development
------------
+### Règles à suivre
 
-Rules.
-- Seal classes unless they are designed for extensibility.
-- Add nullable annotations wherever necessary.
-  Tag any use of the null-forgiving operator (!) with BONSANG!.
+- toutes les classes sont `sealed` à moins qu'elles soient conçues pour 
+  l'extensibilité;
+- ajouter des annotations _nullable_ si nécessaire;
+- tagger toute utilisation de l'opérateur "damnit" ou "null-forgiving" (!) avec
+  BONSANG!.
 - Methods that return something should have the attribure Pure. It is not
   mandatory but it clearly states that the result should not be ignored.
   It might seem superfluous, but "ça ne mange pas de pain".
@@ -257,15 +261,15 @@ Changes to the default editor config (does not affect the compilation).
 - IDE0060 - dotnet_code_quality_unused_parameters, (Remove unused parameter) covered by CA1801.
 https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-language-conventions?view=vs-2019
 
-From time to time, we should review our usage of
-- #pragma warning disable
-- #nullable disable
-- SuppressMessage
-- BONSANG! null-forgiving ("damnit") operator
+De temps en temps, il est bon de vérifier le bon usage de:
+- `#pragma warning disable`;
+- `#nullable disable`;
+- attribut `SuppressMessage`;
+- tags `BONSANG!`.
 
-Useful tools.
-- NuGet Package Explorer
-- ILDasm, ILSpy, dotPeek
+Utilitaires:
+- NuGet Package Explorer;
+- ILDasm, ILSpy, dotPeek.
 
 Dump the test suite.
 > dotnet test --list-tests
@@ -273,8 +277,8 @@ Dump the test suite.
 Source Link checks.
 > dotnet sourcelink -h
 
-Build
------
+Compilation
+-----------
 
 MSBuild project files are __read__ in the following order:
 1. Directory.Build.props
@@ -307,8 +311,8 @@ References.
 - https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/deterministic-compiler-option
 - https://blog.paranoidcoding.com/2016/04/05/deterministic-builds-in-roslyn.html
 
-CI
---
+Intégration continue
+--------------------
 
 1. (GitHub) Smoke tests on Windows, Linux and MacOS.
    Settings: SmokeBuild=true.
@@ -338,12 +342,8 @@ To skip CI on push,
 - for AZP only, add [skip azp] to the commit message.
 - for both AZP and GitHub Actions, add [skip ci] to the commit message.
 
-References.
-- https://chtoucas.visualstudio.com/Abc.Maybe/_build
-- https://github.com/actions/virtual-environments
-
-PowerShell
-----------
+Scripts
+-------
 
 Common script/function parameters:
    -Official
@@ -399,10 +399,11 @@ Show / clear content of NuGet cache
 > dotnet nuget locals all -l
 > dotnet nuget locals all --clear
 
-Misc
-----
+Divers
+------
 
 Strong named key.
 To extract the public key, then get the public key.
 > sn -p Abc.snk Abc.pk
 > sn -tp Abc.pk
+
