@@ -3,25 +3,30 @@ Changelog for Abc.
 vNEXT
 
   Internal changes.
-  * Unless specified otherwise, projects in the folder "test" now use an exact
-    version match to resolve the package Abc.Maybe.
-  * eng\pack.ps1:
-    - Always set ContinuousIntegrationBuild to true
+  * Project settings:
+    - Unless specified otherwise, projects in the folder test now use an exact
+      version match when resolving the package Abc.Maybe.
+    - New global option vNext to tweak the version numbers locally.
+  * Scripts:
+    - eng\pack.ps1: always set ContinuousIntegrationBuild to true, and set vNext
+      to true when building a local package.
 
 2020-06-16, version 1.0.2
 
   Visible changes.
-  * Removed "net452"; use "netstandard1.1" instead (should happen automatically).
+  * Remove net452, replaced by netstandard1.1 (should happen automatically).
 
   Internal changes.
   * Set up GitHub actions and Azure Pipelines. The main outcome is that the
     tests now execute on Windows, Linux and MacOS.
-  * Always enable "coverlet.collector" and only reference "coverlet.msbuild"
-    when explicitly requested.
-  * When enabled, Source Link now processes all projects in "src".
-  * Tweak package and platform selections for projects src\Abc.Tests and
-    test\Package (see "src\Abc.Tests\D.B.targets").
-  * eng\harness.cmd: new script to quickly run the test suite.
+  * Project settings:
+    - Always enable coverlet.collector and only reference coverlet.msbuild
+      when explicitly requested.
+    - When enabled, Source Link now processes all projects in the folder src.
+    - Tweak package and platform selections for projects src\Abc.Tests and
+      test\Package (see src\Abc.Tests\D.B.targets).
+  * Scripts:
+    - eng\harness.cmd: new script to quickly run the test suite.
   * Upgraded dependencies:
     - xunit.runner.visualstudio 2.4.1 -> 2.4.2.
     - dotnet-reportgenerator-globaltool 4.5.8 -> 4.6.1.
@@ -29,17 +34,17 @@ vNEXT
 2020-05-31, version 1.0.1
 
   Visible changes.
-  * For older Windows-only platforms, use "pdbonly" instead of "portable".
+  * For older Windows-only platforms, use pdbonly instead of portable.
 
   Internal changes.
-  * eng\freeze-api.ps1: handle the annotation "#nullable enable".
-  * eng\cover.ps1: when using Coverlet, include the platform name in the output
-    filename.
-  * eng\pack.ps1:
-    - Disable Source Link when there are uncommited changes.
-    - Remove the timestamp from the informational version.
-  * asm.ps1: new script to retrieve informations about an assembly.
-  * Upgraded packages:
+  * Scripts:
+    - eng\asm.ps1: new script to retrieve informations about an assembly.
+    - eng\cover.ps1: when using Coverlet, include the platform name in the
+      output filename.
+    - eng\freeze-api.ps1: handle the annotation "#nullable enable".
+    - eng\pack.ps1: disable Source Link when there are uncommited changes.
+      Remove the timestamp from the informational version.
+  * Upgraded dependencies:
     - coverlet.msbuild 2.8.1 -> 2.9.0.
 
 2020-05-27, version 1.0.0
@@ -49,5 +54,5 @@ vNEXT
 2017-04-07, version 0.28.0
 
   Still available on nuget.org but under a different name
-  [https://www.nuget.org/packages/Narvalo.Fx/], this package is now deprecated.
+  [https://www.nuget.org/packages/Narvalo.Fx/], now deprecated.
 
