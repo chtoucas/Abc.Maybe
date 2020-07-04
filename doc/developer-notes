@@ -4,8 +4,8 @@ Notes de développement
 Voir aussi "src\Abc.Tests\README" et "test\README".
 
 Prérequis:
-- .NET Core 3.1.300+ (voir "global.json") car cette version inclut des
-  correctifs concernant la compilation déterministique ;
+- .NET Core 3.1.300+ (voir "global.json") pour pouvoir bénéficier des correctifs
+  concernant la compilation déterministique ;
 - exécutable git mais uniquement si on a l'intention d'utiliser "eng\pack.ps1".
 
 Préparation d'un nouveau paquet NuGet
@@ -16,10 +16,10 @@ Préparation d'un nouveau paquet NuGet
 Pour les versions stables, on utilise le format Major.Minor.Patch:
   Major : nouvelles fonctionnalités d'importance majeure, la compatibilité
           descendante n'est pas garantie.
-  Minor : nouvelles fonctionnalités d'importance mineure, rétrocompatible avec
-          les versions antérieures depuis Major.0.0.
-  Patch : correctifs, rétrocompatible avec les versions antérieures depuis
-          Major.0.0.
+  Minor : nouvelles fonctionnalités d'importance mineure, rétrocompatibilité
+          garantie avec les versions antérieures depuis Major.0.0.
+  Patch : correctifs, rétrocompatibilité garantie avec les versions antérieures
+          depuis Major.0.0.
 
 Pendant la période de développement, on adopte plutôt le schéma
 Major.Minor.Patch-PreRelease où PreRelease peut prendre les valeurs suivantes:

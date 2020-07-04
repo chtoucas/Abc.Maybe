@@ -1,199 +1,53 @@
 Changelog for Abc.
 
 vNEXT
------
 
-Internal changes:
-- Unless specified otherwise, projects in "test" now use an exact version match
-  when resolving the package "Abc.Maybe".
+  Internal changes.
+  * Unless specified otherwise, projects in the folder "test" now use an exact
+    version match to resolve the package Abc.Maybe.
+  * eng\pack.ps1:
+    - Always set ContinuousIntegrationBuild to true
 
 2020-06-16, version 1.0.2
--------------------------
 
-Changes:
-- Package:
-  - Removed "net452"; use "netstandard1.1" instead (should happen automatically).
-- Thoroughly test the package on Windows, Linux and MacOS.
+  Visible changes.
+  * Removed "net452"; use "netstandard1.1" instead (should happen automatically).
 
-Internal changes:
-- Set up Azure Pipelines, see https://chtoucas.visualstudio.com/Abc.Maybe,
-  and GitHub Actions.
-- Always enable "coverlet.collector" and only load "coverlet.msbuild" when
-  explicitly requested.
-- When enabled, Source Link now processes all projects in "src".
-- Tweak package and platform selections for projects Abc.Tests & Abc.PackageTests.
-- Scripts, new options to turn off code analysis or to enable verbose mode.
-- New plain script "eng\harness.cmd" to quickly run the test suite.
-- Upgraded packages:
-  * xunit.runner.visualstudio 2.4.1 -> 2.4.2.
-  * dotnet-reportgenerator-globaltool 4.5.8 -> 4.6.1.
+  Internal changes.
+  * Set up GitHub actions and Azure Pipelines. The main outcome is that the
+    tests now execute on Windows, Linux and MacOS.
+  * Always enable "coverlet.collector" and only reference "coverlet.msbuild"
+    when explicitly requested.
+  * When enabled, Source Link now processes all projects in "src".
+  * Tweak package and platform selections for projects src\Abc.Tests and
+    test\Package (see "src\Abc.Tests\D.B.targets").
+  * eng\harness.cmd: new script to quickly run the test suite.
+  * Upgraded dependencies:
+    - xunit.runner.visualstudio 2.4.1 -> 2.4.2.
+    - dotnet-reportgenerator-globaltool 4.5.8 -> 4.6.1.
 
 2020-05-31, version 1.0.1
--------------------------
 
-Changes:
-- For older Windows-only platforms, use "pdbonly" instead of "portable".
-  This change only applies to builds with option /p:Retail=true.
+  Visible changes.
+  * For older Windows-only platforms, use "pdbonly" instead of "portable".
 
-Internal changes:
-- Fix freeze-api.ps1, it didn't handle the annotation "#nullable enable".
-- Fix cover.ps1 when using Coverlet. Now that the test project uses
-  multi-targeting, the output filename includes the platform name.
-- Tweak pack.ps1,
-  - Disable Source Link when there are uncommited changes.
-  - Remove the timestamp from the informational version.
-- New script asm.ps1 to retrieve informations about an assembly.
-- Upgraded packages:
-  * coverlet.msbuild 2.8.1 -> 2.9.0.
+  Internal changes.
+  * eng\freeze-api.ps1: handle the annotation "#nullable enable".
+  * eng\cover.ps1: when using Coverlet, include the platform name in the output
+    filename.
+  * eng\pack.ps1:
+    - Disable Source Link when there are uncommited changes.
+    - Remove the timestamp from the informational version.
+  * asm.ps1: new script to retrieve informations about an assembly.
+  * Upgraded packages:
+    - coverlet.msbuild 2.8.1 -> 2.9.0.
 
 2020-05-27, version 1.0.0
--------------------------
 
-First stable release.
-
-Changes:
-- [REMOVED] MaybeComparer<T> is postponed to another release.
-
-2020-05-26, version 1.0.0-beta5
--------------------------------
-
-Changes:
-- Package:
-  - Removed "netstandard1.0".
-  - Added "netstandard1.1" and "net452".
-  - Added support for Source Link.
-  - Changed "DebugType" from "embedded" or "full" to "portable".
-
-Internal changes:
-- Very much improve all PowerShell scripts.
-- Enabled testing for a package with
-  - .NET Core, version >= 2.0.
-  - .NET Framework, version >= 4.5.
-- Added nullable annotations to the public API files.
-- Upgraded packages:
-  * Microsoft.CodeAnalysis.FxCopAnalyzers 2.9.8 -> 3.0.0.
-  * Microsoft.CodeAnalysis.PublicApiAnalyzers 2.9.8 -> 3.0.0.
-  * ReportGenerator 4.5.6 -> 4.5.8.
-
-2020-04-27, version 1.0.0-beta4
--------------------------------
-
-Changes:
-- Added support for .NET Framework 4.6.1.
-- Added support for .NET Standard 1.0, but only for Abc.Maybe (completely untested).
-- Simplified Squash(Maybe<T?>) where T : class, and apply attribute Advanced.
-- Removed attribute Advanced from Flatten().
-- Package:
-  - Added .NET Framework 4.6.1.
-  - Added .NET Standard 1.0.
-  - Removed .NET Core 3.1.
-
-Internal changes:
-- Defined two API profiles:
-  Profile 2.0: .NET Standard 1.0 / 2.0 and .NET Framework 4.6.1.
-  Profile 2.1: .NET Standard 2.1
-- Upgraded packages:
-  * Microsoft.NET.Test.Sdk 16.6.0 -> 16.6.1.
-
-2020-04-24, version 1.0.0-beta3
--------------------------------
-
-Changes:
-- MaybeComparer<T>.GetHashCode() now throws when "obj" is null.
-- Removed the notnull constraint on the result type of Switch().
-- Applied attribute EditorBrowsable to Maybe<T>.GetEnumerator() and
-  Maybe<T>.TryGetValue().
-- Structural comparison is now possible when the generic type params differ.
-- License changed from BSD-2-Clause to BSD-3-Clause.
-
-Internal changes:
-- Renamed project Abc.Future to Abc.Sketches.
-- Ensured that all projects have well-formed XML comments.
-- Improved the build system.
-- Upgraded packages:
-  * Microsoft.NET.Test.Sdk 16.5.0 -> 16.6.0.
-
-2020-04-17, version 1.0.0-beta2
--------------------------------
-
-Changes:
-- [REMOVED] Maybe.Of() with a struct constraint; use Maybe.Of() followed by Squash().
-- [REMOVED] Maybe.Flatten() with a struct constraint; use Maybe.Flatten() followed by Squash().
-- Maybe<T> now supports binary serialization.
-- With the previous version, I changed the behaviour of ElementAtOrNone(), it was
-  wrong. It clearly contradicts the XML comments, let's roll back.
-
-2020-04-16, version 1.0.0-beta1
--------------------------------
-
-Changes:
-- [REMOVED] Maybe<T>.Skip(); use Maybe<T>.IsNone with Maybe.Unit or Maybe.Zero.
-- New versions of Maybe.Squash()
-    static Maybe.Squash<T>(this Maybe<T>) where T : class
-    static Maybe.Squash<T>(this Maybe<Maybe<T>>) where T : class
-    static Maybe.Squash<T>(this in Maybe<Maybe<T?>>) where T : struct
-  to complement the existing one
-    static Maybe.Squash<T>(this in Maybe<T?>) where T : struct
-- [OBSOLETE] Maybe.Flatten() with a struct constraint; use Maybe.Squash().
-- Removed the "in" parameter modifier used by the Maybe.Flatten() with no generic
-  type constraint.
-- LINQ ElementAtOrNone() no longer returns an empty maybe if the index is out of
-  range but rather throws an ArgumentOutOfRangeException.
-
-Internal changes:
-- New script eng\freeze-api.ps1.
-- New option to hard clean the solution before packing.
-- Upgraded packages:
-  * ReportGenerator 4.5.5 -> 4.5.6.
-
-2020-04-12, version 1.0.0-alpha3
---------------------------------
-
-Changes:
-- [BREAKING] MaybeComparer<T>, complete rewrite, optionally structural.
-- Applied attribute EditorBrowsable to methods reserved for advanced scenarios.
-- Strong-name the public assembly.
-- Embed the debug symbols.
-
-Internal changes:
-- New perf project.
-- Rewrote most scripts using PowerShell.
-- Better build system.
-- Upgraded packages:
-  * BenchmarkDotNet 0.12.0 -> 0.12.1.
-  * ReportGenerator 4.5.3 -> 4.5.5.
-
-2020-04-03, version 1.0.0-alpha-2
----------------------------------
-
-Changes:
-- [BREAKING] Maybe<T>.OrElseAsync() now expects a factory rather than a task.
-- [BREAKING] Maybe.Compose() and Maybe.ComposeBack() now return a "maybe" rather
-  than an anonymous function.
-- [REMOVED] Maybe<T>.GroupJoin(); use Maybe<T>.SelectMany() instead.
-- [REMOVED] Maybe<T>.SwitchAsync(); use Maybe<T>.Switch() instead.
-- [REMOVED] Qperators.ZipAny(); use LINQ Zip followed by Maybe.CollectAny().
-- The NuGet package now includes the pdb.
-- Async methods now use eager validation.
-
-Internal changes:
-- Full test coverage.
-- Replaced OpenCover by Coverlet as the default tool for test coverage.
-- New project Abc.Future for experimental code.
-- Cleaned up project files.
-  * No longer define compiler symbols NETSTANDARD2_0 and NETSTANDARD2_1 as
-    this is already done by MSBuild.
-    See https://docs.microsoft.com/en-us/dotnet/core/tutorials/libraries
-  * Use .editorconfig instead of MSBuild to configure language conventions
-    inside the editor (warnings IDEnnnn).
-
-2020-03-27, version 1.0.0-alpha-1
----------------------------------
-
-First alpha release.
+  First stable release.
 
 2017-04-07, version 0.28.0
---------------------------
 
-Still available on nuget.org but under a different name
-(https://www.nuget.org/packages/Narvalo.Fx/) now deprecated.
+  Still available on nuget.org but under a different name
+  [https://www.nuget.org/packages/Narvalo.Fx/], this package is now deprecated.
+
