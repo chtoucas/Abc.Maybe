@@ -68,6 +68,7 @@
     <DefaultPlatform>netcoreapp3.1</DefaultPlatform>
     <SupportedStandards>netstandard2.1;netstandard2.0;netstandard1.1</SupportedStandards>
   </PropertyGroup>
+
   <Choose>
     <When Condition=" '$(SmokeBuild)' == 'true' ">
       <PropertyGroup>

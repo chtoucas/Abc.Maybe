@@ -3,8 +3,7 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-# Local modifications.
-# Beware, don't forget "!Directory.Build.rsp" below.
+## Local modifications. Beware, don't forget those we put at the end of this file.
 
 nuget.exe
 *.trx
@@ -15,7 +14,7 @@ __/**
 !__/nuget-cache/_._
 !__/nuget-feed/_._
 
-# END Local modifications
+## END Local modifications
 
 # User-specific files
 *.rsuser
@@ -96,7 +95,6 @@ StyleCopReport.xml
 *.pgc
 *.pgd
 *.rsp
-!Directory.Build.rsp
 *.sbr
 *.tlb
 *.tli
@@ -373,3 +371,9 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+## Local modifications.
+
+!Directory.Build.rsp
+
+## END Local modifications
