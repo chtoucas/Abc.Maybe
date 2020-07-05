@@ -9,7 +9,7 @@
                             NB: if Retail = true, HideInternals has no effect
     - NoWarnX               Custom list of NoWarn's (for PS scripts)
                             For instance, NU5105 (warning about SemVer 2.0.0)
-    - PrintSettings         Enable target PrintSettings?
+    - PrintSettings         Enable target PrintSettingsBeforeCompile?
 
     Development-only options. To prevent any accident, they are disabled when
     "Retail" equals "true".
