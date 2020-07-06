@@ -3,18 +3,7 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-## Local modifications. Beware, don't forget those we put at the end of this file.
-
-nuget.exe
-*.trx
-
-__/**
-!__/coverlet.svg
-!__/coverlet.txt
-!__/nuget-cache/_._
-!__/nuget-feed/_._
-
-## END Local modifications
+## WARNING: for the project-specific settings see the end of this file.
 
 # User-specific files
 *.rsuser
@@ -372,8 +361,15 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-## Local modifications.
+## Local modifications #########################################################
+
+nuget.exe
+*.trx
+
+__/**
+!__/coverlet.svg
+!__/coverlet.txt
+!__/nuget-cache/_._
+!__/nuget-feed/_._
 
 !Directory.Build.rsp
-
-## END Local modifications
