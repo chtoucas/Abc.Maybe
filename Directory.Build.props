@@ -1,13 +1,6 @@
 <Project>
 
-  <!-- Repository layout -->
-  <PropertyGroup>
-    <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>
-    <SourceRoot>$(RepositoryRoot)src\</SourceRoot>
-    <ArtifactsRoot>$(RepositoryRoot)__\</ArtifactsRoot>
-  </PropertyGroup>
-
-  <!-- Global contexts: CI and "slim" -->
+  <!-- Global contexts -->
   <PropertyGroup>
     <ContinuousIntegrationBuild Condition=" '$(ContinuousIntegrationBuild)' == '' ">false</ContinuousIntegrationBuild>
     <ContinuousIntegrationBuild Condition=" '$(TF_BUILD)' == 'true' ">true</ContinuousIntegrationBuild>
@@ -17,6 +10,13 @@
     <SlimBuild Condition=" '$(SlimBuild)' == '' ">false</SlimBuild>
     <SlimBuild Condition=" '$(SLIM_BUILD)' == 'true' ">true</SlimBuild>
     <SlimBuild Condition=" '$(BuildingInsideVisualStudio)' == 'true' ">true</SlimBuild>
+  </PropertyGroup>
+
+  <!-- Repository layout -->
+  <PropertyGroup>
+    <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>
+    <SourceRoot>$(RepositoryRoot)src\</SourceRoot>
+    <ArtifactsRoot>$(RepositoryRoot)__\</ArtifactsRoot>
   </PropertyGroup>
 
   <!-- Common settings, assembly info & package metadata -->

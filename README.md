@@ -3,13 +3,12 @@
 [![Build Status](https://chtoucas.visualstudio.com/Abc.Maybe/_apis/build/status/Test?branchName=master&label=testing)](https://chtoucas.visualstudio.com/Abc.Maybe/_build?definitionId=1&branchName=master)
 [![Coverlet](./__/coverlet.svg)](./__/coverlet.txt)
 
-Abc.Maybe features an Option type for .NET. Supports .NET Standard 1.1 or later.
+Abc.Maybe features an Option type for .NET, supports .NET Standard 1.1 or later.
 
-- [Documentation](doc/README.md)
-- [Usage Guidelines](doc/usage-guidelines.md)
+- [Documentation](doc/README.md) (WIP)
+- [Usage Guidelines](doc/usage-guidelines.md) (WIP)
 - [Changelog](CHANGELOG)
 - [BSD 3-Clause "New" or "Revised" License](LICENSE)
-- [Azure Pipelines](https://chtoucas.visualstudio.com/Abc.Maybe/_build)
 
 ### Objectives/Features
 
@@ -31,4 +30,3 @@ Abc.Maybe features an Option type for .NET. Supports .NET Standard 1.1 or later.
   - [ ] XML comments with code samples.
   - [ ] Quick start.
   - [ ] Provides guidance.
-
