@@ -330,7 +330,7 @@ function Invoke-Pack {
     $args = "-c:Release",
         "/p:ContinuousIntegrationBuild=true",
         ("/p:EnableSourceLink=" + ($enableSourceLink ? "true" : "false")),
-        "/p:SmokeBuild=false",
+        "/p:SlimBuild=false",
         "/p:Retail=true",
         "/p:PackageSuffix=$packageSuffix",
         "/p:BuildNumber=$buildNumber",

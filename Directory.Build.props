@@ -7,16 +7,16 @@
     <ArtifactsRoot>$(RepositoryRoot)__\</ArtifactsRoot>
   </PropertyGroup>
 
-  <!-- Global contexts -->
+  <!-- Global contexts: CI and "slim" -->
   <PropertyGroup>
     <ContinuousIntegrationBuild Condition=" '$(ContinuousIntegrationBuild)' == '' ">false</ContinuousIntegrationBuild>
     <ContinuousIntegrationBuild Condition=" '$(TF_BUILD)' == 'true' ">true</ContinuousIntegrationBuild>
     <ContinuousIntegrationBuild Condition=" '$(GITHUB_ACTIONS)' == 'true' ">true</ContinuousIntegrationBuild>
 
-    <!-- WARNING: inside Visual Studio, "SmokeBuild" = "true" -->
-    <SmokeBuild Condition=" '$(SmokeBuild)' == '' ">false</SmokeBuild>
-    <SmokeBuild Condition=" '$(SMOKE_BUILD)' == 'true' ">true</SmokeBuild>
-    <SmokeBuild Condition=" '$(BuildingInsideVisualStudio)' == 'true' ">true</SmokeBuild>
+    <!-- WARNING: inside Visual Studio, "SlimBuild" = "true" -->
+    <SlimBuild Condition=" '$(SlimBuild)' == '' ">false</SlimBuild>
+    <SlimBuild Condition=" '$(SLIM_BUILD)' == 'true' ">true</SlimBuild>
+    <SlimBuild Condition=" '$(BuildingInsideVisualStudio)' == 'true' ">true</SlimBuild>
   </PropertyGroup>
 
   <!-- Common settings, assembly info & package metadata -->
@@ -35,12 +35,12 @@
     <Product>Abécédaire Library</Product>
     <Copyright>Copyright (c) 2019 Narvalo.Org</Copyright>
 
-    <PackageProjectUrl>https://github.com/chtoucas/Abc.Maybe/</PackageProjectUrl>
-    <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
-    <PackageReleaseNotes>See CHANGELOG in project root.</PackageReleaseNotes>
-
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/chtoucas/Abc.Maybe/</RepositoryUrl>
+
+    <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
+    <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
+    <PackageReleaseNotes>See CHANGELOG in project root.</PackageReleaseNotes>
 
     <VersionPrefix>0.0.1</VersionPrefix>
     <VersionSuffix>DUMMY</VersionSuffix>
@@ -48,16 +48,20 @@
 
   <!-- Warnings & errors -->
   <Choose>
-    <When Condition=" '$(Configuration)' == 'Debug' ">
+    <When Condition=" '$(Configuration)' == 'Release' ">
       <PropertyGroup>
-        <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-        <TreatSpecificWarningsAsErrors />
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <!--
+          CS1591  Missing XML comment for publicly visible type or member 'Type_or_Member'
+        -->
+        <WarningsNotAsErrors>$(WarningsNotAsErrors);CS1591</WarningsNotAsErrors>
       </PropertyGroup>
     </When>
 
     <Otherwise>
       <PropertyGroup>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+        <TreatSpecificWarningsAsErrors />
       </PropertyGroup>
     </Otherwise>
   </Choose>
@@ -70,7 +74,7 @@
   </PropertyGroup>
 
   <Choose>
-    <When Condition=" '$(SmokeBuild)' == 'true' ">
+    <When Condition=" '$(SlimBuild)' == 'true' ">
       <PropertyGroup>
         <LibraryPlatforms>$(DefaultPlatform);netstandard2.0</LibraryPlatforms>
         <TestPlatforms>$(DefaultPlatform)</TestPlatforms>

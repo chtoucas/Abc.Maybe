@@ -1,6 +1,6 @@
 :: Test harness (plain and simple).
 :: Beware, will crash if the packages were not restored before.
-:: > dotnet restore /p:SmokeBuild=true
+:: > dotnet restore /p:SlimBuild=true
 ::
 :: Examples:
 :: > harness /p:DebugType=none
@@ -18,7 +18,7 @@
     --no-restore ^
     -c Release ^
     /p:RunAnalyzers=false ^
-    /p:SmokeBuild=true
+    /p:SlimBuild=true
 
 @endlocal
 @exit /b %ERRORLEVEL%

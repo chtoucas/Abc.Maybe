@@ -110,8 +110,8 @@ Remarks:
   a succesful outcome is not guaranteed, to say the least, it might not even run.
 
 Commonly used properties.
-> make.ps1 [...] /p:SmokeBuild=true             # mimic build inside VS.
-                                                # shortcut: $env:SMOKE_BUILD = 'true'.
+> make.ps1 [...] /p:SlimBuild=true              # mimic build inside VS.
+                                                # shortcut: $env:SLIM_BUILD = 'true'.
 > make.ps1 [...] /p:Retail=true
 > make.ps1 [...] /p:PrintSettings=true          # display settings used to compile each DLL.
                                                 # With the task 'test', one should use at
@@ -247,9 +247,9 @@ try {
     }
 
     # Targets.
-    Write-Debug (sprintf 'SMOKE_BUILD = {0}' $env:SMOKE_BUILD)
+    Write-Debug (sprintf 'SLIM_BUILD = {0}' $env:SLIM_BUILD)
 
-    if ($env:SMOKE_BUILD -eq 'true' -or ($Properties -and $Properties.Contains('/p:SmokeBuild=true'))) {
+    if ($env:SLIM_BUILD -eq 'true' -or ($Properties -and $Properties.Contains('/p:SlimBuild=true'))) {
         Write-Verbose "Execute command in a smoke context."
     }
     else {

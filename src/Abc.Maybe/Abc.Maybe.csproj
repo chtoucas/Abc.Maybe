@@ -10,7 +10,14 @@
 
   <!-- Debug/Release -->
   <Choose>
-    <When Condition=" '$(Configuration)' == 'Debug' ">
+    <When Condition=" '$(Configuration)' == 'Release' ">
+      <PropertyGroup>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <!--<NoWarnCS1591>false</NoWarnCS1591>-->
+      </PropertyGroup>
+    </When>
+
+    <Otherwise>
       <PropertyGroup>
         <!--
           RS0016  Symbol XXX is not part of the declared API
@@ -18,16 +25,6 @@
                   or could not be found
         -->
         <NoWarn>$(NoWarn);RS0016;RS0017</NoWarn>
-      </PropertyGroup>
-    </When>
-
-    <Otherwise>
-      <PropertyGroup>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <!--
-        <WarningsNotAsErrors>$(WarningsNotAsErrors);CS1591</WarningsNotAsErrors>
-        <NoWarnCS1591>false</NoWarnCS1591>
-        -->
       </PropertyGroup>
     </Otherwise>
   </Choose>

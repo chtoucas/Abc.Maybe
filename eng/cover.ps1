@@ -354,10 +354,10 @@ function Invoke-OpenCover {
     $filter = "$filters"
 
     # With OpenCover, we only work with one platform at a time.
-    # Remark: when $platform is empty, we use the default platform (SmokeBuild).
+    # Remark: when $platform is empty, we use the default platform (SlimBuild).
     $args = "-c:$configuration",
         "/p:DebugType=full",
-        "/p:SmokeBuild=true",
+        "/p:SlimBuild=true",
         "/p:RunAnalyzers=false"
     if ($platform)  { $args += "/p:TargetFrameworks=$platform" }
     if ($myVerbose) { $args += "-v:minimal", "/p:PrintSettings=true" }
@@ -497,11 +497,11 @@ try {
                 $targetDir = Join-Path $outDir "html-$Platform"
             } else {
                 # Remark: here we grab any report within $outDir.
-                # There is one case when we shouldn't do that: SMOKE_BUILD = true
-                if ($Env:SMOKE_BUILD -eq "true") {
+                # There is one case when we shouldn't do that: SLIM_BUILD = true
+                if ($Env:SLIM_BUILD -eq "true") {
                     $files = Get-ChildItem $outDir -Filter "$tool.*.xml" -File
                     $count = ($files | Measure-Object).Count
-                    if ($count -ne 1) { warn "SMOKE_BUILD = true. Maybe use -Reset?" }
+                    if ($count -ne 1) { warn "SLIM_BUILD = true. Maybe use -Reset?" }
                 }
                 else {
                     $skipBadges = $false
