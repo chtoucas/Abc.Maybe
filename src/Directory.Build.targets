@@ -39,6 +39,8 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <VisibleInternals>false</VisibleInternals>
 
+    <!-- For Windows-only targets, we use the legacy PDB format, otherwise we
+         stick to the new "portable" format. -->
     <DebugType Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">pdbonly</DebugType>
   </PropertyGroup>
 

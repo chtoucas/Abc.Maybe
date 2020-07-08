@@ -38,11 +38,9 @@
 
   <!-- DebugType -->
   <!--
-    For Windows-only platforms, we use the legacy PDB format, otherwise we stick
-    to the new "portable" format.
     I had trouble with this one, setting "DebugType" in D.B.targets had no
-    effect whatsoever, so I had to initialise it here, but it appears to have
-    been fixed by Microsoft.
+    effect whatsoever, so I had to initialise it here. It appears to have been
+    fixed by Microsoft.
     References
     - https://github.com/Microsoft/msbuild/issues/2754
     - https://github.com/dotnet/core/blob/master/Documentation/diagnostics/portable_pdb.md
