@@ -201,7 +201,7 @@ function Invoke-CoverletMSBuild {
 
     SAY-LOUDLY "`nRunning Coverlet (MSBuild)."
 
-    $args = "--nologo", "-c:$configuration", "/p:RunAnalyzers=false"
+    $args = "--nologo", "-c:$configuration", "/p:DebugType=portable", "/p:RunAnalyzers=false"
     if ($platform)  { $args += "/p:TargetFrameworks=$platform" }
     if ($threshold) { $args += "/p:Threshold=$threshold" }
     if ($noRestore) { $args += "--no-restore" }
@@ -276,7 +276,7 @@ function Invoke-CoverletXPlat {
 
     SAY-LOUDLY "`nRunning Coverlet (XPlat)."
 
-    $args = "--nologo", "-c:$configuration", "/p:RunAnalyzers=false"
+    $args = "--nologo", "-c:$configuration", "/p:DebugType=portable", "/p:RunAnalyzers=false"
     if ($platform)  { $args += "/p:TargetFrameworks=$platform" }
     if ($noRestore) { $args += "--no-restore" }
     if ($myVerbose) { $args += "-v:minimal", "/p:PrintSettings=true" }

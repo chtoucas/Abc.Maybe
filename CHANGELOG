@@ -7,6 +7,7 @@ vNEXT
     - Unless specified otherwise, projects in the folder test now use an exact
       version match when resolving the package Abc.Maybe.
     - New global option vNext to tweak the version numbers locally.
+    - Merge option Retail with the configuration Release.
   * Scripts:
     - eng\pack.ps1: always set ContinuousIntegrationBuild to true, and set vNext
       to true when building a local package.
