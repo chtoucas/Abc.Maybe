@@ -18,11 +18,11 @@ $localNuGetFeed = "$PSScriptRoot\..\..\__\nuget-feed\"
 & dotnet restore $packProject /p:TF_BUILD=true
     || Write-Error "Restore failed."
 
-& dotnet build $packProject --no-restore -c Release /p:Retail=true /p:vNext=true `
+& dotnet build $packProject --no-restore -c Release /p:vNext=true `
     /p:IncludeSourceRevisionInInformationalVersion=true /p:TF_BUILD=true
     || Write-Error "Build failed."
 
-& dotnet pack $packProject --no-build -c Release /p:Retail=true /p:vNext=true `
+& dotnet pack $packProject --no-build -c Release /p:vNext=true `
     /p:PackageSuffix=$packageSuffix /p:RepositoryBranch=master --output $artifactsPath /p:TF_BUILD=true
     || Write-Error "Pack failed."
 

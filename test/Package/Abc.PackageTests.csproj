@@ -10,6 +10,10 @@
     https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/how-to-determine-which-versions-are-installed
   -->
 
+  <PropertyGroup>
+    <VisibleInternals>false</VisibleInternals>
+  </PropertyGroup>
+
   <!-- On non-Windows OSes, we ignore Mono entirely -->
   <Choose>
     <When Condition=" '$(AllKnown)' == 'true' ">
