@@ -331,7 +331,6 @@ function Invoke-Pack {
         "/p:ContinuousIntegrationBuild=true",
         ("/p:EnableSourceLink=" + ($enableSourceLink ? "true" : "false")),
         "/p:SlimBuild=false",
-        "/p:Retail=true",
         "/p:PackageSuffix=$packageSuffix",
         "/p:BuildNumber=$buildNumber",
         "/p:RevisionNumber=$revisionNumber",

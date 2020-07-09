@@ -4,15 +4,12 @@
 
   <!--
     Command-line options (default = disabled, to enable /p:XXX=true):
-    - Retail                Meta-option
-    - HideInternals         Abc.Maybe internals are hidden from Abc.Testing
-                            NB: if Retail = true, HideInternals has no effect
     - NoWarnX               Custom list of NoWarn's (for PS scripts)
                             For instance, NU5105 (warning about SemVer 2.0.0)
     - PrintSettings         Enable target PrintSettingsBeforeCompile?
 
-    Development-only options. To prevent any accident, they are disabled when
-    "Retail" equals "true".
+    Development-only options. To prevent any accident, they are ignored when
+    "Configuration" equals "Release".
     - PatchEquality
     - PlainLinq
 
@@ -23,53 +20,39 @@
   -->
 
   <Import Project="$(MSBuildThisFileDirectory)Retail.props"
-          Condition=" '$(Retail)' == 'true' and '$(IsPackable)' == 'true' " />
+          Condition=" '$(Configuration)' == 'Release' and '$(IsPackable)' == 'true' " />
 
   <PropertyGroup>
-    <VisibleInternals>true</VisibleInternals>
-    <VisibleInternals Condition=" '$(HideInternals)' == 'true' ">false</VisibleInternals>
-
-    <NoWarnCS1591 Condition=" '$(NoWarnCS1591)' == '' ">true</NoWarnCS1591>
-  </PropertyGroup>
-
-  <!-- Retail settings -->
-  <PropertyGroup Condition=" '$(Retail)' == 'true' ">
-    <SignAssembly>true</SignAssembly>
-    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <VisibleInternals>false</VisibleInternals>
-
-    <!-- For Windows-only targets, we use the legacy PDB format, otherwise we
-         stick to the new "portable" format. -->
+    <!-- Debug symbols.
+      For Windows-only targets, we use the legacy PDB format, otherwise we
+      stick to the new format "portable"; we ignore Mono.
+      References:
+      - https://github.com/Microsoft/msbuild/issues/2754
+      - https://github.com/dotnet/core/blob/master/Documentation/diagnostics/portable_pdb.md
+      - https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/debug-compiler-option
+      - https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/making-an-image-easier-to-debug
+    -->
     <DebugType Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">pdbonly</DebugType>
-  </PropertyGroup>
 
-  <!-- Compiler symbols -->
-  <PropertyGroup>
-    <DefineConstants Condition=" '$(SignAssembly)' == 'true' ">$(DefineConstants);SIGNED_ASSEMBLY</DefineConstants>
-    <DefineConstants Condition=" '$(VisibleInternals)' == 'true' ">$(DefineConstants);INTERNALS_VISIBLE_TO</DefineConstants>
-    <DefineConstants Condition=" '$(CheckForOverflowUnderflow)' == 'false' ">$(DefineConstants);UNCHECKED</DefineConstants>
-  </PropertyGroup>
-
-  <!-- Compiler symbols (development-only) -->
-  <PropertyGroup Condition=" '$(Retail)' != 'true' ">
-    <DefineConstants Condition=" '$(PatchEquality)' == 'true' ">$(DefineConstants);PATCH_EQUALITY</DefineConstants>
-    <DefineConstants Condition=" '$(PlainLinq)' == 'true' ">$(DefineConstants);PLAIN_LINQ</DefineConstants>
-  </PropertyGroup>
-
-  <!-- Warnings -->
-  <PropertyGroup>
-    <!--
+    <!-- Warnings.
       CA1034  Nested types should not be visible
       CA1303  Do not pass literals as localized parameters
       CA1707  Identifiers should not contain underscores
       CA2007  Consider calling ConfigureAwait on the awaited task
       CS1591  Missing XML comment for publicly visible type or member 'Type_or_Member'
     -->
+    <NoWarnCS1591 Condition=" '$(NoWarnCS1591)' == '' ">true</NoWarnCS1591>
+
     <NoWarn Condition=" '$(RelaxWarnings)' == 'true' ">$(NoWarn);CA1034;CA1303;CA1707</NoWarn>
     <NoWarn Condition=" '$(RelaxAsyncWarnings)' == 'true' ">$(NoWarn);CA2007</NoWarn>
     <NoWarn Condition=" '$(NoWarnCS1591)' == 'true' ">$(NoWarn);CS1591</NoWarn>
     <NoWarn Condition=" '$(NoWarnX)' != '' ">$(NoWarn);$(NoWarnX)</NoWarn>
+  </PropertyGroup>
+
+  <!-- Compiler symbols (development-only) -->
+  <PropertyGroup Condition=" '$(Configuration)' != 'Release' ">
+    <DefineConstants Condition=" '$(PatchEquality)' == 'true' ">$(DefineConstants);PATCH_EQUALITY</DefineConstants>
+    <DefineConstants Condition=" '$(PlainLinq)' == 'true' ">$(DefineConstants);PLAIN_LINQ</DefineConstants>
   </PropertyGroup>
 
   <!-- Source Link -->
@@ -157,7 +140,6 @@
     <PropertyGroup>
       <_MyMessage>| %24(ApiProfileMoniker)          = "$(ApiProfileMoniker)"</_MyMessage>
       <_MyMessage>$(_MyMessage)%0A| %24(vNext)                      = "$(vNext)"</_MyMessage>
-      <_MyMessage>$(_MyMessage)%0A| %24(Retail)                     = "$(Retail)"</_MyMessage>
       <_MyMessage>$(_MyMessage)%0A| %24(VisibleInternals)           = "$(VisibleInternals)"</_MyMessage>
       <_MyMessage>$(_MyMessage)%0A| %24(SignAssembly)               = "$(SignAssembly)"</_MyMessage>
       <_MyMessage>$(_MyMessage)%0A| %24(ContinuousIntegrationBuild) = "$(ContinuousIntegrationBuild)"</_MyMessage>

@@ -25,7 +25,6 @@
     <IsPackable>false</IsPackable>
 
     <LangVersion>latest</LangVersion>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <Nullable>enable</Nullable>
 
     <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Abc.snk</AssemblyOriginatorKeyFile>
@@ -46,10 +45,15 @@
     <VersionSuffix>DUMMY</VersionSuffix>
   </PropertyGroup>
 
-  <!-- Warnings & errors -->
+  <!-- Debug vs Release -->
   <Choose>
     <When Condition=" '$(Configuration)' == 'Release' ">
       <PropertyGroup>
+        <SignAssembly>true</SignAssembly>
+        <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+
+        <VisibleInternals>false</VisibleInternals>
+
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <!--
           CS1591  Missing XML comment for publicly visible type or member 'Type_or_Member'
@@ -60,6 +64,11 @@
 
     <Otherwise>
       <PropertyGroup>
+        <SignAssembly>false</SignAssembly>
+        <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+
+        <VisibleInternals>true</VisibleInternals>
+
         <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
         <TreatSpecificWarningsAsErrors />
       </PropertyGroup>
@@ -90,7 +99,7 @@
     </Otherwise>
   </Choose>
 
-  <!-- Supported platforms -->
+  <!-- Supported frameworks -->
   <PropertyGroup>
     <!--
       IMPORTANT: do NOT use MSBuild property resolution $() below, the content

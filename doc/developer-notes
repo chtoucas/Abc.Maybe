@@ -245,7 +245,7 @@ Project-specific symbols.
 
 ### Règles à suivre
 
-- toutes les classes sont `sealed` à moins qu'elles soient conçues pour 
+- toutes les classes sont `sealed` à moins qu'elles soient conçues pour
   l'extensibilité;
 - ajouter des annotations _nullable_ si nécessaire;
 - tagger toute utilisation de l'opérateur "damnit" ou "null-forgiving" (!) avec
@@ -315,7 +315,7 @@ Intégration continue
 --------------------
 
 1. (GitHub) Smoke tests on Windows, Linux and MacOS.
-   Settings: SmokeBuild=true.
+   Settings: SlimBuild=true.
    Configuration: Debug.
    Tasks: build then test the solution.
    Artifacts: none.
@@ -327,14 +327,12 @@ Intégration continue
    Artifacts: Code Coverage.
 
 3. (AZP) Packing then testing on Windows, Linux and MacOS.
-   Settings: Retail=true.
    Configuration: Release for packing, Debug for testing.
    Tasks: create a package then test it.
    Artifacts: NuGet packages.
 
 4. (AZP) Extended build on Windows. Not automatically run.
-   Settings: Retail=true.
-   Configuration: Debug.
+   Configuration: Release.
    Tasks: build the solution for an extended set of frameworks.
    Artifacts: none.
 

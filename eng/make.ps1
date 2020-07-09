@@ -110,26 +110,26 @@ Remarks:
   a succesful outcome is not guaranteed, to say the least, it might not even run.
 
 Commonly used properties.
-> make.ps1 [...] /p:SlimBuild=true              # mimic build inside VS.
+> make.ps1 [...] /p:SlimBuild=true              # mimic building inside VS.
                                                 # shortcut: $env:SLIM_BUILD = 'true'.
-> make.ps1 [...] /p:Retail=true
 > make.ps1 [...] /p:PrintSettings=true          # display settings used to compile each DLL.
                                                 # With the task 'test', one should use at
                                                 # least "-Verbosity=minimal".
 > make.ps1 [...] /p:RunAnalyzers=false          # turn off source code analysis.
 
 Misc properties.
-> make.ps1 [...] /p:vNext=true
-> make.ps1 [...] /p:HideInternals=true
-> make.ps1 [...] /p:PatchEquality=true
+> make.ps1 [...] /p:vNext=true                  # Release-only
+> make.ps1 [...] /p:VisibleInternals=true       # Default = false for Release, true othewise
+> make.ps1 [...] /p:PatchEquality=true          # Debug-only
+> make.ps1 [...] /p:PlainLinq=true              # Debug-only
 
 Example: build then test.
 > make.ps1
 > make.ps1 test -NoBuild -Trx ..\..\..\__\xunit.trx
 
 Azure tasks.
-> make.ps1 restore -X -NoStandard /p:Retail=true
-> make.ps1 build   -X -NoStandard /p:Retail=true -NoRestore
+> make.ps1 restore -c Release -X -NoStandard
+> make.ps1 build   -c Release -X -NoStandard -NoRestore
 Remark: to truely mimic an Azure task, one should also add '/p:TF_BUILD=true'
 (implicitly set on an Azure server).
 

@@ -4,11 +4,12 @@
     <TargetFrameworks>$(LibraryPlatforms)</TargetFrameworks>
     <IsPackable>true</IsPackable>
 
-    <!-- Only used to ease moving code from here to Sketches and vice versa -->
+    <!-- Only defined in this project to ease moving code from here to Sketches
+         and vice versa -->
     <DefineConstants>$(DefineConstants);VISIBLE_INTERNALS</DefineConstants>
   </PropertyGroup>
 
-  <!-- Debug/Release -->
+  <!-- Debug vs Release -->
   <Choose>
     <When Condition=" '$(Configuration)' == 'Release' ">
       <PropertyGroup>
@@ -35,20 +36,4 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
-  <!-- DebugType -->
-  <!--
-    I had trouble with this one, setting "DebugType" in D.B.targets had no
-    effect whatsoever, so I had to initialise it here. It appears to have been
-    fixed by Microsoft.
-    References
-    - https://github.com/Microsoft/msbuild/issues/2754
-    - https://github.com/dotnet/core/blob/master/Documentation/diagnostics/portable_pdb.md
-    - https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/debug-compiler-option
-    - https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/making-an-image-easier-to-debug
-    Below, we cannot use "TargetFrameworkIdentifier", it has not yet been set.
-  <PropertyGroup Condition=" '$(Retail)' == 'true' ">
-    <DebugType Condition=" $(TargetFramework.StartsWith('net4')) ">pdbonly</DebugType>
-  </PropertyGroup>
-  -->
 </Project>
