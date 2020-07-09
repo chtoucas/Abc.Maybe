@@ -52,6 +52,7 @@
         <SignAssembly>true</SignAssembly>
         <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
 
+        <!-- Local setting that only changes the behaviour of Abc.Testing -->
         <VisibleInternals>false</VisibleInternals>
 
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
