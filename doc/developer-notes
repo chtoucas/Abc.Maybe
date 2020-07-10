@@ -226,22 +226,23 @@ References
 
 ### Symboles de compilation
 
-In "D.B.targets".
+Dans "D.B.targets".
+- CONTRACTS_FULL (standard symbol)
+- SIGNED_ASSEMBLY
+- UNCHECKED
+- INTERNALS_VISIBLE_TO
 - NETSTANDARD1_x
 - NETCOREAPP2_x
 - API_PROFILE_21
-- CONTRACTS_FULL (standard symbol)
 
-In "src\D.B.targets".
-- SIGNED_ASSEMBLY
-- INTERNALS_VISIBLE_TO
-- UNCHECKED
+Dans "src\D.B.targets
 - PATCH_EQUALITY
+- PLAIN_LINQ
 
-Project-specific symbols.
-- VISIBLE_INTERNALS         in Abc.Maybe
-- USE_ATTRS_FROM_ABC_MAYBE  in Abc.Testing
-- BENCHMARK_HARNESS         in Abc.Performance.Tests
+Au niveau des projets:
+- VISIBLE_INTERNALS         pour Abc.Maybe
+- USE_ATTRS_FROM_ABC_MAYBE  pour Abc.Testing
+- BENCHMARK_HARNESS         pour Abc.Performance.Tests
 
 ### Règles à suivre
 

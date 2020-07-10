@@ -22,19 +22,9 @@
   <Import Project="$(MSBuildThisFileDirectory)Retail.props"
           Condition=" '$(Configuration)' == 'Release' and '$(IsPackable)' == 'true' " />
 
+  <!-- Warnings -->
   <PropertyGroup>
-    <!-- Debug symbols.
-      For Windows-only targets, we use the legacy PDB format, otherwise we
-      stick to the new format "portable"; we ignore Mono.
-      References:
-      - https://github.com/Microsoft/msbuild/issues/2754
-      - https://github.com/dotnet/core/blob/master/Documentation/diagnostics/portable_pdb.md
-      - https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/debug-compiler-option
-      - https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/making-an-image-easier-to-debug
-    -->
-    <DebugType Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">pdbonly</DebugType>
-
-    <!-- Warnings.
+    <!--
       CA1034  Nested types should not be visible
       CA1303  Do not pass literals as localized parameters
       CA1707  Identifiers should not contain underscores

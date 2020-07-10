@@ -2,9 +2,21 @@
 
   <PropertyGroup>
     <AssemblyTitle>$(AssemblyName) [$(TargetFramework)]</AssemblyTitle>
+
+    <!-- Debug symbols.
+      For Windows-only targets, we use the legacy PDB format, otherwise we
+      stick to the new format "portable"; we ignore Mono.
+      Beware, for Coverlet, one should force DebugType to portable.
+      References:
+      - https://github.com/Microsoft/msbuild/issues/2754
+      - https://github.com/dotnet/core/blob/master/Documentation/diagnostics/portable_pdb.md
+      - https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/debug-compiler-option
+      - https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/making-an-image-easier-to-debug
+    -->
+    <DebugType Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">pdbonly</DebugType>
   </PropertyGroup>
 
-  <!-- API profiles -->
+    <!-- API profiles -->
   <PropertyGroup>
     <!-- See "Supported Platforms" in D.B.props -->
     <ApiProfileMoniker>netstandard2.0</ApiProfileMoniker>
