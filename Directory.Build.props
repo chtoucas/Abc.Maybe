@@ -55,10 +55,8 @@
         <!-- Local setting that only changes the behaviour of Abc.Testing -->
         <VisibleInternals>false</VisibleInternals>
 
+        <!-- All warnings are turned to errors, except for CS1591 (XML comments) -->
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <!--
-          CS1591  Missing XML comment for publicly visible type or member 'Type_or_Member'
-        -->
         <WarningsNotAsErrors>$(WarningsNotAsErrors);CS1591</WarningsNotAsErrors>
       </PropertyGroup>
     </When>

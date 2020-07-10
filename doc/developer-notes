@@ -322,7 +322,6 @@ Intégration continue
    Artifacts: none.
 
 2. (AZP) Testing + Code Coverage on Windows.
-   Settings: default.
    Configuration: Debug.
    Tasks: build then test the solution.
    Artifacts: Code Coverage.

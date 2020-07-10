@@ -14,7 +14,7 @@
     <When Condition=" '$(Configuration)' == 'Release' ">
       <PropertyGroup>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <!--<NoWarnCS1591>false</NoWarnCS1591>-->
+        <NoWarn>$(NoWarn);CS1591</NoWarn>
       </PropertyGroup>
     </When>
 

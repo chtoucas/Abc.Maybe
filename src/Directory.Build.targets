@@ -4,40 +4,16 @@
 
   <!--
     Command-line options (default = disabled, to enable /p:XXX=true):
-    - NoWarnX               Custom list of NoWarn's (for PS scripts)
-                            For instance, NU5105 (warning about SemVer 2.0.0)
-    - PrintSettings         Enable target PrintSettingsBeforeCompile?
+    - PrintSettings   Enable target PrintSettingsBeforeCompile?
 
     Development-only options. To prevent any accident, they are ignored when
     "Configuration" equals "Release".
     - PatchEquality
     - PlainLinq
-
-    Project configuration:
-    - NoWarnCS1591          default = true
-    - RelaxWarnings         default = false
-    - RelaxAsyncWarnings    default = false
   -->
 
   <Import Project="$(MSBuildThisFileDirectory)Retail.props"
           Condition=" '$(Configuration)' == 'Release' and '$(IsPackable)' == 'true' " />
-
-  <!-- Warnings -->
-  <PropertyGroup>
-    <!--
-      CA1034  Nested types should not be visible
-      CA1303  Do not pass literals as localized parameters
-      CA1707  Identifiers should not contain underscores
-      CA2007  Consider calling ConfigureAwait on the awaited task
-      CS1591  Missing XML comment for publicly visible type or member 'Type_or_Member'
-    -->
-    <NoWarnCS1591 Condition=" '$(NoWarnCS1591)' == '' ">true</NoWarnCS1591>
-
-    <NoWarn Condition=" '$(RelaxWarnings)' == 'true' ">$(NoWarn);CA1034;CA1303;CA1707</NoWarn>
-    <NoWarn Condition=" '$(RelaxAsyncWarnings)' == 'true' ">$(NoWarn);CA2007</NoWarn>
-    <NoWarn Condition=" '$(NoWarnCS1591)' == 'true' ">$(NoWarn);CS1591</NoWarn>
-    <NoWarn Condition=" '$(NoWarnX)' != '' ">$(NoWarn);$(NoWarnX)</NoWarn>
-  </PropertyGroup>
 
   <!-- Compiler symbols (development-only) -->
   <PropertyGroup Condition=" '$(Configuration)' != 'Release' ">

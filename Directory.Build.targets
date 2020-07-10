@@ -1,5 +1,7 @@
 <Project>
 
+  <!-- Common settings.
+       Project configuration: RelaxCAWarnings (default = false) -->
   <PropertyGroup>
     <AssemblyTitle>$(AssemblyName) [$(TargetFramework)]</AssemblyTitle>
 
@@ -14,6 +16,14 @@
       - https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/making-an-image-easier-to-debug
     -->
     <DebugType Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">pdbonly</DebugType>
+
+    <!-- Warnings.
+      CA1034  Nested types should not be visible (Design)
+      CA1303  Do not pass literals as localized parameters (Globalization)
+      CA1707  Identifiers should not contain underscores (Naming)
+      CA2007  Consider calling ConfigureAwait on the awaited task (Reliability)
+    -->
+    <NoWarn Condition=" '$(RelaxCAWarnings)' == 'true' ">$(NoWarn);CA1034;CA1303;CA1707;CA2007</NoWarn>
   </PropertyGroup>
 
     <!-- API profiles -->

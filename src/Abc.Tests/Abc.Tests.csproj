@@ -3,12 +3,11 @@
   <PropertyGroup>
     <TargetFrameworks>$(TestPlatforms)</TargetFrameworks>
 
-    <!--
+    <!-- Warnings.
       IDE0002   Simplify Member Access
       xUnit1004 Test methods should not be skipped
     -->
-    <RelaxWarnings>true</RelaxWarnings>
-    <RelaxAsyncWarnings>true</RelaxAsyncWarnings>
+    <RelaxCAWarnings>true</RelaxCAWarnings>
     <NoWarn>$(NoWarn);IDE0002;xUnit1004</NoWarn>
   </PropertyGroup>
 

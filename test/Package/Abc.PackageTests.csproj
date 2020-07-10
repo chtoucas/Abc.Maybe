@@ -12,6 +12,7 @@
 
   <PropertyGroup>
     <VisibleInternals>false</VisibleInternals>
+    <RelaxCAWarnings>true</RelaxCAWarnings>
   </PropertyGroup>
 
   <!-- On non-Windows OSes, we ignore Mono entirely -->
