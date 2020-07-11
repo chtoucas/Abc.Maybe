@@ -8,7 +8,6 @@ Code
 - LINQ: optimize, more. "Monadic" LINQ. Output Maybe<IEnumerable<T>> and LINQ ops.
 - Async Enumerable.
 - Serialization (XML, JSON).
-- Localise error messages (ExceptionFactory)?
 - FIXME, TODO and REVIEW within the code.
 - PURE_MAYBE?
 

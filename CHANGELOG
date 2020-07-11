@@ -1,33 +1,38 @@
-Changelog for Abc.
+Changelog for Abc.Maybe.
 
 vNEXT
 
   Internal changes.
-  * Project settings:
-    - Unless specified otherwise, projects in the folder test now use an exact
-      version match when resolving the package Abc.Maybe.
-    - New global option vNext to tweak the version numbers locally.
-    - Merge option Retail with the configuration Release.
+  * Settings:
+    - Projects in the folder "test" now use an exact version match when
+      resolving the package Abc.Maybe; see `AbcPackageRange` in test\D.B.targets.
+    - New global option `vNext` to tweak the version numbers __locally__; see
+      src\Retails.props.
+    - Merge option `Retail` with the configuration Release.
+    - When targetting .NET Framework, always set `DebugType` to "pdbonly"; see
+      D.B.targets. This was previously only the case for projects in the folder
+      "src". Beware, for Coverlet to work properly, one should override this
+      behaviour from the command-line by setting `DebugType` to "portable".
   * Scripts:
-    - eng\pack.ps1: always set ContinuousIntegrationBuild to true, and set vNext
-      to true when building a local package.
+    - pack.ps1: always set `ContinuousIntegrationBuild` to "true", and set
+      `vNext` to "true" when building a local package.
 
 2020-06-16, version 1.0.2
 
   Visible changes.
-  * Remove net452, replaced by netstandard1.1 (should happen automatically).
+  * Remove "net452", replaced by "netstandard1.1" (should happen automatically).
 
   Internal changes.
   * Set up GitHub actions and Azure Pipelines. The main outcome is that the
     tests now execute on Windows, Linux and MacOS.
-  * Project settings:
-    - Always enable coverlet.collector and only reference coverlet.msbuild
-      when explicitly requested.
-    - When enabled, Source Link now processes all projects in the folder src.
+  * Settings:
+    - Always enable "coverlet.collector" and only reference "coverlet.msbuild"
+      when explicitly requested; see src\Abc.Tests\Abc.Tests.csproj.
+    - When enabled, Source Link now processes all projects in the folder "src".
     - Tweak package and platform selections for projects src\Abc.Tests and
-      test\Package (see src\Abc.Tests\D.B.targets).
+      test\Package; see src\Abc.Tests\PackageReferences.targets.
   * Scripts:
-    - eng\harness.cmd: new script to quickly run the test suite.
+    - harness.cmd: new script to quickly run the test suite.
   * Upgraded dependencies:
     - xunit.runner.visualstudio 2.4.1 -> 2.4.2.
     - dotnet-reportgenerator-globaltool 4.5.8 -> 4.6.1.
@@ -35,15 +40,15 @@ vNEXT
 2020-05-31, version 1.0.1
 
   Visible changes.
-  * For older Windows-only platforms, use pdbonly instead of portable.
+  * For older Windows-only platforms, use "pdbonly" instead of "portable".
 
   Internal changes.
   * Scripts:
-    - eng\asm.ps1: new script to retrieve informations about an assembly.
-    - eng\cover.ps1: when using Coverlet, include the platform name in the
-      output filename.
-    - eng\freeze-api.ps1: handle the annotation "#nullable enable".
-    - eng\pack.ps1: disable Source Link when there are uncommited changes.
+    - asm.ps1: new script to retrieve informations about an assembly.
+    - cover.ps1: when using Coverlet, include the platform name in the output
+      filename.
+    - freeze-api.ps1: handle the annotation `#nullable enable`.
+    - pack.ps1: disable Source Link when there are uncommited changes.
       Remove the timestamp from the informational version.
   * Upgraded dependencies:
     - coverlet.msbuild 2.8.1 -> 2.9.0.

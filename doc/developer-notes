@@ -50,18 +50,22 @@ Références:
 ### Documenter les changements
 
 Sections.
-Changes)  Binary breaking changes MUST be prefixed w/ [BREAKING] and appear first.
-          Removed features MUST be prefixed w/ [REMOVED] and appear just after.
-          NB: any item appearing here obviously introduces a breaking change.
-          Obsolete methods MUST be prefixed w/ [OBSOLETE].
-Fixes)    For any bug fixes.
-Security) In case of vulnerabilities.
-Internal changes) For changes that are of no interest outside the project.
+  Changes:
+    Binary breaking changes MUST be prefixed w/ [BREAKING] and appear first.
+    Removed features MUST be prefixed w/ [REMOVED] and appear just after.
+    NB: any item appearing here obviously introduces a breaking change.
+    Obsolete methods MUST be prefixed w/ [OBSOLETE].
+  Fixes:
+    For any bug fixes.
+  Security:
+    In case of vulnerabilities.
+  Internal changes:
+    For changes that are of no interest outside the project.
 
 Production releases should have a title and highlight the relevant changes made
 during the pre-release phase.
 
-References.
+Références:
 - https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/breaking-changes
 - https://github.com/dotnet/runtime/blob/master/docs/coding-guidelines/breaking-change-rules.md
 - https://stackoverflow.com/questions/1456785/a-definitive-guide-to-api-breaking-changes-in-net
@@ -100,8 +104,24 @@ Postambule les paquets finaux :
      > git push origin vX.Y.Z
   b. Mettre à jour la page "Releases" de GitHub.
 
-Développement
--------------
+Configurations
+--------------
+
+### Options MSBuild
+
+Options standards:
+- ContinuousIntegrationBuild
+- Configuration
+- VersionPrefix
+- VersionSuffix
+
+Options locales:
+- SlimBuild
+- PrintSettings
+
+Development-only options (Configuration = Release).
+- PatchEquality
+- PlainLinq
 
 ### Multi-targeting
 
@@ -208,7 +228,7 @@ If there are, for say, things we could do w/ .NET Standard 2.1 but not w/
   I could have added a dependency on System.ValueTuple (NuGet), but I prefer
   not to. I really do not want to add any dependency to our NuGet package.
 
-References
+Références:
 - .NET Standard versions.
   https://dotnet.microsoft.com/platform/dotnet-standard#versions
   https://github.com/dotnet/standard/blob/master/docs/versions.md
@@ -224,14 +244,27 @@ References
   https://docs.microsoft.com/en-us/dotnet/core/tutorials/libraries
   https://docs.microsoft.com/en-us/dotnet/core/packages
 
+### Symboles de debuggage
+
+For Windows-only targets, we use the legacy PDB format, otherwise we
+stick to the new format "portable"; we ignore Mono.
+Beware, for Coverlet, one should force DebugType to portable.
+
+Références:
+- https://github.com/Microsoft/msbuild/issues/2754
+- https://github.com/dotnet/core/blob/master/Documentation/diagnostics/portable_pdb.md
+- https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/debug-compiler-option
+- https://docs.microsoft.com/en-us/dotnet/framework/debug-trace-profile/making-an-image-easier-to-debug
+
 ### Symboles de compilation
 
 Dans "D.B.targets".
-- CONTRACTS_FULL (standard symbol)
+- CONTRACTS_FULL (standard symbol), necessary to enable the attribute Pure.
 - SIGNED_ASSEMBLY
 - UNCHECKED
 - INTERNALS_VISIBLE_TO
 - NETSTANDARD1_x
+  In this project, NETSTANDARD1_x actually means netstandard1.x where x >= 1.
 - NETCOREAPP2_x
 - API_PROFILE_21
 
@@ -244,7 +277,8 @@ Au niveau des projets:
 - USE_ATTRS_FROM_ABC_MAYBE  pour Abc.Testing
 - BENCHMARK_HARNESS         pour Abc.Performance.Tests
 
-### Règles à suivre
+Règles à suivre
+---------------
 
 - toutes les classes sont `sealed` à moins qu'elles soient conçues pour
   l'extensibilité;
@@ -307,7 +341,12 @@ One thing that is definitely non-deterministic is the attribute
 are time-dependent, but this is entirely done prior to compilation, and therefore
 can be easily reproduced afterwards.
 
-References.
+Fichier de réponse MSBuild.
+- https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2019#add-arguments-to-command-line-msbuild-invocations-for-your-project
+- https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-response-files?view=vs-2019
+- https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-command-line-reference?view=vs-2019
+
+Références:
 - https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink
 - https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/deterministic-compiler-option
 - https://blog.paranoidcoding.com/2016/04/05/deterministic-builds-in-roslyn.html

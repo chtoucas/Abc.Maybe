@@ -6,7 +6,7 @@
     <ContinuousIntegrationBuild Condition=" '$(TF_BUILD)' == 'true' ">true</ContinuousIntegrationBuild>
     <ContinuousIntegrationBuild Condition=" '$(GITHUB_ACTIONS)' == 'true' ">true</ContinuousIntegrationBuild>
 
-    <!-- WARNING: inside Visual Studio, "SlimBuild" = "true" -->
+    <!-- WARNING: inside Visual Studio, SlimBuild is set to true -->
     <SlimBuild Condition=" '$(SlimBuild)' == '' ">false</SlimBuild>
     <SlimBuild Condition=" '$(SLIM_BUILD)' == 'true' ">true</SlimBuild>
     <SlimBuild Condition=" '$(BuildingInsideVisualStudio)' == 'true' ">true</SlimBuild>
@@ -19,7 +19,7 @@
     <ArtifactsRoot>$(RepositoryRoot)__\</ArtifactsRoot>
   </PropertyGroup>
 
-  <!-- Common settings, assembly info & package metadata -->
+  <!-- Common settings -->
   <PropertyGroup>
     <RootNamespace>Abc</RootNamespace>
     <IsPackable>false</IsPackable>
@@ -45,7 +45,7 @@
     <VersionSuffix>DUMMY</VersionSuffix>
   </PropertyGroup>
 
-  <!-- Debug vs Release -->
+  <!-- Release versus the other configurations (Debug) -->
   <Choose>
     <When Condition=" '$(Configuration)' == 'Release' ">
       <PropertyGroup>
@@ -55,7 +55,7 @@
         <!-- Local setting that only changes the behaviour of Abc.Testing -->
         <VisibleInternals>false</VisibleInternals>
 
-        <!-- All warnings are turned to errors, except for CS1591 (XML comments) -->
+        <!-- All warnings are turned into errors, except for CS1591 (XML comments) -->
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <WarningsNotAsErrors>$(WarningsNotAsErrors);CS1591</WarningsNotAsErrors>
       </PropertyGroup>
@@ -105,7 +105,7 @@
       must be in a form understandable to PowerShell.
       One might have to filter these lists if the underlying OS does not support
       some targets (see "test\Package\Abc.PackageTests.csproj").
-      These properties are NOT used by the projects located in the directory "src".
+      These properties are NOT used by any project located in the directory "src".
     -->
 
     <MinCorePlatforms>netcoreapp3.1;netcoreapp2.1</MinCorePlatforms>
