@@ -7,7 +7,7 @@
     - PrintSettings   Enable target PrintSettingsBeforeCompile?
 
     Development-only options. To prevent any accident, they are ignored when
-    "Configuration" equals "Release".
+    Configuration is set to Release.
     - PatchEquality
     - PlainLinq
   -->
@@ -50,7 +50,7 @@
       then the PDB files still use local paths for the generated files.
       IMPORTANT: this is a rather unusual situation. It should only happen when
       using a build script and certainly not when using VS, otherwise the debugger
-      won't be able to locate the source files.
+      wouldn't be able to locate the source files.
       This is not necessary when ContinuousIntegrationBuild = true. Indeed,
       Deterministic = true (default) and ContinuousIntegrationBuild = true
       imply DeterministicSourcePaths = true; see
@@ -83,10 +83,7 @@
           DependsOnTargets="InitializeSourceRootMappedPaths"
           Returns="@(_LocalTopLevelSourceRoot)"
           Condition=" '$(DeterministicSourcePaths)' == 'true' ">
-    <!--
-      Partial fix for Coverlet + SourceLink + Determinism.
-      Fails if UseSourceLink = true and ContinuousIntegrationBuild = true.
-    -->
+    <!-- Fix for Coverlet + SourceLink + Determinism when ContinuousIntegrationBuild = true -->
     <ItemGroup>
       <_LocalTopLevelSourceRoot Include="@(SourceRoot)" Condition=" '%(SourceRoot.NestedRoot)' == '' "/>
     </ItemGroup>
