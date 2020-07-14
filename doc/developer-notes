@@ -78,9 +78,11 @@ Les manipulations ci-dessous doivent être effectuées sous Windows, sinon
 Maintenant que l'intégration continue est en place, les étapes 3 et 4 sont
 optionnelles.
 
+Bien entendu, tout ce qui suit doit se faire dans la branche "master".
+
 Préambule à la création d'un paquet beta ou final :
-  a. Avant toute chose, on prendra soin de vérifier qu'il ne reste pas de FIXMEs
-     et on parcourera les TODOs et les REVIEWs.
+  a. Avant toutes choses, on prendra soin de vérifier qu'il ne reste pas de
+     FIXMEs et on parcourera les TODOs et les REVIEWs.
   b. Exécuter le script "eng\freeze-api.ps1", puis vérifier le résultat.
 
 Étapes :
