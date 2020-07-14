@@ -52,7 +52,7 @@
         <SignAssembly>true</SignAssembly>
         <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
 
-        <!-- Local setting that only affects Abc.Testing -->
+        <!-- Local setting that allows Abc.Testing to access the internals of Abc.Maybe -->
         <VisibleInternals>false</VisibleInternals>
 
         <!-- All warnings are turned into errors, except for CS1591 (XML comments) -->

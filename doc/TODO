@@ -1,6 +1,12 @@
 TODO
 ====
 
+External issues:
+- (Coverlet) Deterministic build (see src\D.B.targets)
+- (Coverlet) ExcludeFromCodeCoverage does not get inherited by the members of a
+  class.
+- (VS) Task list.
+
 Code
 ----
 
@@ -9,7 +15,6 @@ Code
 - Async Enumerable.
 - Serialization (XML, JSON).
 - FIXME, TODO and REVIEW within the code.
-- PURE_MAYBE?
 
 Tools / Build System
 --------------------
