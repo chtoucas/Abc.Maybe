@@ -1,4 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project>
+
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
 
   <PropertyGroup>
     <TargetFrameworks>$(LibraryPlatforms)</TargetFrameworks>
@@ -36,4 +38,25 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
+
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+
+  <!--
+    After SDK targets.
+  -->
+
+  <PropertyGroup Condition=" '$(PackageSuffix)' == '' ">
+    <PackageReleaseNotes>
+      <![CDATA[
+$(RepositoryUrl)releases/tag/v$(PackageVersion)
+]]>
+    </PackageReleaseNotes>
+  </PropertyGroup>
+
+  <!-- Public API -->
+  <ItemGroup>
+    <AdditionalFiles Include="PublicAPI\$(ApiProfileMoniker)\PublicAPI.Shipped.txt" />
+    <AdditionalFiles Include="PublicAPI\$(ApiProfileMoniker)\PublicAPI.Unshipped.txt" />
+  </ItemGroup>
+
 </Project>

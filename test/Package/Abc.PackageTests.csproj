@@ -10,12 +10,7 @@
     https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/how-to-determine-which-versions-are-installed
   -->
 
-  <PropertyGroup>
-    <VisibleInternals>false</VisibleInternals>
-    <RelaxCAWarnings>true</RelaxCAWarnings>
-  </PropertyGroup>
-
-  <!-- On non-Windows OSes, we ignore Mono entirely -->
+  <!-- TargetFrameworks. On non-Windows OSes, we ignore Mono entirely -->
   <Choose>
     <When Condition=" '$(AllKnown)' == 'true' ">
       <PropertyGroup>
@@ -39,5 +34,41 @@
   <PropertyGroup Condition=" '$(NotSupported)' == 'true' ">
     <TargetFrameworks>$(TargetFrameworks);$(NotSupportedTestPlatforms)</TargetFrameworks>
   </PropertyGroup>
+
+  <!-- Common settings -->
+  <PropertyGroup>
+    <DebugType>none</DebugType>
+
+    <VisibleInternals>false</VisibleInternals>
+    <RelaxCAWarnings>true</RelaxCAWarnings>
+
+    <DefineConstants Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">$(DefineConstants);SILENT_SKIP</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="xunit.runner.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <FilesToExclude Include="$(SourceRoot)**\AssemblyInfo.cs" />
+    <FilesToExclude Include="$(SourceRoot)**\bin\**\*.*" />
+    <FilesToExclude Include="$(SourceRoot)**\obj\**\*.*" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(SourceRoot)Abc.Sketches\**\*.cs" Exclude="@(FilesToExclude)" />
+    <Compile Include="$(SourceRoot)Abc.Testing\**\*.cs" Exclude="@(FilesToExclude)" />
+    <Compile Include="$(SourceRoot)Abc.Tests\**\*.cs" Exclude="@(FilesToExclude)" />
+  </ItemGroup>
+
+  <Import Project="$(SourceRoot)Abc.Tests\PackageReferences.targets" />
+
+  <!-- Packages referenced by Abc.Testing and not __explicitly__ listed in
+       PackageReferences.targets -->
+  <ItemGroup>
+    <PackageReference Include="xunit.assert" Version="2.4.1" />
+    <PackageReference Include="xunit.extensibility.core" Version="2.4.1" />
+  </ItemGroup>
 
 </Project>

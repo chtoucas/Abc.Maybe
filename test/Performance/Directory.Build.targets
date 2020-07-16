@@ -1,21 +1,21 @@
 <Project>
 
   <!--
-    Command-line option: "Live", default value:
-    - Within VS, Live = true, ie use the project Abc.Maybe.
-    - Outside VS, Live = false, ie use the package Abc.Maybe.
+    Command-line option: "UseAbcProject", default value:
+    - Within VS, UseAbcProject = true, ie use the project Abc.Maybe.
+    - Outside VS, UseAbcProject = false, ie use the package Abc.Maybe.
   -->
   <PropertyGroup>
-    <Live>false</Live>
-    <Live Condition=" '$(BuildingInsideVisualStudio)' == 'true' ">true</Live>
+    <UseAbcProject>false</UseAbcProject>
+    <UseAbcProject Condition=" '$(BuildingInsideVisualStudio)' == 'true' ">true</UseAbcProject>
 
-    <ParentDBTargets Condition=" '$(Live)' == 'true' ">..\..\Directory.Build.targets</ParentDBTargets>
-    <ParentDBTargets Condition=" '$(Live)' != 'true' ">..\Directory.Build.targets</ParentDBTargets>
+    <ParentDBTargets Condition=" '$(UseAbcProject)' == 'true' ">..\..\Directory.Build.targets</ParentDBTargets>
+    <ParentDBTargets Condition=" '$(UseAbcProject)' != 'true' ">..\Directory.Build.targets</ParentDBTargets>
   </PropertyGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)$(ParentDBTargets)" />
 
-  <ItemGroup Condition=" '$(Live)' == 'true' ">
+  <ItemGroup Condition=" '$(UseAbcProject)' == 'true' ">
     <ProjectReference Include="$(SourceRoot)Abc.Maybe\Abc.Maybe.csproj" />
   </ItemGroup>
 
