@@ -7,8 +7,8 @@
     <IsPackable>true</IsPackable>
 
     <!-- Only defined in this project to ease moving code from here to Sketches
-         and vice versa -->
-    <DefineConstants>$(DefineConstants);VISIBLE_INTERNALS</DefineConstants>
+         and vice versa. -->
+    <DefineConstants>$(DefineConstants);WITHIN_ABC_MAYBE</DefineConstants>
   </PropertyGroup>
 
   <!-- Debug vs Release -->
@@ -42,7 +42,7 @@
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
 
   <!--
-    After SDK targets.
+    After D.B.targets.
   -->
 
   <PropertyGroup Condition=" '$(PackageSuffix)' == '' ">

@@ -17,7 +17,7 @@ namespace Abc
         {
             True(maybe.IsNone, "The maybe should be empty.");
 
-#if INTERNALS_VISIBLE_TO
+#if VISIBLE_INTERNALS
             False(maybe.IsSome, "The maybe should be empty.");
 #if !DEBUG
             var x = default(T);
@@ -44,7 +44,7 @@ namespace Abc
             // IsNone rather than IsSome because it is the public property.
             False(maybe.IsNone, "The maybe should not be empty.");
 
-#if INTERNALS_VISIBLE_TO
+#if VISIBLE_INTERNALS
             True(maybe.IsSome, "The maybe should not be empty.");
 #if !DEBUG
             if (default(T) is null)
@@ -67,7 +67,7 @@ namespace Abc
         {
             False(maybe.IsNone, "The maybe should not be empty.");
 
-#if INTERNALS_VISIBLE_TO
+#if VISIBLE_INTERNALS
             True(maybe.IsSome, "The maybe should not be empty.");
             // BONSANG! When IsSome is true, Value is NOT null.
             Equal(expected, maybe.Value!);
@@ -100,7 +100,7 @@ namespace Abc
         {
             False(maybe.IsNone, "The maybe should not be empty.");
 
-#if INTERNALS_VISIBLE_TO
+#if VISIBLE_INTERNALS
             True(maybe.IsSome, "The maybe should not be empty.");
             // BONSANG! When IsSome is true, Value is NOT null.
             Equal(expected, maybe.Value!);
@@ -125,7 +125,7 @@ namespace Abc
         /// boolean context.
         /// </summary>
         public static void LogicalTrue<T>(Maybe<T> maybe)
-#if INTERNALS_VISIBLE_TO
+#if VISIBLE_INTERNALS
             => True(maybe.ToBoolean(), "The maybe should evaluate to true.");
 #else
             => False(maybe.IsNone, "The maybe should evaluate to true.");
@@ -136,7 +136,7 @@ namespace Abc
         /// boolean context.
         /// </summary>
         public static void LogicalFalse<T>(Maybe<T> maybe)
-#if INTERNALS_VISIBLE_TO
+#if VISIBLE_INTERNALS
             => False(maybe.ToBoolean(), "The maybe should evaluate to false.");
 #else
             => True(maybe.IsNone, "The maybe should evaluate to false.");

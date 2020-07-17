@@ -91,7 +91,7 @@ namespace Abc
         // Code size = 56 bytes, way to high (> 32 bytes).
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals(Maybe<T> x, Maybe<T> y) =>
-#if VISIBLE_INTERNALS
+#if WITHIN_ABC_MAYBE
             // BONSANG! When IsSome is true, Value is NOT null.
             x.IsSome ? y.IsSome && EqualityComparer<T>.Default.Equals(x.Value!, y.Value!)
                 : !y.IsSome;
@@ -106,7 +106,7 @@ namespace Abc
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode(Maybe<T> obj) =>
             // BONSANG! When IsSome is true, Value is NOT null.
-#if VISIBLE_INTERNALS
+#if WITHIN_ABC_MAYBE
             obj.IsSome ? EqualityComparer<T>.Default.GetHashCode(obj.Value!) : 0;
 #else
             obj.TryGetValue(out T value) ? EqualityComparer<T>.Default.GetHashCode(value!) : 0;
@@ -118,7 +118,7 @@ namespace Abc
         // Code size = 58 bytes, way to high (> 32 bytes).
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int Compare(Maybe<T> x, Maybe<T> y) =>
-#if VISIBLE_INTERNALS
+#if WITHIN_ABC_MAYBE
             // BONSANG! When IsSome is true, Value is NOT null.
             x.IsSome ? y.IsSome ? Comparer<T>.Default.Compare(x.Value!, y.Value!) : 1
                 : y.IsSome ? -1 : 0;
@@ -148,7 +148,7 @@ namespace Abc
         // Code size = 66 bytes, way to high (> 32 bytes).
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override bool Equals(Maybe<T> x, Maybe<T> y) =>
-#if VISIBLE_INTERNALS
+#if WITHIN_ABC_MAYBE
             x.IsSome
                 ? y.IsSome && StructuralComparisons.StructuralEqualityComparer.Equals(x.Value, y.Value)
                 : !y.IsSome;
@@ -162,7 +162,7 @@ namespace Abc
         // Code size = 34 bytes.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode(Maybe<T> obj) =>
-#if VISIBLE_INTERNALS
+#if WITHIN_ABC_MAYBE
             // BONSANG! When IsSome is true, Value is NOT null.
             obj.IsSome ? StructuralComparisons.StructuralEqualityComparer.GetHashCode(obj.Value!) : 0;
 #else
@@ -173,7 +173,7 @@ namespace Abc
         // Code size = 68 bytes, way to high (> 32 bytes).
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int Compare(Maybe<T> x, Maybe<T> y) =>
-#if VISIBLE_INTERNALS
+#if WITHIN_ABC_MAYBE
             x.IsSome
                 ? y.IsSome ? StructuralComparisons.StructuralComparer.Compare(x.Value, y.Value) : 1
                 : y.IsSome ? -1 : 0;

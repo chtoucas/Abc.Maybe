@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: CLSCompliant(true)]
 [assembly: ComVisible(false)]
 
-#if INTERNALS_VISIBLE_TO
+#if VISIBLE_INTERNALS
 
 // Only Abc.Testing gets access to internals, the actual test project does NOT.
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Abc.Testing" + Abc.AssemblyInfo.PublicKeySuffix)]

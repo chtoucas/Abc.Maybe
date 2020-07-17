@@ -5,8 +5,9 @@
 
     <RelaxCAWarnings>true</RelaxCAWarnings>
 
-    <!-- Use the missing and nullable attributes from Abc.Maybe -->
-    <DefineConstants Condition=" '$(VisibleInternals)' == 'true' ">$(DefineConstants);USE_ATTRS_FROM_ABC_MAYBE</DefineConstants>
+    <!-- Use the missing and nullable attributes from Abc.Maybe? -->
+    <IncludeShims Condition=" '$(VisibleInternals)' == 'true' ">false</IncludeShims>
+
     <DefineConstants Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">$(DefineConstants);SILENT_SKIP</DefineConstants>
   </PropertyGroup>
 
