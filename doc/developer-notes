@@ -4,8 +4,8 @@ Notes de développement
 Voir aussi "src\Abc.Tests\README" et "test\README".
 
 Prérequis:
-- .NET Core 3.1.300+ (voir "global.json") pour pouvoir bénéficier des correctifs
-  concernant la compilation déterministique ;
+- .NET Core 3.1.xxx où xxx >= 300 (voir "global.json") pour pouvoir bénéficier
+  des correctifs concernant la compilation déterministique ;
 - exécutable git mais uniquement si on a l'intention d'utiliser "eng\pack.ps1".
 
 Préparation d'un nouveau paquet NuGet
