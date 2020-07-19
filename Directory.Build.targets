@@ -15,7 +15,7 @@
     <NoWarn Condition=" '$(RelaxCAWarnings)' == 'true' ">$(NoWarn);CA1034;CA1303;CA1707;CA2007</NoWarn>
   </PropertyGroup>
 
-    <!-- API profiles -->
+  <!-- API profiles -->
   <PropertyGroup>
     <!-- See "Supported frameworks" in D.B.props -->
     <ApiProfileMoniker>netstandard2.0</ApiProfileMoniker>
@@ -44,8 +44,12 @@
     <IncludeShims Condition=" '$(IncludeShims)' == '' ">true</IncludeShims>
   </PropertyGroup>
   <ItemGroup Condition=" '$(IncludeShims)' == 'true' ">
-    <Compile Include="$(SourceRoot)MissingAttributes.cs" />
-    <Compile Include="$(SourceRoot)NullableAttributes.cs" />
+    <Compile Include="$(SourceRoot)MissingAttributes.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="$(SourceRoot)NullableAttributes.cs">
+      <Visible>false</Visible>
+    </Compile>
   </ItemGroup>
 
   <!-- .NET Framework reference libraries

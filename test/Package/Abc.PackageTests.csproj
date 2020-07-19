@@ -57,8 +57,12 @@
     <FilesToExclude Include="$(SourceRoot)**\obj\**\*.*" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="$(SourceRoot)Abc.Sketches\**\*.cs" Exclude="@(FilesToExclude)" />
-    <Compile Include="$(SourceRoot)Abc.Testing\**\*.cs" Exclude="@(FilesToExclude)" />
+    <Compile Include="$(SourceRoot)Abc.Sketches\**\*.cs" Exclude="@(FilesToExclude)">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="$(SourceRoot)Abc.Testing\**\*.cs" Exclude="@(FilesToExclude)">
+      <Visible>false</Visible>
+    </Compile>
     <Compile Include="$(SourceRoot)Abc.Tests\**\*.cs" Exclude="@(FilesToExclude)" />
   </ItemGroup>
 
