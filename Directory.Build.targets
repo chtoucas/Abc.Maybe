@@ -26,6 +26,7 @@
   <!-- Compiler symbols -->
   <PropertyGroup>
     <DefineConstants>$(DefineConstants);CONTRACTS_FULL</DefineConstants>
+    <DefineConstants>$(DefineConstants);INTERNAL_NULLABLE_ATTRIBUTES</DefineConstants>
 
     <DefineConstants Condition=" '$(SignAssembly)' == 'true' ">$(DefineConstants);SIGNED_ASSEMBLY</DefineConstants>
     <DefineConstants Condition=" '$(CheckForOverflowUnderflow)' == 'false' ">$(DefineConstants);UNCHECKED</DefineConstants>
