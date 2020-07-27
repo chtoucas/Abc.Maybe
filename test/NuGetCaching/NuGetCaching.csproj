@@ -9,7 +9,24 @@
 
   <PropertyGroup>
     <TargetFramework>$(DefaultPlatform)</TargetFramework>
+
     <RestorePackagesPath>$(ArtifactsRoot)nuget-cache\</RestorePackagesPath>
+
+    <!-- TODO:
+    In D.B.props?
+      <PackageOutputPath>$(ArtifactsRoot)packages\</PackageOutputPath>
+
+      <LocalNuGetSource>$(ArtifactsRoot)nuget-feed\</LocalNuGetSource>
+      <LocalNuGetCache>$(ArtifactsRoot)nuget-cache\</LocalNuGetCache>
+
+      <RestoreAdditionalProjectSources>$(LocalNuGetSource)</RestoreAdditionalProjectSources>
+      <RestoreAdditionalProjectFallbackFolders>$(LocalNuGetCache)</RestoreAdditionalProjectFallbackFolders>
+
+    Here:
+      <RestoreSources>$(LocalNuGetSource)</RestoreSources>
+      <RestorePackagesPath>$(LocalNuGetCache)</RestorePackagesPath>
+      <RestoreFallbackFolders>$(LocalNuGetCache)</RestoreFallbackFolders>
+    -->
   </PropertyGroup>
 
 </Project>

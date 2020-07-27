@@ -8,6 +8,8 @@
   </ItemGroup>
 
   <!-- See "src\Retail.props" -->
+  <!-- TODO: split version and package infos so that we do not import
+       PackageDescription & co -->
   <Import Project="$(SourceRoot)Abc.Maybe.props" />
   <Import Project="$(SourceRoot)vNext.props" Condition=" '$(vNext)' == 'true' " />
 

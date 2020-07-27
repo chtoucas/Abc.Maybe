@@ -18,6 +18,8 @@ Code
 Tools / Build System
 --------------------
 
+- Split version and package infos so that we do not import
+  PackageDescription & co, see "test\D.B.targets"
 - pack.ps1, ContinuousIntegrationBuild=true? Extra Git tests (synched?).
   Rework test-package.ps1 (vNext, official, remote).
 - Roslyn Analyzer:
@@ -42,7 +44,7 @@ Tools / Build System
     </PropertyGroup>
   NuGet configuration is also a bit scattered, can we improve on that?
   (RestoreSources, RestoreAdditionalProjectSources, RestorePackagesPath,
-  RestoreFallbackFolders)
+  RestoreFallbackFolders) see "test\NuGetCaching\"
   References:
   * https://github.com/NuGet/Home/issues/7921
   * https://docs.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files#locking-dependencies
