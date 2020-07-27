@@ -442,7 +442,7 @@ try {
     if ($XPlat) {
         Invoke-CoverletXPlat `
             -Configuration $Configuration `
-            -Platform      $platform `
+            -Platform      $Platform `
             -OutDir        $outDir `
             -Deterministic:$Deterministic `
             -NoSourceLink: $NoSourceLink `
@@ -461,7 +461,7 @@ try {
             Find-OpenCover -ExitOnError `
                 | Invoke-OpenCover `
                     -Configuration $Configuration `
-                    -Platform      $platform `
+                    -Platform      $Platform `
                     -OutXml        $outXml `
                     -NoRestore:    $NoRestore `
                     -MyVerbose:    $myVerbose
@@ -472,7 +472,7 @@ try {
             # the test project.
             Invoke-CoverletMSBuild `
                 -Configuration $Configuration `
-                -Platform      $platform `
+                -Platform      $Platform `
                 -Threshold     $Threshold `
                 -OutXml        $outXml `
                 -Deterministic:$Deterministic `
