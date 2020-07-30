@@ -18,6 +18,7 @@ Code
 Tools / Build System
 --------------------
 
+- License texts.
 - Split version and package infos so that we do not import
   PackageDescription & co, see "test\D.B.targets"
 - pack.ps1, ContinuousIntegrationBuild=true? Extra Git tests (synched?).
