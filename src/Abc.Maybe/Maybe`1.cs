@@ -565,9 +565,9 @@ namespace Abc
         public static bool operator <(Maybe<T> left, Maybe<T> right) =>
             // Beware, this is NOT the same as
             //   left.CompareTo(right) < 0;
-            left._isSome && right._isSome
-                ? Comparer<T>.Default.Compare(left._value, right._value) < 0
-                : false;
+            left._isSome 
+            && right._isSome 
+            && Comparer<T>.Default.Compare(left._value, right._value) < 0;
 
         /// <summary>
         /// Compares the two specified instances to see if the left one is
@@ -585,9 +585,9 @@ namespace Abc
         public static bool operator <=(Maybe<T> left, Maybe<T> right) =>
             // Beware, this is NOT the same as
             //   left.CompareTo(right) <= 0;
-            left._isSome && right._isSome
-                ? Comparer<T>.Default.Compare(left._value, right._value) <= 0
-                : false;
+            left._isSome
+            && right._isSome
+            && Comparer<T>.Default.Compare(left._value, right._value) <= 0;
 
         /// <summary>
         /// Compares the two specified instances to see if the left one is
@@ -605,9 +605,9 @@ namespace Abc
         public static bool operator >(Maybe<T> left, Maybe<T> right) =>
             // Beware, this is NOT the same as
             //   left.CompareTo(right) > 0;
-            left._isSome && right._isSome
-                ? Comparer<T>.Default.Compare(left._value, right._value) > 0
-                : false;
+            left._isSome 
+            && right._isSome
+            && Comparer<T>.Default.Compare(left._value, right._value) > 0;
 
         /// <summary>
         /// Compares the two specified instances to see if the left one is
@@ -625,9 +625,9 @@ namespace Abc
         public static bool operator >=(Maybe<T> left, Maybe<T> right) =>
             // Beware, this is NOT the same as
             //   left.CompareTo(right) >= 0;
-            left._isSome && right._isSome
-                ? Comparer<T>.Default.Compare(left._value, right._value) >= 0
-                : false;
+            left._isSome 
+            && right._isSome
+            && Comparer<T>.Default.Compare(left._value, right._value) >= 0;
 
         /// <summary>
         /// Compares this instance to a specified <see cref="Maybe{T}"/> object.
