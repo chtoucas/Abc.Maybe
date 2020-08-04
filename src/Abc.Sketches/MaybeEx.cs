@@ -1,4 +1,5 @@
-﻿// See LICENSE in the project root for license information.
+﻿// SPDX-License-Identifier: BSD-3-Clause
+// Copyright (c) 2019 Narvalo.Org. All rights reserved.
 
 namespace Abc
 {
