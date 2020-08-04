@@ -21,7 +21,7 @@
          xunit.runner.visualstudio -->
     <TweakXunit Condition=" $(NotSupportedTestPlatforms.Contains('$(TargetFramework)')) ">true</TweakXunit>
 
-    <XunitRunnerVersion>2.4.2</XunitRunnerVersion>
+    <XunitRunnerVersion>2.4.3</XunitRunnerVersion>
     <XunitRunnerVersion Condition=" '$(TweakXunit)' == 'true' ">2.4.1</XunitRunnerVersion>
   </PropertyGroup>
 
