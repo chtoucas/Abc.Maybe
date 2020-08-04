@@ -16,6 +16,8 @@ vNEXT
   * Scripts:
     - pack.ps1: always set `ContinuousIntegrationBuild` to "true", and set
       `vNext` to "true" when building a local package.
+  * New development dependency:
+    - Abc.Utilities.Sources 0.1.1.
 
 2020-06-16, version 1.0.2
 

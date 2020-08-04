@@ -33,6 +33,31 @@
   </Choose>
 
   <ItemGroup>
+    <PkgAbc_Utilities_Sources__Compile Include="AccessibilityLevel.g.cs">
+      <Link>Utilities\%(Identity)</Link>
+    </PkgAbc_Utilities_Sources__Compile>
+    <PkgAbc_Utilities_Sources__Compile Include="ExceptionFactory.g.cs">
+      <Link>Utilities\%(Identity)</Link>
+    </PkgAbc_Utilities_Sources__Compile>
+    <PkgAbc_Utilities_Sources__Compile Include="EmptyIterator`1.g.cs">
+      <Link>Utilities\%(Identity)</Link>
+    </PkgAbc_Utilities_Sources__Compile>
+    <PkgAbc_Utilities_Sources__Compile Include="InternalForTestingAttribute.g.cs">
+      <Link>Utilities\%(Identity)</Link>
+    </PkgAbc_Utilities_Sources__Compile>
+    <PkgAbc_Utilities_Sources__Compile Include="NeverEndingSequence`1.g.cs">
+      <Link>Utilities\%(Identity)</Link>
+    </PkgAbc_Utilities_Sources__Compile>
+    <PkgAbc_Utilities_Sources__Compile Include="SingletonList`1.g.cs">
+      <Link>Utilities\%(Identity)</Link>
+    </PkgAbc_Utilities_Sources__Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Abc.Utilities.Sources" Version="0.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

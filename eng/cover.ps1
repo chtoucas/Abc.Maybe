@@ -245,7 +245,8 @@ function Invoke-CoverletMSBuild {
         /p:CoverletOutputFormat=opencover `
         /p:CoverletOutput=$outXml `
         /p:Include="[Abc.Maybe]*" `
-        /p:Exclude="[Abc.Maybe]System.*"
+        /p:Exclude="[Abc.Maybe]System.*" `
+        /p:ExcludeByAttribute=DebuggerNonUserCode
         || die "Coverlet failed."
 
     say-softly "Coverlet completed successfully."
@@ -376,7 +377,7 @@ function Invoke-OpenCover {
         -target:dotnet.exe `
         -targetargs:"test $TEST_PROJECT --no-restore --nologo $dotnetargs" `
         -filter:$filter `
-        -excludebyattribute:*.ExcludeFromCodeCoverageAttribute
+        -excludebyattribute:*.ExcludeFromCodeCoverageAttribute;DebuggerNonUserCode
         || die "OpenCover failed."
 
     say-softly "OpenCover completed successfully."

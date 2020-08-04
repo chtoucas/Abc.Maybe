@@ -1,22 +1,19 @@
 ﻿Summary
-  Generated on: 18/06/2020 - 10:05:55
+  Generated on: 04/08/2020 - 10:30:37
   Parser: MultiReportParser (4x OpenCoverParser)
   Assemblies: 1
-  Classes: 9
-  Files: 19
+  Classes: 6
+  Files: 16
   Line coverage: 100.0%
-  Covered lines: 671
+  Covered lines: 614
   Uncovered lines: 0
-  Coverable lines: 671
-  Total lines: 2938
+  Coverable lines: 614
+  Total lines: 2746
 
-Abc.Maybe                              100.0%
-  Abc.Linq.Qperators                   100.0%
-  Abc.May                              100.0%
-  Abc.Maybe                            100.0%
-  Abc.Maybe`1                          100.0%
-  Abc.Unit                             100.0%
-  Abc.Utilities.EmptyIterator`1        100.0%
-  Abc.Utilities.ExceptionFactory       100.0%
-  Abc.Utilities.NeverEndingSequence`1  100.0%
-  Abc.Utilities.SingletonList`1        100.0%
+Abc.Maybe                         100.0%
+  Abc.Linq.Qperators              100.0%
+  Abc.May                         100.0%
+  Abc.Maybe                       100.0%
+  Abc.Maybe`1                     100.0%
+  Abc.Unit                        100.0%
+  Abc.Utilities.ExceptionFactory  100.0%
