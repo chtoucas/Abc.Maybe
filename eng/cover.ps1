@@ -14,10 +14,6 @@ Run the Code Coverage script and build human-readable reports.
 Run the Code Coverage script w/ either Coverlet (default) or OpenCover,
 then optionally build human-readable reports and badges.
 
-This script does NOT execute an implicit restore. If needed, use the option
--Restore which instructs the script to explicitly restore the required
-dependencies.
-
 OpenCover is slow when compared to Coverlet, but we get risk hotspots
 (NPath complexity, crap score) and a list of unvisited methods.
 Furthermore, the results differ slightly (LINQ and async so far) which
@@ -343,8 +339,9 @@ function Invoke-OpenCover {
 
     if (-not $IsWindows) { die "OpenCover.exe only works on Windows." }
 
+    # FIXME: $noRestore no longer works... we must pass props like SlimBuild
     # I prefer to restore the solution outside the OpenCover process.
-    if (-not $noRestore) { Restore-Solution }
+    #if (-not $noRestore) { Restore-Solution }
 
     # See comments in Invoke-CoverletMSBuild.
     $filters = `
@@ -375,9 +372,9 @@ function Invoke-OpenCover {
         -showunvisited `
         -output:$outXml `
         -target:dotnet.exe `
-        -targetargs:"test $TEST_PROJECT --no-restore --nologo $dotnetargs" `
+        -targetargs:"test $TEST_PROJECT --nologo $dotnetargs" `
         -filter:$filter `
-        -excludebyattribute:*.ExcludeFromCodeCoverageAttribute;DebuggerNonUserCode
+        -excludebyattribute:"*.ExcludeFromCodeCoverageAttribute;*.DebuggerNonUserCodeAttribute"
         || die "OpenCover failed."
 
     say-softly "OpenCover completed successfully."

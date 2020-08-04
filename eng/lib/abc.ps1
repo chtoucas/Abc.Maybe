@@ -223,7 +223,7 @@ function Get-PackageVersion {
             $patch  = 1 + [int]$patch
         }
     }
-    
+
     ___debug "Version major: ""$major""."
     ___debug "Version minor: ""$minor""."
     ___debug "Version patch: ""$patch""."
@@ -384,7 +384,7 @@ function Find-OpenCover {
     $path = Join-Path $NET_FRAMEWORK_TOOLS_DIR "opencover\$version\tools\OpenCover.Console.exe"
 
     if (-not (Test-Path $path)) {
-        return carp "Could not find OpenCover v$version. Maybe use -Restore?" `
+        return carp "Could not find OpenCover v$version. Maybe you forgot to restore the .NETFx tools?" `
             -ExitOnError:$exitOnError
     }
 
