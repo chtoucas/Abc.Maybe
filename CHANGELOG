@@ -17,7 +17,7 @@ vNEXT
     - pack.ps1: always set `ContinuousIntegrationBuild` to "true", and set
       `vNext` to "true" when building a local package.
   * New development dependency:
-    - Abc.Utilities.Sources 0.1.1.
+    - Abc.Utilities.Sources.
   * Upgraded dependencies:
     - xunit.runner.visualstudio 2.4.2 -> 2.4.3.
 

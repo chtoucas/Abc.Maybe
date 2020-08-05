@@ -9,6 +9,8 @@
     <!-- Only defined in this project to ease moving code from here to Sketches
          and vice versa. -->
     <DefineConstants>$(DefineConstants);WITHIN_ABC_MAYBE</DefineConstants>
+
+    <PkgAbc_Utilities_Sources__ImportTfr>false</PkgAbc_Utilities_Sources__ImportTfr>
   </PropertyGroup>
 
   <!-- Debug vs Release -->
@@ -33,28 +35,28 @@
   </Choose>
 
   <ItemGroup>
-    <PkgAbc_Utilities_Sources__Compile Include="AccessibilityLevel.g.cs">
+    <PkgAbc_Utilities_Sources__CompileItem Include="AccessibilityLevel.g.cs">
       <Link>Utilities\%(Identity)</Link>
-    </PkgAbc_Utilities_Sources__Compile>
-    <PkgAbc_Utilities_Sources__Compile Include="ExceptionFactory.g.cs">
+    </PkgAbc_Utilities_Sources__CompileItem>
+    <PkgAbc_Utilities_Sources__CompileItem Include="ExceptionFactory.g.cs">
       <Link>Utilities\%(Identity)</Link>
-    </PkgAbc_Utilities_Sources__Compile>
-    <PkgAbc_Utilities_Sources__Compile Include="EmptyIterator`1.g.cs">
+    </PkgAbc_Utilities_Sources__CompileItem>
+    <PkgAbc_Utilities_Sources__CompileItem Include="EmptyIterator`1.g.cs">
       <Link>Utilities\%(Identity)</Link>
-    </PkgAbc_Utilities_Sources__Compile>
-    <PkgAbc_Utilities_Sources__Compile Include="InternalForTestingAttribute.g.cs">
+    </PkgAbc_Utilities_Sources__CompileItem>
+    <PkgAbc_Utilities_Sources__CompileItem Include="InternalForTestingAttribute.g.cs">
       <Link>Utilities\%(Identity)</Link>
-    </PkgAbc_Utilities_Sources__Compile>
-    <PkgAbc_Utilities_Sources__Compile Include="NeverEndingSequence`1.g.cs">
+    </PkgAbc_Utilities_Sources__CompileItem>
+    <PkgAbc_Utilities_Sources__CompileItem Include="NeverEndingSequence`1.g.cs">
       <Link>Utilities\%(Identity)</Link>
-    </PkgAbc_Utilities_Sources__Compile>
-    <PkgAbc_Utilities_Sources__Compile Include="SingletonList`1.g.cs">
+    </PkgAbc_Utilities_Sources__CompileItem>
+    <PkgAbc_Utilities_Sources__CompileItem Include="SingletonList`1.g.cs">
       <Link>Utilities\%(Identity)</Link>
-    </PkgAbc_Utilities_Sources__Compile>
+    </PkgAbc_Utilities_Sources__CompileItem>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Abc.Utilities.Sources" Version="0.1.1">
+    <PackageReference Include="Abc.Utilities.Sources" Version="0.2.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

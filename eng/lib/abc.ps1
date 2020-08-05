@@ -130,6 +130,7 @@ function ___END___ {
         say "`nGoodbye." -ForegroundColor $Script:___ForegroundColor
     }
 
+    # FIXME: clear $Error in __BEGIN__?
     if ($Error -and ($err = $Error[0]) -is [ErrorRecord]) {
         say "`n--- Post-mortem." -ForegroundColor $Script:___ForegroundColor
 
