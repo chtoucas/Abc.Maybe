@@ -8,6 +8,8 @@ External issues:
 
 Tmp:
 - RunAnalyzers = false
+- WITHIN_ABC_MAYBE (reverse)
+- Compiler symbols (use TVI, TFV)
 
 Code
 ----
