@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>$(TestPlatforms)</TargetFrameworks>
+    <TargetFrameworks>$(MyTestPlatforms)</TargetFrameworks>
 
     <!-- Warnings.
       IDE0002   Simplify Member Access

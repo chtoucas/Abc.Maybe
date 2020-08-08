@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>$(DefaultPlatform)</TargetFramework>
-    <RestorePackagesPath>$(ArtifactsRoot)tools\</RestorePackagesPath>
+    <TargetFramework>$(MyDefaultPlatform)</TargetFramework>
+    <RestorePackagesPath>$(MyArtifactsRoot)tools\</RestorePackagesPath>
   </PropertyGroup>
 
   <ItemGroup>

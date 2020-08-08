@@ -14,25 +14,25 @@
   <Choose>
     <When Condition=" '$(AllKnown)' == 'true' ">
       <PropertyGroup>
-        <TargetFrameworks>$(MaxCorePlatforms)</TargetFrameworks>
+        <TargetFrameworks>$(MyMaxCorePlatforms)</TargetFrameworks>
         <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">
-          $(TargetFrameworks);$(MaxClassicPlatforms);
+          $(TargetFrameworks);$(MyMaxClassicPlatforms);
         </TargetFrameworks>
       </PropertyGroup>
     </When>
 
     <Otherwise>
       <PropertyGroup>
-        <TargetFrameworks>$(MinCorePlatforms)</TargetFrameworks>
+        <TargetFrameworks>$(MyMinCorePlatforms)</TargetFrameworks>
         <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">
-          $(TargetFrameworks);$(MinClassicPlatforms)
+          $(TargetFrameworks);$(MyMinClassicPlatforms)
         </TargetFrameworks>
       </PropertyGroup>
     </Otherwise>
   </Choose>
 
   <PropertyGroup Condition=" '$(NotSupported)' == 'true' ">
-    <TargetFrameworks>$(TargetFrameworks);$(NotSupportedTestPlatforms)</TargetFrameworks>
+    <TargetFrameworks>$(TargetFrameworks);$(MyNotSupportedTestPlatforms)</TargetFrameworks>
   </PropertyGroup>
 
   <!-- Common settings -->
@@ -52,21 +52,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <FilesToExclude Include="$(SourceRoot)**\AssemblyInfo.cs" />
-    <FilesToExclude Include="$(SourceRoot)**\bin\**\*.*" />
-    <FilesToExclude Include="$(SourceRoot)**\obj\**\*.*" />
+    <FilesToExclude Include="$(MySourceRoot)**\AssemblyInfo.cs" />
+    <FilesToExclude Include="$(MySourceRoot)**\bin\**\*.*" />
+    <FilesToExclude Include="$(MySourceRoot)**\obj\**\*.*" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="$(SourceRoot)Abc.Sketches\**\*.cs" Exclude="@(FilesToExclude)">
+    <Compile Include="$(MySourceRoot)Abc.Sketches\**\*.cs" Exclude="@(FilesToExclude)">
       <Visible>false</Visible>
     </Compile>
-    <Compile Include="$(SourceRoot)Abc.Testing\**\*.cs" Exclude="@(FilesToExclude)">
+    <Compile Include="$(MySourceRoot)Abc.Testing\**\*.cs" Exclude="@(FilesToExclude)">
       <Visible>false</Visible>
     </Compile>
-    <Compile Include="$(SourceRoot)Abc.Tests\**\*.cs" Exclude="@(FilesToExclude)" />
+    <Compile Include="$(MySourceRoot)Abc.Tests\**\*.cs" Exclude="@(FilesToExclude)" />
   </ItemGroup>
 
-  <Import Project="$(SourceRoot)Abc.Tests\PackageReferences.targets" />
+  <Import Project="$(MySourceRoot)Abc.Tests\PackageReferences.targets" />
 
   <!-- Packages referenced by Abc.Testing and not __explicitly__ listed in
        PackageReferences.targets -->

@@ -107,7 +107,7 @@ Remarks:
     compiled for it, and therefore won't be executable.
 - Option -NoCheck.
   Useful to build/test the project for platforms listed in
-  "NotSupportedTestPlatforms" from D.B.props. Of course, as the name suggests,
+  "MyNotSupportedTestPlatforms" from D.B.props. Of course, as the name suggests,
   a succesful outcome is not guaranteed, to say the least, it might not even run.
 
 Commonly used properties.
@@ -153,15 +153,15 @@ function Get-Platforms(
 
     $platforms = @()
     if (-not $noStandard) {
-        $platforms = Select-Property $props 'SupportedStandards'
+        $platforms = Select-Property $props 'MySupportedStandards'
     }
     if (-not $noCore) {
-        $propName = $allKnown ? 'MaxCorePlatforms' : 'MinCorePlatforms'
+        $propName = $allKnown ? 'MyMaxCorePlatforms' : 'MyMinCorePlatforms'
         $platforms += Select-Property $props $propName
     }
     # WARNING: we ignore Mono on Linux and MacOS...
     if (-not $noClassic -and $IsWindows) {
-        $propName = $allKnown ? 'MaxClassicPlatforms' : 'MinClassicPlatforms'
+        $propName = $allKnown ? 'MyMaxClassicPlatforms' : 'MyMinClassicPlatforms'
         $platforms += Select-Property $props $propName
     }
 

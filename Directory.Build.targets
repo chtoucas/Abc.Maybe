@@ -29,7 +29,7 @@
     <DefineConstants>$(DefineConstants);INTERNAL_NULLABLE_ATTRIBUTES</DefineConstants>
 
     <DefineConstants Condition=" '$(SignAssembly)' == 'true' ">$(DefineConstants);SIGNED_ASSEMBLY</DefineConstants>
-    <DefineConstants Condition=" '$(CheckForOverflowUnderflow)' == 'false' ">$(DefineConstants);UNCHECKED</DefineConstants>
+    <DefineConstants Condition=" '$(CheckForOverflowUnderflow)' != 'true' ">$(DefineConstants);UNCHECKED</DefineConstants>
     <DefineConstants Condition=" '$(VisibleInternals)' == 'true' ">$(DefineConstants);VISIBLE_INTERNALS</DefineConstants>
 
     <DefineConstants Condition=" $(TargetFramework.StartsWith('netstandard1.')) ">$(DefineConstants);NETSTANDARD1_x</DefineConstants>
@@ -45,10 +45,10 @@
     <IncludeShims Condition=" '$(IncludeShims)' == '' ">true</IncludeShims>
   </PropertyGroup>
   <ItemGroup Condition=" '$(IncludeShims)' == 'true' ">
-    <Compile Include="$(SourceRoot)MissingAttributes.cs">
+    <Compile Include="$(MySourceRoot)MissingAttributes.cs">
       <Visible>false</Visible>
     </Compile>
-    <Compile Include="$(SourceRoot)NullableAttributes.cs">
+    <Compile Include="$(MySourceRoot)NullableAttributes.cs">
       <Visible>false</Visible>
     </Compile>
   </ItemGroup>

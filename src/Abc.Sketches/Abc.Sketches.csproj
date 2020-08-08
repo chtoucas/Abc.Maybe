@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>$(LibraryPlatforms)</TargetFrameworks>
+    <TargetFrameworks>$(MyLibraryPlatforms)</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>

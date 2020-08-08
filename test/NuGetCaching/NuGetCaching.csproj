@@ -8,16 +8,16 @@
   -->
 
   <PropertyGroup>
-    <TargetFramework>$(DefaultPlatform)</TargetFramework>
+    <TargetFramework>$(MyDefaultPlatform)</TargetFramework>
 
-    <RestorePackagesPath>$(ArtifactsRoot)nuget-cache\</RestorePackagesPath>
+    <RestorePackagesPath>$(MyArtifactsRoot)nuget-cache\</RestorePackagesPath>
 
     <!-- TODO:
     In D.B.props?
-      <PackageOutputPath>$(ArtifactsRoot)packages\</PackageOutputPath>
+      <PackageOutputPath>$(MyArtifactsRoot)packages\</PackageOutputPath>
 
-      <LocalNuGetSource>$(ArtifactsRoot)nuget-feed\</LocalNuGetSource>
-      <LocalNuGetCache>$(ArtifactsRoot)nuget-cache\</LocalNuGetCache>
+      <LocalNuGetSource>$(MyArtifactsRoot)nuget-feed\</LocalNuGetSource>
+      <LocalNuGetCache>$(MyArtifactsRoot)nuget-cache\</LocalNuGetCache>
 
       <RestoreAdditionalProjectSources>$(LocalNuGetSource)</RestoreAdditionalProjectSources>
       <RestoreAdditionalProjectFallbackFolders>$(LocalNuGetCache)</RestoreAdditionalProjectFallbackFolders>

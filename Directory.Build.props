@@ -14,14 +14,15 @@
 
   <!-- Repository layout -->
   <PropertyGroup>
-    <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>
-    <SourceRoot>$(RepositoryRoot)src\</SourceRoot>
-    <ArtifactsRoot>$(RepositoryRoot)__\</ArtifactsRoot>
+    <MyRepositoryRoot>$(MSBuildThisFileDirectory)</MyRepositoryRoot>
+    <MySourceRoot>$(MyRepositoryRoot)src\</MySourceRoot>
+    <MyArtifactsRoot>$(MyRepositoryRoot)__\</MyArtifactsRoot>
   </PropertyGroup>
 
   <!-- Common settings -->
   <PropertyGroup>
     <RootNamespace>Abc</RootNamespace>
+
     <IsPackable>false</IsPackable>
 
     <LangVersion>latest</LangVersion>
@@ -76,24 +77,24 @@
 
   <!-- Target frameworks -->
   <PropertyGroup>
-    <!-- IMPORTANT: keep "DefaultPlatform" in sync with "global.json" -->
-    <DefaultPlatform>netcoreapp3.1</DefaultPlatform>
-    <SupportedStandards>netstandard2.1;netstandard2.0;netstandard1.1</SupportedStandards>
+    <!-- IMPORTANT: keep "MyDefaultPlatform" in sync with "global.json" -->
+    <MyDefaultPlatform>netcoreapp3.1</MyDefaultPlatform>
+    <MySupportedStandards>netstandard2.1;netstandard2.0;netstandard1.1</MySupportedStandards>
   </PropertyGroup>
 
   <Choose>
     <When Condition=" '$(SlimBuild)' == 'true' ">
       <PropertyGroup>
-        <LibraryPlatforms>$(DefaultPlatform);netstandard2.0</LibraryPlatforms>
-        <TestPlatforms>$(DefaultPlatform)</TestPlatforms>
+        <MyLibraryPlatforms>$(MyDefaultPlatform);netstandard2.0</MyLibraryPlatforms>
+        <MyTestPlatforms>$(MyDefaultPlatform)</MyTestPlatforms>
       </PropertyGroup>
     </When>
 
     <Otherwise>
       <PropertyGroup>
-        <LibraryPlatforms>$(SupportedStandards);net461</LibraryPlatforms>
-        <TestPlatforms>netcoreapp3.1;netcoreapp2.1</TestPlatforms>
-        <TestPlatforms Condition=" '$(OS)' == 'Windows_NT' ">$(TestPlatforms);net461;net452</TestPlatforms>
+        <MyLibraryPlatforms>$(MySupportedStandards);net461</MyLibraryPlatforms>
+        <MyTestPlatforms>netcoreapp3.1;netcoreapp2.1</MyTestPlatforms>
+        <MyTestPlatforms Condition=" '$(OS)' == 'Windows_NT' ">$(MyTestPlatforms);net461;net452</MyTestPlatforms>
       </PropertyGroup>
     </Otherwise>
   </Choose>
@@ -108,24 +109,24 @@
       These properties are NOT used by any project located in the directory "src".
     -->
 
-    <MinCorePlatforms>netcoreapp3.1;netcoreapp2.1</MinCorePlatforms>
-    <MaxCorePlatforms>
+    <MyMinCorePlatforms>netcoreapp3.1;netcoreapp2.1</MyMinCorePlatforms>
+    <MyMaxCorePlatforms>
       netcoreapp3.1;netcoreapp3.0;
       netcoreapp2.2;netcoreapp2.1
-    </MaxCorePlatforms>
+    </MyMaxCorePlatforms>
 
-    <MinClassicPlatforms>net48;net472;net462;net452</MinClassicPlatforms>
-    <MaxClassicPlatforms>
+    <MyMinClassicPlatforms>net48;net472;net462;net452</MyMinClassicPlatforms>
+    <MyMaxClassicPlatforms>
       net48;
       net472;net471;net47;
       net462;net461;net46;
       net452
-    </MaxClassicPlatforms>
+    </MyMaxClassicPlatforms>
 
-    <NotSupportedTestPlatforms>
+    <MyNotSupportedTestPlatforms>
       netcoreapp2.0;
       net451;net45
-    </NotSupportedTestPlatforms>
+    </MyNotSupportedTestPlatforms>
   </PropertyGroup>
 
 </Project>

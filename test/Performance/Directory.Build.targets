@@ -16,7 +16,7 @@
   <Import Project="$(MSBuildThisFileDirectory)$(ParentDBTargets)" />
 
   <ItemGroup Condition=" '$(UseAbcProject)' == 'true' ">
-    <ProjectReference Include="$(SourceRoot)Abc.Maybe\Abc.Maybe.csproj" />
+    <ProjectReference Include="$(MySourceRoot)Abc.Maybe\Abc.Maybe.csproj" />
   </ItemGroup>
 
 </Project>

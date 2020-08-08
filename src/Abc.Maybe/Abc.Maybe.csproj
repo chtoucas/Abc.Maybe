@@ -3,7 +3,7 @@
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
 
   <PropertyGroup>
-    <TargetFrameworks>$(LibraryPlatforms)</TargetFrameworks>
+    <TargetFrameworks>$(MyLibraryPlatforms)</TargetFrameworks>
     <IsPackable>true</IsPackable>
 
     <!-- Only defined in this project to ease moving code from here to Sketches

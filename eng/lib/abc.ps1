@@ -251,13 +251,13 @@ function Get-SupportedPlatforms {
     ___confess "Getting the list of all supported platforms."
 
     $xml = Load-XmlTextual $PLATFORMS_PROPS
-    $minClassic = Select-SingleProperty $xml "MinClassicPlatforms"
-    $maxClassic = Select-SingleProperty $xml "MaxClassicPlatforms"
-    $minCore    = Select-SingleProperty $xml "MinCorePlatforms"
-    $maxCore    = Select-SingleProperty $xml "MaxCorePlatforms"
+    $minClassic = Select-SingleProperty $xml "MyMinClassicPlatforms"
+    $maxClassic = Select-SingleProperty $xml "MyMaxClassicPlatforms"
+    $minCore    = Select-SingleProperty $xml "MyMinCorePlatforms"
+    $maxCore    = Select-SingleProperty $xml "MyMaxCorePlatforms"
 
     if ($notSupported) {
-        $unsupported = Select-SingleProperty $xml -Property "NotSupportedTestPlatforms"
+        $unsupported = Select-SingleProperty $xml -Property "MyNotSupportedTestPlatforms"
 
         $maxClassic += $unsupported | where { $_.StartsWith("net4") }
         $maxCore    += $unsupported | where { $_.StartsWith("netcoreapp") }
