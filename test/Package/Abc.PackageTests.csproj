@@ -40,7 +40,6 @@
     <DebugType>none</DebugType>
 
     <VisibleInternals>false</VisibleInternals>
-    <RelaxCAWarnings>true</RelaxCAWarnings>
 
     <DefineConstants Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">$(DefineConstants);SILENT_SKIP</DefineConstants>
   </PropertyGroup>

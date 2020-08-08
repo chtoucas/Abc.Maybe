@@ -6,6 +6,9 @@ External issues:
 - (Coverlet) ExcludeFromCodeCoverage does not get inherited by class members.
 - (VS) Task list.
 
+Tmp:
+- RunAnalyzers = false
+
 Code
 ----
 

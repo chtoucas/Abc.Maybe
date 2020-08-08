@@ -10,7 +10,6 @@
     <!-- Warnings.
       CA1822  Mark members as static
     -->
-    <RelaxCAWarnings>true</RelaxCAWarnings>
     <NoWarn>$(NoWarn);CA1822</NoWarn>
 
     <DefineConstants Condition=" '$(BenchmarkHarness)' == 'true' ">$(DefineConstants);BENCHMARK_HARNESS</DefineConstants>
@@ -24,10 +23,6 @@
 
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
 
 </Project>

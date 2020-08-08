@@ -23,8 +23,6 @@
   <PropertyGroup>
     <RootNamespace>Abc</RootNamespace>
 
-    <IsPackable>false</IsPackable>
-
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
 
@@ -35,15 +33,17 @@
     <Product>Abécédaire Library</Product>
     <Copyright>Copyright (c) 2019 Narvalo.Org</Copyright>
 
+    <!-- Fake version -->
+    <VersionPrefix>0.0.0</VersionPrefix>
+    <VersionSuffix>DUMMY</VersionSuffix>
+
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/chtoucas/Abc.Maybe/</RepositoryUrl>
 
+    <IsPackable>false</IsPackable>
     <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
     <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
     <PackageReleaseNotes>See CHANGELOG in project root.</PackageReleaseNotes>
-
-    <VersionPrefix>0.0.1</VersionPrefix>
-    <VersionSuffix>DUMMY</VersionSuffix>
   </PropertyGroup>
 
   <!-- Release versus the other configurations (Debug) -->
@@ -74,6 +74,17 @@
       </PropertyGroup>
     </Otherwise>
   </Choose>
+
+  <!-- Warnings -->
+  <PropertyGroup>
+    <!--
+      CA1034  Nested types should not be visible (Design)
+      CA1303  Do not pass literals as localized parameters (Globalization)
+      CA1707  Identifiers should not contain underscores (Naming)
+      CA2007  Consider calling ConfigureAwait on the awaited task (Reliability)
+    -->
+    <MyNoWarnForTestProject>CA1034;CA1303;CA1707;CA2007</MyNoWarnForTestProject>
+  </PropertyGroup>
 
   <!-- Target frameworks -->
   <PropertyGroup>

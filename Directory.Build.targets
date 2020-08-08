@@ -6,13 +6,8 @@
 
     <DebugType Condition=" '$(TargetFrameworkIdentifier)' == '.NETFramework' ">pdbonly</DebugType>
 
-    <!-- Warnings, should only be enabled by test projects.
-      CA1034  Nested types should not be visible (Design)
-      CA1303  Do not pass literals as localized parameters (Globalization)
-      CA1707  Identifiers should not contain underscores (Naming)
-      CA2007  Consider calling ConfigureAwait on the awaited task (Reliability)
-    -->
-    <NoWarn Condition=" '$(RelaxCAWarnings)' == 'true' ">$(NoWarn);CA1034;CA1303;CA1707;CA2007</NoWarn>
+    <!-- IsTestProject is set to true in Microsoft.NET.Test.Sdk\build\D.B.props -->
+    <NoWarn Condition=" '$(IsTestProject)' == 'true' ">$(NoWarn);$(MyNoWarnForTestProject)</NoWarn>
   </PropertyGroup>
 
   <!-- API profiles -->
@@ -59,6 +54,14 @@
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <!-- FxCop analyzers -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 

@@ -3,10 +3,10 @@
   <PropertyGroup>
     <TargetFrameworks>$(MyLibraryPlatforms)</TargetFrameworks>
 
-    <RelaxCAWarnings>true</RelaxCAWarnings>
-
     <!-- Use the missing and nullable attributes from Abc.Maybe? -->
     <IncludeShims Condition=" '$(VisibleInternals)' == 'true' ">false</IncludeShims>
+
+    <NoWarn>$(NoWarn);$(MyNoWarnForTestProject)</NoWarn>
 
     <DefineConstants Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">$(DefineConstants);SILENT_SKIP</DefineConstants>
   </PropertyGroup>
