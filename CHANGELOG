@@ -20,6 +20,7 @@ vNEXT
     - Abc.Utilities.Sources.
   * Upgraded dependencies:
     - xunit.runner.visualstudio 2.4.2 -> 2.4.3.
+    - Microsoft.NET.Test.Sdk 16.6.1 -> 16.7.0.
 
 2020-06-16, version 1.0.2
 

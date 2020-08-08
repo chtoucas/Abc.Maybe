@@ -47,7 +47,7 @@
     <PkgAbc_Utilities_Sources__CompileItem Include="InternalForTestingAttribute.g.cs">
       <Link>Utilities\%(Identity)</Link>
     </PkgAbc_Utilities_Sources__CompileItem>
-    <PkgAbc_Utilities_Sources__CompileItem Include="NeverEndingSequence`1.g.cs">
+    <PkgAbc_Utilities_Sources__CompileItem Include="YieldForever`1.g.cs">
       <Link>Utilities\%(Identity)</Link>
     </PkgAbc_Utilities_Sources__CompileItem>
     <PkgAbc_Utilities_Sources__CompileItem Include="SingletonList`1.g.cs">
@@ -56,7 +56,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Abc.Utilities.Sources" Version="0.2.0">
+    <PackageReference Include="Abc.Utilities.Sources" Version="1.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

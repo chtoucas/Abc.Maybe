@@ -511,7 +511,7 @@ namespace Abc
         [Pure]
         public IEnumerable<T> Yield() =>
             // BONSANG! When _isSome is true, _value is NOT null.
-            _isSome ? new NeverEndingSequence<T>(_value!) : Enumerable.Empty<T>();
+            _isSome ? new YieldForever<T>(_value!) : Enumerable.Empty<T>();
 
         // See also Replicate() and the comments there.
         // Maybe<T> being a struct it is never equal to null, therefore
@@ -565,8 +565,8 @@ namespace Abc
         public static bool operator <(Maybe<T> left, Maybe<T> right) =>
             // Beware, this is NOT the same as
             //   left.CompareTo(right) < 0;
-            left._isSome 
-            && right._isSome 
+            left._isSome
+            && right._isSome
             && Comparer<T>.Default.Compare(left._value, right._value) < 0;
 
         /// <summary>
@@ -605,7 +605,7 @@ namespace Abc
         public static bool operator >(Maybe<T> left, Maybe<T> right) =>
             // Beware, this is NOT the same as
             //   left.CompareTo(right) > 0;
-            left._isSome 
+            left._isSome
             && right._isSome
             && Comparer<T>.Default.Compare(left._value, right._value) > 0;
 
@@ -625,7 +625,7 @@ namespace Abc
         public static bool operator >=(Maybe<T> left, Maybe<T> right) =>
             // Beware, this is NOT the same as
             //   left.CompareTo(right) >= 0;
-            left._isSome 
+            left._isSome
             && right._isSome
             && Comparer<T>.Default.Compare(left._value, right._value) >= 0;
 
