@@ -5,21 +5,23 @@ vNEXT
   Internal changes.
   * Settings:
     - Projects in the folder "test" now use an exact version match when
-      resolving the package Abc.Maybe; see `AbcPackageRange` in test\D.B.targets.
-    - New global option `vNext` to tweak the version numbers __locally__; see
+      resolving the package Abc.Maybe; see AbcPackageRange in test\D.B.targets.
+    - New global option vNext to tweak the version numbers __locally__; see
       src\Retails.props.
-    - Merge option `Retail` with the configuration Release.
-    - When targetting .NET Framework, always set `DebugType` to "pdbonly"; see
+    - Merge option Retail with the configuration Release.
+    - When targetting .NET Framework, always set DebugType to "pdbonly"; see
       D.B.targets. This was previously only the case for projects in the folder
       "src". Beware, for Coverlet to work properly, one should override this
-      behaviour from the command-line by setting `DebugType` to "portable".
+      behaviour from the command-line by setting DebugType to "portable".
   * Scripts:
-    - pack.ps1: always set `ContinuousIntegrationBuild` to "true", and set
-      `vNext` to "true" when building a local package.
+    - pack.ps1: always set ContinuousIntegrationBuild to "true", and set
+      vNext to "true" when building a local package.
   * New development dependency:
     - Abc.Utilities.Sources.
   * Upgraded dependencies:
     - xunit.runner.visualstudio 2.4.2 -> 2.4.3.
+    - Microsoft.CodeAnalysis.FxCopAnalyzers 3.0.0 -> 3.3.0.
+    - Microsoft.CodeAnalysis.PublicApiAnalyzers 3.0.0 -> 3.3.0.
     - Microsoft.NET.Test.Sdk 16.6.1 -> 16.7.0.
 
 2020-06-16, version 1.0.2

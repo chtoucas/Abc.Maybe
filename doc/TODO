@@ -7,9 +7,10 @@ External issues:
 - (VS) Task list.
 
 Tmp:
-- RunAnalyzers = false
+- RunAnalyzers = false, sometimes.
 - WITHIN_ABC_MAYBE (reverse)
 - Compiler symbols (use TVI, TFV)
+- CI & DOTNET_MULTILEVEL_LOOKUP
 
 Code
 ----
