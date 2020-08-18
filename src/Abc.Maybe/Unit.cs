@@ -24,7 +24,7 @@ namespace Abc
         /// Represents the singleton instance of the <see cref="Unit"/> struct.
         /// <para>This field is read-only.</para>
         /// </summary>
-        public static readonly Unit Default = default;
+        public static readonly Unit Default;
 
         /// <summary>
         /// Returns a string representation of the current instance.

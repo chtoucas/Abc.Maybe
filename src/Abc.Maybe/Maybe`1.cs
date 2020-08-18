@@ -229,7 +229,7 @@ namespace Abc
         /// <para>This field is read-only.</para>
         /// </summary>
         /// <seealso cref="Maybe.None{T}"/>
-        public static readonly Maybe<T> None = default;
+        public static readonly Maybe<T> None;
 
         [Pure]
         public Maybe<TResult> Bind<TResult>(Func<T, Maybe<TResult>> binder)
