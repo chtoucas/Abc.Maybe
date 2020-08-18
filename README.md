@@ -8,7 +8,6 @@ Abc.Maybe features an Option type for .NET, supports .NET Standard 1.1 or later.
 - [Documentation](doc/README.md) (WIP)
 - [Usage Guidelines](doc/usage-guidelines.md) (WIP)
 - [Changelog](CHANGELOG)
-- [BSD 3-Clause "New" or "Revised" License](LICENSE)
 
 ### Objectives/Features
 

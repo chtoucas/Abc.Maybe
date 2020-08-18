@@ -2,6 +2,8 @@ Changelog for Abc.Maybe.
 
 vNEXT
 
+2020-08-18, version 1.0.2
+
   Internal changes.
   * Settings:
     - Projects in the folder "test" now use an exact version match when
