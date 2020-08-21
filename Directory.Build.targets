@@ -20,11 +20,6 @@
 
   <!-- Compiler symbols -->
   <PropertyGroup>
-    <DefineConstants>$(DefineConstants);CONTRACTS_FULL</DefineConstants>
-    <DefineConstants>$(DefineConstants);INTERNAL_NULLABLE_ATTRIBUTES</DefineConstants>
-
-    <DefineConstants Condition=" '$(SignAssembly)' == 'true' ">$(DefineConstants);SIGNED_ASSEMBLY</DefineConstants>
-    <DefineConstants Condition=" '$(CheckForOverflowUnderflow)' != 'true' ">$(DefineConstants);UNCHECKED</DefineConstants>
     <DefineConstants Condition=" '$(VisibleInternals)' == 'true' ">$(DefineConstants);VISIBLE_INTERNALS</DefineConstants>
 
     <DefineConstants Condition=" $(TargetFramework.StartsWith('netstandard1.')) ">$(DefineConstants);NETSTANDARD1_x</DefineConstants>
@@ -33,7 +28,7 @@
     <DefineConstants Condition=" '$(ApiProfileMoniker)' == 'netstandard2.1' ">$(DefineConstants);API_PROFILE_21</DefineConstants>
   </PropertyGroup>
 
-  <!-- Shims for older platforms -->
+  <!-- Shims for older frameworks -->
   <PropertyGroup>
     <!-- Beware, Abc.Testing may have access to the internals of Abc.Maybe,
          in which case we shouldn't include the (internal) shims. -->

@@ -23,10 +23,10 @@ param(
     [Alias('r')] [string] $Runtime,
 
     [Parameter(Mandatory = $false)]
-    [Alias('f')] [string] $Platform,
+    [Alias('f')] [string] $Framework,
 
     [Alias('X')] [switch] $Flatten,
-    [Alias('l')] [switch] $ListPlatforms,
+    [Alias('l')] [switch] $ListFrameworks,
                  [switch] $AllKnown,
                  [switch] $NoStandard,
                  [switch] $NoCore,
@@ -69,15 +69,15 @@ Usage: reset.ps1 [arguments]
   -p|-Project        the project to build. Default (implicit) = solution.
   -c|-Configuration  the configuration to build the project for. Default (implicit) = "Debug".
   -r|-Runtime        the runtime to build the project for.
-  -f|-Platform       the platform to build the project for.
+  -f|-Framework      the framework to build the project for.
 
   -X|-Flatten	     flatten the project dependencies graph?
-  -l|-ListPlatforms  print the list of supported platforms then exit?
-     -AllKnown       inlude ALL known platform versions (SLOW)?
+  -l|-ListFrameworks print the list of supported frameworks then exit?
+     -AllKnown       inlude ALL known framework versions (SLOW)?
      -NoStandard     exclude .NET Standard?
      -NoCore         exclude .NET Core?
      -NoClassic      exclude .NET Framework?
-     -NoCheck        do not check whether the specified platform is supported or not?
+     -NoCheck        do not check whether the specified framework is supported or not?
 
      -Trx            specifies a VSTest results file (format trx).
 
@@ -106,8 +106,8 @@ Remarks:
   - if "TargetFrameworks" contains a .NET Standard, an exe project will be
     compiled for it, and therefore won't be executable.
 - Option -NoCheck.
-  Useful to build/test the project for platforms listed in
-  "MyNotSupportedTestPlatforms" from D.B.props. Of course, as the name suggests,
+  Useful to build/test the project for frameworks listed in
+  "MyNotSupportedTestFrameworks" from D.B.props. Of course, as the name suggests,
   a succesful outcome is not guaranteed, to say the least, it might not even run.
 
 Commonly used properties.
@@ -139,7 +139,7 @@ Remark: to truely mimic an Azure task, one should also add '/p:TF_BUILD=true'
 
 # ------------------------------------------------------------------------------
 
-function Get-Platforms(
+function Get-Frameworks(
     [switch] $noStandard,
     [switch] $noCore,
     [switch] $noClassic,
@@ -151,35 +151,35 @@ function Get-Platforms(
     $props.PreserveWhitespace = $false
     $props.LoadXml($xml)
 
-    $platforms = @()
+    $fmks = @()
     if (-not $noStandard) {
-        $platforms = Select-Property $props 'MySupportedStandards'
+        $fmks = Select-Property $props 'MySupportedStandards'
     }
     if (-not $noCore) {
-        $propName = $allKnown ? 'MyMaxCorePlatforms' : 'MyMinCorePlatforms'
-        $platforms += Select-Property $props $propName
+        $propName = $allKnown ? 'MyMaxCoreFrameworks' : 'MyMinCoreFrameworks'
+        $fmks += Select-Property $props $propName
     }
     # WARNING: we ignore Mono on Linux and MacOS...
     if (-not $noClassic -and $IsWindows) {
-        $propName = $allKnown ? 'MyMaxClassicPlatforms' : 'MyMinClassicPlatforms'
-        $platforms += Select-Property $props $propName
+        $propName = $allKnown ? 'MyMaxClassicFrameworks' : 'MyMinClassicFrameworks'
+        $fmks += Select-Property $props $propName
     }
 
-    $platforms
+    $fmks
 }
 
 # ------------------------------------------------------------------------------
 
-function Get-TargetFrameworks([string[]] $platforms) {
-    if (-not $platforms) { Write-Error 'The lits of targets is empty.' }
+function Format-TargetFrameworks([string[]] $fmks) {
+    if (-not $fmks) { Write-Error 'The lits of targets is empty.' }
     # Quotes and multiple values:
     # - On Windows,     /p:TargetFrameworks=\"XXX;YYY\"
     # - On Linux/MacOs, /p:TargetFrameworks='"XXX;YYY"'
     # See https://github.com/dotnet/sdk/issues/8792#issuecomment-393756980
     if ($IsWindows) { $bquote = '\"' ; $equote = '\"' }
                else { $bquote = "'"""; $equote = """'" }
-    $targetFrameworks = $platforms -join ';'
-    '/p:TargetFrameworks=' + $bquote + ($platforms -join ';') + $equote
+    $targetFrameworks = $fmks -join ';'
+    '/p:TargetFrameworks=' + $bquote + ($fmks -join ';') + $equote
 }
 
 # ------------------------------------------------------------------------------
@@ -214,9 +214,9 @@ if ($DryRun) { Write-Host "$hello (DRY RUN).`n" }
 try {
     pushd $ROOT_DIR
 
-    if ($ListPlatforms) {
-        $platforms = (Get-Platforms -AllKnown) -join "`n- "
-        Write-Host "Supported platforms (option -Flatten):`n- $platforms"
+    if ($ListFrameworks) {
+        $fmks = (Get-Frameworks -AllKnown) -join "`n- "
+        Write-Host "Supported frameworks (option -Flatten):`n- $fmks"
         exit
     }
 
@@ -260,31 +260,31 @@ try {
                 Write-Warning 'To properly test the package, one should use test-package.ps1 instead.'
             }
 
-            if ($Platform)  {
-                Write-Verbose "Execute command for platform ""$Platform"" (FLAT)."
-                if (-not $NoCheck -and $Platform -notin (Get-Platforms -AllKnown)) {
-                    Write-Error "The specified platform is not supported: ""$Platform""."
+            if ($Framework)  {
+                Write-Verbose "Execute command for framework ""$Framework"" (FLAT)."
+                if (-not $NoCheck -and $Framework -notin (Get-Frameworks -AllKnown)) {
+                    Write-Error "The specified framework is not supported: ""$Framework""."
                 }
-                $args += "/p:TargetFrameworks=$Platform"
+                $args += "/p:TargetFrameworks=$Framework"
             }
             else {
-                Write-Verbose "Execute command for a custom platform set (FLAT)."
-                $platforms = Get-Platforms `
+                Write-Verbose "Execute command for a custom framework set (FLAT)."
+                $fmks = Get-Frameworks `
                     -NoStandard:($NoStandard -or $cmd -eq 'test') `
                     -NoCore:$NoCore `
                     -NoClassic:$NoClassic `
                     -AllKnown:$AllKnown
-                $args += Get-TargetFrameworks $platforms
+                $args += Format-TargetFrameworks $fmks
             }
         }
-        elseif ($Platform)  {
-            Write-Verbose "Execute command for platform ""$Platform""."
-            # If the platform is not listed in "TargetFrameworks", dotnet.exe
+        elseif ($Framework)  {
+            Write-Verbose "Execute command for framework ""$Framework""."
+            # If the framework is not listed in "TargetFrameworks", dotnet.exe
             # will fail silently :-(
-            $args += "-f:$Platform"
+            $args += "-f:$Framework"
         }
         else {
-            Write-Verbose "Execute command for the default platform set."
+            Write-Verbose "Execute command for the default framework set."
         }
     }
 

@@ -86,26 +86,37 @@
     <MyNoWarnForTestProject>CA1034;CA1303;CA1707;CA2007</MyNoWarnForTestProject>
   </PropertyGroup>
 
+  <!-- Compiler symbols -->
+  <PropertyGroup>
+    <DefineConstants Condition=" '$(DefineConstants)' == '' ">CONTRACTS_FULL</DefineConstants>
+    <DefineConstants Condition=" '$(DefineConstants)' != '' ">$(DefineConstants);CONTRACTS_FULL</DefineConstants>
+
+    <DefineConstants>$(DefineConstants);INTERNAL_NULLABLE_ATTRIBUTES</DefineConstants>
+
+    <DefineConstants Condition=" '$(SignAssembly)' == 'true' ">$(DefineConstants);SIGNED_ASSEMBLY</DefineConstants>
+    <DefineConstants Condition=" '$(CheckForOverflowUnderflow)' != 'true' ">$(DefineConstants);UNCHECKED</DefineConstants>
+  </PropertyGroup>
+
   <!-- Target frameworks -->
   <PropertyGroup>
-    <!-- IMPORTANT: keep "MyDefaultPlatform" in sync with "global.json" -->
-    <MyDefaultPlatform>netcoreapp3.1</MyDefaultPlatform>
+    <!-- IMPORTANT: keep "MyDefaultFramework" in sync with "global.json" -->
+    <MyDefaultFramework>netcoreapp3.1</MyDefaultFramework>
     <MySupportedStandards>netstandard2.1;netstandard2.0;netstandard1.1</MySupportedStandards>
   </PropertyGroup>
 
   <Choose>
     <When Condition=" '$(SlimBuild)' == 'true' ">
       <PropertyGroup>
-        <MyLibraryPlatforms>$(MyDefaultPlatform);netstandard2.0</MyLibraryPlatforms>
-        <MyTestPlatforms>$(MyDefaultPlatform)</MyTestPlatforms>
+        <MyLibraryFrameworks>$(MyDefaultFramework);netstandard2.0</MyLibraryFrameworks>
+        <MyTestFrameworks>$(MyDefaultFramework)</MyTestFrameworks>
       </PropertyGroup>
     </When>
 
     <Otherwise>
       <PropertyGroup>
-        <MyLibraryPlatforms>$(MySupportedStandards);net461</MyLibraryPlatforms>
-        <MyTestPlatforms>netcoreapp3.1;netcoreapp2.1</MyTestPlatforms>
-        <MyTestPlatforms Condition=" '$(OS)' == 'Windows_NT' ">$(MyTestPlatforms);net461;net452</MyTestPlatforms>
+        <MyLibraryFrameworks>$(MySupportedStandards);net461</MyLibraryFrameworks>
+        <MyTestFrameworks>netcoreapp3.1;netcoreapp2.1</MyTestFrameworks>
+        <MyTestFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(MyTestFrameworks);net461;net452</MyTestFrameworks>
       </PropertyGroup>
     </Otherwise>
   </Choose>
@@ -120,24 +131,24 @@
       These properties are NOT used by any project located in the directory "src".
     -->
 
-    <MyMinCorePlatforms>netcoreapp3.1;netcoreapp2.1</MyMinCorePlatforms>
-    <MyMaxCorePlatforms>
+    <MyMinCoreFrameworks>netcoreapp3.1;netcoreapp2.1</MyMinCoreFrameworks>
+    <MyMaxCoreFrameworks>
       netcoreapp3.1;netcoreapp3.0;
       netcoreapp2.2;netcoreapp2.1
-    </MyMaxCorePlatforms>
+    </MyMaxCoreFrameworks>
 
-    <MyMinClassicPlatforms>net48;net472;net462;net452</MyMinClassicPlatforms>
-    <MyMaxClassicPlatforms>
+    <MyMinClassicFrameworks>net48;net472;net462;net452</MyMinClassicFrameworks>
+    <MyMaxClassicFrameworks>
       net48;
       net472;net471;net47;
       net462;net461;net46;
       net452
-    </MyMaxClassicPlatforms>
+    </MyMaxClassicFrameworks>
 
-    <MyNotSupportedTestPlatforms>
+    <MyNotSupportedTestFrameworks>
       netcoreapp2.0;
       net451;net45
-    </MyNotSupportedTestPlatforms>
+    </MyNotSupportedTestFrameworks>
   </PropertyGroup>
 
 </Project>

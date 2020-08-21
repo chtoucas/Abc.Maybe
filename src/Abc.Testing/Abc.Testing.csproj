@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>$(MyLibraryPlatforms)</TargetFrameworks>
+    <TargetFrameworks>$(MyLibraryFrameworks)</TargetFrameworks>
 
     <!-- Use the missing and nullable attributes from Abc.Maybe? -->
     <IncludeShims Condition=" '$(VisibleInternals)' == 'true' ">false</IncludeShims>

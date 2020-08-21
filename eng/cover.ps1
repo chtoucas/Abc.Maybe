@@ -23,8 +23,8 @@ that's just a detail.
 .PARAMETER Configuration
 The configuration to test the solution for. Default (explicit) = "Debug".
 
-.PARAMETER Platform
-The platform to test the solution for.
+.PARAMETER Framework
+The framework to test the solution for.
 
 .PARAMETER Threshold
 Threshold below which a build will fail.
@@ -80,7 +80,7 @@ param(
     [Alias("c")] [string] $Configuration = "Debug",
 
     [Parameter(Mandatory = $false, Position = 1)]
-    [Alias("f")] [string] $Platform,
+    [Alias("f")] [string] $Framework,
 
     [Parameter(Mandatory = $false, Position = 2)]
     [Alias("t")] [string] $Threshold,
@@ -105,7 +105,7 @@ param(
 # ------------------------------------------------------------------------------
 
 # Nota bene: using a project rather than a solution may speed up things a bit by
-# ignoring unused platforms referenced by the other projects.
+# ignoring unused frameworks referenced by the other projects.
 const TEST_PROJECT_NAME "Abc.Tests"
 const TEST_PROJECT (Join-Path $SRC_DIR $TEST_PROJECT_NAME -Resolve)
 
@@ -120,7 +120,7 @@ Run the Code Coverage script and build human-readable reports.
 
 Usage: cover.ps1 [arguments]
   -c|-Configuration  the configuration to test the solution for
-  -f|-Platform       the platform to test the solution for.
+  -f|-Framework      the framework to test the solution for.
   -t|-Threshold      threshold below which a build will fail.
 
   -x|-XPlat          use "coverlet.collector" instead of "coverlet.msbuild"?
@@ -180,7 +180,7 @@ function Invoke-CoverletMSBuild {
 
         [Parameter(Mandatory = $false)]
         [ValidateNotNull()]
-        [string] $platform,
+        [string] $framework,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -199,7 +199,7 @@ function Invoke-CoverletMSBuild {
     SAY-LOUDLY "`nRunning Coverlet (MSBuild)."
 
     $args = "--nologo", "-c:$configuration", "/p:DebugType=portable", "/p:RunAnalyzers=false"
-    if ($platform)  { $args += "/p:TargetFrameworks=$platform" }
+    if ($framework) { $args += "/p:TargetFrameworks=$framework" }
     if ($threshold) { $args += "/p:Threshold=$threshold" }
     if ($noRestore) { $args += "--no-restore" }
     if ($myVerbose) { $args += "-v:minimal", "/p:PrintSettings=true" }
@@ -259,7 +259,7 @@ function Invoke-CoverletXPlat {
 
         [Parameter(Mandatory = $false)]
         [ValidateNotNull()]
-        [string] $platform,
+        [string] $framework,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -275,7 +275,7 @@ function Invoke-CoverletXPlat {
     SAY-LOUDLY "`nRunning Coverlet (XPlat)."
 
     $args = "--nologo", "-c:$configuration", "/p:DebugType=portable", "/p:RunAnalyzers=false"
-    if ($platform)  { $args += "/p:TargetFrameworks=$platform" }
+    if ($framework) { $args += "/p:TargetFrameworks=$framework" }
     if ($noRestore) { $args += "--no-restore" }
     if ($myVerbose) { $args += "-v:minimal", "/p:PrintSettings=true" }
 
@@ -325,7 +325,7 @@ function Invoke-OpenCover {
 
         [Parameter(Mandatory = $false)]
         [ValidateNotNull()]
-        [string] $platform,
+        [string] $framework,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -352,13 +352,13 @@ function Invoke-OpenCover {
         "-[Abc*]Microsoft.*"
     $filter = "$filters"
 
-    # With OpenCover, we only work with one platform at a time.
-    # Remark: when $platform is empty, we use the default platform (SlimBuild).
+    # With OpenCover, we only work with one framework at a time.
+    # Remark: when $framework is empty, we use the default framework (SlimBuild).
     $args = "-c:$configuration",
         "/p:DebugType=full",
         "/p:SlimBuild=true",
         "/p:RunAnalyzers=false"
-    if ($platform)  { $args += "/p:TargetFrameworks=$platform" }
+    if ($framework) { $args += "/p:TargetFrameworks=$framework" }
     if ($myVerbose) { $args += "-v:minimal", "/p:PrintSettings=true" }
                else { $args += "-v:quiet" }
 
@@ -441,7 +441,7 @@ try {
     if ($XPlat) {
         Invoke-CoverletXPlat `
             -Configuration $Configuration `
-            -Platform      $Platform `
+            -Framework     $Framework `
             -OutDir        $outDir `
             -Deterministic:$Deterministic `
             -NoSourceLink: $NoSourceLink `
@@ -460,7 +460,7 @@ try {
             Find-OpenCover -ExitOnError `
                 | Invoke-OpenCover `
                     -Configuration $Configuration `
-                    -Platform      $Platform `
+                    -Framework     $Framework `
                     -OutXml        $outXml `
                     -NoRestore:    $NoRestore `
                     -MyVerbose:    $myVerbose
@@ -471,7 +471,7 @@ try {
             # the test project.
             Invoke-CoverletMSBuild `
                 -Configuration $Configuration `
-                -Platform      $Platform `
+                -Framework     $Framework `
                 -Threshold     $Threshold `
                 -OutXml        $outXml `
                 -Deterministic:$Deterministic `
@@ -491,9 +491,9 @@ try {
             $reports   = $outXml
             $targetDir = Join-Path $outDir "html"
         } else {
-            if ($Platform) {
-                $reports   = Join-Path $outDir "$tool.$Platform.xml"
-                $targetDir = Join-Path $outDir "html-$Platform"
+            if ($Framework) {
+                $reports   = Join-Path $outDir "$tool.$Framework.xml"
+                $targetDir = Join-Path $outDir "html-$Framework"
             } else {
                 # Remark: here we grab any report within $outDir.
                 # There is one case when we shouldn't do that: SLIM_BUILD = true

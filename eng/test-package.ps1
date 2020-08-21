@@ -16,28 +16,28 @@ Matching .NET Framework Developer Packs or Targeting Packs must be installed
 locally, the later should suffice. The script will fail with error MSB3644 when
 it is not the case.
 
-.PARAMETER Platform
-Specify the platform(s) for which to test the package.
+.PARAMETER Framework
+Specify the framework(s) for which to test the package.
 Unless there is one trailing asterisk (*), this parameter expects a single
-platform name. Otherwise, all platform whose name starts with the specified
+framework name. Otherwise, all framework whose name starts with the specified
 value (without the asterisk) will be selected. For instance, "net46*" is
 translated to ""net461" and "net462". The limit case "*" is a synonym for
 "-AllKnown -NoClassic:$false -NoCore:$false".
 
 .PARAMETER AllKnown
-Test the package for ALL known platform versions (SLOW)?
-Ignored if -Platform is also set and equals $true.
+Test the package for ALL known framework versions (SLOW)?
+Ignored if -Framework is also set and equals $true.
 
-.PARAMETER ListPlatforms
-Print the list of supported platforms, then exit?
+.PARAMETER ListFrameworks
+Print the list of supported frameworks, then exit?
 
 .PARAMETER NoClassic
 Exclude .NET Framework from the tests?
-Ignored if -Platform is also set and equals $true.
+Ignored if -Framework is also set and equals $true.
 
 .PARAMETER NoCore
 Exclude .NET Core from the tests?
-Ignored if -Platform is also set and equals $true.
+Ignored if -Framework is also set and equals $true.
 
 .PARAMETER Configuration
 Specify the configuration to test for. Default (explicit) = "Release".
@@ -68,7 +68,7 @@ See https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
 Hard clean (reset) the source and test directories before anything else?
 
 .PARAMETER Optimise
-Attempt to speed up things a bit when testing many platforms, one at a time?
+Attempt to speed up things a bit when testing many frameworks, one at a time?
 
 .PARAMETER Yes
 Do not ask for confirmation?
@@ -78,12 +78,12 @@ Print help text then exit?
 #>
 [CmdletBinding()]
 param(
-    # Platform selection.
+    # Framework selection.
     #
     [Parameter(Mandatory = $false, Position = 0)]
-                 [string] $Platform,
+                 [string] $Framework,
     [Alias("a")] [switch] $AllKnown,
-    [Alias("l")] [switch] $ListPlatforms,
+    [Alias("l")] [switch] $ListFrameworks,
                  [switch] $NoClassic,
                  [switch] $NoCore,
 
@@ -119,8 +119,8 @@ param(
 const TEST_PROJECT_NAME "Abc.PackageTests"
 const TEST_PROJECT (Join-Path $TEST_DIR "Package" -Resolve)
 
-const OLDSTYLE_XUNIT_PLATFORMS @("net451", "net45")
-const OLDSTYLE_XUNIT_RUNNER_PLATFORM "net452"
+const OLDSTYLE_XUNIT_FRAMEWORKS @("net451", "net45")
+const OLDSTYLE_XUNIT_RUNNER_FRAMEWORK "net452"
 
 #endregion
 ################################################################################
@@ -132,9 +132,9 @@ function Print-Help {
 Test the package Abc.Maybe.
 
 Usage: test-package.ps1 [arguments]
-     -Platform       specify the platform(s) for which to test the package.
-  -a|-AllKnown       test the package for ALL known platform versions (SLOW)?
-  -l|-ListPlatforms  print the list of supported platforms, then exit?
+     -Framework      specify the framework(s) for which to test the package.
+  -a|-AllKnown       test the package for ALL known framework versions (SLOW)?
+  -l|-ListFrameworks  print the list of supported frameworks, then exit?
      -NoClassic      exclude .NET Framework from the tests?
      -NoCore         exclude .NET Core from the tests?
 
@@ -146,7 +146,7 @@ Usage: test-package.ps1 [arguments]
      -Runtime        specify a target runtime to test for.
 
      -Reset          reset the solution before anything else?
-  -o|-Optimise       attempt to speed up things a bit when testing many platforms one at a time?
+  -o|-Optimise       attempt to speed up things a bit when testing many frameworks one at a time?
   -y|-Yes            do not ask for confirmation before running any test?
   -h|-Help           print this help then exit?
 
@@ -167,20 +167,20 @@ Looking for more help?
 
 # ------------------------------------------------------------------------------
 
-function Approve-Platform {
+function Approve-Framework {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, Position = 0)]
         [ValidateNotNullOrEmpty()]
-        [string] $platform,
+        [string] $framework,
 
         [Parameter(Mandatory = $true, Position = 1)]
         [ValidateNotNull()]
-        [string[]] $knownPlatforms
+        [string[]] $knownFrameworks
     )
 
-    if ($platform -notin $knownPlatforms) {
-        die "The specified platform is not supported: ""$platform""."
+    if ($framework -notin $knownFrameworks) {
+        die "The specified framework is not supported: ""$framework""."
     }
 }
 
@@ -224,7 +224,7 @@ function Find-XunitRunnerOnce {
 
     Restore-NETFxTools | Out-Host
 
-    $path = Find-XunitRunner -Platform $OLDSTYLE_XUNIT_RUNNER_PLATFORM
+    $path = Find-XunitRunner -Framework $OLDSTYLE_XUNIT_RUNNER_FRAMEWORK
 
     if (-not $path) { $Script:___NoXunitConsole = $true ; return }
 
@@ -302,10 +302,10 @@ function Get-TargetFrameworks {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNull()]
-        [string[]] $platformList
+        [string[]] $frameworkList
     )
 
-    '\"' + ($platformList -join ";") + '\"'
+    '\"' + ($frameworkList -join ";") + '\"'
 }
 
 #endregion
@@ -317,7 +317,7 @@ function Invoke-Restore {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNull()]
-        [string[]] $platformList,
+        [string[]] $frameworkList,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -333,7 +333,7 @@ function Invoke-Restore {
 
     SAY-LOUDLY "`nRestoring dependencies for $TEST_PROJECT_NAME, please wait..."
 
-    $targetFrameworks = Get-TargetFrameworks $platformList
+    $targetFrameworks = Get-TargetFrameworks $frameworkList
 
     $args =  "/p:AbcPackageVersion=$version", "/p:TargetFrameworks=$targetFrameworks"
     if ($runtime)  { $args += "--runtime:$runtime" }
@@ -351,7 +351,7 @@ function Invoke-Build {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNull()]
-        [string[]] $platformList,
+        [string[]] $frameworkList,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -367,7 +367,7 @@ function Invoke-Build {
 
     SAY-LOUDLY "`nBuilding $TEST_PROJECT_NAME, please wait..."
 
-    $targetFrameworks = Get-TargetFrameworks $platformList
+    $targetFrameworks = Get-TargetFrameworks $frameworkList
 
     $args = `
         "-c:$configuration",
@@ -393,8 +393,8 @@ function Invoke-TestOldStyle {
     [CmdletBinding(PositionalBinding = $false)]
     param(
         [Parameter(Mandatory = $true)]
-        [ValidateScript({ $_ -in $OLDSTYLE_XUNIT_PLATFORMS })]
-        [string] $platform,
+        [ValidateScript({ $_ -in $OLDSTYLE_XUNIT_FRAMEWORKS })]
+        [string] $framework,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -411,13 +411,13 @@ function Invoke-TestOldStyle {
         [switch] $noBuild
     )
 
-    "`nTesting the package for ""$platform"" and {0}." -f (Get-RuntimeLabel $runtime) `
+    "`nTesting the package for ""$framework"" and {0}." -f (Get-RuntimeLabel $runtime) `
         | SAY-LOUDLY
 
-    if (-not $IsWindows) { warn """$platform"" can only be tested on Windows." ; return }
+    if (-not $IsWindows) { warn """$framework"" can only be tested on Windows." ; return }
 
     if ($runtime) {
-        warn "Runtime parameter ""$runtime"" is ignored when targeting ""$platform""."
+        warn "Runtime parameter ""$runtime"" is ignored when targeting ""$framework""."
     }
 
     $xunit = Find-XunitRunnerOnce
@@ -426,7 +426,7 @@ function Invoke-TestOldStyle {
     if (-not $noBuild) {
         $args = `
             "-c:$configuration",
-            "-f:$platform",
+            "-f:$framework",
             "/p:AbcPackageVersion=$version",
             "/p:AllKnown=true",
             "/p:NotSupported=true"
@@ -434,13 +434,13 @@ function Invoke-TestOldStyle {
         if ($noRestore) { $args += "--no-restore" }
 
         & dotnet build $TEST_PROJECT --nologo $args
-            || die "Build failed when targeting ""$platform""."
+            || die "Build failed when targeting ""$framework""."
     }
 
-    $asm = Join-Path $TEST_PROJECT "bin\$configuration\$platform\$TEST_PROJECT_NAME.dll" -Resolve
+    $asm = Join-Path $TEST_PROJECT "bin\$configuration\$framework\$TEST_PROJECT_NAME.dll" -Resolve
 
     & $xunit $asm
-        || die "Test task failed when targeting ""$platform""."
+        || die "Test task failed when targeting ""$framework""."
 
     say-softly "Test completed successfully."
 }
@@ -452,7 +452,7 @@ function Invoke-TestSingle {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $platform,
+        [string] $framework,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -469,9 +469,9 @@ function Invoke-TestSingle {
         [switch] $noBuild
     )
 
-    if ($platform -in $OLDSTYLE_XUNIT_PLATFORMS) {
+    if ($framework -in $OLDSTYLE_XUNIT_FRAMEWORKS) {
         Invoke-TestOldStyle `
-            -Platform      $platform `
+            -Framework     $framework `
             -Configuration $configuration `
             -Version       $version `
             -Runtime       $runtime `
@@ -480,12 +480,12 @@ function Invoke-TestSingle {
         return
     }
 
-    "`nTesting the package for ""$platform"" and {0}." -f (Get-RuntimeLabel $runtime) `
+    "`nTesting the package for ""$framework"" and {0}." -f (Get-RuntimeLabel $runtime) `
         | SAY-LOUDLY
 
     $args = `
         "-c:$configuration",
-        "-f:$platform",
+        "-f:$framework",
         "/p:AbcPackageVersion=$version",
         "/p:AllKnown=true",
         "/p:NotSupported=true"
@@ -494,7 +494,7 @@ function Invoke-TestSingle {
     elseif ($noRestore) { $args += "--no-restore" }
 
     & dotnet test $TEST_PROJECT --nologo $args
-        || die "Test task failed when targeting ""$platform""."
+        || die "Test task failed when targeting ""$framework""."
 
     say-softly "Test completed successfully."
 }
@@ -506,7 +506,7 @@ function Invoke-TestManyInteractive {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNull()]
-        [string[]] $platformList,
+        [string[]] $frameworkList,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -523,10 +523,10 @@ function Invoke-TestManyInteractive {
         [switch] $noBuild
     )
 
-    foreach ($platform in $platformList) {
-        if (yesno "`nTest the package for ""$platform""?") {
+    foreach ($framework in $frameworkList) {
+        if (yesno "`nTest the package for ""$framework""?") {
             Invoke-TestSingle `
-                -Platform      $platform `
+                -Framework     $framework `
                 -Configuration $configuration `
                 -Version       $version `
                 -Runtime       $runtime `
@@ -543,7 +543,7 @@ function Invoke-TestAny {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNull()]
-        [string[]] $platformList,
+        [string[]] $frameworkList,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -557,7 +557,7 @@ function Invoke-TestAny {
         [string] $runtime
     )
 
-    $frameworks = $platformList | where { $_ -notin $OLDSTYLE_XUNIT_PLATFORMS }
+    $frameworks = $frameworkList | where { $_ -notin $OLDSTYLE_XUNIT_FRAMEWORKS }
     $targetFrameworks = Get-TargetFrameworks $frameworks
 
     $args = `
@@ -571,11 +571,11 @@ function Invoke-TestAny {
 
     say-softly "Test completed successfully."
 
-    say "`nContinuing with ""old-style"" platforms if any."
-    foreach ($platform in $OLDSTYLE_XUNIT_PLATFORMS) {
-        if ($platform -in $platformList) {
+    say "`nContinuing with ""old-style"" frameworks if any."
+    foreach ($framework in $OLDSTYLE_XUNIT_FRAMEWORKS) {
+        if ($framework -in $frameworkList) {
             Invoke-TestOldStyle `
-                -Platform      $platform `
+                -Framework     $framework `
                 -Configuration $configuration `
                 -Version       $version `
                 -Runtime       $runtime
@@ -590,7 +590,7 @@ function Invoke-TestMany {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNull()]
-        [string[]] $platformList,
+        [string[]] $frameworkList,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -612,34 +612,34 @@ function Invoke-TestMany {
         | SAY-LOUDLY
 
     $pattern = $filter.Substring(0, $filter.Length - 1)
-    $filteredPlatforms = $platformList | where { $_.StartsWith($pattern, "InvariantCultureIgnoreCase") }
+    $filteredFrameworks = $frameworkList | where { $_.StartsWith($pattern, "InvariantCultureIgnoreCase") }
 
-    $count = $filteredPlatforms.Length
+    $count = $filteredFrameworks.Length
     if ($count -eq 0) {
-        die "After filtering the list of known platforms w/ $filter, there is nothing left to be done."
+        die "After filtering the list of known frameworks w/ $filter, there is nothing left to be done."
     }
 
     # Fast track.
     if ($count -eq 1) {
-        $platform = $filteredPlatforms[0]
+        $framework = $filteredFrameworks[0]
 
-        say "Only ""$platform"" was left after filtering the list of known platforms."
+        say "Only ""$framework"" was left after filtering the list of known frameworks."
 
         Invoke-TestSingle `
-            -Platform      $platform `
+            -Framework     $framework `
             -Configuration $configuration `
             -Version       $version `
             -Runtime       $runtime
         return
     }
 
-    $platformSet = ($filteredPlatforms -join '", "')
-    say "Remaining platorms after filtering: ""$platformSet""."
+    $frameworkSet = ($filteredFrameworks -join '", "')
+    say "Remaining platorms after filtering: ""$frameworkSet""."
 
     SAY-LOUDLY "`nBatch testing the package."
 
     Invoke-TestAny `
-        -PlatformList  $filteredPlatforms `
+        -FrameworkList $filteredFrameworks `
         -Configuration $configuration `
         -Version       $version `
         -Runtime       $runtime
@@ -652,7 +652,7 @@ function Invoke-TestAll {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNull()]
-        [string[]] $platformList,
+        [string[]] $frameworkList,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
@@ -670,22 +670,22 @@ function Invoke-TestAll {
         [switch] $noCore
     )
 
-    # Platform set.
-    $platformSet = $noClassic ? ".NET Core"
+    # Framework set.
+    $frameworkSet = $noClassic ? ".NET Core"
         : $noCore ? ".NET Framework"
         : ".NET Framework and .NET Core"
-    # Platform versions.
-    $platformVer = $allKnown ? "ALL versions"
+    # Framework versions.
+    $frameworkVer = $allKnown ? "ALL versions"
         : $noClassic ? "LTS versions"
         : $noCore ? "last minor version of each major version"
         : "default versions"
 
-    "`nBatch testing the package for $platformSet, $platformVer, and {0}." `
+    "`nBatch testing the package for $frameworkSet, $frameworkVer, and {0}." `
         -f (Get-RuntimeLabel $runtime) `
         | SAY-LOUDLY
 
     Invoke-TestAny `
-        -PlatformList  $platformList `
+        -FrameworkList $frameworkList `
         -Configuration $configuration `
         -Version       $version `
         -Runtime       $runtime
@@ -708,9 +708,9 @@ try {
 
     pushd $TEST_DIR
 
-    $minClassic, $maxClassic, $minCore, $maxCore = Get-SupportedPlatforms -NotSupported
+    $minClassic, $maxClassic, $minCore, $maxCore = Get-SupportedFrameworks -NotSupported
 
-    if ($ListPlatforms) {
+    if ($ListFrameworks) {
         say (@"
 
 Supported .NET Frameworks (maximal and minimal sets):
@@ -756,21 +756,21 @@ Supported .NET Core (maximal and minimal sets):
 
     SAY-LOUDLY "`nThe selected package version is ""$Version""."
 
-    if ($Platform -in "", "*") {
-        if ($Platform -eq "*") {
-            # "*" really means ALL platforms.
+    if ($Framework -in "", "*") {
+        if ($Framework -eq "*") {
+            # "*" really means ALL frameworks.
             $AllKnown = $true ; $NoClassic = $false ; $NoCore = $false
         }
         elseif ($NoClassic -and $NoCore) {
             die "You set both -NoClassic and -NoCore... There is nothing left to be done."
         }
 
-        $platformList  = $NoCore    ? @() : $AllKnown ? $maxCore    : $minCore
-        $platformList += $NoClassic ? @() : $AllKnown ? $maxClassic : $minClassic
+        $frameworkList  = $NoCore    ? @() : $AllKnown ? $maxCore    : $minCore
+        $frameworkList += $NoClassic ? @() : $AllKnown ? $maxClassic : $minClassic
 
-        if ($Yes -or (yesno "`nTest the package for all selected platforms at once (SLOW)?")) {
+        if ($Yes -or (yesno "`nTest the package for all selected frameworks at once (SLOW)?")) {
             Invoke-TestAll `
-                -PlatformList  $platformList `
+                -FrameworkList $frameworkList `
                 -Configuration $Configuration `
                 -Version       $Version `
                 -Runtime       $Runtime `
@@ -782,23 +782,23 @@ Supported .NET Core (maximal and minimal sets):
             # Building or restoring the solution only once should speed up things a bit.
             if ($Optimise) {
                 Invoke-Build `
-                    -PlatformList  $platformList `
+                    -FrameworkList $frameworkList `
                     -Configuration $Configuration `
                     -Version       $Version `
                     -Runtime       $Runtime
             }
             else {
                 Invoke-Restore `
-                    -PlatformList  $platformList `
+                    -FrameworkList $frameworkList `
                     -Configuration $Configuration `
                     -Version       $Version `
                     -Runtime       $Runtime
             }
 
-            SAY-LOUDLY "`nNow, you will have the opportunity to choose which platform to test the package for."
+            SAY-LOUDLY "`nNow, you will have the opportunity to choose which framework to test the package for."
 
             Invoke-TestManyInteractive `
-                -PlatformList  $platformList `
+                -FrameworkList $frameworkList `
                 -Configuration $Configuration `
                 -Version       $Version `
                 -Runtime       $Runtime `
@@ -807,23 +807,23 @@ Supported .NET Core (maximal and minimal sets):
         }
     }
     else {
-        $knownPlatforms = $maxCore + $maxClassic
+        $knownFrameworks = $maxCore + $maxClassic
 
-        if ($Platform.EndsWith("*")) {
+        if ($Framework.EndsWith("*")) {
             Invoke-TestMany `
-                -PlatformList  $knownPlatforms `
-                -Filter        $Platform `
+                -FrameworkList $knownFrameworks `
+                -Filter        $Framework `
                 -Configuration $Configuration `
                 -Version       $Version `
                 -Runtime       $Runtime
         }
         else {
-            # Validating the platform name is not mandatory but, if we don't,
-            # the script fails silently when the platform is not supported here.
-            Approve-Platform -Platform $Platform -KnownPlatforms $knownPlatforms
+            # Validating the framework name is not mandatory but, if we don't,
+            # the script fails silently when the framework is not supported here.
+            Approve-Framework -Framework $Framework -KnownFrameworks $knownFrameworks
 
             Invoke-TestSingle `
-                -Platform      $Platform `
+                -Framework     $Framework `
                 -Configuration $Configuration `
                 -Version       $Version `
                 -Runtime       $Runtime

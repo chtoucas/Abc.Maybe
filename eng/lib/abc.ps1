@@ -26,7 +26,7 @@ New-Alias "SAY-LOUDLY" Write-Green
 # ------------------------------------------------------------------------------
 
 # Note to myself: do not use a separate directory for build.
-# Build warnings MSB3277, the problem is that we then build all platforms
+# Build warnings MSB3277, the problem is that we then build all frameworks
 # within the same dir. This is something that can happen for instance if we
 # define a variable $OutDir and call dotnet or MSBuild w/ "." and not "&".
 
@@ -46,8 +46,8 @@ New-Alias "SAY-LOUDLY" Write-Green
 (Join-Path $ARTIFACTS_DIR "nuget-cache")     | const NUGET_LOCAL_CACHE
 (Join-Path $ARTIFACTS_DIR "tools")           | const NET_FRAMEWORK_TOOLS_DIR
 
-# The props where we can informations related to supported platforms.
-const PLATFORMS_PROPS (Join-Path $ROOT_DIR "Directory.Build.props" -Resolve)
+# The props where we can informations related to supported frameworks.
+const FRAMEWORKS_PROPS (Join-Path $ROOT_DIR "Directory.Build.props" -Resolve)
 
 # Reference project used to restore .NET Framework tools.
 # NB: we need the project file (not the directory) since we are going to parse it.
@@ -242,22 +242,22 @@ function Get-PackageVersion {
 
 # ------------------------------------------------------------------------------
 
-function Get-SupportedPlatforms {
+function Get-SupportedFrameworks {
     [CmdletBinding()]
     param(
         [switch] $notSupported
     )
 
-    ___confess "Getting the list of all supported platforms."
+    ___confess "Getting the list of all supported frameworks."
 
-    $xml = Load-XmlTextual $PLATFORMS_PROPS
-    $minClassic = Select-SingleProperty $xml "MyMinClassicPlatforms"
-    $maxClassic = Select-SingleProperty $xml "MyMaxClassicPlatforms"
-    $minCore    = Select-SingleProperty $xml "MyMinCorePlatforms"
-    $maxCore    = Select-SingleProperty $xml "MyMaxCorePlatforms"
+    $xml = Load-XmlTextual $FRAMEWORKS_PROPS
+    $minClassic = Select-SingleProperty $xml "MyMinClassicFrameworks"
+    $maxClassic = Select-SingleProperty $xml "MyMaxClassicFrameworks"
+    $minCore    = Select-SingleProperty $xml "MyMinCoreFrameworks"
+    $maxCore    = Select-SingleProperty $xml "MyMaxCoreFrameworks"
 
     if ($notSupported) {
-        $unsupported = Select-SingleProperty $xml -Property "MyNotSupportedTestPlatforms"
+        $unsupported = Select-SingleProperty $xml -Property "MyNotSupportedTestFrameworks"
 
         $maxClassic += $unsupported | where { $_.StartsWith("net4") }
         $maxCore    += $unsupported | where { $_.StartsWith("netcoreapp") }
@@ -401,7 +401,7 @@ function Find-XunitRunner {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $platform,
+        [string] $framework,
 
         [switch] $exitOnError
     )
@@ -412,7 +412,7 @@ function Find-XunitRunner {
         -ExitOnError:$exitOnError
 
     $path = Join-Path $NET_FRAMEWORK_TOOLS_DIR `
-        "xunit.runner.console\$version\tools\$platform\xunit.console.exe"
+        "xunit.runner.console\$version\tools\$framework\xunit.console.exe"
 
     if (-not (Test-Path $path)) {
         return carp "Could not find Xunit Console Runner v$version. Maybe use -Restore?" `

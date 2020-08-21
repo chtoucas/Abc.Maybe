@@ -14,25 +14,25 @@
   <Choose>
     <When Condition=" '$(AllKnown)' == 'true' ">
       <PropertyGroup>
-        <TargetFrameworks>$(MyMaxCorePlatforms)</TargetFrameworks>
+        <TargetFrameworks>$(MyMaxCoreFrameworks)</TargetFrameworks>
         <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">
-          $(TargetFrameworks);$(MyMaxClassicPlatforms);
+          $(TargetFrameworks);$(MyMaxClassicFrameworks);
         </TargetFrameworks>
       </PropertyGroup>
     </When>
 
     <Otherwise>
       <PropertyGroup>
-        <TargetFrameworks>$(MyMinCorePlatforms)</TargetFrameworks>
+        <TargetFrameworks>$(MyMinCoreFrameworks)</TargetFrameworks>
         <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">
-          $(TargetFrameworks);$(MyMinClassicPlatforms)
+          $(TargetFrameworks);$(MyMinClassicFrameworks)
         </TargetFrameworks>
       </PropertyGroup>
     </Otherwise>
   </Choose>
 
   <PropertyGroup Condition=" '$(NotSupported)' == 'true' ">
-    <TargetFrameworks>$(TargetFrameworks);$(MyNotSupportedTestPlatforms)</TargetFrameworks>
+    <TargetFrameworks>$(TargetFrameworks);$(MyNotSupportedTestFrameworks)</TargetFrameworks>
   </PropertyGroup>
 
   <!-- Common settings -->

@@ -17,9 +17,9 @@
     <AddHashCodePackage Condition=" '$(TargetFramework)' == 'net46' ">false</AddHashCodePackage>
   </PropertyGroup>
   <PropertyGroup>
-    <!-- TweakXunit is true for platforms no longer supported by
+    <!-- TweakXunit is true for frameworks no longer supported by
          xunit.runner.visualstudio -->
-    <TweakXunit Condition=" $(MyNotSupportedTestPlatforms.Contains('$(TargetFramework)')) ">true</TweakXunit>
+    <TweakXunit Condition=" $(MyNotSupportedTestFrameworks.Contains('$(TargetFramework)')) ">true</TweakXunit>
 
     <XunitRunnerVersion>2.4.3</XunitRunnerVersion>
     <XunitRunnerVersion Condition=" '$(TweakXunit)' == 'true' ">2.4.1</XunitRunnerVersion>

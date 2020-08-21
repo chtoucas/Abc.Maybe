@@ -8,7 +8,7 @@
   -->
 
   <PropertyGroup>
-    <TargetFramework>$(MyDefaultPlatform)</TargetFramework>
+    <TargetFramework>$(MyDefaultFramework)</TargetFramework>
 
     <RestorePackagesPath>$(MyArtifactsRoot)nuget-cache\</RestorePackagesPath>
 
