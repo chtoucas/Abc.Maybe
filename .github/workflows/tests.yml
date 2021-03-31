@@ -35,14 +35,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    #- name: Info
-    #  run: dotnet --info
+    - name: Info
+      run: dotnet --info
     - name: Setup
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '5.0.x'
-    #- name: Info
-    #  run: dotnet --info
+    - name: Info
+      run: dotnet --info
     - name: Restore
       run: dotnet restore
     - name: Build
