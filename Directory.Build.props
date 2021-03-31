@@ -100,7 +100,7 @@
   <!-- Target frameworks -->
   <PropertyGroup>
     <!-- IMPORTANT: keep "MyDefaultFramework" in sync with "global.json" -->
-    <MyDefaultFramework>netcoreapp3.1</MyDefaultFramework>
+    <MyDefaultFramework>net5.0</MyDefaultFramework>
     <MySupportedStandards>netstandard2.1;netstandard2.0;netstandard1.1</MySupportedStandards>
   </PropertyGroup>
 
@@ -131,8 +131,9 @@
       These properties are NOT used by any project located in the directory "src".
     -->
 
-    <MyMinCoreFrameworks>netcoreapp3.1;netcoreapp2.1</MyMinCoreFrameworks>
+    <MyMinCoreFrameworks>net5.0;netcoreapp3.1;netcoreapp2.1</MyMinCoreFrameworks>
     <MyMaxCoreFrameworks>
+      net5.0;
       netcoreapp3.1;netcoreapp3.0;
       netcoreapp2.2;netcoreapp2.1
     </MyMaxCoreFrameworks>
