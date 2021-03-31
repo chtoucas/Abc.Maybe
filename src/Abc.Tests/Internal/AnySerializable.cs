@@ -9,9 +9,9 @@ using System.Diagnostics.CodeAnalysis;
 [Serializable]
 internal sealed class AnySerializable : IEquatable<AnySerializable>
 {
-    public short Item1;
-    public int Item2;
-    public long Item3;
+    public short Item1 = 0;
+    public int Item2 = 0;
+    public long Item3 = 0;
 
     // Structural equality to simplify deserialization tests.
     public bool Equals([AllowNull] AnySerializable other)

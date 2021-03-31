@@ -82,7 +82,7 @@ namespace Abc.Tests
         public static void ToString_CurrentCulture()
             => Assert.Equal("()", Unit.Default.ToString());
 
-#if !NETSTANDARD1_x // System.Runtime.Serialization
+#if !NETSTANDARD1_x && !NET5_0_OR_GREATER // System.Runtime.Serialization
         [Fact]
         public static void Serialization()
         {

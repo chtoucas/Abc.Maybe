@@ -1302,6 +1302,7 @@ namespace Abc
             // only fails in that specific case.
             Assert.True(typeof(Maybe<>).IsSerializable);
 
+#if !NET5_0_OR_GREATER // System.Runtime.Serialization
         [Fact]
         public static void Serialization_None_ForValueT()
         {
@@ -1402,6 +1403,7 @@ namespace Abc
             using var stream = new MemoryStream();
             Assert.Throws<SerializationException>(() => formatter.Serialize(stream, some));
         }
+#endif
     }
 
 #endif
