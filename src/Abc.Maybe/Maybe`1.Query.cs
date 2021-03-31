@@ -163,11 +163,11 @@ namespace Abc
             if (_isSome && inner._isSome)
             {
                 TKey outerKey = outerKeySelector(_value);
-                TKey innerKey = innerKeySelector(inner._value);
+                TKey innerKey = innerKeySelector(inner._value!);
 
                 if (comparer.Equals(outerKey, innerKey))
                 {
-                    return Maybe.Of(resultSelector(_value, inner._value));
+                    return Maybe.Of(resultSelector(_value, inner._value!));
                 }
             }
 

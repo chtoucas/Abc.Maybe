@@ -186,9 +186,9 @@ namespace Abc
         // idea, better to be explicit. For instance, maybe [= Some(x)] == y is
         // just maybe.Contains(y), and the latter is semantically more correct.
 
-        [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "ValueOrThrow()")]
+        //[SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "ValueOrThrow()")]
         public static explicit operator T(Maybe<T> value) =>
-            value._isSome ? value._value : throw EF.FromMaybe_NoValue;
+            value._isSome ? value._value! : throw EF.FromMaybe_NoValue;
 
         /// <summary>
         /// Represents a debugger type proxy for <see cref="Maybe{T}"/>.
@@ -454,7 +454,7 @@ namespace Abc
             if (zipper is null) { throw new Anexn(nameof(zipper)); }
 
             return _isSome && other._isSome
-                ? Maybe.Of(zipper(_value, other._value))
+                ? Maybe.Of(zipper(_value, other._value!))
                 : Maybe<TResult>.None;
         }
     }
@@ -567,7 +567,7 @@ namespace Abc
             //   left.CompareTo(right) < 0;
             left._isSome
             && right._isSome
-            && Comparer<T>.Default.Compare(left._value, right._value) < 0;
+            && Comparer<T>.Default.Compare(left._value!, right._value!) < 0;
 
         /// <summary>
         /// Compares the two specified instances to see if the left one is
@@ -587,7 +587,7 @@ namespace Abc
             //   left.CompareTo(right) <= 0;
             left._isSome
             && right._isSome
-            && Comparer<T>.Default.Compare(left._value, right._value) <= 0;
+            && Comparer<T>.Default.Compare(left._value!, right._value!) <= 0;
 
         /// <summary>
         /// Compares the two specified instances to see if the left one is
@@ -607,7 +607,7 @@ namespace Abc
             //   left.CompareTo(right) > 0;
             left._isSome
             && right._isSome
-            && Comparer<T>.Default.Compare(left._value, right._value) > 0;
+            && Comparer<T>.Default.Compare(left._value!, right._value!) > 0;
 
         /// <summary>
         /// Compares the two specified instances to see if the left one is
@@ -627,7 +627,7 @@ namespace Abc
             //   left.CompareTo(right) >= 0;
             left._isSome
             && right._isSome
-            && Comparer<T>.Default.Compare(left._value, right._value) >= 0;
+            && Comparer<T>.Default.Compare(left._value!, right._value!) >= 0;
 
         /// <summary>
         /// Compares this instance to a specified <see cref="Maybe{T}"/> object.
@@ -639,7 +639,7 @@ namespace Abc
         [Pure]
         public int CompareTo(Maybe<T> other) =>
             _isSome
-                ? other._isSome ? Comparer<T>.Default.Compare(_value, other._value) : 1
+                ? other._isSome ? Comparer<T>.Default.Compare(_value!, other._value!) : 1
                 : other._isSome ? -1 : 0;
 
         /// <inheritdoc />
@@ -648,7 +648,7 @@ namespace Abc
         {
             if (obj is null) { return 1; }
 
-            if (!(obj is Maybe<T> maybe))
+            if (obj is not Maybe<T> maybe)
             {
                 throw EF.InvalidType(nameof(obj), typeof(Maybe<T>), obj);
             }
@@ -669,7 +669,7 @@ namespace Abc
             // defined type (IMaybe not Maybe<T> as in IComparable.CompareTo()).
             // In particular, it is not meant to work with MaybeComparer<T>.Default.
 
-            if (!(other is IMaybe maybe))
+            if (other is not IMaybe maybe)
             {
                 // NB: typeof(Maybe<>) not typeof(Maybe<T>) since the comparison
                 // is permitted here when the generic type params differ.
@@ -727,7 +727,7 @@ namespace Abc
             EqualityComparer<T>.Default.Equals(_value, other._value);
 #else
             _isSome
-                ? other._isSome && EqualityComparer<T>.Default.Equals(_value, other._value)
+                ? other._isSome && EqualityComparer<T>.Default.Equals(_value, other._value!)
                 : !other._isSome;
 #endif
 
@@ -743,7 +743,7 @@ namespace Abc
 
             // See comments within IStructuralComparable.CompareTo().
 
-            if (other is null || !(other is IMaybe maybe)) { return false; }
+            if (other is null || other is not IMaybe maybe) { return false; }
 
             // REVIEW: direct structural equality comparison? This would change
             // the behaviour when the instance or other is empty.
