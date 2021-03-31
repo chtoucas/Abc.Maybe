@@ -1,1 +1,2 @@
 #nullable enable
+Abc.Maybe<T>.Maybe() -> void
