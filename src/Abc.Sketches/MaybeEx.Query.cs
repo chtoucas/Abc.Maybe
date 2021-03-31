@@ -99,7 +99,7 @@ namespace Abc
             Func<TOuter, Maybe<TInner>, TResult> resultSelector,
             IEqualityComparer<TKey> comparer)
         {
-            if (outer.TryGetValue(out TOuter x) && inner.TryGetValue(out TInner y))
+            if (outer.TryGetValue(out TOuter? x) && inner.TryGetValue(out TInner? y))
             {
                 TKey outerKey = outerKeySelector(x);
                 TKey innerKey = innerKeySelector(y);

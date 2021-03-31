@@ -97,8 +97,8 @@ namespace Abc
             x.IsSome ? y.IsSome && EqualityComparer<T>.Default.Equals(x.Value!, y.Value!)
                 : !y.IsSome;
 #else
-            x.TryGetValue(out T left)
-                ? y.TryGetValue(out T right) && EqualityComparer<T>.Default.Equals(left, right)
+            x.TryGetValue(out T? left)
+                ? y.TryGetValue(out T? right) && EqualityComparer<T>.Default.Equals(left, right)
                 : y.IsNone;
 #endif
 
@@ -110,7 +110,7 @@ namespace Abc
 #if WITHIN_ABC_MAYBE
             obj.IsSome ? EqualityComparer<T>.Default.GetHashCode(obj.Value!) : 0;
 #else
-            obj.TryGetValue(out T value) ? EqualityComparer<T>.Default.GetHashCode(value!) : 0;
+            obj.TryGetValue(out T? value) ? EqualityComparer<T>.Default.GetHashCode(value!) : 0;
 #endif
 
         // A total order for maybe's. The convention is that the empty maybe is
@@ -124,7 +124,7 @@ namespace Abc
             x.IsSome ? y.IsSome ? Comparer<T>.Default.Compare(x.Value!, y.Value!) : 1
                 : y.IsSome ? -1 : 0;
 #else
-            x.TryGetValue(out T left) ? y.TryGetValue(out T right)
+            x.TryGetValue(out T? left) ? y.TryGetValue(out T? right)
                 ? Comparer<T>.Default.Compare(left, right) : 1
                 : y.IsNone ? 0 : -1;
 #endif
@@ -154,8 +154,8 @@ namespace Abc
                 ? y.IsSome && StructuralComparisons.StructuralEqualityComparer.Equals(x.Value, y.Value)
                 : !y.IsSome;
 #else
-            x.TryGetValue(out T left)
-                ? y.TryGetValue(out T right) && StructuralComparisons.StructuralEqualityComparer.Equals(left, right)
+            x.TryGetValue(out T? left)
+                ? y.TryGetValue(out T? right) && StructuralComparisons.StructuralEqualityComparer.Equals(left, right)
                 : y.IsNone;
 #endif
 
@@ -167,7 +167,7 @@ namespace Abc
             // BONSANG! When IsSome is true, Value is NOT null.
             obj.IsSome ? StructuralComparisons.StructuralEqualityComparer.GetHashCode(obj.Value!) : 0;
 #else
-            obj.TryGetValue(out T value) ? StructuralComparisons.StructuralEqualityComparer.GetHashCode(value!) : 0;
+            obj.TryGetValue(out T? value) ? StructuralComparisons.StructuralEqualityComparer.GetHashCode(value!) : 0;
 #endif
 
         [Pure]
@@ -179,7 +179,7 @@ namespace Abc
                 ? y.IsSome ? StructuralComparisons.StructuralComparer.Compare(x.Value, y.Value) : 1
                 : y.IsSome ? -1 : 0;
 #else
-            x.TryGetValue(out T left) ? y.TryGetValue(out T right)
+            x.TryGetValue(out T? left) ? y.TryGetValue(out T? right)
                 ? StructuralComparisons.StructuralComparer.Compare(left, right) : 1
                 : y.IsNone ? 0 : -1;
 #endif

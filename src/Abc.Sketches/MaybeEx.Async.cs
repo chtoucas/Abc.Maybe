@@ -34,7 +34,7 @@ namespace Abc
         {
             if (binder is null) { throw new Anexn(nameof(binder)); }
 
-            return @this.TryGetValue(out T value)
+            return @this.TryGetValue(out T? value)
                 ? await binder(value).ConfigureAwait(continueOnCapturedContext)
                 : Maybe<TResult>.None;
         }
@@ -58,7 +58,7 @@ namespace Abc
         {
             if (selector is null) { throw new Anexn(nameof(selector)); }
 
-            return @this.TryGetValue(out T value)
+            return @this.TryGetValue(out T? value)
                 ? Maybe.Of(await selector(value).ConfigureAwait(continueOnCapturedContext))
                 : Maybe<TResult>.None;
         }

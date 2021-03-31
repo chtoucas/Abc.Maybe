@@ -73,7 +73,7 @@ namespace Abc
             // BONSANG! When IsSome is true, Value is NOT null.
             Equal(expected, maybe.Value!);
 #else
-            if (maybe.TryGetValue(out T value))
+            if (maybe.TryGetValue(out T? value))
             {
                 Equal(expected, value);
             }

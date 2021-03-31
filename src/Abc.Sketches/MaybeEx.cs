@@ -51,7 +51,7 @@ namespace Abc
         {
             if (!condition)
             {
-                if (@this.TryGetValue(out T value))
+                if (@this.TryGetValue(out T? value))
                 {
                     onSome?.Invoke(value);
                 }
