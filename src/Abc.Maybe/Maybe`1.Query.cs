@@ -167,6 +167,7 @@ namespace Abc
 
                 if (comparer.Equals(outerKey, innerKey))
                 {
+                    // BONSANG! When _isSome is true, _value is NOT null.
                     return Maybe.Of(resultSelector(_value, inner._value!));
                 }
             }

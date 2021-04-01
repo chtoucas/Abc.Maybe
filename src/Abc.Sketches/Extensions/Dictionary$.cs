@@ -20,7 +20,7 @@ namespace Abc.Extensions
         {
             if (@this is null) { throw new ArgumentNullException(nameof(@this)); }
 
-            return !(key is null) && @this.TryGetValue(key, out TValue? value)
+            return key is not null && @this.TryGetValue(key, out TValue? value)
                 ? Maybe.Of(value)
                 : Maybe<TValue>.None;
         }

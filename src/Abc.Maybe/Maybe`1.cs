@@ -188,6 +188,7 @@ namespace Abc
 
         // Alternate name: ValueOrThrow().
         public static explicit operator T(Maybe<T> value) =>
+            // BONSANG! When _isSome is true, _value is NOT null.
             value._isSome ? value._value! : throw EF.FromMaybe_NoValue;
 
         /// <summary>
@@ -454,6 +455,7 @@ namespace Abc
             if (zipper is null) { throw new Anexn(nameof(zipper)); }
 
             return _isSome && other._isSome
+                // BONSANG! When _isSome is true, _value is NOT null.
                 ? Maybe.Of(zipper(_value, other._value!))
                 : Maybe<TResult>.None;
         }
@@ -567,6 +569,7 @@ namespace Abc
             //   left.CompareTo(right) < 0;
             left._isSome
             && right._isSome
+            // BONSANG! When _isSome is true, _value is NOT null.
             && Comparer<T>.Default.Compare(left._value!, right._value!) < 0;
 
         /// <summary>
@@ -587,6 +590,7 @@ namespace Abc
             //   left.CompareTo(right) <= 0;
             left._isSome
             && right._isSome
+            // BONSANG! When _isSome is true, _value is NOT null.
             && Comparer<T>.Default.Compare(left._value!, right._value!) <= 0;
 
         /// <summary>
@@ -607,6 +611,7 @@ namespace Abc
             //   left.CompareTo(right) > 0;
             left._isSome
             && right._isSome
+            // BONSANG! When _isSome is true, _value is NOT null.
             && Comparer<T>.Default.Compare(left._value!, right._value!) > 0;
 
         /// <summary>
@@ -627,6 +632,7 @@ namespace Abc
             //   left.CompareTo(right) >= 0;
             left._isSome
             && right._isSome
+            // BONSANG! When _isSome is true, _value is NOT null.
             && Comparer<T>.Default.Compare(left._value!, right._value!) >= 0;
 
         /// <summary>
@@ -639,6 +645,7 @@ namespace Abc
         [Pure]
         public int CompareTo(Maybe<T> other) =>
             _isSome
+                // BONSANG! When _isSome is true, _value is NOT null.
                 ? other._isSome ? Comparer<T>.Default.Compare(_value!, other._value!) : 1
                 : other._isSome ? -1 : 0;
 
@@ -727,6 +734,7 @@ namespace Abc
             EqualityComparer<T>.Default.Equals(_value, other._value);
 #else
             _isSome
+                // BONSANG! When _isSome is true, _value is NOT null.
                 ? other._isSome && EqualityComparer<T>.Default.Equals(_value, other._value!)
                 : !other._isSome;
 #endif
