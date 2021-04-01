@@ -2,7 +2,41 @@ TODO
 ====
 
 External issues:
-- (Coverlet) Deterministic build (see src\D.B.targets)
+- (Coverlet) Deterministic build
+  src/D.B.targets
+```xml
+  <ItemGroup Condition=" '$(EnableSourceLink)' != 'true' ">
+    <!-- Workaround for dotnet < 3.1.400
+      Even if the default behaviour is to have Source Link on for CI builds,
+      this can still be overriden from the command-line.
+      dotnet.exe fails complaining about SourceRoot if ContinuousIntegrationBuild
+      is set to true:
+        "SourceRoot items must include at least one top-level (not nested) item
+        when DeterministicSourcePaths is true"
+      When we import Microsoft.SourceLink.GitHub, this is unnecessary since
+      Source Link automatically adds GitHub to SourceRoot.
+    -->
+    <SourceRoot Include="$(MyRepositoryRoot)" Condition=" '$(DeterministicSourcePaths)' == 'true' " />
+  </ItemGroup>
+  <Target Name="CoverletGetPathMap"
+          DependsOnTargets="InitializeSourceRootMappedPaths"
+          Returns="@(_LocalTopLevelSourceRoot)"
+          Condition=" '$(DeterministicSourcePaths)' == 'true' ">
+    <!-- Fix for Coverlet + SourceLink + Determinism when ContinuousIntegrationBuild = true -->
+    <ItemGroup>
+      <_LocalTopLevelSourceRoot Include="@(SourceRoot)" Condition=" '%(SourceRoot.NestedRoot)' == '' " />
+    </ItemGroup>
+  </Target>
+```
+  test/D.B.targets
+```xml
+  <!-- Workaround for dotnet < 3.1.400 -->
+  <ItemGroup Condition=" '$(DeterministicSourcePaths)' == 'true' ">
+    <!-- See comments in "src\D.B.targets" -->
+    <SourceRoot Include="$(MyRepositoryRoot)" />
+  </ItemGroup>
+```
+
 - (Coverlet) ExcludeFromCodeCoverage does not get inherited by class members.
 - (VS) Task list.
 

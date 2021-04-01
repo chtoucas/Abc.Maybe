@@ -2,12 +2,6 @@
 
   <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.targets" />
 
-  <!-- Workaround for dotnet < 3.1.400 -->
-  <ItemGroup Condition=" '$(DeterministicSourcePaths)' == 'true' ">
-    <!-- See comments in "src\D.B.targets" -->
-    <SourceRoot Include="$(MyRepositoryRoot)" />
-  </ItemGroup>
-
   <!-- See "src\Retail.props" -->
   <!-- TODO: split version and package infos so that we do not import
        PackageDescription & co -->
