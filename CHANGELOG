@@ -2,6 +2,12 @@ Changelog for Abc.Maybe.
 
 vNEXT
 
+  Visible changes.
+  * Public API: Maybe<T> empty ctor.
+
+  Internal changes.
+  * .NET Core 3.1.300 -> 5.0.104, then fix a bunch of compiler warnings.
+    Default framework is now .NET 5.0
   * Upgraded dependencies:
     - Microsoft.Bcl.HashCode 1.1.0 -> 1.1.1.
     - Microsoft.CodeAnalysis.FxCopAnalyzers 3.0.0 -> Microsoft.CodeAnalysis.NetAnalyzers 5.0.3.
