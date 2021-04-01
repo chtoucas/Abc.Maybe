@@ -5,7 +5,7 @@
     <TargetFramework>$(MyDefaultFramework)</TargetFramework>
 
     <!-- BenchmarkDotNet requires that we specify an exact lang version -->
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
 
     <!-- Warnings.
       CA1822  Mark members as static
