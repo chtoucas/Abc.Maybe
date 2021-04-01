@@ -49,17 +49,14 @@ namespace Abc
 #endif
 
         // Bitwise logical OR.
-        [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "OrElse()")]
         public static Maybe<T> operator |(Maybe<T> left, Maybe<T> right) =>
             left.OrElse(right);
 
         // Bitwise logical AND.
-        [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "AndThen()")]
         public static Maybe<T> operator &(Maybe<T> left, Maybe<T> right) =>
             left.AndThen(right);
 
         // Bitwise logical XOR.
-        [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "XorElse()")]
         public static Maybe<T> operator ^(Maybe<T> left, Maybe<T> right) =>
             left.XorElse(right);
 

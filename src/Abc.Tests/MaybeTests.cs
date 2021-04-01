@@ -6,7 +6,7 @@ namespace Abc
     using System;
     using System.Linq;
 
-#if !NETSTANDARD1_x // System.Runtime.Serialization
+#if !NETSTANDARD1_x && !NET5_0_OR_GREATER // System.Runtime.Serialization
     using System.IO;
     using System.Runtime.Serialization;
     using System.Runtime.Serialization.Formatters.Binary;

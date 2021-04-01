@@ -186,7 +186,7 @@ namespace Abc
         // idea, better to be explicit. For instance, maybe [= Some(x)] == y is
         // just maybe.Contains(y), and the latter is semantically more correct.
 
-        //[SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "ValueOrThrow()")]
+        // Alternate name: ValueOrThrow().
         public static explicit operator T(Maybe<T> value) =>
             value._isSome ? value._value! : throw EF.FromMaybe_NoValue;
 
