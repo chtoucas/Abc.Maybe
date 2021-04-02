@@ -64,7 +64,7 @@ function Print-Help {
 
 Wrapper for dotnet.exe.
 
-Usage: reset.ps1 [arguments]
+Usage: make.ps1 [arguments]
      -Task           the .NET command to be called. Default = "build".
   -p|-Project        the project to build. Default (implicit) = solution.
   -c|-Configuration  the configuration to build the project for. Default (implicit) = "Debug".
