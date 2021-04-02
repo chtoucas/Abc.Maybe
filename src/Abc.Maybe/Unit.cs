@@ -1,8 +1,6 @@
 ﻿// SPDX-License-Identifier: BSD-3-Clause
 // Copyright (c) 2019 Narvalo.Org. All rights reserved.
 
-#pragma warning disable CA1801 // -Review unused parameters
-
 namespace Abc
 {
     using System;

@@ -183,7 +183,6 @@ namespace Abc
             return !left.IsNone && !right.IsNone ? right : left;
         }
 
-#pragma warning disable CA1801 // -Review unused parameters
         // Ignore() = flip ContinueWith():
         //   this.Ignore(other) = other.ContinueWith(this)
         /// <code><![CDATA[
@@ -199,7 +198,6 @@ namespace Abc
         {
             return @this;
         }
-#pragma warning restore CA1801
 
         // ContinueWith() = flip Ignore():
         //   this.ContinueWith(other) = other.Ignore(this)

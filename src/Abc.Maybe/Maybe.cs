@@ -112,7 +112,7 @@ namespace Abc
         // Code size = 7 bytes.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Maybe<T> Some<T>(T value) where T : struct
-            => new Maybe<T>(value);
+            => new(value);
 
         /// <summary>
         /// Creates a new instance of the <see cref="Maybe{T}"/> struct from the
@@ -147,7 +147,7 @@ namespace Abc
         // Identical to Maybe.Some(Maybe.Some()).
         [Pure]
         public static Maybe<Maybe<T>> Square<T>(T value) where T : struct
-            => new Maybe<Maybe<T>>(new Maybe<T>(value));
+            => new(new Maybe<T>(value));
 
         // Beware, not identical to Maybe.Some(Maybe.SomeOrNone()).
         // They only match when value is NOT null.
