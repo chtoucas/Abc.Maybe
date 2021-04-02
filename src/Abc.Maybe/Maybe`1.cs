@@ -195,23 +195,14 @@ namespace Abc
         /// Represents a debugger type proxy for <see cref="Maybe{T}"/>.
         /// </summary>
         [ExcludeFromCodeCoverage]
-        // REVIEW: why do we get a warning CA1812 when VISIBLE_INTERNALS is not set?
-        // Also, coverlet currently does not apply ExcludeFromCodeCoverage
-        // to the enclosed methods.
-#if !VISIBLE_INTERNALS
-        [SuppressMessage("Performance", "CA1812:Avoid uninstantiated internal classes")]
-#endif
         private sealed class DebugView_
         {
             private readonly Maybe<T> _inner;
 
-            [ExcludeFromCodeCoverage]
             public DebugView_(Maybe<T> inner) { _inner = inner; }
 
-            [ExcludeFromCodeCoverage]
             public bool IsSome => _inner._isSome;
 
-            [ExcludeFromCodeCoverage]
             [MaybeNull] public T Value => _inner._value;
         }
     }
