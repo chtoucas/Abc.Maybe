@@ -411,7 +411,7 @@ Maintenance
 - actions/setup-dotnet@v1/dotnet-version in .github\workflows\tests.yml
 - doc\developer-notes
 - LangVersion in test\Performance\Abc.PerformanceTests.csproj
-- check if there are new compiler constants
+- check compiler constants / ApiProfileMoniker
 
 > dotnet restore
 > dotnet list package --outdated

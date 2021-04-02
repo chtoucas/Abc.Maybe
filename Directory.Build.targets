@@ -16,6 +16,7 @@
     <ApiProfileMoniker>netstandard2.0</ApiProfileMoniker>
     <ApiProfileMoniker Condition=" '$(TargetFramework)' == 'netstandard2.1' ">netstandard2.1</ApiProfileMoniker>
     <ApiProfileMoniker Condition=" $(TargetFramework.StartsWith('netcoreapp3.')) ">netstandard2.1</ApiProfileMoniker>
+    <ApiProfileMoniker Condition=" $(TargetFramework.StartsWith('net5.')) ">netstandard2.1</ApiProfileMoniker>
   </PropertyGroup>
 
   <!-- Compiler symbols -->
