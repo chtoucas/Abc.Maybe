@@ -419,6 +419,8 @@ Maintenance
 > dotnet list eng\NETFxTools package --outdated
 > dotnet restore test\Performance.sln
 > dotnet list test\Performance.sln package --outdated
+> dotnet restore test\Package
+> dotnet list test\Package package --outdated
 
 .NET Framework tools (see "eng\NETFxTools"):
 - OpenCover, used by cover.ps1

@@ -2,7 +2,7 @@ TODO
 ====
 
 External issues:
-- (Coverlet) Deterministic build
+- (Coverlet) Deterministic build (OK)
   src/D.B.targets
 ```xml
   <ItemGroup Condition=" '$(EnableSourceLink)' != 'true' ">
@@ -37,7 +37,6 @@ External issues:
   </ItemGroup>
 ```
 
-- (Coverlet) ExcludeFromCodeCoverage does not get inherited by class members.
 - (VS) Task list.
 
 Tmp:
