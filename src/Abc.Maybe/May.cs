@@ -455,7 +455,6 @@ namespace Abc
         /// string instance and <see cref="UriKind"/>.
         /// </summary>
         [Pure]
-        [SuppressMessage("Design", "CA1054:Uri parameters should not be strings", Justification = "Uri creation")]
         public static Maybe<Uri> CreateUri(string? uriString, UriKind uriKind)
         {
             Uri.TryCreate(uriString, uriKind, out Uri? uri);

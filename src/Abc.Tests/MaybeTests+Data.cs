@@ -30,7 +30,7 @@ namespace Abc
 
         private static class My_
         {
-            internal static readonly Uri Uri = new Uri("http://www.narvalo.org");
+            internal static readonly Uri Uri = new("http://www.narvalo.org");
         }
     }
 
