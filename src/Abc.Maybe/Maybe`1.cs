@@ -77,7 +77,7 @@ namespace Abc
     /// - Switch()              pattern matching
     /// - TryGetValue()         try unwrap
     /// - ValueOrDefault()      unwrap
-    /// - ValueOrElse()         unwrap if possible, otherwise use a replacement
+    /// - ValueOrElse()         unwrap if possible, otherwise use a replacement value
     /// - ValueOrthrow()        unwrap if possible, otherwise throw
     ///
     /// Set and enumerable related methods.

@@ -3,7 +3,6 @@
 
 namespace Abc
 {
-    using System.Diagnostics.CodeAnalysis;
     using System.Diagnostics.Contracts;
 
     using Abc.Utilities;
