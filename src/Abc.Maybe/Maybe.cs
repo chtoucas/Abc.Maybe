@@ -245,7 +245,7 @@ namespace Abc
 
     // Helpers for Maybe<bool>.
     // 3VL (three-valued logic) logical operations.
-    // It makes Maybe<bool>.None and SQL NULL very similar but only for boolean
+    // It makes Maybe<bool>.Empty and SQL NULL very similar but only for boolean
     // logical operations, otherwise they may exhibit different behaviours.
     // For instance, with SQL-92 (NULL = NULL) evaluates to false, whereas
     // (Maybe<bool>.None == Maybe<bool>.None) evaluates to true.
@@ -272,42 +272,60 @@ namespace Abc
         /// </summary>
         public static readonly Maybe<bool> False = Some(false);
 
+        /// <summary>
+        /// Negates a <see cref="Maybe{T}"/> where T is the <see cref="bool"/>
+        /// type.
+        /// </summary>
         [Pure]
         public static Maybe<bool> Negate(this in Maybe<bool> @this)
         {
             return @this.IsSome ? Some(!@this.Value) : Unknown;
         }
 
-        // Compare to OrElse().
+        /// <summary>
+        /// Takes the logical OR of two <see cref="Maybe{T}"/>'s where
+        /// T is the <see cref="bool"/> type.
+        /// </summary>
+        /// <remarks>
+        /// <code><![CDATA[
+        ///   True    || _       = True
+        ///   False   || True    = True
+        ///   False   || False   = False
+        ///   False   || Unknown = Unknown
+        ///   Unknown || True    = True
+        ///   Unknown || False   = Unknown
+        ///   Unknown || Unknown = Unknown
+        /// ]]></code>
+        /// </remarks>
         [Pure]
         public static Maybe<bool> Or(this in Maybe<bool> @this, Maybe<bool> other)
         {
-            // true  || _     = true
-            // false || true  = true
-            //       || false = false
-            //       || None  = None
-            // None  || true  = true
-            //       || false = None
-            //       || None  = None
-
+            // Compare to OrElse().
             // If one of the two values is "true", return True.
             return (@this.IsSome && @this.Value) || (other.IsSome && other.Value) ? True
                 : @this.IsSome && other.IsSome ? False
                 : Unknown;
         }
 
-        // Compare to AndElse().
+        /// <summary>
+        /// Takes the logical AND of two <see cref="Maybe{T}"/>'s where
+        /// T is the <see cref="bool"/> type.
+        /// </summary>
+        /// <remarks>
+        /// <code><![CDATA[
+        ///   True    && True    = True
+        ///   True    && False   = False
+        ///   True    && Unknown = Unknown
+        ///   False   && _       = False
+        ///   Unknown && True    = Unknown
+        ///   Unknown && False   = False
+        ///   Unknown && Unknown = Unknown
+        /// ]]></code>
+        /// </remarks>
         [Pure]
         public static Maybe<bool> And(this in Maybe<bool> @this, Maybe<bool> other)
         {
-            // true  && true  = true
-            //       && false = false
-            //       && None  = None
-            // false && _     = false
-            // None  && true  = None
-            //       && false = false
-            //       && None  = None
-
+            // Compare to AndElse().
             // If one of the two values is "false", return False.
             return (@this.IsSome && !@this.Value) || (other.IsSome && !other.Value) ? False
                 : @this.IsSome && other.IsSome ? True
